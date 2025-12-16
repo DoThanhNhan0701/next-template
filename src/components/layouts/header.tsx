@@ -1,3 +1,6 @@
+"use client";
+
+import React from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import {
@@ -19,17 +22,21 @@ import {
 
 interface MenuToolbar {
   name: string;
-  icon: LucideIcon;
+  icon: LucideIcon | null;
   onClick: () => void;
 }
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
 
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => setMounted(true), []);
+
   const menuToolbar: MenuToolbar[] = [
     {
-      name: theme === "dark" ? "Theme light" : "Theme dark",
-      icon: theme === "dark" ? SunIcon : MoonIcon,
+      name: mounted ? (theme === "dark" ? "Theme light" : "Theme dark") : "",
+      icon: mounted ? (theme === "dark" ? SunIcon : MoonIcon) : null,
       onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
     },
     {
@@ -71,7 +78,7 @@ export default function Header() {
                 onClick={item.onClick}
                 className="p-0! cursor-pointer size-6 bg-transparent text-primary dark:hover:bg-primary/10 hover:bg-primary/10"
               >
-                <item.icon size={13} />
+                {item.icon && <item.icon size={13} />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
