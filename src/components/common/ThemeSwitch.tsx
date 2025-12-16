@@ -10,7 +10,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { MoonIcon, SunIcon } from "lucide-react";
-import Loading from "./Loading";
 
 export default function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
@@ -18,13 +17,7 @@ export default function ThemeSwitch() {
 
   React.useEffect(() => setMounted(true), []);
 
-  if (!mounted)
-    return (
-      <Loading
-        className="size-6 flex items-center justify-center"
-        classNameSpinner="size-5"
-      />
-    );
+  if (!mounted) return null;
 
   return (
     <Tooltip>
