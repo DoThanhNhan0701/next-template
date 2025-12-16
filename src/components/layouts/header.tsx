@@ -34,7 +34,7 @@ export default function Header() {
 
   const menuToolbar: MenuToolbar[] = [
     {
-      name: "Theme",
+      name: mounted ? (theme === "dark" ? "Theme light" : "Theme dark") : "",
       icon: mounted ? (theme === "dark" ? SunIcon : MoonIcon) : null,
       onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
     },
