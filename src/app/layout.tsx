@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { ThemeProvider } from "@/components/libs/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/libs/theme-provider";
+import { Providers } from "@/components/libs/providers";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Next Template",
@@ -16,10 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider>
-          <Toaster position="top-center" />
-          {children}
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider>
+            <Toaster position="top-center" />
+            {children}
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
