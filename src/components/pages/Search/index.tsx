@@ -1,15 +1,8 @@
 "use client";
 
-import { fetcher } from "@/lib/fetcher";
-import { useQuery } from "@tanstack/react-query";
+import { useGet } from "@/hooks";
 
 export default function SearchPage() {
-  const getDogs = useQuery({
-    queryKey: ["dogs"],
-    queryFn: () => fetcher("https://dog.ceo/api/breeds/list/all"),
-  });
-
-  console.log("getDogs Search:", getDogs.data);
-
+  useGet("/api/breeds/list/all");
   return <div>Search Page</div>;
 }
