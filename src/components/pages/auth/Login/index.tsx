@@ -12,13 +12,22 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { endpoints } from "@/config/endpoints";
+import { usePost } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+interface LoginMutationData {
+  username: string;
+  password: string;
+}
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const loginMutation = usePost<LoginMutationData>(endpoints.LOGIN);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(LoginSchema),
@@ -29,7 +38,20 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: LoginFormData) => {
-    console.log("Submit:", data);
+    loginMutation.mutate(
+      {
+        username: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      }
+    );
   };
 
   return (
@@ -101,7 +123,14 @@ export default function LoginPage() {
           />
         </FieldGroup>
 
-        <Button variant="default" type="submit">
+        <Button
+          disabled={loginMutation.isPending}
+          variant="default"
+          type="submit"
+        >
+          {loginMutation.isPending && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
           Login
         </Button>
       </form>

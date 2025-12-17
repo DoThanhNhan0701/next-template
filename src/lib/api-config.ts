@@ -63,7 +63,7 @@ export const apiRequest = async <TResponse = unknown>(
   const url = `${API_CONFIG.baseUrl}${endpoint}${queryString}`;
 
   const headers: HeadersInit = {
-    // 'Content-Type': 'application/json',
+    'Content-Type': 'application/json',
     ...fetchOptions.headers,
   };
 
