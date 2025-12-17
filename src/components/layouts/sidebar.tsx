@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 
 import {
@@ -55,10 +56,10 @@ export default function Sidebar() {
                     asChild
                     className={isActive ? "bg-sidebar-accent" : ""}
                   >
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );

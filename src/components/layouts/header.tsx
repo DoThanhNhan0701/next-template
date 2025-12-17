@@ -1,13 +1,17 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 import {
   Bell,
   HelpCircle,
   HomeIcon,
   LucideIcon,
+  MoonIcon,
   RefreshCwIcon,
   SettingsIcon,
+  SunIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,16 +19,27 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ThemeSwitch from "../common/ThemeSwitch";
 
 interface MenuToolbar {
   name: string;
-  icon: LucideIcon;
+  icon: LucideIcon | null;
   onClick: () => void;
 }
 
 export default function Header() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const menuToolbar: MenuToolbar[] = [
+    {
+      name: mounted ? (theme === "dark" ? "Light" : "Dark") : "",
+      icon: mounted ? (theme === "dark" ? SunIcon : MoonIcon) : null,
+      onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
+    },
     {
       name: "Refresh",
       icon: RefreshCwIcon,
@@ -56,7 +71,6 @@ export default function Header() {
         </section>
       </div>
       <div className="ml-auto flex items-center shrink-0 gap-1">
-        <ThemeSwitch />
         {menuToolbar.map((item) => (
           <Tooltip key={item.name}>
             <TooltipTrigger asChild>
@@ -65,7 +79,7 @@ export default function Header() {
                 onClick={item.onClick}
                 className="p-0! cursor-pointer size-6 bg-transparent text-primary dark:hover:bg-primary/10 hover:bg-primary/10"
               >
-                <item.icon size={13} />
+                {item.icon && <item.icon size={13} />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
