@@ -1,16 +1,19 @@
 const API_CONFIG = {
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 30000,
-};
+} as const;
 
-export class ApiError extends Error {
+export class ApiError {
+  name = 'API_ERROR';
+  stack?: string;
+
   constructor(
-    message: string,
+    public message: string,
     public status?: number,
-    public data?: unknown
+    public data?: unknown,
+    public endpoint?: string
   ) {
-    super(message);
-    this.name = 'ApiError';
+    this.stack = new Error().stack;
   }
 }
 
@@ -19,107 +22,78 @@ interface RequestOptions extends RequestInit {
   timeout?: number;
 }
 
-const buildQueryString = (
-  params?: Record<string, string | number | boolean>
-): string => {
+const buildQueryString = (params?: Record<string, string | number | boolean>) => {
   if (!params) return '';
-  const searchParams = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    searchParams.append(key, String(value));
-  });
-  const queryString = searchParams.toString();
-  return queryString ? `?${queryString}` : '';
+  const query = new URLSearchParams(
+    Object.entries(params).map(([k, v]) => [k, String(v)])
+  ).toString();
+  return query ? `?${query}` : '';
 };
 
-export const fetchWithTimeout = async (
-  url: string,
-  options: RequestOptions = {}
-): Promise<Response> => {
+const fetchWithTimeout = async (url: string, options: RequestOptions = {}) => {
   const { timeout = API_CONFIG.timeout, ...fetchOptions } = options;
-
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
-    const response = await fetch(url, {
-      ...fetchOptions,
-      signal: controller.signal,
-    });
+    return await fetch(url, { ...fetchOptions, signal: controller.signal });
+  } finally {
     clearTimeout(timeoutId);
-    return response;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    throw error;
   }
 };
 
-export const apiRequest = async <TResponse = unknown>(
+const parseError = async (response: Response) => {
+  const contentType = response.headers.get('content-type');
+
+  try {
+    if (contentType?.includes('application/json')) {
+      const data = await response.json();
+      const message = data?.error || data?.detail || data?.message || response.statusText;
+      return { message, data };
+    }
+    const text = await response.text();
+    return { message: text || response.statusText, data: text };
+  } catch {
+    return { message: response.statusText, data: null };
+  }
+};
+
+export const apiRequest = async <T = unknown>(
   endpoint: string,
   options: RequestOptions = {}
-): Promise<TResponse> => {
-  const { params, ...fetchOptions } = options;
+): Promise<T> => {
+  if (!API_CONFIG.baseUrl) {
+    throw new ApiError('API base URL is not configured', undefined, undefined, endpoint);
+  }
 
-  const queryString = buildQueryString(params);
-  const url = `${API_CONFIG.baseUrl}${endpoint}${queryString}`;
-
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...fetchOptions.headers,
-  };
+  const { params, headers, ...fetchOptions } = options;
+  const url = `${API_CONFIG.baseUrl}${endpoint}${buildQueryString(params)}`;
 
   try {
     const response = await fetchWithTimeout(url, {
       ...fetchOptions,
-      headers,
+      headers: { 'Content-Type': 'application/json', ...headers },
     });
 
     if (!response.ok) {
-      let errorData: unknown;
-      let errorMessage = response.statusText;
-
-      try {
-        errorData = await response.json();
-        // Try to extract message from common API error formats
-        if (errorData && typeof errorData === 'object') {
-          const data = errorData as Record<string, unknown>;
-          errorMessage =
-            (data.error as string) ||
-            (data.detail as string) ||
-            (data.message as string) ||
-            response.statusText;
-        }
-      } catch {
-        errorData = await response.text();
-        if (typeof errorData === 'string' && errorData) {
-          errorMessage = errorData;
-        }
-      }
-
-      throw new ApiError(
-        errorMessage,
-        response.status,
-        errorData
-      );
+      const { message, data } = await parseError(response);
+      throw new ApiError(message, response.status, data, endpoint);
     }
 
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      return await response.json();
-    }
-
-    return (await response.text()) as TResponse;
+    return contentType?.includes('application/json')
+      ? await response.json()
+      : (await response.text()) as T;
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-
+    if (error instanceof ApiError) throw error;
     if (error instanceof Error) {
-      if (error.name === 'AbortError') {
-        throw new ApiError('Request timeout');
-      }
-      throw new ApiError(error.message);
+      throw new ApiError(
+        error.name === 'AbortError' ? 'Request timeout' : error.message,
+        undefined,
+        undefined,
+        endpoint
+      );
     }
-
-    throw new ApiError('Unknown error occurred');
+    throw new ApiError('Unknown error occurred', undefined, undefined, endpoint);
   }
 };

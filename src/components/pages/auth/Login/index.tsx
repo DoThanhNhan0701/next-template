@@ -50,6 +50,7 @@ export default function LoginPage() {
         toast.success("Login successful!");
       },
       onError: (error) => {
+        console.log(error);
         toast.error(error.message);
       },
     });
