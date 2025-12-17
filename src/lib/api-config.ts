@@ -3,7 +3,7 @@ const API_CONFIG = {
   timeout: 30000,
 };
 
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
@@ -19,7 +19,7 @@ interface RequestOptions extends RequestInit {
   timeout?: number;
 }
 
-export const buildQueryString = (
+const buildQueryString = (
   params?: Record<string, string | number | boolean>
 ): string => {
   if (!params) return '';
@@ -75,14 +75,28 @@ export const apiRequest = async <TResponse = unknown>(
 
     if (!response.ok) {
       let errorData: unknown;
+      let errorMessage = response.statusText;
+
       try {
         errorData = await response.json();
+        // Try to extract message from common API error formats
+        if (errorData && typeof errorData === 'object') {
+          const data = errorData as Record<string, unknown>;
+          errorMessage =
+            (data.error as string) ||
+            (data.detail as string) ||
+            (data.message as string) ||
+            response.statusText;
+        }
       } catch {
         errorData = await response.text();
+        if (typeof errorData === 'string' && errorData) {
+          errorMessage = errorData;
+        }
       }
 
       throw new ApiError(
-        `API Error: ${response.statusText}`,
+        errorMessage,
         response.status,
         errorData
       );

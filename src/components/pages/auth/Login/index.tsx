@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  LoginFormData,
-  LoginSchema,
-} from "@/components/schemas/auth/login.schema";
+import { LoginSchema } from "@/components/schemas/auth/login.schema";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -18,40 +15,44 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface LoginMutationData {
   username: string;
   password: string;
 }
 
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
-  const loginMutation = usePost<LoginMutationData>(endpoints.LOGIN);
+  const loginMutation = usePost<LoginResponse, LoginMutationData>(
+    endpoints.LOGIN
+  );
 
-  const form = useForm<LoginFormData>({
+  const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    loginMutation.mutate(
-      {
-        username: data.email,
-        password: data.password,
+  const onSubmit = (data: LoginMutationData) => {
+    loginMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data.access_token);
+        toast.success("Login successful!");
       },
-      {
-        onSuccess: (data) => {
-          console.log(data);
-        },
-        onError: (error) => {
-          console.log(error);
-        },
-      }
-    );
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -62,16 +63,16 @@ export default function LoginPage() {
       >
         <FieldGroup>
           <Controller
-            name="email"
+            name="username"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="gap-1">
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
                   {...field}
-                  id="email"
+                  id="username"
                   aria-invalid={fieldState.invalid}
-                  placeholder="Email"
+                  placeholder="Username"
                   autoComplete="off"
                 />
                 {fieldState.invalid && (
