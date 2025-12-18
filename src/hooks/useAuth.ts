@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authApi, LoginResponse } from "@/services/auth/auth.api";
+import { authApi } from "@/services/auth/auth.api";
 import { tokenService } from "@/services/token.service";
+import { LoginResponse } from "@/types/auth/responses";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

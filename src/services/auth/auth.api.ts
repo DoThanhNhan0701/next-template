@@ -1,27 +1,8 @@
 import axiosInstance from "@/lib/axios";
 import { API_ENDPOINTS } from "@/lib/constants";
-
-export interface LoginRequest {
-    username: string;
-    password: string;
-}
-
-export interface LoginResponse {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
-    token_type: string;
-}
-
-export interface RefreshTokenRequest {
-    refresh_token: string;
-}
-
-export interface User {
-    id: string;
-    username: string;
-    // Add other user fields as needed based on the API response
-}
+import { LoginRequest, RefreshTokenRequest } from "@/types/auth/requests";
+import { LoginResponse } from "@/types/auth/responses";
+import { User } from "@/types/user";
 
 export const authApi = {
     login: async (data: LoginRequest): Promise<LoginResponse> => {
