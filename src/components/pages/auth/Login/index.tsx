@@ -1,5 +1,7 @@
 "use client";
 
+import { useLogin } from "@/hooks/useAuth";
+
 import { LoginSchema } from "@/components/schemas/auth/login.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +32,10 @@ export default function LoginPage() {
     },
   });
 
+  const { mutate: login, isPending } = useLogin();
+
   const onSubmit = (data: LoginMutationData) => {
-    console.log(data);
+    login(data);
   };
 
   return (
@@ -103,8 +107,8 @@ export default function LoginPage() {
           />
         </FieldGroup>
 
-        <Button variant="default" type="submit">
-          Login
+        <Button variant="default" type="submit" disabled={isPending}>
+          {isPending ? "Logging in..." : "Login"}
         </Button>
       </form>
     </div>
