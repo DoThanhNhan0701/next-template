@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authService, LoginResponse } from "@/services/auth.service";
+import { authApi, LoginResponse } from "@/services/auth/auth.api";
 import { tokenService } from "@/services/token.service";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ export const useLogin = () => {
     const router = useRouter();
 
     return useMutation({
-        mutationFn: authService.login,
+        mutationFn: authApi.login,
         onSuccess: (data: LoginResponse) => {
             tokenService.setTokens(data.access_token, data.refresh_token);
             queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -26,7 +26,7 @@ export const useLogin = () => {
 export const useMe = () => {
     return useQuery({
         queryKey: ["me"],
-        queryFn: authService.getMe,
+        queryFn: authApi.getMe,
         retry: false,
         staleTime: 5 * 60 * 1000,
         enabled: !!tokenService.getAccessToken(),

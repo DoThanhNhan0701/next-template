@@ -1,37 +1,35 @@
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-
-const ACCESS_TOKEN_KEY = "accessToken";
-const REFRESH_TOKEN_KEY = "refreshToken";
+import { COOKIE_KEYS } from "@/lib/constants";
 
 export const tokenService = {
     getAccessToken: () => {
-        return getCookie(ACCESS_TOKEN_KEY);
+        return getCookie(COOKIE_KEYS.ACCESS_TOKEN);
     },
 
     getRefreshToken: () => {
-        return getCookie(REFRESH_TOKEN_KEY);
+        return getCookie(COOKIE_KEYS.REFRESH_TOKEN);
     },
 
     setTokens: (accessToken: string, refreshToken?: string) => {
-        setCookie(ACCESS_TOKEN_KEY, accessToken, {
+        setCookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
             maxAge: 60 * 60 * 24 * 7, // 7 days
             path: "/",
-            secure: process.env.NODE_ENV === 'production', // Uncomment for production
-            sameSite: 'strict',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
         });
 
         if (refreshToken) {
-            setCookie(REFRESH_TOKEN_KEY, refreshToken, {
+            setCookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
                 maxAge: 60 * 60 * 24 * 30, // 30 days
                 path: "/",
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
             });
         }
     },
 
     clearTokens: () => {
-        deleteCookie(ACCESS_TOKEN_KEY);
-        deleteCookie(REFRESH_TOKEN_KEY);
+        deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
+        deleteCookie(COOKIE_KEYS.REFRESH_TOKEN);
     },
 };
