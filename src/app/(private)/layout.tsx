@@ -16,6 +16,7 @@ export default async function PrivateLayout({
   await queryClient.prefetchQuery({
     queryKey: ["me"],
     queryFn: getMeServer,
+    retry: 1,
   });
 
   const user = queryClient.getQueryData(["me"]);
