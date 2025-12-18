@@ -3,11 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useGet } from "@/hooks";
 
 export default function HomePage() {
-  useGet("/api/breeds/list/all");
-
   return (
     <div className="grid grid-cols-4 gap-4">
       <div className="border border-(--surface-border-color) p-4 rounded-xl flex flex-col gap-4">

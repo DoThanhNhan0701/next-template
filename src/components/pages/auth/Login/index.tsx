@@ -9,31 +9,18 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { endpoints } from "@/config/endpoints";
-import { usePost } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 interface LoginMutationData {
   username: string;
   password: string;
 }
 
-interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
-}
-
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-
-  const loginMutation = usePost<LoginResponse, LoginMutationData>(
-    endpoints.LOGIN
-  );
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -44,20 +31,11 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: LoginMutationData) => {
-    loginMutation.mutate(data, {
-      onSuccess: (data) => {
-        console.log(data.access_token);
-        toast.success("Login successful!");
-      },
-      onError: (error) => {
-        console.log(error);
-        toast.error(error.message);
-      },
-    });
+    console.log(data);
   };
 
   return (
-    <div className="max-w-[500px] mx-auto h-full flex items-center justify-center">
+    <div className="max-w-125 mx-auto h-full flex items-center justify-center">
       <form
         className="flex flex-col gap-6 p-6 border border-(--surface-border-color) rounded-lg w-full"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -125,14 +103,7 @@ export default function LoginPage() {
           />
         </FieldGroup>
 
-        <Button
-          disabled={loginMutation.isPending}
-          variant="default"
-          type="submit"
-        >
-          {loginMutation.isPending && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
+        <Button variant="default" type="submit">
           Login
         </Button>
       </form>
