@@ -4,6 +4,7 @@ import { tokenService } from "@/services/token.service";
 import { LoginResponse } from "@/types/auth/responses";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { ApiError } from "@/lib/http.client";
 
 export const useLogin = () => {
     const queryClient = useQueryClient();
@@ -17,9 +18,8 @@ export const useLogin = () => {
             toast.success("Login successful");
             router.push("/");
         },
-        onError: (error: unknown) => {
-            console.log(error);
-            toast.error("Login failed");
+        onError: (error) => {
+            toast.error((error as ApiError).detail);
         },
     });
 };
@@ -28,8 +28,6 @@ export const useMe = () => {
     return useQuery({
         queryKey: ["me"],
         queryFn: authApi.getMe,
-        retry: false,
-        staleTime: 5 * 60 * 1000,
         enabled: !!tokenService.getAccessToken(),
     });
 };
