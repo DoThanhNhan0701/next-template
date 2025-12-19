@@ -38,7 +38,9 @@ async function fetchWithAuth<T, E = unknown>(
       errorBody = (await response.json()) as E;
     }
 
-    throw new ApiError<E>(response.status, response.statusText, errorBody);
+    const errorData = errorBody as Record<string, unknown> | undefined;
+    const message = (errorData?.detail as string) || (errorData?.message as string) || response.statusText;
+    throw new ApiError<E>(response.status, message, errorBody);
   }
 
   return response.json() as Promise<T>;
