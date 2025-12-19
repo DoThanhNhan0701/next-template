@@ -19,6 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { User } from "@/types/user";
 
 interface MenuToolbar {
   name: string;
@@ -26,7 +27,11 @@ interface MenuToolbar {
   onClick: () => void;
 }
 
-export default function Header() {
+interface Props {
+  user: User | null;
+}
+
+export default function Header({ user }: Props) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -71,6 +76,7 @@ export default function Header() {
         </section>
       </div>
       <div className="ml-auto flex items-center shrink-0 gap-1">
+        <p className="text-sm leading-none">{user?.username}</p>
         {menuToolbar.map((item) => (
           <Tooltip key={item.name}>
             <TooltipTrigger asChild>
