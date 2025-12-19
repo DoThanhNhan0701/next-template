@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { logoutAction } from "./logout.action";
+import { logoutAction } from "../auth/Login/logout.action";
+import { useGet } from "@/hooks/useApi";
+import { endpoints } from "@/config/endpoints";
 
 export default function HomePage() {
   const handleLogout = async () => {
@@ -11,6 +13,8 @@ export default function HomePage() {
     toast.success("Logged out successfully");
   };
 
+  const getData = useGet(["locations"], `${endpoints.LOCATIONS}/`);
+  console.log(getData);
   return (
     <div className="grid grid-cols-4 gap-4">
       <div className="border border-(--surface-border-color) p-4 rounded-xl flex flex-col gap-4">

@@ -19,4 +19,6 @@ export const endpoints = getEndPoint("api/v1", {
   REFRESH: "auth/refresh",
   ROLE: "role",
   USERS: "users",
+
+  LOCATIONS: "locations",
 });
