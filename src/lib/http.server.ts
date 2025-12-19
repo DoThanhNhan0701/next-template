@@ -1,52 +1,47 @@
 "use server";
 
 import { COOKIE_KEYS, API_BASE_URL } from "@/lib/constants";
+import { ApiError } from "@/utils/api-error";
 import { cookies } from "next/headers";
-
-const baseURL = API_BASE_URL;
 
 interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;
 }
 
-async function fetchWithAuth<T>(
+async function fetchWithAuth<T, E = unknown>(
   url: string,
   options: FetchOptions = {}
-): Promise<T | null> {
+): Promise<T> {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)?.value;
 
-  const headers = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...options.headers,
-  } as Record<string, string>;
+  };
 
   if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
+    headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  try {
-    const response = await fetch(`${baseURL}${url}`, {
-      ...options,
-      headers,
-      cache: "no-store",
-    });
+  const response = await fetch(`${API_BASE_URL}${url}`, {
+    ...options,
+    headers,
+    cache: "no-store",
+  });
 
-    if (!response.ok) {
-      // Don't log error for auth failures, just return null
-      if (response.status === 401 || response.status === 403) {
-        return null;
-      }
+  if (!response.ok) {
+    let errorBody: E | undefined;
 
-      console.error(`Server fetch failed: ${response.status} ${response.statusText}`);
-      return null;
+    const contentType = response.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
+      errorBody = (await response.json()) as E;
     }
 
-    return response.json();
-  } catch (error) {
-    console.error("Server fetch error:", error);
-    return null;
+    throw new ApiError<E>(response.status, response.statusText, errorBody);
   }
+
+  return response.json() as Promise<T>;
 }
 
 export async function httpGet<T>(url: string, options?: FetchOptions) {

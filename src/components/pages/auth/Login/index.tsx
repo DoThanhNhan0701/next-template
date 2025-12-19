@@ -9,23 +9,19 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { LoginRequest } from "@/types/auth/requests";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { loginAction } from "./login.action";
-
-interface LoginMutationData {
-  username: string;
-  password: string;
-}
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -35,19 +31,21 @@ export default function LoginPage() {
     },
   });
 
-  const { mutate: login, isPending } = useMutation({
+  const loginMutation = useMutation({
     mutationFn: loginAction,
-    onSuccess: () => {
-      toast.success("Login successful");
-      router.push("/");
-    },
-    onError: () => {
-      toast.error("Login failed");
-    },
   });
 
-  const onSubmit = (data: LoginMutationData) => {
-    login(data);
+  const onSubmit = async (data: LoginRequest) => {
+    loginMutation.mutate(data, {
+      onSuccess: () => {
+        toast.success("Login successfully");
+        router.push("/");
+      },
+      onError: (error) => {
+        console.log(error);
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -119,8 +117,12 @@ export default function LoginPage() {
           />
         </FieldGroup>
 
-        <Button variant="default" type="submit" disabled={isPending}>
-          {isPending ? "Logging in..." : "Login"}
+        <Button
+          variant="default"
+          type="submit"
+          disabled={loginMutation.isPending}
+        >
+          {loginMutation.isPending ? "Logging in..." : "Login"}
         </Button>
       </form>
     </div>
