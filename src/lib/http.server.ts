@@ -1,8 +1,8 @@
 "use server";
 
-import { COOKIE_KEYS, API_BASE_URL } from "@/lib/constants";
+import { API_URL } from "@/config/constants";
+import { tokenService } from "@/services/token.service";
 import { ApiError } from "@/utils/api-error";
-import { cookies } from "next/headers";
 
 interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;
@@ -12,8 +12,7 @@ async function fetchWithAuth<T, E = unknown>(
   url: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)?.value;
+  const accessToken = await tokenService.getAccessToken();
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -24,7 +23,7 @@ async function fetchWithAuth<T, E = unknown>(
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${url}`, {
+  const response = await fetch(`${API_URL}${url}`, {
     ...options,
     headers,
     cache: "no-store",

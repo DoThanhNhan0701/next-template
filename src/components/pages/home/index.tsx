@@ -13,8 +13,12 @@ export default function HomePage() {
     toast.success("Logged out successfully");
   };
 
-  const getData = useGet(["locations"], `${endpoints.LOCATIONS}/`);
-  console.log(getData);
+  const { data, isLoading, error } = useGet(
+    ["locations"],
+    `${endpoints.LOCATIONS}`
+  );
+  console.log(data, "data locations");
+
   return (
     <div className="grid grid-cols-4 gap-4">
       <div className="border border-(--surface-border-color) p-4 rounded-xl flex flex-col gap-4">

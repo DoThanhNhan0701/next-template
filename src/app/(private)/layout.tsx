@@ -1,6 +1,6 @@
 import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
-import { API_ENDPOINTS } from "@/lib/constants";
+import { endpoints } from "@/config/endpoints";
 import { httpGet } from "@/lib/http.server";
 import { User } from "@/types/user";
 import { ReactNode } from "react";
@@ -10,7 +10,7 @@ export default async function PrivateLayout({
 }: {
   children: ReactNode;
 }) {
-  const user = await httpGet<User>(API_ENDPOINTS.AUTH.ME);
+  const user = await httpGet<User>(endpoints.ME);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">

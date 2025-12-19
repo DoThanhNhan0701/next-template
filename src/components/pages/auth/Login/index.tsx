@@ -19,8 +19,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { httpPost } from "@/lib/http.server";
 import { LoginResponse } from "@/types/auth/responses";
-import { API_ENDPOINTS } from "@/lib/constants";
 import { setTokensAction } from "./login.action";
+import { endpoints } from "@/config/endpoints";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequest) =>
-      await httpPost<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, data),
+      await httpPost<LoginResponse>(endpoints.LOGIN, data),
   });
 
   const onSubmit = async (data: LoginRequest) => {
