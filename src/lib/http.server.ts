@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, COOKIE_KEYS } from "@/lib/constants";
+import { COOKIE_KEYS } from "@/lib/constants";
 import { cookies } from "next/headers";
 
 const baseURL = "https://take-a-photo.aiminds.io.vn/api/v1";
@@ -54,9 +54,7 @@ async function fetchWithAuth<T>(
   options: FetchOptions = {}
 ): Promise<T | null> {
   const cookieStore = await cookies();
-  let accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)?.value;
-  const refreshToken = cookieStore.get(COOKIE_KEYS.REFRESH_TOKEN)?.value;
-
+  const accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)?.value;
 
   const headers = {
     "Content-Type": "application/json",
@@ -68,47 +66,14 @@ async function fetchWithAuth<T>(
   }
 
   try {
-    let response = await fetch(`${baseURL}${url}`, {
+    const response = await fetch(`${baseURL}${url}`, {
       ...options,
       headers,
       cache: "no-store",
-
     });
 
-    console.log(response.status);
-
-    if (response.status === 401 && refreshToken) {
-      // Attempt refresh
-      const refreshResponse = await fetch(
-        `${baseURL}${API_ENDPOINTS.AUTH.REFRESH}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          cache: "no-store",
-          body: JSON.stringify({ refresh_token: refreshToken }),
-        }
-      );
-
-      if (refreshResponse.ok) {
-        const data = await refreshResponse.json();
-        const newAccessToken = data.access_token;
-        // Note: We cannot set cookies here in a Server Component for the client
-        // But we can use the new token for the retry
-        accessToken = newAccessToken;
-        headers["Authorization"] = `Bearer ${newAccessToken}`;
-
-        // Retry original request
-        response = await fetch(`${baseURL}${url}`, {
-          ...options,
-          headers,
-          cache: "no-store",
-        });
-      } else {
-        return null;
-      }
-    }
-
     if (!response.ok) {
+      console.error(`Server fetch failed: ${response.status} ${response.statusText}`);
       return null;
     }
 
