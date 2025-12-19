@@ -1,4 +1,4 @@
-import { httpClient } from "@/lib/http.client";
+import { httpGet, httpPost, httpPut, httpPatch, httpDelete } from "@/lib/http.server";
 import {
     useMutation,
     UseMutationOptions,
@@ -14,7 +14,11 @@ export const useGet = <T>(
 ) => {
     return useQuery<T, Error>({
         queryKey: key,
-        queryFn: () => httpClient.get<T>(url),
+        queryFn: async () => {
+            const res = await httpGet<T>(url);
+            if (res === null) throw new Error("Request failed");
+            return res;
+        },
         ...options,
     });
 };
@@ -25,7 +29,11 @@ export const usePost = <T, D = unknown>(
     options?: UseMutationOptions<T, Error, D>
 ) => {
     return useMutation<T, Error, D>({
-        mutationFn: (data) => httpClient.post<T>(url, data),
+        mutationFn: async (data) => {
+            const res = await httpPost<T>(url, data);
+            if (res === null) throw new Error("Request failed");
+            return res;
+        },
         ...options,
     });
 };
@@ -36,7 +44,11 @@ export const usePut = <T, D = unknown>(
     options?: UseMutationOptions<T, Error, D>
 ) => {
     return useMutation<T, Error, D>({
-        mutationFn: (data) => httpClient.put<T>(url, data),
+        mutationFn: async (data) => {
+            const res = await httpPut<T>(url, data);
+            if (res === null) throw new Error("Request failed");
+            return res;
+        },
         ...options,
     });
 };
@@ -47,7 +59,11 @@ export const usePatch = <T, D = unknown>(
     options?: UseMutationOptions<T, Error, D>
 ) => {
     return useMutation<T, Error, D>({
-        mutationFn: (data) => httpClient.patch<T>(url, data),
+        mutationFn: async (data) => {
+            const res = await httpPatch<T>(url, data);
+            if (res === null) throw new Error("Request failed");
+            return res;
+        },
         ...options,
     });
 };
@@ -58,7 +74,11 @@ export const useDelete = <T>(
     options?: UseMutationOptions<T, Error, void>
 ) => {
     return useMutation<T, Error, void>({
-        mutationFn: () => httpClient.delete<T>(url),
+        mutationFn: async () => {
+            const res = await httpDelete<T>(url);
+            if (res === null) throw new Error("Request failed");
+            return res;
+        },
         ...options,
     });
 };

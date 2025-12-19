@@ -1,3 +1,5 @@
+"use server";
+
 import { COOKIE_KEYS, API_BASE_URL } from "@/lib/constants";
 import { cookies } from "next/headers";
 
@@ -6,48 +8,6 @@ const baseURL = API_BASE_URL;
 interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;
 }
-
-export const httpServer = {
-  get: async <T>(url: string, options?: FetchOptions): Promise<T | null> => {
-    return fetchWithAuth<T>(url, { ...options, method: "GET" });
-  },
-  delete: async <T>(url: string, options?: FetchOptions): Promise<T | null> => {
-    return fetchWithAuth<T>(url, { ...options, method: "DELETE" });
-  },
-  post: async <T>(
-    url: string,
-    body: unknown,
-    options?: FetchOptions
-  ): Promise<T | null> => {
-    return fetchWithAuth<T>(url, {
-      ...options,
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  },
-  put: async <T>(
-    url: string,
-    body: unknown,
-    options?: FetchOptions
-  ): Promise<T | null> => {
-    return fetchWithAuth<T>(url, {
-      ...options,
-      method: "PUT",
-      body: JSON.stringify(body),
-    });
-  },
-  patch: async <T>(
-    url: string,
-    body: unknown,
-    options?: FetchOptions
-  ): Promise<T | null> => {
-    return fetchWithAuth<T>(url, {
-      ...options,
-      method: "PATCH",
-      body: JSON.stringify(body),
-    });
-  },
-};
 
 async function fetchWithAuth<T>(
   url: string,
@@ -73,6 +33,8 @@ async function fetchWithAuth<T>(
     });
 
     if (!response.ok) {
+      console.log(response);
+
       console.error(`Server fetch failed: ${response.status} ${response.statusText}`);
       return null;
     }
@@ -82,4 +44,48 @@ async function fetchWithAuth<T>(
     console.error("Server fetch error:", error);
     return null;
   }
+}
+
+export async function httpGet<T>(url: string, options?: FetchOptions) {
+  return fetchWithAuth<T>(url, { ...options, method: "GET" });
+}
+
+export async function httpPost<T>(
+  url: string,
+  body: unknown,
+  options?: FetchOptions
+) {
+  return fetchWithAuth<T>(url, {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function httpPut<T>(
+  url: string,
+  body: unknown,
+  options?: FetchOptions
+) {
+  return fetchWithAuth<T>(url, {
+    ...options,
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function httpPatch<T>(
+  url: string,
+  body: unknown,
+  options?: FetchOptions
+) {
+  return fetchWithAuth<T>(url, {
+    ...options,
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function httpDelete<T>(url: string, options?: FetchOptions) {
+  return fetchWithAuth<T>(url, { ...options, method: "DELETE" });
 }
