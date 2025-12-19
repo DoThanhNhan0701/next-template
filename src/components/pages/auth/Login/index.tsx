@@ -15,9 +15,12 @@ import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { loginAction } from "./login.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { httpPost } from "@/lib/http.server";
+import { LoginResponse } from "@/types/auth/responses";
+import { API_ENDPOINTS } from "@/lib/constants";
+import { setTokensAction } from "./login.action";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,12 +35,14 @@ export default function LoginPage() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: loginAction,
+    mutationFn: async (data: LoginRequest) =>
+      await httpPost<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, data),
   });
 
   const onSubmit = async (data: LoginRequest) => {
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: async (response) => {
+        await setTokensAction(response.access_token, response.refresh_token);
         toast.success("Login successfully");
         router.push("/");
       },
