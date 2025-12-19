@@ -1,7 +1,5 @@
 "use client";
 
-import { useLogin } from "@/hooks/useAuth";
-
 import { LoginSchema } from "@/components/schemas/auth/login.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,9 +10,13 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { loginAction } from "./login.action";
 
 interface LoginMutationData {
   username: string;
@@ -23,6 +25,7 @@ interface LoginMutationData {
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -32,7 +35,16 @@ export default function LoginPage() {
     },
   });
 
-  const { mutate: login, isPending } = useLogin();
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: loginAction,
+    onSuccess: () => {
+      toast.success("Login successful");
+      router.push("/");
+    },
+    onError: () => {
+      toast.error("Login failed");
+    },
+  });
 
   const onSubmit = (data: LoginMutationData) => {
     login(data);

@@ -33,7 +33,10 @@ async function fetchWithAuth<T>(
     });
 
     if (!response.ok) {
-      console.log(response);
+      // Don't log error for auth failures, just return null
+      if (response.status === 401 || response.status === 403) {
+        return null;
+      }
 
       console.error(`Server fetch failed: ${response.status} ${response.statusText}`);
       return null;

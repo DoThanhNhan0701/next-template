@@ -1,17 +1,22 @@
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+
+import { cookies } from "next/headers";
 import { COOKIE_KEYS } from "@/lib/constants";
 
 export const tokenService = {
-    getAccessToken: () => {
-        return getCookie(COOKIE_KEYS.ACCESS_TOKEN);
+    getAccessToken: async () => {
+        const cookieStore = await cookies();
+        return cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)?.value;
     },
 
-    getRefreshToken: () => {
-        return getCookie(COOKIE_KEYS.REFRESH_TOKEN);
+    getRefreshToken: async () => {
+        const cookieStore = await cookies();
+        return cookieStore.get(COOKIE_KEYS.REFRESH_TOKEN)?.value;
     },
 
-    setTokens: (accessToken: string, refreshToken?: string) => {
-        setCookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
+    setTokens: async (accessToken: string, refreshToken?: string) => {
+        const cookieStore = await cookies();
+
+        cookieStore.set(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
             maxAge: 60 * 60 * 24 * 7, // 7 days
             path: "/",
             secure: process.env.NODE_ENV === "production",
@@ -19,7 +24,7 @@ export const tokenService = {
         });
 
         if (refreshToken) {
-            setCookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
+            cookieStore.set(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
                 maxAge: 60 * 60 * 24 * 30, // 30 days
                 path: "/",
                 secure: process.env.NODE_ENV === "production",
@@ -28,8 +33,9 @@ export const tokenService = {
         }
     },
 
-    clearTokens: () => {
-        deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
-        deleteCookie(COOKIE_KEYS.REFRESH_TOKEN);
+    clearTokens: async () => {
+        const cookieStore = await cookies();
+        cookieStore.delete(COOKIE_KEYS.ACCESS_TOKEN);
+        cookieStore.delete(COOKIE_KEYS.REFRESH_TOKEN);
     },
 };
