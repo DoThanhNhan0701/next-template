@@ -47,7 +47,6 @@ export default function LoginPage() {
         router.push("/");
       },
       onError: (error) => {
-        console.log(error);
         toast.error(error.message);
       },
     });

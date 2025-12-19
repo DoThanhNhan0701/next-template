@@ -3,7 +3,6 @@ import Sidebar from "@/components/layouts/sidebar";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { httpGet } from "@/lib/http.server";
 import { User } from "@/types/user";
-import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 export default async function PrivateLayout({
@@ -12,10 +11,6 @@ export default async function PrivateLayout({
   children: ReactNode;
 }) {
   const user = await httpGet<User>(API_ENDPOINTS.AUTH.ME);
-
-  if (!user) {
-    redirect("/auth/login");
-  }
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
