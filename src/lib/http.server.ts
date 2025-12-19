@@ -1,7 +1,7 @@
-import { COOKIE_KEYS } from "@/lib/constants";
+import { COOKIE_KEYS, API_BASE_URL } from "@/lib/constants";
 import { cookies } from "next/headers";
 
-const baseURL = "https://take-a-photo.aiminds.io.vn/api/v1";
+const baseURL = API_BASE_URL;
 
 interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;

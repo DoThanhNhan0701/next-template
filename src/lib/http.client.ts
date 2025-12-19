@@ -1,7 +1,7 @@
-import { API_ENDPOINTS } from "@/lib/constants";
+import { API_ENDPOINTS, API_BASE_URL } from "@/lib/constants";
 import { tokenService } from "@/services/token.service";
 
-const baseURL = "https://take-a-photo.aiminds.io.vn/api/v1";
+const baseURL = API_BASE_URL;
 
 export class ApiError extends Error {
   readonly status: number;

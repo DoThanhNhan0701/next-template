@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
-import { API_ENDPOINTS, COOKIE_KEYS } from "@/lib/constants";
+import { API_ENDPOINTS, COOKIE_KEYS, API_BASE_URL } from "@/lib/constants";
 
 const protectedRoutes = ["/", "/settings", "/inbox", "/calendar", "/search"];
 const authRoutes = ["/auth/login", "/auth/register"];
@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
   // 3. Attempt Refresh if invalid but have refresh token
   if (!isAccessTokenValid && refreshToken) {
     try {
-      const baseURL = "https://take-a-photo.aiminds.io.vn/api/v1";
+      const baseURL = API_BASE_URL;
       const refreshResponse = await fetch(`${baseURL}${API_ENDPOINTS.AUTH.REFRESH}`, {
         method: "POST",
         headers: {
