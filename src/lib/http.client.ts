@@ -116,24 +116,28 @@ async function fetchWithAuth<T>(
 export const httpClient = {
   get: <T>(url: string, options?: FetchOptions) =>
     fetchWithAuth<T>(url, { ...options, method: "GET" }),
+  delete: <T>(url: string, options?: FetchOptions) =>
+    fetchWithAuth<T>(url, { ...options, method: "DELETE" }),
+
   post: <T>(url: string, body: unknown, options?: FetchOptions) =>
     fetchWithAuth<T>(url, {
       ...options,
       method: "POST",
       body: JSON.stringify(body),
     }),
+
   put: <T>(url: string, body: unknown, options?: FetchOptions) =>
     fetchWithAuth<T>(url, {
       ...options,
       method: "PUT",
       body: JSON.stringify(body),
     }),
+
   patch: <T>(url: string, body: unknown, options?: FetchOptions) =>
     fetchWithAuth<T>(url, {
       ...options,
       method: "PATCH",
       body: JSON.stringify(body),
     }),
-  delete: <T>(url: string, options?: FetchOptions) =>
-    fetchWithAuth<T>(url, { ...options, method: "DELETE" }),
+
 };

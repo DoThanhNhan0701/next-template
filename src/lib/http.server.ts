@@ -57,6 +57,7 @@ async function fetchWithAuth<T>(
   let accessToken = cookieStore.get(COOKIE_KEYS.ACCESS_TOKEN)?.value;
   const refreshToken = cookieStore.get(COOKIE_KEYS.REFRESH_TOKEN)?.value;
 
+
   const headers = {
     "Content-Type": "application/json",
     ...options.headers,
@@ -73,6 +74,8 @@ async function fetchWithAuth<T>(
       cache: "no-store",
 
     });
+
+    console.log(response.status);
 
     if (response.status === 401 && refreshToken) {
       // Attempt refresh
