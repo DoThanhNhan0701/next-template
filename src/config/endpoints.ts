@@ -3,7 +3,7 @@ const getEndPoint = <T extends Record<string, string>>(
   subEndpoint: T
 ) => {
   for (const key in subEndpoint) {
-    subEndpoint[key] = `/${baseURL}/${subEndpoint[key]}` as T[Extract<
+    subEndpoint[key] = `/${baseURL}/${subEndpoint[key]}/` as T[Extract<
       keyof T,
       string
     >];
