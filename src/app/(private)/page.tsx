@@ -1,4 +1,4 @@
-import HomePage from "@/components/pages/home";
+import HomePage from "@/components/pages/Home";
 import { endpoints } from "@/config/endpoints";
 import { httpGet } from "@/lib/http.server";
 

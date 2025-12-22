@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { logoutAction } from "../auth/Login/logout.action";
+import { logoutAction } from "../authentication/Login/logout.action";
 import SearchLocation from "./_component/SearchLocation";
 
 interface Location {

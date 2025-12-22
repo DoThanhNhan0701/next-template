@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { User } from "@/types/user";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface MenuToolbar {
   name: string;
@@ -32,12 +33,36 @@ interface Props {
 }
 
 export default function Header({ user }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const onSettingsClick = (
+    value: "REFRESH" | "SETTINGS" | "HELP" | "NOTIFICATIONS"
+  ) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value === "REFRESH") {
+      router.refresh();
+      return;
+    }
+
+    const nextTabMap = {
+      HELP: "help",
+      SETTINGS: "settings",
+      NOTIFICATIONS: "notifications",
+    } as const;
+
+    const nextTab = nextTabMap[value];
+    params.set("layout-tab", nextTab);
+    router.push(`?${params.toString()}`);
+  };
 
   const menuToolbar: MenuToolbar[] = [
     {
@@ -48,22 +73,22 @@ export default function Header({ user }: Props) {
     {
       name: "Refresh",
       icon: RefreshCwIcon,
-      onClick: () => {},
+      onClick: () => onSettingsClick("REFRESH"),
     },
     {
       name: "Settings",
       icon: SettingsIcon,
-      onClick: () => {},
+      onClick: () => onSettingsClick("SETTINGS"),
     },
     {
       name: "Help",
       icon: HelpCircle,
-      onClick: () => {},
+      onClick: () => onSettingsClick("HELP"),
     },
     {
       name: "Notifications",
       icon: Bell,
-      onClick: () => {},
+      onClick: () => onSettingsClick("NOTIFICATIONS"),
     },
   ];
 
