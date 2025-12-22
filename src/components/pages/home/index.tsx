@@ -13,8 +13,6 @@ interface Location {
 }
 
 export default function HomePage({ locations }: { locations: Location[] }) {
-  console.log(locations);
-
   return (
     <>
       <div className="grid grid-cols-4 gap-4">
