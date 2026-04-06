@@ -2,7 +2,7 @@ import z from "zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
 import { useGet } from "@/hooks/useGet";
 import { IRole, IPermission } from "@/types/rbac";
@@ -25,7 +25,7 @@ interface RoleFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   roleToEdit?: IRole | null;
-  onSuccess: () => void;
+  onSuccess: (data?: unknown, method?: "post" | "patch" | "delete") => void;
 }
 
 export default function RoleFormModal({
@@ -92,20 +92,22 @@ export default function RoleFormModal({
   const { mutate, pending } = useMutation();
 
   const onSubmit = async (data: z.infer<typeof RoleSchema>) => {
+    const url = isEditing
+      ? dynamicEndpoints.RBAC_ROLE_DETAIL(roleToEdit.id)
+      : endpoints.RBAC_ROLES;
+    const method = isEditing ? "patch" : "post";
     const payload = { ...data };
 
     await mutate(
       {
-        url: isEditing
-          ? `${endpoints.RBAC_ROLES}/${roleToEdit.id}`
-          : endpoints.RBAC_ROLES,
-        method: isEditing ? "patch" : "post",
+        url,
+        method,
         body: payload,
       },
       {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
-          onSuccess();
+          onSuccess(response, isEditing ? "patch" : "post");
           onClose();
         },
         onError: (error) => {

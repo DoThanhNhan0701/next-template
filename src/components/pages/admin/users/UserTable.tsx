@@ -47,7 +47,7 @@ export default function UserTable() {
     queryParams.append("is_active", isActive);
   }
 
-  const { response, pending, reFetch } = useGet<IUser[]>({
+  const { response, pending, reFetch, setResponse } = useGet<IUser[]>({
     url: `${endpoints.USERS}?${queryParams.toString()}`,
   });
   const users = response || [];
@@ -60,7 +60,32 @@ export default function UserTable() {
   const [userToPwChange, setUserToPwChange] = useState<IUser | null>(null);
   const [userToDelete, setUserToDelete] = useState<IUser | null>(null);
 
-  const handleSuccess = () => {
+  const handleSuccess = (responseData?: unknown, method?: string) => {
+    if (responseData && method === "patch") {
+      const resp = responseData as { data?: IUser } | IUser;
+      const updatedItem = ("data" in resp ? resp.data : resp) as
+        | IUser
+        | undefined;
+      if (updatedItem?.id) {
+        setResponse((prev: IUser[] | null) =>
+          prev
+            ? prev.map((u: IUser) =>
+                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+              )
+            : null,
+        );
+        return;
+      }
+    } else if (responseData && method === "post") {
+      const resp = responseData as { data?: IUser } | IUser;
+      const newItem = ("data" in resp ? resp.data : resp) as IUser | undefined;
+      if (newItem?.id) {
+        setResponse((prev: IUser[] | null) =>
+          prev ? [newItem, ...prev] : [newItem],
+        );
+        return;
+      }
+    }
     reFetch();
   };
 
@@ -93,7 +118,7 @@ export default function UserTable() {
 
       <div className="border border-(--surface-border-color) rounded-lg flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
         <Table className="whitespace-nowrap">
-          <TableHeader className="bg-sidebar-accent text-foreground uppercase border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
+          <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
                 Username

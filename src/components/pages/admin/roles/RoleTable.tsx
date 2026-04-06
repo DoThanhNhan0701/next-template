@@ -35,7 +35,7 @@ export default function RoleTable() {
     limit: limit.toString(),
   });
 
-  const { response, pending, reFetch } = useGet<IRole[]>({
+  const { response, pending, reFetch, setResponse } = useGet<IRole[]>({
     url: `${endpoints.RBAC_ROLES}?${queryParams.toString()}`,
   });
 
@@ -47,7 +47,32 @@ export default function RoleTable() {
   const [roleToEdit, setRoleToEdit] = useState<IRole | null>(null);
   const [roleToDelete, setRoleToDelete] = useState<IRole | null>(null);
 
-  const handleSuccess = () => {
+  const handleSuccess = (responseData?: unknown, method?: string) => {
+    if (responseData && method === "patch") {
+      const resp = responseData as { data?: IRole } | IRole;
+      const updatedItem = ("data" in resp ? resp.data : resp) as
+        | IRole
+        | undefined;
+      if (updatedItem?.id) {
+        setResponse((prev: IRole[] | null) =>
+          prev
+            ? prev.map((r: IRole) =>
+                r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
+              )
+            : null,
+        );
+        return;
+      }
+    } else if (responseData && method === "post") {
+      const resp = responseData as { data?: IRole } | IRole;
+      const newItem = ("data" in resp ? resp.data : resp) as IRole | undefined;
+      if (newItem?.id) {
+        setResponse((prev: IRole[] | null) =>
+          prev ? [newItem, ...prev] : [newItem],
+        );
+        return;
+      }
+    }
     reFetch();
   };
 
@@ -62,7 +87,7 @@ export default function RoleTable() {
 
       <div className="border border-(--surface-border-color) rounded-lg flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
         <Table className="whitespace-nowrap">
-          <TableHeader className="bg-sidebar-accent text-foreground uppercase border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
+          <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 Role Name

@@ -39,7 +39,7 @@ interface Props {
   userToEdit?: IUser | null;
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (data?: unknown, method?: "post" | "patch" | "delete") => void;
 }
 
 export default function UserFormModal({
@@ -109,7 +109,7 @@ export default function UserFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
-          onSuccess();
+          onSuccess(res, method);
           onClose();
         },
         onError: (err) => {
