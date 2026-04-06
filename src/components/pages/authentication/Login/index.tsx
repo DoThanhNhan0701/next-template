@@ -89,7 +89,15 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-125 mx-auto h-full flex items-center justify-center flex-col">
-      <Image src={Logo} alt="Logo" width={150} height={100} />
+      <Image
+        src={Logo}
+        alt="Logo"
+        width={150}
+        height={100}
+        priority
+        loading="eager"
+        style={{ width: "auto", height: "auto" }}
+      />
 
       <form
         autoComplete="off"
