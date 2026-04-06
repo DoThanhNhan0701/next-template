@@ -29,6 +29,7 @@ export const endpoints = getEndPoint("api/v1", {
   STATUSES: "statuses/",
   USAGE_MODES: "usagemodes/",
   SUPPLIERS: "suppliers/",
+  CUSTOMERS: "customers/",
 });
 
 export const dynamicEndpoints = {
@@ -41,4 +42,5 @@ export const dynamicEndpoints = {
   STATUS_DETAIL: (id: number) => `/api/v1/statuses/${id}`,
   USAGE_MODE_DETAIL: (id: number) => `/api/v1/usagemodes/${id}`,
   SUPPLIER_DETAIL: (id: number) => `/api/v1/suppliers/${id}`,
+  CUSTOMER_DETAIL: (id: number) => `/api/v1/customers/${id}`,
 };

@@ -42,6 +42,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Asset Status", url: "/admin/statuses", icon: Activity },
     { title: "Usage Modes", url: "/admin/usage-modes", icon: MousePointerClick },
     { title: "Suppliers", url: "/admin/suppliers", icon: Store },
+    { title: "Customers", url: "/admin/customers", icon: Users },
   ];
 
   return (
