@@ -11,10 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Users,
   Shield,
-  Key,
   SquareDashedKanbanIcon,
   MapPin,
   Layers,
+  Grid,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -35,6 +35,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Roles", url: "/admin/roles", icon: Shield },
     { title: "Locations", url: "/admin/locations", icon: MapPin },
     { title: "Asset Groups", url: "/admin/asset-groups", icon: Layers },
+    { title: "Catalog Types", url: "/admin/catalog-types", icon: Grid },
   ];
 
   return (
