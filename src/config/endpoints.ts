@@ -21,9 +21,12 @@ export const endpoints = getEndPoint("api/v1", {
   USERS: "users",
 
   LOCATIONS: "locations/",
+  RBAC_ROLES: "rbac/roles",
+  RBAC_PERMISSIONS: "rbac/permissions",
 });
 
 export const dynamicEndpoints = {
   USER_DETAIL: (id: number) => `/api/v1/users/${id}`,
   USER_CHANGE_PASSWORD: (id: number) => `/api/v1/users/${id}/change-password`,
+  RBAC_ROLE_DETAIL: (id: number) => `/api/v1/rbac/roles/${id}`,
 };
