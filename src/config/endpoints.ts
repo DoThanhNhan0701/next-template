@@ -30,6 +30,8 @@ export const endpoints = getEndPoint("api/v1", {
   USAGE_MODES: "usagemodes/",
   SUPPLIERS: "suppliers/",
   CUSTOMERS: "customers/",
+  PHYSICAL_ASSETS: "physical-assets/",
+  UNITS: "units/",
 });
 
 export const dynamicEndpoints = {
@@ -43,4 +45,5 @@ export const dynamicEndpoints = {
   USAGE_MODE_DETAIL: (id: number) => `/api/v1/usagemodes/${id}`,
   SUPPLIER_DETAIL: (id: number) => `/api/v1/suppliers/${id}`,
   CUSTOMER_DETAIL: (id: number) => `/api/v1/customers/${id}`,
+  PHYSICAL_ASSET_DETAIL: (id: number) => `/api/v1/physical-assets/${id}`,
 };

@@ -1,0 +1,69 @@
+export interface IPhysicalAsset {
+  id: number;
+  asset_code: string;
+  name: string;
+  serial_number: string;
+  model: string;
+  request_ticket: string | null;
+  importance_id: number;
+  initial_location_id: number | null;
+  owner: string | null;
+  risk_owner_id: number | null;
+  old_code: string | null;
+  purchase_ticket: string | null;
+  purchase_date: string | null;
+  system_declaration_date: string | null;
+  cost: number;
+  depreciation_period: number | null;
+  depreciation_value: number | null;
+  warranty_expiration: string | null;
+  quantity: number;
+  unit_id: number;
+  holder_id: number | null;
+  holder_name: string | null;
+  category_id: number | null;
+  supplier_id: number | null;
+  manager_id: number | null;
+  status_id: number;
+  usage_mode_id: number | null;
+  location_id: number | null;
+  asset_system_id: number | null;
+  location: string | null;
+  specifications: string;
+  notes: string;
+}
+
+export interface IPhysicalAssetCreate {
+  asset_code: string;
+  name: string;
+  serial_number?: string;
+  model?: string;
+  request_ticket?: string | null;
+  importance_id: number;
+  initial_location_id?: number | null;
+  owner?: string | null;
+  risk_owner_id?: number | null;
+  old_code?: string | null;
+  purchase_ticket?: string | null;
+  purchase_date?: string | null;
+  system_declaration_date?: string | null;
+  cost: number;
+  depreciation_period?: number | null;
+  depreciation_value?: number | null;
+  warranty_expiration?: string | null;
+  quantity: number;
+  unit_id: number;
+  holder_id?: number | null;
+  category_id?: number | null;
+  supplier_id?: number | null;
+  manager_id?: number | null;
+  status_id: number;
+  usage_mode_id?: number | null;
+  location_id?: number | null;
+  asset_system_id?: number | null;
+  location?: string | null;
+  specifications?: string;
+  notes?: string;
+}
+
+export type IPhysicalAssetUpdate = Partial<IPhysicalAssetCreate>;
