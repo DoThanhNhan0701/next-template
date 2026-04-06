@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home } from "lucide-react";
+import { Home, type LucideIcon } from "lucide-react";
 
 import {
   SidebarGroupContent,
@@ -10,19 +10,31 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "@public/icons/logo.png";
 import Image from "next/image";
 
-const items = [
+export interface SidebarItem {
+  title: string;
+  url: string;
+  icon: LucideIcon | React.ElementType;
+}
+
+export const defaultItems: SidebarItem[] = [
   {
     title: "Home",
     url: "/",
     icon: Home,
   },
 ];
-export default function Sidebar() {
+
+interface SidebarProps {
+  items?: SidebarItem[];
+}
+
+export default function Sidebar({ items = defaultItems }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <aside className="w-64 shrink-0 border-r border-(--surface-border-color) bg-(--surface-container)">
@@ -32,7 +44,9 @@ export default function Sidebar() {
         width={100}
         height={20}
         loading="eager"
-        className="mx-auto "
+        className="mx-auto cursor-pointer"
+        onClick={() => router.push("/")}
+        priority
       />
       <SidebarProvider className="border-t border-(--surface-border-color) p-3">
         <SidebarGroupContent>

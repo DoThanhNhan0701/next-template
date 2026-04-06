@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="text-[14px]">
         <Providers>
           <ThemeProvider>
             <Toaster position="top-center" />

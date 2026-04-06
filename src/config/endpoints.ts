@@ -22,3 +22,8 @@ export const endpoints = getEndPoint("api/v1", {
 
   LOCATIONS: "locations/",
 });
+
+export const dynamicEndpoints = {
+  USER_DETAIL: (id: number) => `/api/v1/users/${id}`,
+  USER_CHANGE_PASSWORD: (id: number) => `/api/v1/users/${id}/change-password`,
+};
