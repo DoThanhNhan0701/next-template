@@ -14,6 +14,7 @@ import {
   Key,
   SquareDashedKanbanIcon,
   MapPin,
+  Layers,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -33,6 +34,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Users", url: "/admin/users", icon: Users },
     { title: "Roles", url: "/admin/roles", icon: Shield },
     { title: "Locations", url: "/admin/locations", icon: MapPin },
+    { title: "Asset Groups", url: "/admin/asset-groups", icon: Layers },
   ];
 
   return (

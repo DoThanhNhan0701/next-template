@@ -23,6 +23,7 @@ export const endpoints = getEndPoint("api/v1", {
   LOCATIONS: "locations/",
   RBAC_ROLES: "rbac/roles",
   RBAC_PERMISSIONS: "rbac/permissions",
+  ASSET_GROUPS: "asset-groups/",
 });
 
 export const dynamicEndpoints = {
@@ -30,4 +31,5 @@ export const dynamicEndpoints = {
   USER_CHANGE_PASSWORD: (id: number) => `/api/v1/users/${id}/change-password`,
   RBAC_ROLE_DETAIL: (id: number) => `/api/v1/rbac/roles/${id}`,
   LOCATION_DETAIL: (id: number) => `/api/v1/locations/${id}`,
+  ASSET_GROUP_DETAIL: (id: number) => `/api/v1/asset-groups/${id}`,
 };
