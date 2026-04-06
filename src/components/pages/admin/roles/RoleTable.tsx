@@ -23,17 +23,29 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import RoleFormModal from "./RoleFormModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 export default function RoleTable() {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
+  const [isActiveFilter, setIsActiveFilter] = useState("all");
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
     limit: limit.toString(),
   });
+
+  if (isActiveFilter !== "all") {
+    queryParams.append("is_active", isActiveFilter);
+  }
 
   const { response, pending, reFetch, setResponse } = useGet<IRole[]>({
     url: `${endpoints.RBAC_ROLES}?${queryParams.toString()}`,
@@ -78,7 +90,23 @@ export default function RoleTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-end w-full">
+      <div className="flex items-center justify-between w-full">
+        <Select
+          value={isActiveFilter}
+          onValueChange={(val) => {
+            setIsActiveFilter(val);
+            setSkip(0);
+          }}
+        >
+          <SelectTrigger className="w-[180px] h-9">
+            <SelectValue placeholder="All Statuses" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="true">Active</SelectItem>
+            <SelectItem value="false">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
           Add Role

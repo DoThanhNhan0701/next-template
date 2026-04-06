@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { IUser } from "@/types/auth";
-import { EditIcon, Key, Trash2Icon, PlusIcon } from "lucide-react";
+import { ILocation } from "@/types/location";
+import { EditIcon, Trash2Icon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,13 +15,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -30,58 +23,81 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import UserFormModal from "./UserFormModal";
-import ChangePasswordModal from "./ChangePasswordModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import LocationFormModal from "./LocationFormModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
-export default function UserTable() {
+export default function LocationTable() {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
-  const [isActive, setIsActive] = useState<string>("all");
+  const [isActiveFilter, setIsActiveFilter] = useState("all");
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
     limit: limit.toString(),
   });
-  if (isActive !== "all") {
-    queryParams.append("is_active", isActive);
+
+  if (isActiveFilter !== "all") {
+    queryParams.append("is_active", isActiveFilter);
   }
 
-  const { response, pending, reFetch, setResponse } = useGet<IUser[]>({
-    url: `${endpoints.USERS}?${queryParams.toString()}`,
+  const { response, pending, reFetch, setResponse } = useGet<ILocation[]>({
+    url: `${endpoints.LOCATIONS}?${queryParams.toString()}`,
   });
-  const users = response || [];
 
+  const locations = response || [];
   const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = users.length === limit;
+  const hasMore = locations.length === limit;
 
   const [isCreating, setIsCreating] = useState(false);
-  const [userToEdit, setUserToEdit] = useState<IUser | null>(null);
-  const [userToPwChange, setUserToPwChange] = useState<IUser | null>(null);
-  const [userToDelete, setUserToDelete] = useState<IUser | null>(null);
+  const [locationToEdit, setLocationToEdit] = useState<ILocation | null>(null);
+  const [locationToDelete, setLocationToDelete] = useState<ILocation | null>(
+    null,
+  );
 
   const handleSuccess = (responseData?: unknown, method?: string) => {
     if (responseData && method === "patch") {
-      const resp = responseData as { data?: IUser } | IUser;
+      const resp = responseData as { data?: ILocation } | ILocation;
       const updatedItem = ("data" in resp ? resp.data : resp) as
-        | IUser
+        | ILocation
         | undefined;
       if (updatedItem?.id) {
-        setResponse((prev: IUser[] | null) =>
+        setResponse((prev: ILocation[] | null) =>
           prev
-            ? prev.map((u: IUser) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            ? prev.map((loc: ILocation) =>
+                loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
               )
             : null,
         );
         return;
       }
     } else if (responseData && method === "post") {
-      const resp = responseData as { data?: IUser } | IUser;
-      const newItem = ("data" in resp ? resp.data : resp) as IUser | undefined;
+      const resp = responseData as { data?: ILocation } | ILocation;
+      const newItem = ("data" in resp ? resp.data : resp) as
+        | ILocation
+        | undefined;
       if (newItem?.id) {
-        setResponse((prev: IUser[] | null) =>
+        setResponse((prev: ILocation[] | null) =>
           prev ? [newItem, ...prev] : [newItem],
+        );
+        return;
+      }
+    } else if (responseData && method === "delete") {
+      const resp = responseData as { data?: ILocation } | ILocation;
+      const deletedItem = ("data" in resp ? resp.data : resp) as
+        | ILocation
+        | undefined;
+      if (deletedItem?.id) {
+        setResponse((prev: ILocation[] | null) =>
+          prev
+            ? prev.filter((loc: ILocation) => loc.id !== deletedItem.id)
+            : null,
         );
         return;
       }
@@ -93,9 +109,9 @@ export default function UserTable() {
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full">
         <Select
-          value={isActive}
+          value={isActiveFilter}
           onValueChange={(val) => {
-            setIsActive(val);
+            setIsActiveFilter(val);
             setSkip(0);
           }}
         >
@@ -110,7 +126,7 @@ export default function UserTable() {
         </Select>
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
-          Add User
+          Add Location
         </Button>
       </div>
 
@@ -118,22 +134,19 @@ export default function UserTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                Username
-              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                Full Name
+                Code
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                Email
+              <TableHead className="font-semibold h-10 px-4 w-[35%]">
+                Location Name
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                Role
+              <TableHead className="font-semibold h-10 px-4 w-[20%]">
+                Description
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
                 Status
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right w-[15%]">
+              <TableHead className="font-semibold h-10 px-4 text-right w-[10%]">
                 Actions
               </TableHead>
             </TableRow>
@@ -141,34 +154,31 @@ export default function UserTable() {
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
               <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
+                <TableCell colSpan={5} className="px-4 py-3 text-center">
                   Loading...
                 </TableCell>
               </TableRow>
-            ) : users.length === 0 ? (
+            ) : locations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
+                <TableCell colSpan={5} className="px-4 py-3 text-center">
                   No data available
                 </TableCell>
               </TableRow>
             ) : (
-              users.map((user) => (
+              locations.map((loc) => (
                 <TableRow
-                  key={user.id}
+                  key={loc.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
                   <TableCell className="px-4 py-3 font-medium text-foreground">
-                    {user.username}
+                    {loc.code}
                   </TableCell>
-                  <TableCell className="px-4 py-3">{user.full_name}</TableCell>
-                  <TableCell className="px-4 py-3">{user.email}</TableCell>
-                  <TableCell className="px-4 py-3 text-center">
-                    <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">
-                      {user.role_obj?.name || user.role}
-                    </span>
+                  <TableCell className="px-4 py-3 font-medium text-foreground">
+                    {loc.name}
                   </TableCell>
+                  <TableCell className="px-4 py-3">{loc.description}</TableCell>
                   <TableCell className="px-4 py-3 text-center">
-                    {user.is_active ? (
+                    {loc.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         Active
                       </span>
@@ -184,28 +194,19 @@ export default function UserTable() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                        onClick={() => setUserToPwChange(user)}
-                      >
-                        <Key size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                        onClick={() => setUserToEdit(user)}
+                        onClick={() => setLocationToEdit(loc)}
                       >
                         <EditIcon size={14} />
                       </Button>
-                      {user.is_active && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-red-500 hover:bg-red-500/10"
-                          onClick={() => setUserToDelete(user)}
-                        >
-                          <Trash2Icon size={14} />
-                        </Button>
-                      )}
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                        onClick={() => setLocationToDelete(loc)}
+                      >
+                        <Trash2Icon size={14} />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -215,7 +216,7 @@ export default function UserTable() {
         </Table>
       </div>
 
-      {users.length > 0 || skip > 0 ? (
+      {locations.length > 0 || skip > 0 ? (
         <Pagination className="flex w-full justify-end mt-1">
           <PaginationContent>
             <PaginationItem>
@@ -307,24 +308,20 @@ export default function UserTable() {
         </Pagination>
       ) : null}
 
-      <UserFormModal
-        isOpen={isCreating || userToEdit !== null}
+      <LocationFormModal
+        isOpen={isCreating || locationToEdit !== null}
         onClose={() => {
           setIsCreating(false);
-          setUserToEdit(null);
+          setLocationToEdit(null);
         }}
-        userToEdit={userToEdit}
+        locationToEdit={locationToEdit}
         onSuccess={handleSuccess}
       />
-      <ChangePasswordModal
-        isOpen={userToPwChange !== null}
-        onClose={() => setUserToPwChange(null)}
-        userId={userToPwChange?.id || null}
-      />
+
       <ConfirmDeleteModal
-        isOpen={userToDelete !== null}
-        onClose={() => setUserToDelete(null)}
-        user={userToDelete}
+        isOpen={locationToDelete !== null}
+        onClose={() => setLocationToDelete(null)}
+        location={locationToDelete}
         onSuccess={handleSuccess}
       />
     </div>

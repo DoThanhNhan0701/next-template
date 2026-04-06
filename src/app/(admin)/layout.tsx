@@ -8,7 +8,13 @@ import { actionFetchUser } from "@/redux/slices/auth";
 import { ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Users, Shield, Key, SquareDashedKanbanIcon } from "lucide-react";
+import {
+  Users,
+  Shield,
+  Key,
+  SquareDashedKanbanIcon,
+  MapPin,
+} from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,7 +32,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Dashboard", url: "/admin", icon: SquareDashedKanbanIcon },
     { title: "Users", url: "/admin/users", icon: Users },
     { title: "Roles", url: "/admin/roles", icon: Shield },
-    { title: "Permissions", url: "/admin/permissions", icon: Key },
+    { title: "Locations", url: "/admin/locations", icon: MapPin },
   ];
 
   return (
