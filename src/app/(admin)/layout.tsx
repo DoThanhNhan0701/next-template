@@ -17,6 +17,7 @@ import {
   Grid,
   Activity,
   MousePointerClick,
+  Store,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -40,6 +41,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Catalog Types", url: "/admin/catalog-types", icon: Grid },
     { title: "Asset Status", url: "/admin/statuses", icon: Activity },
     { title: "Usage Modes", url: "/admin/usage-modes", icon: MousePointerClick },
+    { title: "Suppliers", url: "/admin/suppliers", icon: Store },
   ];
 
   return (
