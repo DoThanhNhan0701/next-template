@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/libs/theme-provider";
-import { Providers } from "@/components/libs/providers";
+import StoreProvider from "@/components/libs/store-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,12 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="text-[14px]">
-        <Providers>
+        <StoreProvider>
           <ThemeProvider>
             <Toaster position="top-center" />
             {children}
           </ThemeProvider>
-        </Providers>
+        </StoreProvider>
       </body>
     </html>
   );
