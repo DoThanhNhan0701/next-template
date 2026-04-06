@@ -61,21 +61,21 @@ export default function AssetFormModal({
   // Fetch metadata
   const { response: statusRes } = useGet<IStatus[]>({
     url: endpoints.STATUSES + "?category=asset",
-  });
+  }, { disabled: !isOpen });
   const { response: locationRes } = useGet<ILocation[]>({
     url: endpoints.LOCATIONS,
-  });
+  }, { disabled: !isOpen });
   const { response: supplierRes } = useGet<{ data: ISupplier[] }>({
     url: endpoints.SUPPLIERS,
-  });
-  const { response: unitRes } = useGet<IUnit[]>({ url: endpoints.UNITS });
-  const { response: userRes } = useGet<IUser[]>({ url: endpoints.USERS });
+  }, { disabled: !isOpen });
+  const { response: unitRes } = useGet<IUnit[]>({ url: endpoints.UNITS }, { disabled: !isOpen });
+  const { response: userRes } = useGet<IUser[]>({ url: endpoints.USERS }, { disabled: !isOpen });
   const { response: catalogRes } = useGet<ICatalogType[]>({
     url: endpoints.CATALOG_TYPES,
-  });
+  }, { disabled: !isOpen });
   const { response: usageModeRes } = useGet<IUsageMode[]>({
     url: endpoints.USAGE_MODES,
-  });
+  }, { disabled: !isOpen });
 
   const statuses = statusRes || [];
   const locations = locationRes || [];

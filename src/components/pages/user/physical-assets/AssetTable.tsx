@@ -4,7 +4,17 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IPhysicalAsset } from "@/types/physical-asset";
-import { EditIcon, PlusIcon, Laptop, Calendar, MapPin, User } from "lucide-react";
+import {
+  EditIcon,
+  PlusIcon,
+  Laptop,
+  Calendar,
+  MapPin,
+  Search,
+  Building2,
+  Tag,
+  Filter,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -17,22 +27,128 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import AssetFormModal from "./AssetFormModal";
+import { IUnit } from "@/types/unit";
+import { ICatalogType } from "@/types/catalog-type";
+import { IStatus } from "@/types/status";
+import { IUsageMode } from "@/types/usage-mode";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export default function AssetTable() {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
+  // Filter state
+  const [search, setSearch] = useState("");
+  const [unitId, setUnitId] = useState<string>("all");
+  const [categoryId, setCategoryId] = useState<string>("all");
+  const [statusId, setStatusId] = useState<string>("all");
+
+  // Applied filter state to avoid re-fetching on every keystroke
+  const [appliedFilters, setAppliedFilters] = useState({
+    search: "",
+    unit_id: "all",
+    category_id: "all",
+    status_id: "all",
+  });
+
+  // Fetch metadata for filters
+  const { response: unitRes } = useGet<IUnit[]>({ url: endpoints.UNITS });
+  const { response: catalogRes } = useGet<ICatalogType[]>({
+    url: endpoints.CATALOG_TYPES,
+  });
+  const { response: statusRes } = useGet<IStatus[]>({
+    url: endpoints.STATUSES + "?category=asset",
+  });
+  const { response: usageModeRes } = useGet<IUsageMode[]>({
+    url: endpoints.USAGE_MODES,
+  });
+
+  const units = unitRes || [];
+  const categories = catalogRes || [];
+  const statuses = statusRes || [];
+  const usageModes = usageModeRes || [];
+
+  // Helper for Status Badge
+  const getStatusInfo = (statusId: number) => {
+    const status = statuses.find((s) => s.id === statusId);
+    if (!status) return { label: `Status ${statusId}`, color: "bg-muted" };
+
+    const name = status.name.toLowerCase();
+    if (name.includes("active") || name.includes("đang dùng"))
+      return {
+        label: status.name,
+        color: "bg-emerald-500/15 text-emerald-600 border-emerald-500/20",
+      };
+    if (name.includes("maintenance") || name.includes("bảo trì"))
+      return {
+        label: status.name,
+        color: "bg-amber-500/15 text-amber-600 border-amber-500/20",
+      };
+    if (name.includes("broken") || name.includes("hỏng"))
+      return {
+        label: status.name,
+        color: "bg-red-500/15 text-red-600 border-red-500/20",
+      };
+    if (name.includes("retired") || name.includes("thanh lý"))
+      return {
+        label: status.name,
+        color: "bg-slate-500/15 text-slate-600 border-slate-500/20",
+      };
+
+    return {
+      label: status.name,
+      color: "bg-primary/10 text-primary border-primary/20",
+    };
+  };
+
+  // Helper for Importance Accent
+  const getImportanceColor = (id: number) => {
+    switch (id) {
+      case 1:
+        return "bg-red-500"; // High
+      case 2:
+        return "bg-blue-500"; // Standard
+      case 3:
+        return "bg-slate-400"; // Low
+      default:
+        return "bg-slate-200";
+    }
+  };
+
+  // Helper for Usage Mode
+  const getUsageModeLabel = (id: number | null) => {
+    if (!id) return null;
+    return usageModes.find((m) => m.id === id)?.name || null;
+  };
+
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
     limit: limit.toString(),
   });
+
+  if (appliedFilters.search)
+    queryParams.append("search", appliedFilters.search);
+  if (appliedFilters.unit_id !== "all")
+    queryParams.append("unit_id", appliedFilters.unit_id);
+  if (appliedFilters.category_id !== "all")
+    queryParams.append("category_id", appliedFilters.category_id);
+  if (appliedFilters.status_id !== "all")
+    queryParams.append("status_id", appliedFilters.status_id);
 
   const { response, pending, reFetch } = useGet<IPhysicalAsset[]>({
     url: `${endpoints.PHYSICAL_ASSETS}?${queryParams.toString()}`,
@@ -47,9 +163,92 @@ export default function AssetTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-between w-full">
-        <h2 className="text-xl font-semibold">Physical Assets</h2>
-        <Button onClick={() => setIsCreating(true)}>
+      <div className="flex flex-wrap items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-xl border border-border/50 shadow-sm transition-all hover:border-border/80">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
+            size={16}
+          />
+          <Input
+            placeholder="Mã tài sản, Serial..."
+            className="pl-9 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <Select value={unitId} onValueChange={setUnitId}>
+          <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <div className="flex items-center gap-2">
+              <Building2 size={16} className="text-muted-foreground/70" />
+              <SelectValue placeholder="Tất cả Đơn vị" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả Đơn vị</SelectItem>
+            {units.map((u) => (
+              <SelectItem key={u.id} value={u.id.toString()}>
+                {u.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={categoryId} onValueChange={setCategoryId}>
+          <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <div className="flex items-center gap-2">
+              <Tag size={16} className="text-muted-foreground/70" />
+              <SelectValue placeholder="Tất cả Loại tài sản" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả Loại tài sản</SelectItem>
+            {categories.map((c) => (
+              <SelectItem key={c.id} value={c.id.toString()}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={statusId} onValueChange={setStatusId}>
+          <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-muted-foreground/70" />
+              <SelectValue placeholder="Mọi trạng thái" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Mọi trạng thái</SelectItem>
+            {statuses.map((s) => (
+              <SelectItem key={s.id} value={s.id.toString()}>
+                {s.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({
+              search,
+              unit_id: unitId,
+              category_id: categoryId,
+              status_id: statusId,
+            });
+          }}
+          className="h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {pending ? "Đang tìm..." : "Tìm tài sản"}
+        </Button>
+
+        <div className="w-px h-6 bg-border/60 mx-1" />
+
+        <Button
+          onClick={() => setIsCreating(true)}
+          className="h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
           <PlusIcon size={16} className="mr-2" />
           Declare Asset
         </Button>
@@ -60,79 +259,143 @@ export default function AssetTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4">Asset</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Ownership</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Location</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Purchase Info</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">Status</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right">Actions</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Ownership
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Location
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Purchase Info
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center">
+                Status
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
               <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">Loading...</TableCell>
+                <TableCell colSpan={6} className="px-4 py-3 text-center">
+                  Loading...
+                </TableCell>
               </TableRow>
             ) : assets.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">No assets declared yet</TableCell>
+                <TableCell colSpan={6} className="px-4 py-3 text-center">
+                  No assets declared yet
+                </TableCell>
               </TableRow>
             ) : (
-              assets.map((asset) => (
-                <TableRow key={asset.id} className="hover:bg-primary/5 transition-colors">
-                  <TableCell className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/10 p-2 rounded-lg text-primary">
-                        <Laptop size={18} />
+              assets.map((asset) => {
+                const statusInfo = getStatusInfo(asset.status_id);
+                const usageMode = getUsageModeLabel(asset.usage_mode_id);
+
+                return (
+                  <TableRow
+                    key={asset.id}
+                    className="group hover:bg-primary/3 transition-colors relative"
+                  >
+                    <TableCell className="px-4 py-3 relative overflow-hidden">
+                      {/* Importance Accent */}
+                      <div
+                        className={cn(
+                          "absolute left-0 top-0 bottom-0 w-1 opacity-80",
+                          getImportanceColor(asset.importance_id),
+                        )}
+                      />
+                      <div className="flex items-center gap-3">
+                        <div className="bg-primary/5 p-2.5 rounded-xl text-primary transition-colors group-hover:bg-primary/10">
+                          <Laptop size={18} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-sm group-hover:text-primary transition-colors">
+                            {asset.name}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
+                            {asset.asset_code}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{asset.name}</span>
-                        <span className="text-xs text-muted-foreground font-mono">{asset.asset_code}</span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <div className="flex flex-col gap-1.5 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold uppercase text-secondary-foreground">
+                            {asset.holder_name?.substring(0, 2) || "NA"}
+                          </div>
+                          <span className="font-medium text-foreground/80">
+                            {asset.holder_name || "Unassigned"}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
+                          <span className="opacity-60 italic">Owner:</span>
+                          <span>{asset.owner || "None"}</span>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1 text-sm">
-                      <div className="flex items-center gap-1.5">
-                        <User size={12} className="text-muted-foreground" />
-                        <span>{asset.holder_name || "Unassigned"}</span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <div className="flex flex-col gap-1.5 text-sm">
+                        <div className="flex items-center gap-2 px-2 py-1 bg-secondary/30 rounded-md w-fit">
+                          <MapPin size={12} className="text-primary/70" />
+                          <span className="text-xs font-medium">
+                            {asset.location || "Floating"}
+                          </span>
+                        </div>
+                        {usageMode && (
+                          <div className="text-[10px] text-muted-foreground pl-1 flex items-center gap-1">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                            <span>{usageMode}</span>
+                          </div>
+                        )}
                       </div>
-                      <span className="text-xs text-muted-foreground">{asset.owner || "No owner info"}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1 text-sm">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin size={12} className="text-muted-foreground" />
-                        <span>{asset.location || "Floating"}</span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3">
+                      <div className="flex flex-col gap-1 text-sm">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar
+                            size={12}
+                            className="text-muted-foreground/60"
+                          />
+                          <span className="text-xs">
+                            {asset.purchase_date?.split("T")[0] || "N/A"}
+                          </span>
+                        </div>
+                        <span className="font-bold text-sm text-foreground/90">
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(asset.cost)}
+                        </span>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1 text-sm">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar size={12} className="text-muted-foreground" />
-                        <span>{asset.purchase_date?.split("T")[0] || "N/A"}</span>
-                      </div>
-                      <span className="font-semibold text-xs">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(asset.cost)}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
-                    <span className="px-2 py-1 rounded-md text-xs font-medium border border-border">
-                      Status ID: {asset.status_id}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => setAssetToEdit(asset)}
-                    >
-                      <EditIcon size={14} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-center">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none",
+                          statusInfo.color,
+                        )}
+                      >
+                        {statusInfo.label}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
+                        onClick={() => setAssetToEdit(asset)}
+                      >
+                        <EditIcon size={14} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
@@ -144,18 +407,30 @@ export default function AssetTable() {
             <PaginationItem>
               <PaginationPrevious
                 href="#"
-                onClick={(e) => { e.preventDefault(); if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit)); }}
-                className={skip === 0 || pending ? "pointer-events-none opacity-50" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
+                }}
+                className={
+                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href="#" isActive>{currentPage}</PaginationLink>
+              <PaginationLink href="#" isActive>
+                {currentPage}
+              </PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationNext
                 href="#"
-                onClick={(e) => { e.preventDefault(); if (hasMore && !pending) setSkip(skip + limit); }}
-                className={!hasMore || pending ? "pointer-events-none opacity-50" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (hasMore && !pending) setSkip(skip + limit);
+                }}
+                className={
+                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>
@@ -164,7 +439,10 @@ export default function AssetTable() {
 
       <AssetFormModal
         isOpen={isCreating || assetToEdit !== null}
-        onClose={() => { setIsCreating(false); setAssetToEdit(null); }}
+        onClose={() => {
+          setIsCreating(false);
+          setAssetToEdit(null);
+        }}
         assetToEdit={assetToEdit}
         onSuccess={() => reFetch()}
       />
