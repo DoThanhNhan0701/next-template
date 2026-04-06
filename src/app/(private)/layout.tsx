@@ -1,17 +1,24 @@
+"use client";
+
 import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
 import Settings from "@/components/pages/layout-modals/Settings";
-import { endpoints } from "@/config/endpoints";
-import { httpGet } from "@/lib/http.server";
-import { User } from "@/types/user";
-import { ReactNode } from "react";
+import { AppDispatch, RootState } from "@/redux";
+import { actionFetchUser } from "@/redux/slices/auth";
+import { ReactNode, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-export default async function PrivateLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const user = await httpGet<User>(endpoints.ME);
+export default function PrivateLayout({ children }: { children: ReactNode }) {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    const promise = dispatch(actionFetchUser());
+    return () => {
+      promise.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

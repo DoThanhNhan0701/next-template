@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Home } from "lucide-react";
 
 import {
   SidebarGroupContent,
@@ -11,6 +11,8 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import Logo from "@public/icons/logo.png";
+import Image from "next/image";
 
 const items = [
   {
@@ -18,33 +20,20 @@ const items = [
     url: "/",
     icon: Home,
   },
-  {
-    title: "Inbox",
-    url: "/inbox",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "/calendar",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "/search",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
 ];
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="w-64 shrink-0 border-r border-(--surface-border-color) bg-(--surface-container)">
-      <div className="text-center h-7 mt-6 mb-3">Logo</div>
+      <Image
+        src={Logo}
+        alt="Logo"
+        width={100}
+        height={20}
+        loading="eager"
+        className="mx-auto "
+      />
       <SidebarProvider className="border-t border-(--surface-border-color) p-3">
         <SidebarGroupContent>
           <SidebarMenu>

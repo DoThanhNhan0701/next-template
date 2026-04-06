@@ -1,10 +1,16 @@
-export class ApiError<TBody = unknown> extends Error {
-  readonly status: number;
-  readonly body?: TBody;
+import { toast } from "sonner";
 
-  constructor(status: number, message: string, body?: TBody) {
-    super(message);
-    this.status = status;
-    this.body = body;
-  }
-}
+export const getApiErrorMessage = (error: unknown): string => {
+  const err = error as {
+    response?: {
+      data?: {
+        detail?: string;
+      };
+    };
+  };
+
+
+  const message = err?.response?.data?.detail ?? "Error";
+  toast.error(message);
+  return message;
+};

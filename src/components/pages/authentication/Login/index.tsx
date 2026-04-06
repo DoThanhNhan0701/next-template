@@ -1,5 +1,9 @@
 "use client";
 
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
 import { LoginSchema } from "@/components/schemas/auth/login.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,22 +12,36 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+
 import { Input } from "@/components/ui/input";
 import { LoginRequest } from "@/types/auth/requests";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { httpPost } from "@/lib/http.server";
-import { LoginResponse } from "@/types/auth/responses";
-import { setTokensAction } from "./login.action";
 import { endpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux";
+import { actionLogin } from "@/redux/slices/auth";
+
+import Logo from "@public/icons/logo.png";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+
+interface LoginApiResponse {
+  access_token: string;
+  token_type: string;
+  data: {
+    access: string;
+    refresh: string;
+    token_type: string;
+    expires_in: number;
+    is_lock: boolean;
+  };
+}
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
@@ -34,27 +52,47 @@ export default function LoginPage() {
     },
   });
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginRequest) =>
-      await httpPost<LoginResponse>(endpoints.LOGIN, data),
-  });
+  const { mutate, pending } = useMutation<LoginApiResponse>();
 
   const onSubmit = async (data: LoginRequest) => {
-    loginMutation.mutate(data, {
-      onSuccess: async (response) => {
-        await setTokensAction(response.access_token, response.refresh_token);
-        toast.success("Login successfully");
-        router.push("/");
+    const formData = new URLSearchParams();
+    formData.append("username", data.username);
+    formData.append("password", data.password);
+
+    await mutate(
+      {
+        url: endpoints.LOGIN,
+        method: "post",
+        body: formData.toString(),
+        config: {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        },
       },
-      onError: (error) => {
-        toast.error(error.message);
+      {
+        onSuccess: (response) => {
+          dispatch(
+            actionLogin({
+              access_token: response.data.access,
+              refresh_token: response.data.refresh,
+              rememberMe: true,
+            }),
+          );
+          getApiSuccessMessage(response);
+          router.push("/");
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
       },
-    });
+    );
   };
 
   return (
-    <div className="max-w-125 mx-auto h-full flex items-center justify-center">
+    <div className="max-w-125 mx-auto h-full flex items-center justify-center flex-col">
+      <Image src={Logo} alt="Logo" width={150} height={100} />
+
       <form
+        autoComplete="off"
         className="flex flex-col gap-6 p-6 border border-(--surface-border-color) rounded-lg w-full"
         onSubmit={form.handleSubmit(onSubmit)}
       >
@@ -67,6 +105,7 @@ export default function LoginPage() {
                 <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
                   {...field}
+                  autoFocus
                   id="username"
                   aria-invalid={fieldState.invalid}
                   placeholder="Username"
@@ -121,12 +160,8 @@ export default function LoginPage() {
           />
         </FieldGroup>
 
-        <Button
-          variant="default"
-          type="submit"
-          disabled={loginMutation.isPending}
-        >
-          {loginMutation.isPending ? "Logging in..." : "Login"}
+        <Button variant="default" type="submit" disabled={pending}>
+          {pending ? "Logging in..." : "Login"}
         </Button>
       </form>
     </div>

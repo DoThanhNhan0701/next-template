@@ -5,8 +5,8 @@ import { Providers } from "@/components/libs/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Next Template",
-  description: "Next Template by Nhan",
+  title: "Asset Management",
+  description: "Asset Management System",
 };
 
 export default function RootLayout({

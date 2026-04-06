@@ -1,17 +1,15 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { useTheme } from "next-themes";
 import {
-  Bell,
-  HelpCircle,
   HomeIcon,
   LucideIcon,
   MoonIcon,
-  RefreshCwIcon,
   SettingsIcon,
   SunIcon,
+  LogOut,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,8 +17,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { User } from "@/types/user";
+import { IUser } from "@/types/auth";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux";
+import { actionLogout } from "@/redux/slices/auth";
 
 interface MenuToolbar {
   name: string;
@@ -29,11 +30,12 @@ interface MenuToolbar {
 }
 
 interface Props {
-  user: User | null;
+  user?: IUser | null;
 }
 
 export default function Header({ user }: Props) {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
 
   const { theme, setTheme } = useTheme();
@@ -44,7 +46,7 @@ export default function Header({ user }: Props) {
   }, []);
 
   const onSettingsClick = (
-    value: "REFRESH" | "SETTINGS" | "HELP" | "NOTIFICATIONS"
+    value: "REFRESH" | "SETTINGS" | "HELP" | "NOTIFICATIONS",
   ) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -71,24 +73,17 @@ export default function Header({ user }: Props) {
       onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
     },
     {
-      name: "Refresh",
-      icon: RefreshCwIcon,
-      onClick: () => onSettingsClick("REFRESH"),
-    },
-    {
       name: "Settings",
       icon: SettingsIcon,
       onClick: () => onSettingsClick("SETTINGS"),
     },
     {
-      name: "Help",
-      icon: HelpCircle,
-      onClick: () => onSettingsClick("HELP"),
-    },
-    {
-      name: "Notifications",
-      icon: Bell,
-      onClick: () => onSettingsClick("NOTIFICATIONS"),
+      name: "Logout",
+      icon: LogOut,
+      onClick: () => {
+        dispatch(actionLogout());
+        router.push("/auth/login");
+      },
     },
   ];
 
@@ -119,13 +114,7 @@ export default function Header({ user }: Props) {
           </Tooltip>
         ))}
 
-        <Image
-          className="rounded-full"
-          src="https://lh3.googleusercontent.com/a/ACg8ocKIu3er68fp_p--Z3quhYGsQFZNOf-t_STeFuHdRsyRy_0FO1w=s96-c"
-          width={24}
-          height={24}
-          alt=""
-        />
+        <User className="rounded-full cursor-pointer" size={20} />
       </div>
     </header>
   );
