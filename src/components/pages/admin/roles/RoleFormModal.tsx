@@ -18,8 +18,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 
 interface RoleFormModalProps {
   isOpen: boolean;
@@ -58,10 +58,11 @@ export default function RoleFormModal({
     },
   });
 
-  const selectedPermissionIds = useWatch({
-    control,
-    name: "permission_ids",
-  }) || [];
+  const selectedPermissionIds =
+    useWatch({
+      control,
+      name: "permission_ids",
+    }) || [];
 
   const isActive = useWatch({
     control,
@@ -102,12 +103,8 @@ export default function RoleFormModal({
         body: payload,
       },
       {
-        onSuccess: () => {
-          toast.success(
-            isEditing
-              ? "Role updated successfully"
-              : "Role created successfully",
-          );
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
           onSuccess();
           onClose();
         },

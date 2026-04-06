@@ -21,10 +21,19 @@ import {
   FieldGroup,
 } from "@/components/ui/field";
 import { useMutation } from "@/hooks/useMutation";
+import { useGet } from "@/hooks/useGet";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { IUser } from "@/types/auth";
+import { IRole } from "@/types/rbac";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props {
   userToEdit?: IUser | null;
@@ -41,6 +50,9 @@ export default function UserFormModal({
 }: Props) {
   const isEditing = !!userToEdit;
   const { mutate, pending } = useMutation();
+  const { response: roles = [] } = useGet<IRole[]>({
+    url: endpoints.RBAC_ROLES,
+  });
 
   const form = useForm({
     resolver: zodResolver(UserSchema),
@@ -161,24 +173,33 @@ export default function UserFormModal({
               )}
             />
 
-            {/* Temporarily basic implementations of role ID and others; ideally a Select dropdown */}
             <div className="grid grid-cols-2 gap-4">
               <Controller
                 name="role_id"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Role ID</FieldLabel>
-                    <Input
-                      {...field}
-                      type="number"
-                      value={(field.value as number) || ""}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value ? Number(e.target.value) : "",
-                        )
-                      }
-                    />
+                    <FieldLabel>Role</FieldLabel>
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={field.value ? field.value.toString() : ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {roles
+                          ?.filter((role) => role.is_active)
+                          .map((role) => (
+                            <SelectItem
+                              key={role.id}
+                              value={role.id.toString()}
+                            >
+                              {role.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
