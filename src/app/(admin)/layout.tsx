@@ -15,6 +15,7 @@ import {
   MapPin,
   Layers,
   Grid,
+  Activity,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -36,6 +37,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Locations", url: "/admin/locations", icon: MapPin },
     { title: "Asset Groups", url: "/admin/asset-groups", icon: Layers },
     { title: "Catalog Types", url: "/admin/catalog-types", icon: Grid },
+    { title: "Asset Status", url: "/admin/statuses", icon: Activity },
   ];
 
   return (

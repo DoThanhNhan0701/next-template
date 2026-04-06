@@ -26,6 +26,7 @@ export const endpoints = getEndPoint("api/v1", {
   ASSET_GROUPS: "asset-groups/",
   CATALOG_TYPES: "catalog-types/",
   CATALOG_GROUPS: "catalog-groups/",
+  STATUSES: "statuses/",
 });
 
 export const dynamicEndpoints = {
@@ -35,4 +36,5 @@ export const dynamicEndpoints = {
   LOCATION_DETAIL: (id: number) => `/api/v1/locations/${id}`,
   ASSET_GROUP_DETAIL: (id: number) => `/api/v1/asset-groups/${id}`,
   CATALOG_TYPE_DETAIL: (id: number) => `/api/v1/catalog-types/${id}`,
+  STATUS_DETAIL: (id: number) => `/api/v1/statuses/${id}`,
 };
