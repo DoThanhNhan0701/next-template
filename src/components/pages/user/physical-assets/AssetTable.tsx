@@ -177,7 +177,7 @@ export default function AssetTable() {
             size={16}
           />
           <Input
-            placeholder="Mã tài sản, Serial..."
+            placeholder="Asset Code, Serial..."
             className="pl-9 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -188,11 +188,11 @@ export default function AssetTable() {
           <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
             <div className="flex items-center gap-2">
               <Building2 size={16} className="text-muted-foreground/70" />
-              <SelectValue placeholder="Tất cả Đơn vị" />
+              <SelectValue placeholder="All Units" />
             </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tất cả Đơn vị</SelectItem>
+            <SelectItem value="all">All Units</SelectItem>
             {orgUnits.map((o) => (
               <SelectItem key={o.id} value={o.id.toString()}>
                 {o.name}
@@ -205,11 +205,11 @@ export default function AssetTable() {
           <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
             <div className="flex items-center gap-2">
               <Tag size={16} className="text-muted-foreground/70" />
-              <SelectValue placeholder="Tất cả Loại tài sản" />
+              <SelectValue placeholder="All Asset Types" />
             </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tất cả Loại tài sản</SelectItem>
+            <SelectItem value="all">All Asset Types</SelectItem>
             {categories.map((c) => (
               <SelectItem key={c.id} value={c.id.toString()}>
                 {c.name}
@@ -222,11 +222,11 @@ export default function AssetTable() {
           <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
             <div className="flex items-center gap-2">
               <Filter size={16} className="text-muted-foreground/70" />
-              <SelectValue placeholder="Mọi trạng thái" />
+              <SelectValue placeholder="All Statuses" />
             </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Mọi trạng thái</SelectItem>
+            <SelectItem value="all">All Statuses</SelectItem>
             {statuses.map((s) => (
               <SelectItem key={s.id} value={s.id.toString()}>
                 {s.name}
@@ -247,7 +247,7 @@ export default function AssetTable() {
           }}
           className="h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
         >
-          {pending ? "Đang tìm..." : "Tìm tài sản"}
+          {pending ? "Searching..." : "Search Asset"}
         </Button>
 
         <div className="w-px h-6 bg-border/60 mx-1" />

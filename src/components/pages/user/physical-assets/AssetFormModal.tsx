@@ -229,6 +229,7 @@ export default function AssetFormModal({
       purchase_ticket: data.purchase_ticket || null,
       request_ticket: data.request_ticket || null,
       holder_name: data.holder_name || null,
+      old_code: data.old_code || null,
       unit_id: data.unit_id ?? 0,
       measure_unit_id: data.measure_unit_id ?? 0,
     };
@@ -299,12 +300,32 @@ export default function AssetFormModal({
                     )}
                   />
                   <Controller
+                    name="old_code"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field
+                        data-invalid={fieldState.invalid}
+                        className="gap-1"
+                      >
+                        <FieldLabel>Old Code</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. OLD-123"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
                     name="name"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field
                         data-invalid={fieldState.invalid}
-                        className="gap-1 col-span-2"
+                        className="gap-1"
                       >
                         <FieldLabel>Asset Name</FieldLabel>
                         <Input
@@ -401,7 +422,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
-                        <FieldLabel>Đơn vị sở hữu/quản lý</FieldLabel>
+                        <FieldLabel>Owning/Managing Unit</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
