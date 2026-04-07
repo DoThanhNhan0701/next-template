@@ -33,6 +33,7 @@ export const endpoints = getEndPoint("api/v1", {
   PHYSICAL_ASSETS: "physical-assets/",
   UNITS: "units/",
   ORG_UNITS: "org/",
+  UPLOAD_ATTACHMENTS: "attachments/upload",
 });
 
 export const dynamicEndpoints = {

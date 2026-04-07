@@ -33,6 +33,7 @@ export const PhysicalAssetSchema = z.object({
   location: z.string().nullable().optional(),
   specifications: z.string().optional(),
   notes: z.string().optional(),
+  attachments: z.array(z.string()).optional(),
 }).refine(
   (data) => {
     const hasLocation = !!data.location_id || !!data.location;

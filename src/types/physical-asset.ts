@@ -33,6 +33,7 @@ export interface IPhysicalAsset {
   location: string | null;
   specifications: string;
   notes: string;
+  attachments?: string[] | null;
 }
 
 export interface IPhysicalAssetCreate {
@@ -68,6 +69,7 @@ export interface IPhysicalAssetCreate {
   location?: string | null;
   specifications?: string;
   notes?: string;
+  attachments?: string[] | null;
 }
 
 export type IPhysicalAssetUpdate = Partial<IPhysicalAssetCreate>;

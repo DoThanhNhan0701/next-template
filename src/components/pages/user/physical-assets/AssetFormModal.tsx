@@ -43,6 +43,7 @@ import { IUser } from "@/types/auth";
 import { ICatalogType } from "@/types/catalog-type";
 import { IUsageMode } from "@/types/usage-mode";
 import { IOrgUnit } from "@/types/org";
+import MultiAttachmentUpload from "@/components/common/MultiAttachmentUpload";
 
 interface Props {
   assetToEdit?: IPhysicalAsset | null;
@@ -144,6 +145,7 @@ export default function AssetFormModal({
       old_code: "",
       owner: "",
       unit_id: null,
+      attachments: [],
     },
   });
 
@@ -179,6 +181,7 @@ export default function AssetFormModal({
           holder_name: assetToEdit.holder_name || "",
           category_id: assetToEdit.category_id,
           unit_id: assetToEdit.unit_id,
+          attachments: assetToEdit.attachments || [],
         } as z.infer<typeof PhysicalAssetSchema>);
       } else {
         form.reset({
@@ -209,6 +212,7 @@ export default function AssetFormModal({
           old_code: "",
           owner: "",
           unit_id: null,
+          attachments: [],
         } as z.infer<typeof PhysicalAssetSchema>);
       }
     }
@@ -936,6 +940,23 @@ export default function AssetFormModal({
                     )}
                   />
                 </FieldGroup>
+              </div>
+
+              {/* Section: Attachments */}
+              <div className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold text-primary border-b pb-1">
+                  5. Attachments
+                </h3>
+                <Controller
+                  name="attachments"
+                  control={form.control}
+                  render={({ field }) => (
+                    <MultiAttachmentUpload
+                      value={field.value || []}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
               </div>
             </div>
           </div>
