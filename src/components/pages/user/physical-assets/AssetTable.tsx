@@ -14,6 +14,8 @@ import {
   Building2,
   Tag,
   Filter,
+  X,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,17 +55,17 @@ export default function AssetTable() {
   const [limit] = useState(20);
 
   // Filter state
-  const [search, setSearch] = useState("");
+  const [q, setQ] = useState("");
   const [unitId, setUnitId] = useState<string>("all");
   const [categoryId, setCategoryId] = useState<string>("all");
-  const [statusId, setStatusId] = useState<string>("all");
+  const [statusCode, setStatusCode] = useState<string>("all");
 
   // Applied filter state to avoid re-fetching on every keystroke
   const [appliedFilters, setAppliedFilters] = useState({
-    search: "",
+    q: "",
     unit_id: "all",
     category_id: "all",
-    status_id: "all",
+    status_code: "all",
   });
 
   // Fetch metadata for filters
@@ -148,14 +150,13 @@ export default function AssetTable() {
     limit: limit.toString(),
   });
 
-  if (appliedFilters.search)
-    queryParams.append("search", appliedFilters.search);
+  if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
   if (appliedFilters.unit_id !== "all")
     queryParams.append("unit_id", appliedFilters.unit_id);
   if (appliedFilters.category_id !== "all")
     queryParams.append("category_id", appliedFilters.category_id);
-  if (appliedFilters.status_id !== "all")
-    queryParams.append("status_id", appliedFilters.status_id);
+  if (appliedFilters.status_code !== "all")
+    queryParams.append("status_code", appliedFilters.status_code);
 
   const { response, pending, reFetch } = useGet<IPhysicalAsset[]>({
     url: `${endpoints.PHYSICAL_ASSETS}?${queryParams.toString()}`,
@@ -170,95 +171,146 @@ export default function AssetTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-wrap items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-xl border border-border/50 shadow-sm transition-all hover:border-border/80">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-xl border border-border/50 shadow-sm transition-all hover:border-border/80">
+        {/* Search Group */}
+        <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
             size={16}
           />
           <Input
             placeholder="Asset Code, Serial..."
-            className="pl-9 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
           />
+          {q && (
+            <button
+              onClick={() => {
+                setQ("");
+                setAppliedFilters((prev) => ({ ...prev, q: "" }));
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
 
-        <Select value={unitId} onValueChange={setUnitId}>
-          <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-            <div className="flex items-center gap-2">
-              <Building2 size={16} className="text-muted-foreground/70" />
-              <SelectValue placeholder="All Units" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Units</SelectItem>
-            {orgUnits.map((o) => (
-              <SelectItem key={o.id} value={o.id.toString()}>
-                {o.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* Filters Group */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Select value={unitId} onValueChange={setUnitId}>
+            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
+                <Building2
+                  size={16}
+                  className="text-muted-foreground/70 shrink-0"
+                />
+                <div className="truncate flex-1 min-w-0">
+                  <SelectValue placeholder="All Units" />
+                </div>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Units</SelectItem>
+              {orgUnits.map((o) => (
+                <SelectItem key={o.id} value={o.id.toString()}>
+                  {o.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Select value={categoryId} onValueChange={setCategoryId}>
-          <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-            <div className="flex items-center gap-2">
-              <Tag size={16} className="text-muted-foreground/70" />
-              <SelectValue placeholder="All Asset Types" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Asset Types</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c.id} value={c.id.toString()}>
-                {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={categoryId} onValueChange={setCategoryId}>
+            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
+                <Tag size={16} className="text-muted-foreground/70 shrink-0" />
+                <div className="truncate flex-1 min-w-0">
+                  <SelectValue placeholder="All Asset Types" />
+                </div>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Asset Types</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c.id} value={c.id.toString()}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Select value={statusId} onValueChange={setStatusId}>
-          <SelectTrigger className="w-[180px] h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-            <div className="flex items-center gap-2">
-              <Filter size={16} className="text-muted-foreground/70" />
-              <SelectValue placeholder="All Statuses" />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            {statuses.map((s) => (
-              <SelectItem key={s.id} value={s.id.toString()}>
-                {s.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={statusCode} onValueChange={setStatusCode}>
+            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
+                <Filter
+                  size={16}
+                  className="text-muted-foreground/70 shrink-0"
+                />
+                <div className="truncate flex-1 min-w-0">
+                  <SelectValue placeholder="All Statuses" />
+                </div>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              {statuses.map((s) => (
+                <SelectItem key={s.id} value={s.code}>
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Button
-          onClick={() => {
-            setSkip(0);
-            setAppliedFilters({
-              search,
-              unit_id: unitId,
-              category_id: categoryId,
-              status_id: statusId,
-            });
-          }}
-          className="h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
-        >
-          {pending ? "Searching..." : "Search Asset"}
-        </Button>
+        {/* Action Group */}
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => {
+              setSkip(0);
+              setAppliedFilters({
+                q,
+                unit_id: unitId,
+                category_id: categoryId,
+                status_code: statusCode,
+              });
+            }}
+            className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
+          >
+            {pending ? "Searching..." : "Search Asset"}
+          </Button>
 
-        <div className="w-px h-6 bg-border/60 mx-1" />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              setQ("");
+              setUnitId("all");
+              setCategoryId("all");
+              setStatusCode("all");
+              setAppliedFilters({
+                q: "",
+                unit_id: "all",
+                category_id: "all",
+                status_code: "all",
+              });
+              setSkip(0);
+            }}
+            className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+            title="Clear all filters"
+          >
+            <RotateCcw size={16} className="text-muted-foreground/70" />
+          </Button>
 
-        <Button
-          onClick={() => setIsCreating(true)}
-          className="h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
-        >
-          <PlusIcon size={16} className="mr-2" />
-          Declare Asset
-        </Button>
+          <div className="hidden sm:block w-px h-6 bg-border/60 mx-1 shrink-0" />
+
+          <Button
+            onClick={() => setIsCreating(true)}
+            className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+          >
+            Declare Asset
+          </Button>
+        </div>
       </div>
 
       <div className="border border-(--surface-border-color) rounded-lg flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -306,7 +358,7 @@ export default function AssetTable() {
                     key={asset.id}
                     className="group hover:bg-primary/3 transition-colors relative"
                   >
-                    <TableCell className="px-4 py-3 relative overflow-hidden">
+                    <TableCell className="px-4 py-1.5 relative overflow-hidden">
                       {/* Importance Accent */}
                       <div
                         className={cn(
@@ -314,9 +366,9 @@ export default function AssetTable() {
                           getImportanceColor(asset.importance_id),
                         )}
                       />
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary/5 p-2.5 rounded-xl text-primary transition-colors group-hover:bg-primary/10">
-                          <Laptop size={18} />
+                      <div className="flex items-center gap-2">
+                        <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10">
+                          <Laptop size={16} />
                         </div>
                         <div className="flex flex-col">
                           <span className="font-semibold text-sm group-hover:text-primary transition-colors">
@@ -328,8 +380,8 @@ export default function AssetTable() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <div className="flex flex-col gap-1.5 text-sm">
+                    <TableCell className="px-4 py-1.5">
+                      <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-2">
                           <div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold uppercase text-secondary-foreground">
                             {asset.holder_name?.substring(0, 2) || "NA"}
@@ -340,7 +392,9 @@ export default function AssetTable() {
                         </div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
                           <span className="opacity-60 italic">Unit:</span>
-                          <span>{getOrgUnitLabel(asset.unit_id) || "None"}</span>
+                          <span>
+                            {getOrgUnitLabel(asset.unit_id) || "None"}
+                          </span>
                         </div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
                           <span className="opacity-60 italic">Owner:</span>
@@ -348,8 +402,8 @@ export default function AssetTable() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3">
-                      <div className="flex flex-col gap-1.5 text-sm">
+                    <TableCell className="px-4 py-1.5">
+                      <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-2 px-2 py-1 bg-secondary/30 rounded-md w-fit">
                           <MapPin size={12} className="text-primary/70" />
                           <span className="text-xs font-medium">
@@ -364,7 +418,7 @@ export default function AssetTable() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-1.5">
                           <Calendar
@@ -383,7 +437,7 @@ export default function AssetTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-1.5 text-center">
                       <Badge
                         variant="outline"
                         className={cn(
@@ -394,7 +448,7 @@ export default function AssetTable() {
                         {statusInfo.label}
                       </Badge>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-right">
+                    <TableCell className="px-4 py-1.5 text-right">
                       <Button
                         variant="ghost"
                         size="icon"

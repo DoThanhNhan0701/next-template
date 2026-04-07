@@ -6,7 +6,14 @@ export const getApiSuccessMessage = (response: unknown): string => {
     message?: string;
   };
 
-  const message = err?.message ?? "Success";
-  toast.success(message);
-  return message;
+  const messageMap: Record<string, string> = {
+    "Cập nhật hồ sơ tài sản và đồng bộ tồn kho thành công":
+      "Asset profile updated and inventory synced successfully.",
+  };
+
+  const originalMessage = err?.message ?? "Success";
+  const finalMessage = messageMap[originalMessage] || originalMessage;
+
+  toast.success(finalMessage);
+  return finalMessage;
 };
