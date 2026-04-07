@@ -30,7 +30,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const sidebarItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "Physical Assets", url: "/physical-assets", icon: Laptop },
-    { title: "Stocks", url: "/stocks", icon: Package },
+    { title: "Inventory (Stocks)", url: "/inventory", icon: Package },
     { title: "Rentals", url: "/rentals", icon: Key },
     { title: "Summary", url: "/summary", icon: BarChart3 },
   ];
