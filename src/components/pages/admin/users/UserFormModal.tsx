@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,6 +125,11 @@ export default function UserFormModal({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit User" : "Add User"}</DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            {isEditing
+              ? "Update the user's profile and permissions."
+              : "Register a new user in the system."}
+          </DialogDescription>
         </DialogHeader>
 
         <form
@@ -182,7 +188,7 @@ export default function UserFormModal({
                     <FieldLabel>Role</FieldLabel>
                     <Select
                       onValueChange={(val) => field.onChange(Number(val))}
-                      value={field.value ? field.value.toString() : ""}
+                      value={field.value?.toString() || ""}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a role" />

@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
@@ -135,6 +136,11 @@ export default function RoleFormModal({
           <DialogTitle>
             {isEditing ? "Edit Role" : "Create New Role"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Modify the role name and its permissions."
+              : "Define a new role and assign permissions to it."}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="p-6 overflow-y-auto flex-1">

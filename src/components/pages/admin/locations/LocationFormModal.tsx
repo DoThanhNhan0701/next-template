@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -114,6 +115,11 @@ export default function LocationFormModal({
           <DialogTitle>
             {isEditing ? "Edit Location" : "Create New Location"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update the location details."
+              : "Set up a new physical location for assets."}
+          </DialogDescription>
         </DialogHeader>
 
         <form

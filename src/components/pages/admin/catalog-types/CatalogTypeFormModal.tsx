@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -114,6 +115,11 @@ export default function CatalogTypeFormModal({
           <DialogTitle>
             {isEditing ? "Edit Catalog Type" : "Add Catalog Type"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update the catalog type properties."
+              : "Register a new type of catalog for inventory management."}
+          </DialogDescription>
         </DialogHeader>
 
         <form

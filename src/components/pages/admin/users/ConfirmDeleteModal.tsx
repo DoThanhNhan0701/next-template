@@ -51,10 +51,12 @@ export default function ConfirmDeleteModal({ user, isOpen, onClose, onSuccess }:
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Deactivate User</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to deactivate the account{" "}
+            <strong>{user?.username}</strong>? This action will prevent the user
+            from logging in.
+          </DialogDescription>
         </DialogHeader>
-        <DialogDescription>
-          Are you sure you want to deactivate the account <strong>{user?.username}</strong>? This action will prevent the user from logging in.
-        </DialogDescription>
 
         <DialogFooter className="mt-4">
           <Button type="button" variant="outline" onClick={onClose} disabled={pending}>Cancel</Button>

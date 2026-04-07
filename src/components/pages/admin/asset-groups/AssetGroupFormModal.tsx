@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -108,6 +109,11 @@ export default function AssetGroupFormModal({
           <DialogTitle>
             {isEditing ? "Edit Asset Group" : "Add Asset Group"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Modify the asset group attributes."
+              : "Categorize assets by creating a new group."}
+          </DialogDescription>
         </DialogHeader>
 
         <form

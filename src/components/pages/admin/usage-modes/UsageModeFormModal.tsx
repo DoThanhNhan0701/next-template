@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -107,6 +108,11 @@ export default function UsageModeFormModal({
           <DialogTitle>
             {isEditing ? "Edit Usage Mode" : "Add Usage Mode"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update the details of this usage mode."
+              : "Create a new usage mode for assets."}
+          </DialogDescription>
         </DialogHeader>
 
         <form

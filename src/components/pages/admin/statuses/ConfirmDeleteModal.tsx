@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@/hooks/useMutation";
@@ -55,13 +56,12 @@ export default function ConfirmDeleteModal({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogDescription className="py-4 text-foreground">
+            Are you sure you want to delete status{" "}
+            <span className="font-semibold">{status?.name}</span>? This action
+            cannot be undone.
+          </DialogDescription>
         </DialogHeader>
-
-        <div className="py-4">
-          Are you sure you want to delete status{" "}
-          <span className="font-semibold">{status?.name}</span>? This action
-          cannot be undone.
-        </div>
 
         <DialogFooter>
           <Button

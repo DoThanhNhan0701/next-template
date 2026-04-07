@@ -44,9 +44,10 @@ export default function Sidebar({ items = defaultItems }: SidebarProps) {
         width={100}
         height={20}
         loading="eager"
+        priority
         className="mx-auto cursor-pointer"
         onClick={() => router.push("/")}
-        priority
+        style={{ width: "auto", height: "auto" }}
       />
       <SidebarProvider className="border-t border-(--surface-border-color) p-3">
         <SidebarGroupContent>

@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -123,6 +124,11 @@ export default function CustomerFormModal({
           <DialogTitle>
             {isEditing ? "Edit Customer" : "Add Customer"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update the customer's information."
+              : "Enter details for a new customer."}
+          </DialogDescription>
         </DialogHeader>
 
         <form
@@ -156,7 +162,7 @@ export default function CustomerFormModal({
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    value={field.value}
+                    value={field.value?.toString() || ""}
                   >
                     <SelectTrigger className="h-9">
                       <SelectValue placeholder="Select type" />

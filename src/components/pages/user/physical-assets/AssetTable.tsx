@@ -41,10 +41,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import AssetFormModal from "./AssetFormModal";
-import { IUnit } from "@/types/unit";
 import { ICatalogType } from "@/types/catalog-type";
 import { IStatus } from "@/types/status";
 import { IUsageMode } from "@/types/usage-mode";
+import { IOrgUnit } from "@/types/org";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -67,9 +67,11 @@ export default function AssetTable() {
   });
 
   // Fetch metadata for filters
-  const { response: unitRes } = useGet<IUnit[]>({ url: endpoints.UNITS });
   const { response: catalogRes } = useGet<ICatalogType[]>({
     url: endpoints.CATALOG_TYPES,
+  });
+  const { response: orgRes } = useGet<IOrgUnit[]>({
+    url: endpoints.ORG_UNITS,
   });
   const { response: statusRes } = useGet<IStatus[]>({
     url: endpoints.STATUSES + "?category=asset",
@@ -78,10 +80,10 @@ export default function AssetTable() {
     url: endpoints.USAGE_MODES,
   });
 
-  const units = unitRes || [];
   const categories = catalogRes || [];
   const statuses = statusRes || [];
   const usageModes = usageModeRes || [];
+  const orgUnits = orgRes || [];
 
   // Helper for Status Badge
   const getStatusInfo = (statusId: number) => {
@@ -136,6 +138,11 @@ export default function AssetTable() {
     return usageModes.find((m) => m.id === id)?.name || null;
   };
 
+  const getOrgUnitLabel = (id: number | null) => {
+    if (!id) return null;
+    return orgUnits.find((o) => o.id === id)?.name || null;
+  };
+
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
     limit: limit.toString(),
@@ -186,9 +193,9 @@ export default function AssetTable() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tất cả Đơn vị</SelectItem>
-            {units.map((u) => (
-              <SelectItem key={u.id} value={u.id.toString()}>
-                {u.name}
+            {orgUnits.map((o) => (
+              <SelectItem key={o.id} value={o.id.toString()}>
+                {o.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -330,6 +337,10 @@ export default function AssetTable() {
                           <span className="font-medium text-foreground/80">
                             {asset.holder_name || "Unassigned"}
                           </span>
+                        </div>
+                        <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
+                          <span className="opacity-60 italic">Unit:</span>
+                          <span>{getOrgUnitLabel(asset.unit_id) || "None"}</span>
                         </div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
                           <span className="opacity-60 italic">Owner:</span>

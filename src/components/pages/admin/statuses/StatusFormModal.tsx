@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,6 +106,11 @@ export default function StatusFormModal({
           <DialogTitle>
             {isEditing ? "Edit Asset Status" : "Add Asset Status"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update the status name and color."
+              : "Define a new status for tracking assets."}
+          </DialogDescription>
         </DialogHeader>
 
         <form

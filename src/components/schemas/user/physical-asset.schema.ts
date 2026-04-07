@@ -19,8 +19,9 @@ export const PhysicalAssetSchema = z.object({
   depreciation_value: z.coerce.number().nullable().optional(),
   warranty_expiration: z.string().nullable().optional().or(z.literal("")),
   quantity: z.coerce.number().int().min(1, "Quantity must be at least 1"),
-  unit_id: z.coerce.number().int().min(1, "Unit is required"),
+  measure_unit_id: z.coerce.number().int().min(0).nullable().optional(),
   holder_id: z.coerce.number().int().nullable().optional(),
+  holder_name: z.string().nullable().optional(),
   category_id: z.coerce.number().int().nullable().optional(),
   supplier_id: z.coerce.number().int().nullable().optional(),
   manager_id: z.coerce.number().int().nullable().optional(),
@@ -28,7 +29,18 @@ export const PhysicalAssetSchema = z.object({
   usage_mode_id: z.coerce.number().int().nullable().optional(),
   location_id: z.coerce.number().int().nullable().optional(),
   asset_system_id: z.coerce.number().int().nullable().optional(),
+  unit_id: z.coerce.number().int().min(0).nullable().optional(),
   location: z.string().nullable().optional(),
   specifications: z.string().optional(),
   notes: z.string().optional(),
-});
+}).refine(
+  (data) => {
+    const hasLocation = !!data.location_id || !!data.location;
+    const hasHolder = !!data.holder_id || !!data.holder_name;
+    return !(hasLocation && hasHolder);
+  },
+  {
+    message: "Cannot assign both a Location and a Holder",
+    path: ["location_id"], // Showing the error on Location field by default
+  },
+);

@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,6 +117,11 @@ export default function SupplierFormModal({
           <DialogTitle>
             {isEditing ? "Edit Supplier" : "Add Supplier"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Update supplier contact information."
+              : "Add a new vendor or supplier to the directory."}
+          </DialogDescription>
         </DialogHeader>
 
         <form

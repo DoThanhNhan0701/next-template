@@ -19,6 +19,7 @@ export interface IPhysicalAsset {
   warranty_expiration: string | null;
   quantity: number;
   unit_id: number;
+  measure_unit_id: number | null;
   holder_id: number | null;
   holder_name: string | null;
   category_id: number | null;
@@ -28,6 +29,7 @@ export interface IPhysicalAsset {
   usage_mode_id: number | null;
   location_id: number | null;
   asset_system_id: number | null;
+  org_id: number | null;
   location: string | null;
   specifications: string;
   notes: string;
@@ -53,6 +55,7 @@ export interface IPhysicalAssetCreate {
   warranty_expiration?: string | null;
   quantity: number;
   unit_id: number;
+  measure_unit_id?: number | null;
   holder_id?: number | null;
   category_id?: number | null;
   supplier_id?: number | null;
@@ -61,6 +64,7 @@ export interface IPhysicalAssetCreate {
   usage_mode_id?: number | null;
   location_id?: number | null;
   asset_system_id?: number | null;
+  org_id?: number | null;
   location?: string | null;
   specifications?: string;
   notes?: string;

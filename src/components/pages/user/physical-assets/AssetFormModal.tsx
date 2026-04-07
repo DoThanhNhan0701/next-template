@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { PhysicalAssetSchema } from "@/components/schemas/user/physical-asset.schema";
@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,7 @@ import { IUnit } from "@/types/unit";
 import { IUser } from "@/types/auth";
 import { ICatalogType } from "@/types/catalog-type";
 import { IUsageMode } from "@/types/usage-mode";
+import { IOrgUnit } from "@/types/org";
 
 interface Props {
   assetToEdit?: IPhysicalAsset | null;
@@ -59,31 +61,58 @@ export default function AssetFormModal({
   const { mutate, pending } = useMutation();
 
   // Fetch metadata
-  const { response: statusRes } = useGet<IStatus[]>({
-    url: endpoints.STATUSES + "?category=asset",
-  }, { disabled: !isOpen });
-  const { response: locationRes } = useGet<ILocation[]>({
-    url: endpoints.LOCATIONS,
-  }, { disabled: !isOpen });
-  const { response: supplierRes } = useGet<{ data: ISupplier[] }>({
-    url: endpoints.SUPPLIERS,
-  }, { disabled: !isOpen });
-  const { response: unitRes } = useGet<IUnit[]>({ url: endpoints.UNITS }, { disabled: !isOpen });
-  const { response: userRes } = useGet<IUser[]>({ url: endpoints.USERS }, { disabled: !isOpen });
-  const { response: catalogRes } = useGet<ICatalogType[]>({
-    url: endpoints.CATALOG_TYPES,
-  }, { disabled: !isOpen });
-  const { response: usageModeRes } = useGet<IUsageMode[]>({
-    url: endpoints.USAGE_MODES,
-  }, { disabled: !isOpen });
+  const { response: statusRes } = useGet<IStatus[]>(
+    {
+      url: endpoints.STATUSES + "?category=asset",
+    },
+    { disabled: !isOpen },
+  );
+  const { response: locationRes } = useGet<ILocation[]>(
+    {
+      url: endpoints.LOCATIONS,
+    },
+    { disabled: !isOpen },
+  );
+  const { response: supplierRes } = useGet<ISupplier[]>(
+    {
+      url: endpoints.SUPPLIERS,
+    },
+    { disabled: !isOpen },
+  );
+  const { response: unitRes } = useGet<IUnit[]>(
+    { url: endpoints.UNITS },
+    { disabled: !isOpen },
+  );
+  const { response: userRes } = useGet<IUser[]>(
+    { url: endpoints.USERS },
+    { disabled: !isOpen },
+  );
+  const { response: catalogRes } = useGet<ICatalogType[]>(
+    {
+      url: endpoints.CATALOG_TYPES,
+    },
+    { disabled: !isOpen },
+  );
+  const { response: usageModeRes } = useGet<IUsageMode[]>(
+    {
+      url: endpoints.USAGE_MODES,
+    },
+    { disabled: !isOpen },
+  );
+
+  const { response: orgRes } = useGet<IOrgUnit[]>(
+    { url: endpoints.ORG_UNITS },
+    { disabled: !isOpen },
+  );
 
   const statuses = statusRes || [];
   const locations = locationRes || [];
-  const suppliers = supplierRes?.data || [];
+  const suppliers = supplierRes || [];
   const units = unitRes || [];
   const users = userRes || [];
   const categories = catalogRes || [];
   const usageModes = usageModeRes || [];
+  const orgUnits = orgRes || [];
 
   const form = useForm({
     resolver: zodResolver(PhysicalAssetSchema),
@@ -96,7 +125,7 @@ export default function AssetFormModal({
       importance_id: 2, // Standard
       cost: 0,
       quantity: 1,
-      unit_id: 1,
+      measure_unit_id: 1,
       status_id: 1,
       notes: "",
       specifications: "",
@@ -104,17 +133,36 @@ export default function AssetFormModal({
       purchase_ticket: "",
       warranty_expiration: "",
       system_declaration_date: "",
+      holder_id: null,
+      holder_name: "",
+      category_id: null,
       supplier_id: undefined,
-      category_id: undefined,
       location_id: undefined,
       usage_mode_id: undefined,
-      holder_id: undefined,
       manager_id: undefined,
       location: "",
       old_code: "",
       owner: "",
+      unit_id: null,
     },
   });
+
+  const watchedLocationId = useWatch({
+    control: form.control,
+    name: "location_id",
+  });
+  const watchedLocation = useWatch({ control: form.control, name: "location" });
+  const watchedHolderId = useWatch({
+    control: form.control,
+    name: "holder_id",
+  });
+  const watchedHolderName = useWatch({
+    control: form.control,
+    name: "holder_name",
+  });
+
+  const hasLocationValue = !!watchedLocationId || !!watchedLocation;
+  const hasHolderValue = !!watchedHolderId || !!watchedHolderName;
 
   useEffect(() => {
     if (isOpen) {
@@ -126,6 +174,11 @@ export default function AssetFormModal({
             assetToEdit.system_declaration_date?.split("T")[0] || "",
           warranty_expiration:
             assetToEdit.warranty_expiration?.split("T")[0] || "",
+          measure_unit_id: assetToEdit.measure_unit_id || 0,
+          holder_id: assetToEdit.holder_id,
+          holder_name: assetToEdit.holder_name || "",
+          category_id: assetToEdit.category_id,
+          unit_id: assetToEdit.unit_id,
         } as z.infer<typeof PhysicalAssetSchema>);
       } else {
         form.reset({
@@ -137,7 +190,7 @@ export default function AssetFormModal({
           importance_id: 2,
           cost: 0,
           quantity: 1,
-          unit_id: 1,
+          measure_unit_id: 1,
           status_id: 1,
           notes: "",
           specifications: "",
@@ -146,14 +199,16 @@ export default function AssetFormModal({
           warranty_expiration: "",
           system_declaration_date: "",
           supplier_id: undefined,
-          category_id: undefined,
+          category_id: null,
           location_id: undefined,
           usage_mode_id: undefined,
-          holder_id: undefined,
+          holder_id: null,
+          holder_name: "",
           manager_id: undefined,
           location: "",
           old_code: "",
           owner: "",
+          unit_id: null,
         } as z.infer<typeof PhysicalAssetSchema>);
       }
     }
@@ -165,11 +220,24 @@ export default function AssetFormModal({
       : endpoints.PHYSICAL_ASSETS;
     const method = isEditing ? "patch" : "post";
 
+    // Clean up empty strings to null for nullable/optional fields
+    const cleanedData = {
+      ...data,
+      purchase_date: data.purchase_date || null,
+      system_declaration_date: data.system_declaration_date || null,
+      warranty_expiration: data.warranty_expiration || null,
+      purchase_ticket: data.purchase_ticket || null,
+      request_ticket: data.request_ticket || null,
+      holder_name: data.holder_name || null,
+      unit_id: data.unit_id ?? 0,
+      measure_unit_id: data.measure_unit_id ?? 0,
+    };
+
     await mutate(
       {
         url,
         method,
-        body: data,
+        body: cleanedData,
       },
       {
         onSuccess: (res) => {
@@ -191,6 +259,11 @@ export default function AssetFormModal({
           <DialogTitle>
             {isEditing ? "Edit Physical Asset" : "Declare New Physical Asset"}
           </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            {isEditing
+              ? "Modify the information of the selected physical asset."
+              : "Fill in the required details to register a new physical asset in the system."}
+          </DialogDescription>
         </DialogHeader>
 
         <form
@@ -202,14 +275,17 @@ export default function AssetFormModal({
               {/* Section: General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  General Information
+                  1. General Information
                 </h3>
                 <FieldGroup className="grid grid-cols-3 gap-3">
                   <Controller
                     name="asset_code"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid} className="gap-1">
+                      <Field
+                        data-invalid={fieldState.invalid}
+                        className="gap-1"
+                      >
                         <FieldLabel>Asset Code</FieldLabel>
                         <Input
                           {...field}
@@ -245,37 +321,59 @@ export default function AssetFormModal({
                   <Controller
                     name="serial_number"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Serial Number</FieldLabel>
-                        <Input {...field} value={field.value ?? ""} />
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. SN12345678"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="model"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Model</FieldLabel>
-                        <Input {...field} value={field.value ?? ""} />
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. MacBook Pro A2779"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="category_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Category</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {categories.map((c) => (
                               <SelectItem key={c.id} value={c.id.toString()}>
                                 {c.name}
@@ -283,6 +381,9 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -292,23 +393,66 @@ export default function AssetFormModal({
               {/* Section: Tracking & Management */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  Tracking & Management
+                  2. Tracking & Management
                 </h3>
                 <FieldGroup className="grid grid-cols-3 gap-3">
                   <Controller
+                    name="unit_id"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1 col-span-3">
+                        <FieldLabel>Đơn vị sở hữu/quản lý</FieldLabel>
+                        <Select
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
+                        >
+                          <SelectTrigger className="h-9">
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
+                            {orgUnits.map((o) => (
+                              <SelectItem key={o.id} value={o.id.toString()}>
+                                {o.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
                     name="status_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Status</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select status" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {statuses.map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
                                 <div className="flex items-center gap-1.5">
@@ -322,23 +466,34 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="usage_mode_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Usage Mode</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select mode" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {usageModes.map((m) => (
                               <SelectItem key={m.id} value={m.id.toString()}>
                                 {m.name}
@@ -346,45 +501,68 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="importance_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Importance</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select importance" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             <SelectItem value="1">High</SelectItem>
                             <SelectItem value="2">Standard</SelectItem>
                             <SelectItem value="3">Low</SelectItem>
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="location_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Location</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
+                          disabled={hasHolderValue}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select location" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {locations.map((l) => (
                               <SelectItem key={l.id} value={l.id.toString()}>
                                 {l.name}
@@ -392,37 +570,53 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="location"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
                         <FieldLabel>Detailed Location</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
                           placeholder="e.g. Floor 5, Desk 10"
+                          disabled={hasHolderValue}
                         />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="holder_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Holder</FieldLabel>
+                        <FieldLabel>Holder (System User)</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
+                          disabled={hasLocationValue}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select holder" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {users.map((u) => (
                               <SelectItem key={u.id} value={u.id.toString()}>
                                 {u.full_name || u.username}
@@ -430,23 +624,55 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="holder_name"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field
+                        data-invalid={fieldState.invalid}
+                        className="gap-1 col-span-1"
+                      >
+                        <FieldLabel>Holder Name (Other)</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          placeholder="Type name if not in system"
+                          disabled={hasLocationValue}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="manager_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
                         <FieldLabel>Manager</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select manager" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {users.map((u) => (
                               <SelectItem key={u.id} value={u.id.toString()}>
                                 {u.full_name || u.username}
@@ -454,6 +680,9 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -463,51 +692,67 @@ export default function AssetFormModal({
               {/* Section: Purchase & Value */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  Purchase & Acquisition
+                  3. Purchase & Acquisition
                 </h3>
                 <FieldGroup className="grid grid-cols-3 gap-3">
                   <Controller
                     name="cost"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Cost</FieldLabel>
                         <Input
                           type="number"
                           {...field}
                           value={(field.value as number) ?? 0}
+                          placeholder="0.00"
                         />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="quantity"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Quantity</FieldLabel>
                         <Input
                           type="number"
                           {...field}
                           value={(field.value as number) ?? 1}
+                          placeholder="1"
                         />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
-                    name="unit_id"
+                    name="measure_unit_id"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Unit</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select unit" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {units.map((u) => (
                               <SelectItem key={u.id} value={u.id.toString()}>
                                 {u.name}
@@ -515,53 +760,102 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="purchase_date"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Purchase Date</FieldLabel>
-                        <Input type="date" {...field} value={field.value ?? ""} />
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="purchase_ticket"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Purchase Ticket</FieldLabel>
-                        <Input {...field} value={field.value ?? ""} />
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="Invoice, Receipt, or PO#"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="warranty_expiration"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Warranty Expiration</FieldLabel>
-                        <Input type="date" {...field} value={field.value ?? ""} />
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="system_declaration_date"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1">
+                        <FieldLabel>System Declaration Date</FieldLabel>
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="supplier_id"
                     control={form.control}
-                    render={({ field }) => (
-                      <Field className="gap-1 col-span-3">
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1 col-span-2">
                         <FieldLabel>Supplier</FieldLabel>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value?.toString()}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : val)
+                          }
+                          value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select supplier" />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              (None)
+                            </SelectItem>
                             {suppliers.map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
                                 {s.name}
@@ -569,6 +863,9 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -578,13 +875,13 @@ export default function AssetFormModal({
               {/* Section: Description & Notes */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  Description & Notes
+                  4. Description & Notes
                 </h3>
                 <FieldGroup className="flex flex-col gap-3">
                   <Controller
                     name="specifications"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Specifications</FieldLabel>
                         <Textarea
@@ -593,13 +890,16 @@ export default function AssetFormModal({
                           placeholder="Technical details, configurations, etc."
                           className="min-h-[100px]"
                         />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
                   <Controller
                     name="notes"
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Notes</FieldLabel>
                         <Textarea
@@ -608,6 +908,9 @@ export default function AssetFormModal({
                           placeholder="Any additional remarks..."
                           className="min-h-[100px]"
                         />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
