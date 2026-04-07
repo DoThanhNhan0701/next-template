@@ -4,7 +4,8 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IRole } from "@/types/rbac";
-import { EditIcon, Trash2Icon, PlusIcon } from "lucide-react";
+import { EditIcon, Trash2Icon, PlusIcon, Shield } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -133,17 +134,14 @@ export default function RoleTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={4} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={4} rows={6} />
             ) : roles.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="px-4 py-3 text-center">
-                  No data available
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={4}
+                icon={Shield}
+                message="No roles found"
+                description="Add your first role using the button above."
+              />
             ) : (
               roles.map((role) => (
                 <TableRow

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ICatalogType } from "@/types/catalog-type";
-import { EditIcon, Trash2Icon, PlusIcon } from "lucide-react";
+import { EditIcon, Trash2Icon, PlusIcon, Tag } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -145,17 +146,14 @@ export default function CatalogTypeTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={7} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : catalogTypes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="px-4 py-3 text-center">
-                  No data available
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={7}
+                icon={Tag}
+                message="No catalog types found"
+                description="Add your first catalog type using the button above."
+              />
             ) : (
               catalogTypes.map((type) => (
                 <TableRow

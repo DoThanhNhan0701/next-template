@@ -4,7 +4,8 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ISupplier } from "@/types/supplier";
-import { EditIcon, Trash2Icon, PlusIcon, Mail, Phone, User } from "lucide-react";
+import { EditIcon, Trash2Icon, PlusIcon, Mail, Phone, User, Truck } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -122,17 +123,14 @@ export default function SupplierTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : suppliers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  No data available
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={6}
+                icon={Truck}
+                message="No suppliers found"
+                description="Add your first supplier using the button above."
+              />
             ) : (
               suppliers.map((item) => (
                 <TableRow

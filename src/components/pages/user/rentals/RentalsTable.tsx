@@ -45,6 +45,7 @@ import {
 import { Input } from "@/components/ui/input";
 import RentalFormModal from "./RentalFormModal";
 import { useMutation } from "@/hooks/useMutation";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 
 export default function RentalsTable() {
   const [skip, setSkip] = useState(0);
@@ -253,17 +254,14 @@ export default function RentalsTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={5} className="px-4 py-3 text-center">
-                  Loading rentals...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={5} rows={6} />
             ) : rentals.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="px-4 py-3 text-center">
-                  No rentals found matching your criteria.
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={5}
+                icon={FileText}
+                message="No rentals found"
+                description="No rental records match your current search or filter criteria."
+              />
             ) : (
               rentals.map((rental) => (
                 <TableRow

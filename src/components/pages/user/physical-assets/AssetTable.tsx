@@ -7,7 +7,6 @@ import { IPhysicalAsset } from "@/types/physical-asset";
 import {
   EditIcon,
   PlusIcon,
-  Laptop,
   Calendar,
   MapPin,
   Search,
@@ -49,6 +48,8 @@ import { IUsageMode } from "@/types/usage-mode";
 import { IOrgUnit } from "@/types/org";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import { Laptop } from "lucide-react";
 
 export default function AssetTable() {
   const [skip, setSkip] = useState(0);
@@ -337,17 +338,14 @@ export default function AssetTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : assets.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  No assets declared yet
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={6}
+                icon={Laptop}
+                message="No assets declared yet"
+                description="Declare your first asset using the button above to get started."
+              />
             ) : (
               assets.map((asset) => {
                 const statusInfo = getStatusInfo(asset.status_id);

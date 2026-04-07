@@ -5,13 +5,8 @@ import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStock } from "@/types/stock";
 import { ILocation } from "@/types/location";
-import {
-  Search,
-  X,
-  RotateCcw,
-  MapPin,
-  Package,
-} from "lucide-react";
+import { Search, X, RotateCcw, MapPin, Package } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -69,13 +64,13 @@ export default function InventoryTable() {
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
   if (appliedFilters.location_id !== "all")
     queryParams.append("location_id", appliedFilters.location_id);
-  
+
   queryParams.append("show_zero", appliedFilters.show_zero.toString());
 
   const { response, pending } = useGet<IStock[]>({
     url: `${endpoints.STOCKS}?${queryParams.toString()}`,
   });
-  
+
   const stocks = response || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
@@ -190,24 +185,27 @@ export default function InventoryTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[40%]">Asset Information</TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[30%]">Location</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[30%]">Quantity</TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[40%]">
+                Asset Information
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[30%]">
+                Location
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center w-[30%]">
+                Quantity
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={3} className="px-4 py-8 text-center text-muted-foreground">
-                  Loading inventory data...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={3} rows={6} />
             ) : stocks.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={3} className="px-4 py-8 text-center text-muted-foreground">
-                  No inventory items found matching your filters.
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={3}
+                icon={Package}
+                message="No inventory items found"
+                description="No stock records match your current filters. Try adjusting your search or location."
+              />
             ) : (
               stocks.map((stock) => (
                 <TableRow
@@ -239,11 +237,13 @@ export default function InventoryTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
-                    <div className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
-                      stock.quantity > 0 
-                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" 
-                        : "bg-red-500/10 text-red-600 border border-red-500/20"
-                    }`}>
+                    <div
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
+                        stock.quantity > 0
+                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                          : "bg-red-500/10 text-red-600 border border-red-500/20"
+                      }`}
+                    >
                       {stock.quantity}
                     </div>
                   </TableCell>

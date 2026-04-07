@@ -4,7 +4,8 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IUsageMode } from "@/types/usage-mode";
-import { EditIcon, Trash2Icon, PlusIcon } from "lucide-react";
+import { EditIcon, Trash2Icon, PlusIcon, Activity } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -128,17 +129,14 @@ export default function UsageModeTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : usageModes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  No data available
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={6}
+                icon={Activity}
+                message="No usage modes found"
+                description="Add your first usage mode using the button above."
+              />
             ) : (
               usageModes.map((item) => (
                 <TableRow

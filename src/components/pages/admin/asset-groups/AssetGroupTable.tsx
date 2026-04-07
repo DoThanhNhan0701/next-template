@@ -4,7 +4,8 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IAssetGroup } from "@/types/asset-group";
-import { EditIcon, Trash2Icon, PlusIcon } from "lucide-react";
+import { EditIcon, Trash2Icon, PlusIcon, Layers } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -143,17 +144,14 @@ export default function AssetGroupTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : assetGroups.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="px-4 py-3 text-center">
-                  No data available
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={6}
+                icon={Layers}
+                message="No asset groups found"
+                description="Add your first asset group using the button above."
+              />
             ) : (
               assetGroups.map((group) => (
                 <TableRow

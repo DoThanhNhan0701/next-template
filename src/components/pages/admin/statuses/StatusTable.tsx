@@ -4,7 +4,8 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStatus } from "@/types/status";
-import { EditIcon, Trash2Icon, PlusIcon } from "lucide-react";
+import { EditIcon, Trash2Icon, PlusIcon, CircleDot } from "lucide-react";
+import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -93,17 +94,14 @@ export default function StatusTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableRow>
-                <TableCell colSpan={5} className="px-4 py-3 text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <TableLoadingRows colSpan={5} rows={6} />
             ) : statuses.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="px-4 py-3 text-center">
-                  No data available
-                </TableCell>
-              </TableRow>
+              <TableEmptyRow
+                colSpan={5}
+                icon={CircleDot}
+                message="No statuses found"
+                description="Add your first status using the button above."
+              />
             ) : (
               statuses.map((item) => (
                 <TableRow
