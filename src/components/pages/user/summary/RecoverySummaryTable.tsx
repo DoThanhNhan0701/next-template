@@ -129,12 +129,12 @@ export default function RecoverySummaryTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Units" />
+                  <SelectValue placeholder="Owning/Managing Unit" />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Units</SelectItem>
+              <SelectItem value="all">Owning/Managing Unit</SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}

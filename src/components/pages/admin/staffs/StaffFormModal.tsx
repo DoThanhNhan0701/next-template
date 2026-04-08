@@ -140,7 +140,11 @@ export default function StaffFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Staff Code</FieldLabel>
-                    <Input {...field} disabled={isEditing} placeholder="ST001" />
+                    <Input
+                      {...field}
+                      disabled={isEditing}
+                      placeholder="ST001"
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -204,22 +208,19 @@ export default function StaffFormModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Unit</FieldLabel>
+                  <FieldLabel>Owning/Managing Unit</FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(Number(val))}
                     value={field.value?.toString() || ""}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a unit" />
+                      <SelectValue placeholder="Select a owning/managing unit" />
                     </SelectTrigger>
                     <SelectContent>
                       {units
                         ?.filter((unit) => unit.is_active)
                         .map((unit) => (
-                          <SelectItem
-                            key={unit.id}
-                            value={unit.id.toString()}
-                          >
+                          <SelectItem key={unit.id} value={unit.id.toString()}>
                             {unit.name} ({unit.code})
                           </SelectItem>
                         ))}

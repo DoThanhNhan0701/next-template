@@ -48,7 +48,10 @@ import { IUsageMode } from "@/types/usage-mode";
 import { IOrgUnit } from "@/types/org";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 import { Laptop } from "lucide-react";
 
 export default function AssetTable() {
@@ -208,12 +211,12 @@ export default function AssetTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Units" />
+                  <SelectValue placeholder="Owning/Managing Unit" />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Units</SelectItem>
+              <SelectItem value="all">Owning/Managing Unit</SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}

@@ -48,7 +48,10 @@ import RentalFormModal from "./RentalFormModal";
 import { useMutation } from "@/hooks/useMutation";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 
 export default function RentalsTable() {
   const [skip, setSkip] = useState(0);
@@ -153,12 +156,12 @@ export default function RentalsTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Units" />
+                  <SelectValue placeholder="Owning/Managing Unit" />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Units</SelectItem>
+              <SelectItem value="all">Owning/Managing Unit</SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
