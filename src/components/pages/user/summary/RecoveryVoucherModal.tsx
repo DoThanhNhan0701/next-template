@@ -68,9 +68,9 @@ function RecoveryItemRow({
   staffId,
   onRemove,
 }: RecoveryItemRowProps) {
-  const { response: assetRes, pending: assetsPending } = useGet<
-    IPhysicalAsset[]
-  >(
+  const { response: assetRes, pending: assetsPending } = useGet<{
+    items: IPhysicalAsset[];
+  }>(
     {
       url: endpoints.PHYSICAL_ASSETS,
       config: {
@@ -83,7 +83,7 @@ function RecoveryItemRow({
     { disabled: !unitId && !staffId, deps: [unitId, staffId] },
   );
 
-  const assets = assetRes || [];
+  const assets = assetRes?.items || [];
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-4">

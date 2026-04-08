@@ -17,7 +17,7 @@ export interface IPhysicalAsset {
   depreciation_period: number | null;
   depreciation_value: number | null;
   warranty_expiration: string | null;
-  quantity: number;
+  quantity: number | null;
   unit_id: number;
   measure_unit_id: number | null;
   holder_id: number | null;
@@ -34,6 +34,7 @@ export interface IPhysicalAsset {
   location: string | null;
   specifications: string;
   notes: string;
+  management_type?: "unique" | "batch";
   attachments?: string[] | null;
 }
 
@@ -55,7 +56,7 @@ export interface IPhysicalAssetCreate {
   depreciation_period?: number | null;
   depreciation_value?: number | null;
   warranty_expiration?: string | null;
-  quantity: number;
+  quantity?: number | null;
   unit_id: number;
   measure_unit_id?: number | null;
   holder_id?: number | null;
@@ -71,6 +72,7 @@ export interface IPhysicalAssetCreate {
   location?: string | null;
   specifications?: string;
   notes?: string;
+  management_method?: "unique" | "batch";
   attachments?: string[] | null;
 }
 

@@ -66,16 +66,16 @@ function RentalItemRow({
   const [locationId, setLocationId] = useState<number>(0);
 
   // Fetch assets filtered by location & status READY
-  const { response: assetRes, pending: assetsPending } = useGet<
-    IPhysicalAsset[]
-  >(
+  const { response: assetRes, pending: assetsPending } = useGet<{
+    items: IPhysicalAsset[];
+  }>(
     {
       url: `${endpoints.PHYSICAL_ASSETS}?location_id=${locationId}&status_code=READY`,
     },
     { disabled: !locationId, deps: [locationId] },
   );
 
-  const assets = assetRes || [];
+  const assets = assetRes?.items || [];
 
   // Reset asset selection when location changes
   useEffect(() => {

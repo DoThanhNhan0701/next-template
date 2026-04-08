@@ -1,5 +1,3 @@
-import { IOrgUnit } from "./org";
-import { ICustomer } from "./customer";
 import { IPhysicalAsset } from "./physical-asset";
 
 export interface IRentalDetail {
@@ -12,20 +10,17 @@ export interface IRentalDetail {
 }
 
 export interface IRental {
-  id: number;
   record_number: string;
-  unit_id: number;
-  customer_id: number;
   lease_date: string;
-  duration_days: number;
-  total_revenue: number;
-  contract_number: string;
-  notes: string;
-  external_link: string | null;
-  attachments: string[];
-  unit: IOrgUnit;
-  customer: ICustomer;
-  details: IRentalDetail[];
+  id: number;
+  asset_code: string;
+  asset_name: string;
+  customer_id: number;
+  customer_name: string;
+  total_assets: number;
+  status: string;
+  status_color: string;
+  reason: string | null;
 }
 
 export interface IRentalCreateItemPayload {

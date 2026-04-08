@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { CircleAlert, Package } from "lucide-react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -29,11 +30,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation } from "@/hooks/useMutation";
 import { useGet } from "@/hooks/useGet";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
+import { cleanFormData } from "@/utils/form";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStatus } from "@/types/status";
 import { ILocation } from "@/types/location";
@@ -125,7 +128,7 @@ export default function AssetFormModal({
       request_ticket: "",
       importance_id: 2, // Standard
       cost: 0,
-      quantity: 1,
+      quantity: null as number | null,
       measure_unit_id: 1,
       status_id: 1,
       notes: "",
@@ -146,6 +149,7 @@ export default function AssetFormModal({
       old_code: "",
       owner: "",
       unit_id: null,
+      management_type: "unique" as const,
       attachments: [],
     },
   });
@@ -157,6 +161,10 @@ export default function AssetFormModal({
   const watchedLocation = useWatch({ control: form.control, name: "location" });
   const watchedStaffId = useWatch({ control: form.control, name: "staff_id" });
   const watchedUnitId = useWatch({ control: form.control, name: "unit_id" });
+  const watchedManagementMethod = useWatch({
+    control: form.control,
+    name: "management_type",
+  });
 
   const hasLocationValue = !!watchedLocationId || !!watchedLocation;
   const hasHolderValue = !!watchedStaffId;
@@ -177,6 +185,7 @@ export default function AssetFormModal({
           category_id: assetToEdit.category_id,
           unit_id: assetToEdit.unit_id,
           staff_id: assetToEdit.staff_id,
+          management_type: assetToEdit.management_type || "unique",
           attachments: assetToEdit.attachments || [],
         } as z.infer<typeof PhysicalAssetSchema>);
       } else {
@@ -188,7 +197,7 @@ export default function AssetFormModal({
           request_ticket: "",
           importance_id: 2,
           cost: 0,
-          quantity: 1,
+          quantity: null,
           measure_unit_id: 1,
           status_id: 1,
           notes: "",
@@ -209,6 +218,7 @@ export default function AssetFormModal({
           owner: "",
           unit_id: null,
           staff_id: null,
+          management_type: "unique",
           attachments: [],
         } as z.infer<typeof PhysicalAssetSchema>);
       }
@@ -221,8 +231,8 @@ export default function AssetFormModal({
       : endpoints.PHYSICAL_ASSETS;
     const method = isEditing ? "patch" : "post";
 
-    // Clean up empty strings to null for nullable/optional fields
-    const cleanedData = {
+    // Clean up data: exclude keys with "", null, undefined, or empty arrays
+    const rawData = {
       ...data,
       purchase_date: data.purchase_date || null,
       system_declaration_date: data.system_declaration_date || null,
@@ -233,7 +243,10 @@ export default function AssetFormModal({
       old_code: data.old_code || null,
       unit_id: data.unit_id ?? 0,
       measure_unit_id: data.measure_unit_id ?? 0,
+      initial_location_id: data.staff_id ? undefined : 2,
     };
+
+    const cleanedData = cleanFormData(rawData);
 
     await mutate(
       {
@@ -280,6 +293,52 @@ export default function AssetFormModal({
                   1. General Information
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
+                  <Controller
+                    name="management_type"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-2 col-span-2">
+                        <FieldLabel>Phương thức quản lý</FieldLabel>
+                        <Tabs
+                          value={field.value}
+                          onValueChange={(val) => {
+                            field.onChange(val);
+                            if (val === "unique") {
+                              form.setValue("quantity", 1);
+                            } else {
+                              form.setValue("serial_number", "");
+                              form.setValue("quantity", null);
+                            }
+                          }}
+                          className="w-full"
+                        >
+                          <TabsList className="grid w-full grid-cols-2 h-16 p-1 bg-muted/30">
+                            <TabsTrigger
+                              value="unique"
+                              className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                            >
+                              <CircleAlert className="w-4 h-4" />
+                              <span className="text-xs font-medium">
+                                Theo Mã (Duy nhất)
+                              </span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                              value="batch"
+                              className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                            >
+                              <Package className="w-4 h-4" />
+                              <span className="text-xs font-medium">
+                                Theo Số lượng (Lô)
+                              </span>
+                            </TabsTrigger>
+                          </TabsList>
+                        </Tabs>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
                   <Controller
                     name="name"
                     control={form.control}
@@ -365,6 +424,7 @@ export default function AssetFormModal({
                           {...field}
                           value={field.value ?? ""}
                           placeholder="e.g. SN12345678"
+                          disabled={watchedManagementMethod === "batch"}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -673,8 +733,9 @@ export default function AssetFormModal({
                         <Input
                           type="number"
                           {...field}
-                          value={(field.value as number) ?? 1}
+                          value={(field.value as number) ?? ""}
                           placeholder="1"
+                          disabled={watchedManagementMethod === "unique"}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />

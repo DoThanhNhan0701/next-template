@@ -14,7 +14,6 @@ import {
   X,
   RotateCcw,
   Calendar,
-  Box,
   CornerDownLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -247,12 +246,23 @@ export default function RentalsTable() {
                 Rental Info
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Ownership / Customer
+                Date
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Lease Details
+                Asset Details
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Items</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Quantity
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Client
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Status
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Reason
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right">
                 Actions
               </TableHead>
@@ -260,10 +270,10 @@ export default function RentalsTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={5} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : rentals.length === 0 ? (
               <TableEmptyRow
-                colSpan={5}
+                colSpan={8}
                 icon={FileText}
                 message="No rentals found"
                 description="No rental records match your current search or filter criteria."
@@ -280,82 +290,54 @@ export default function RentalsTable() {
                       <div className="bg-primary/5 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
                         <FileText size={18} />
                       </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold text-sm group-hover:text-primary transition-colors">
-                          {rental.record_number}
-                        </span>
-                        {rental.contract_number && (
-                          <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
-                            HĐ: {rental.contract_number}
-                          </span>
-                        )}
-                      </div>
+                      <span className="font-semibold text-sm group-hover:text-primary transition-colors">
+                        {rental.record_number}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1.5 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Building2
-                          size={14}
-                          className="text-emerald-600/70 shrink-0"
-                        />
-                        <span className="font-medium text-foreground/80">
-                          {rental.unit?.name || "No Unit"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Users
-                          size={14}
-                          className="text-blue-600/70 shrink-0"
-                        />
-                        <span className="text-xs">
-                          {rental.customer?.name || "No Customer"}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1 text-sm">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar
-                          size={12}
-                          className="text-muted-foreground/60"
-                        />
-                        <span className="text-xs">
-                          {rental.lease_date?.split("T")[0] || "N/A"}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground font-medium ml-1">
-                          ({rental.duration_days} days)
-                        </span>
-                      </div>
-                      <span className="font-bold text-sm text-foreground/90 mt-1">
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(rental.total_revenue || 0)}
+                  <TableCell className="px-4 py-3 text-sm">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar
+                        size={12}
+                        className="text-muted-foreground/60"
+                      />
+                      <span>
+                        {rental.lease_date?.split("T")[0] || "N/A"}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1 text-xs">
-                      {rental.details?.length > 0 ? (
-                        <>
-                          <div className="flex items-center gap-1.5 font-medium text-foreground/80">
-                            <Box size={14} className="text-orange-500/80" />
-                            <span>{rental.details.length} Items</span>
-                          </div>
-                          <div className="text-muted-foreground truncate max-w-[200px]">
-                            {rental.details
-                              .map((d) => d.asset?.name)
-                              .join(", ")}
-                          </div>
-                        </>
-                      ) : (
-                        <span className="text-muted-foreground italic">
-                          No items
-                        </span>
-                      )}
+                    <div className="flex flex-col gap-1">
+                      <span className="font-semibold text-sm">
+                        {rental.asset_name}
+                      </span>
+                      <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
+                        {rental.asset_code}
+                      </span>
                     </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-sm font-medium">
+                    {rental.total_assets}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Users
+                        size={14}
+                        className="text-blue-600/70 shrink-0"
+                      />
+                      <span>{rental.customer_name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
+                      style={{ backgroundColor: rental.status_color }}
+                    >
+                      {rental.status}
+                    </span>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
+                    {rental.reason || "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-right">
                     <Button

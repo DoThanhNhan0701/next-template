@@ -18,7 +18,7 @@ export const PhysicalAssetSchema = z.object({
   depreciation_period: z.coerce.number().int().nullable().optional(),
   depreciation_value: z.coerce.number().nullable().optional(),
   warranty_expiration: z.string().nullable().optional().or(z.literal("")),
-  quantity: z.coerce.number().int().min(1, "Quantity must be at least 1"),
+  quantity: z.coerce.number().int().min(1, "Quantity must be at least 1").nullable().optional(),
   measure_unit_id: z.coerce.number().int().min(0).nullable().optional(),
   holder_id: z.coerce.number().int().nullable().optional(),
   holder_name: z.string().nullable().optional(),
@@ -34,6 +34,7 @@ export const PhysicalAssetSchema = z.object({
   location: z.string().nullable().optional(),
   specifications: z.string().optional(),
   notes: z.string().optional(),
+  management_type: z.enum(["unique", "batch"]).optional(),
   attachments: z.array(z.string()).optional(),
 }).refine(
   (data) => {

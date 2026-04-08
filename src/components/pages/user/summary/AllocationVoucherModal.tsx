@@ -68,16 +68,16 @@ function AllocationItemRow({
 }: AllocationItemRowProps) {
   const [warehouseId, setWarehouseId] = useState<number>(0);
 
-  const { response: assetRes, pending: assetsPending } = useGet<
-    IPhysicalAsset[]
-  >(
+  const { response: assetRes, pending: assetsPending } = useGet<{
+    items: IPhysicalAsset[];
+  }>(
     {
       url: `${endpoints.PHYSICAL_ASSETS}?location_id=${warehouseId}&status_code=READY`,
     },
     { disabled: !warehouseId, deps: [warehouseId] },
   );
 
-  const assets = assetRes || [];
+  const assets = assetRes?.items || [];
 
   useEffect(() => {
     setValue(`items.${index}.asset_id`, 0);
@@ -97,7 +97,9 @@ function AllocationItemRow({
 
       {/* Issuing Warehouse */}
       <Field className="gap-1 flex-1">
-        <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Locations *</FieldLabel>
+        <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+          Locations *
+        </FieldLabel>
         <Select
           onValueChange={(val) => {
             const vid = Number(val);
@@ -125,7 +127,9 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Physical Asset *</FieldLabel>
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Physical Asset *
+            </FieldLabel>
             <Select
               onValueChange={(val) => field.onChange(Number(val))}
               value={field.value ? field.value.toString() : ""}
@@ -161,7 +165,9 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-24">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Qty *</FieldLabel>
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Qty *
+            </FieldLabel>
             <Input
               type="number"
               className="h-9 text-xs"
@@ -276,14 +282,20 @@ export default function AllocationVoucherModal({
   const onSubmit = async (data: AllocationFormValues) => {
     // Transform data for backend
     const workflow_assignments = [];
-    if (activeAllocationTemplate?.steps && activeAllocationTemplate.steps.length > 0) {
+    if (
+      activeAllocationTemplate?.steps &&
+      activeAllocationTemplate.steps.length > 0
+    ) {
       if (data.approver_step_1_id) {
         workflow_assignments.push({
           step_id: activeAllocationTemplate.steps[0].id,
           user_id: data.approver_step_1_id,
         });
       }
-      if (activeAllocationTemplate.steps.length > 1 && data.approver_step_2_id) {
+      if (
+        activeAllocationTemplate.steps.length > 1 &&
+        data.approver_step_2_id
+      ) {
         workflow_assignments.push({
           step_id: activeAllocationTemplate.steps[1].id,
           user_id: data.approver_step_2_id,
@@ -387,10 +399,18 @@ export default function AllocationVoucherModal({
                               ? field.value.toString()
                               : ""
                           }
-                          disabled={!watchedUnitId || Number(watchedUnitId) === 0}
+                          disabled={
+                            !watchedUnitId || Number(watchedUnitId) === 0
+                          }
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={!watchedUnitId || Number(watchedUnitId) === 0 ? "Select unit first" : "Select staff"} />
+                            <SelectValue
+                              placeholder={
+                                !watchedUnitId || Number(watchedUnitId) === 0
+                                  ? "Select unit first"
+                                  : "Select staff"
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -424,7 +444,11 @@ export default function AllocationVoucherModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Allocation Date *</FieldLabel>
-                        <Input type="date" {...field} value={field.value ?? ""} />
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -442,7 +466,11 @@ export default function AllocationVoucherModal({
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
                           }
-                          value={field.value !== null && field.value !== undefined ? field.value.toString() : ""}
+                          value={
+                            field.value !== null && field.value !== undefined
+                              ? field.value.toString()
+                              : ""
+                          }
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select locations" />
@@ -549,54 +577,60 @@ export default function AllocationVoucherModal({
                   Approval Process
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
-                  {(activeAllocationTemplate?.steps || []).map((step: ITemplateStep, idx) => {
-                    const name =
-                      idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
-                    return (
-                      <Controller
-                        key={step.id}
-                        name={name as keyof AllocationFormValues}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field className="gap-1">
-                            <FieldLabel>{step.name}</FieldLabel>
-                            <Select
-                              onValueChange={(val) =>
-                                field.onChange(val === "none" ? null : val)
-                              }
-                              value={
-                                field.value !== null && field.value !== undefined
-                                  ? field.value.toString()
-                                  : ""
-                              }
-                            >
-                              <SelectTrigger className="h-9">
-                                <SelectValue placeholder="Select approver" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem
-                                  value="none"
-                                  className="text-muted-foreground italic"
-                                >
-                                  (None)
-                                </SelectItem>
-                                {users
-                                  .filter((u) => u.is_active)
-                                  .map((u) => (
-                                    <SelectItem key={u.id} value={u.id.toString()}>
-                                      {u.full_name}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                    );
-                  })}
+                  {(activeAllocationTemplate?.steps || []).map(
+                    (step: ITemplateStep, idx) => {
+                      const name =
+                        idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
+                      return (
+                        <Controller
+                          key={step.id}
+                          name={name as keyof AllocationFormValues}
+                          control={form.control}
+                          render={({ field, fieldState }) => (
+                            <Field className="gap-1">
+                              <FieldLabel>{step.name}</FieldLabel>
+                              <Select
+                                onValueChange={(val) =>
+                                  field.onChange(val === "none" ? null : val)
+                                }
+                                value={
+                                  field.value !== null &&
+                                  field.value !== undefined
+                                    ? field.value.toString()
+                                    : ""
+                                }
+                              >
+                                <SelectTrigger className="h-9">
+                                  <SelectValue placeholder="Select approver" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem
+                                    value="none"
+                                    className="text-muted-foreground italic"
+                                  >
+                                    (None)
+                                  </SelectItem>
+                                  {users
+                                    .filter((u) => u.is_active)
+                                    .map((u) => (
+                                      <SelectItem
+                                        key={u.id}
+                                        value={u.id.toString()}
+                                      >
+                                        {u.full_name}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+                              {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                              )}
+                            </Field>
+                          )}
+                        />
+                      );
+                    },
+                  )}
                 </FieldGroup>
               </div>
             </div>
