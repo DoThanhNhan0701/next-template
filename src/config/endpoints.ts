@@ -36,6 +36,8 @@ export const endpoints = getEndPoint("api/v1", {
   UPLOAD_ATTACHMENTS: "attachments/upload",
   STOCKS: "stocks/",
   RENTALS: "rentals/",
+  ALLOCATIONS: "allocations/",
+  RECOVERIES: "recoveries/",
 });
 
 export const dynamicEndpoints = {
