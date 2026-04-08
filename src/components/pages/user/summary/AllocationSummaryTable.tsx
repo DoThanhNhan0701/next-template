@@ -46,6 +46,7 @@ import {
   TableLoadingRows,
   TableEmptyRow,
 } from "@/components/common/TableStateDisplay";
+import AllocationVoucherModal from "./AllocationVoucherModal";
 
 export default function AllocationSummaryTable() {
   const [skip, setSkip] = useState(0);
@@ -55,6 +56,8 @@ export default function AllocationSummaryTable() {
   const [q, setQ] = useState("");
   const [unitId, setUnitId] = useState<string>("all");
   const [statusCode, setStatusCode] = useState<string>("all");
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
@@ -83,7 +86,7 @@ export default function AllocationSummaryTable() {
   if (appliedFilters.status_code !== "all")
     queryParams.append("status_code", appliedFilters.status_code);
 
-  const { response, pending } = useGet<IAllocationSummary[]>({
+  const { response, pending, reFetch } = useGet<IAllocationSummary[]>({
     url: `${endpoints.ALLOCATIONS}summary?${queryParams.toString()}`,
   });
   const allocations = response || [];
@@ -201,6 +204,13 @@ export default function AllocationSummaryTable() {
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
+
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+          >
+            Create
+          </Button>
         </div>
       </div>
 
@@ -233,10 +243,10 @@ export default function AllocationSummaryTable() {
                 description="Adjust filters to find allocation records."
               />
             ) : (
-              allocations.map((alloc) => {
+              allocations.map((alloc, index) => {
                 return (
                   <TableRow
-                    key={alloc.id}
+                    key={`${alloc.id}-${index}`}
                     className="group hover:bg-primary/3 transition-colors relative"
                   >
                     <TableCell className="px-4 py-1.5">
@@ -337,6 +347,14 @@ export default function AllocationSummaryTable() {
           </PaginationContent>
         </Pagination>
       ) : null}
+
+      <AllocationVoucherModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          reFetch();
+        }}
+      />
     </div>
   );
 }

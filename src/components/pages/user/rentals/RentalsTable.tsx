@@ -8,7 +8,6 @@ import { IOrgUnit } from "@/types/org";
 import { ICustomer } from "@/types/customer";
 import {
   FileText,
-  PlusIcon,
   Search,
   Building2,
   Users,
@@ -206,7 +205,7 @@ export default function RentalsTable() {
             }}
             className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search Rentals"}
+            {pending ? "Searching..." : "Search"}
           </Button>
 
           <Button
@@ -235,8 +234,7 @@ export default function RentalsTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            <PlusIcon size={16} className="mr-2" />
-            Create Rental
+            Create
           </Button>
         </div>
       </div>

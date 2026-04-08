@@ -6,7 +6,10 @@ import { useGet } from "@/hooks/useGet";
 import { IStock } from "@/types/stock";
 import { ILocation } from "@/types/location";
 import { Search, X, RotateCcw, MapPin, Package } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -156,7 +159,7 @@ export default function InventoryTable() {
             }}
             className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Loading..." : "Filter Results"}
+            {pending ? "Searching..." : "Search"}
           </Button>
 
           <Button

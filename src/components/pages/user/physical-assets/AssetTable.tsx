@@ -6,7 +6,6 @@ import { useGet } from "@/hooks/useGet";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import {
   EditIcon,
-  PlusIcon,
   Calendar,
   MapPin,
   Search,
@@ -281,7 +280,7 @@ export default function AssetTable() {
             }}
             className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search Asset"}
+            {pending ? "Searching..." : "Search"}
           </Button>
 
           <Button
@@ -312,7 +311,7 @@ export default function AssetTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Declare Asset
+            Create
           </Button>
         </div>
       </div>

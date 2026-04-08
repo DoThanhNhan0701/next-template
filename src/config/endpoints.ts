@@ -39,6 +39,7 @@ export const endpoints = getEndPoint("api/v1", {
   ALLOCATIONS: "allocations/",
   RECOVERIES: "recoveries/",
   STAFFS: "staffs/",
+  TEMPLATES: "workflows/templates/",
 });
 
 export const dynamicEndpoints = {
