@@ -46,6 +46,7 @@ import {
   TableLoadingRows,
   TableEmptyRow,
 } from "@/components/common/TableStateDisplay";
+import RecoveryVoucherModal from "./RecoveryVoucherModal";
 
 export default function RecoverySummaryTable() {
   const [skip, setSkip] = useState(0);
@@ -55,6 +56,7 @@ export default function RecoverySummaryTable() {
   const [q, setQ] = useState("");
   const [unitId, setUnitId] = useState<string>("all");
   const [statusCode, setStatusCode] = useState<string>("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
@@ -83,10 +85,12 @@ export default function RecoverySummaryTable() {
   if (appliedFilters.status_code !== "all")
     queryParams.append("status_code", appliedFilters.status_code);
 
-  const { response, pending } = useGet<IRecoverySummary[]>({
+  const { response, pending } = useGet<{
+    items: IRecoverySummary[];
+  }>({
     url: `${endpoints.RECOVERIES}summary?${queryParams.toString()}`,
   });
-  const recoveries = response || [];
+  const recoveries = response?.items || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = recoveries.length === limit;
@@ -201,8 +205,21 @@ export default function RecoverySummaryTable() {
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
+
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+          >
+            Create
+          </Button>
         </div>
       </div>
+
+      <RecoveryVoucherModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => setAppliedFilters((prev) => ({ ...prev }))}
+      />
 
       <div className="border border-(--surface-border-color) rounded-lg flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
         <Table className="whitespace-nowrap">

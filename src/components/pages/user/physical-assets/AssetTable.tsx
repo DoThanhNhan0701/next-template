@@ -161,10 +161,10 @@ export default function AssetTable() {
   if (appliedFilters.status_code !== "all")
     queryParams.append("status_code", appliedFilters.status_code);
 
-  const { response, pending, reFetch } = useGet<IPhysicalAsset[]>({
+  const { response, pending, reFetch } = useGet<{ items: IPhysicalAsset[] }>({
     url: `${endpoints.PHYSICAL_ASSETS}?${queryParams.toString()}`,
   });
-  const assets = response || [];
+  const assets = response?.items || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = assets.length === limit;

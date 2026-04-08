@@ -70,11 +70,11 @@ export default function InventoryTable() {
 
   queryParams.append("show_zero", appliedFilters.show_zero.toString());
 
-  const { response, pending } = useGet<IStock[]>({
+  const { response, pending } = useGet<{ items: IStock[] }>({
     url: `${endpoints.STOCKS}?${queryParams.toString()}`,
   });
 
-  const stocks = response || [];
+  const stocks = response?.items || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = stocks.length === limit;

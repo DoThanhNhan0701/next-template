@@ -5,7 +5,10 @@ import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStaff } from "@/types/staff";
 import { Contact, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -22,7 +25,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import StaffFormModal from "./StaffFormModal";
 
 export default function StaffTable() {
@@ -38,10 +49,12 @@ export default function StaffTable() {
     queryParams.append("is_active", isActive);
   }
 
-  const { response, pending, reFetch, setResponse } = useGet<IStaff[]>({
+  const { response, pending, reFetch, setResponse } = useGet<{
+    items: IStaff[];
+  }>({
     url: `${endpoints.STAFFS}?${queryParams.toString()}`,
   });
-  const staffs = response || [];
+  const staffs = response?.items || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = staffs.length === limit;
@@ -56,11 +69,14 @@ export default function StaffTable() {
         | IStaff
         | undefined;
       if (updatedItem?.id) {
-        setResponse((prev: IStaff[] | null) =>
+        setResponse((prev: { items: IStaff[] } | null) =>
           prev
-            ? prev.map((u: IStaff) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+            ? {
+                ...prev,
+                items: prev.items.map((u: IStaff) =>
+                  u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+                ),
+              }
             : null,
         );
         return;
@@ -69,8 +85,13 @@ export default function StaffTable() {
       const resp = responseData as { data?: IStaff } | IStaff;
       const newItem = ("data" in resp ? resp.data : resp) as IStaff | undefined;
       if (newItem?.id) {
-        setResponse((prev: IStaff[] | null) =>
-          prev ? [newItem, ...prev] : [newItem],
+        setResponse((prev: { items: IStaff[] } | null) =>
+          prev
+            ? {
+                ...prev,
+                items: [newItem, ...prev.items],
+              }
+            : null,
         );
         return;
       }

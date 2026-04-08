@@ -101,7 +101,7 @@ export default function AssetFormModal({
     { url: endpoints.ORG_UNITS },
     { disabled: !isOpen },
   );
-  const { response: staffRes } = useGet<IStaff[]>(
+  const { response: staffRes } = useGet<{ items: IStaff[] }>(
     { url: endpoints.STAFFS },
     { disabled: !isOpen },
   );
@@ -113,7 +113,7 @@ export default function AssetFormModal({
   const categories = catalogRes || [];
   const usageModes = usageModeRes || [];
   const orgUnits = orgRes || [];
-  const staffs = staffRes || [];
+  const staffs = staffRes?.items || [];
 
   const form = useForm({
     resolver: zodResolver(PhysicalAssetSchema),

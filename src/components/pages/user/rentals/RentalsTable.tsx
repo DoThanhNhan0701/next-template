@@ -89,10 +89,10 @@ export default function RentalsTable() {
   if (appliedFilters.customer_id !== "all")
     queryParams.append("customer_id", appliedFilters.customer_id);
 
-  const { response, pending, reFetch } = useGet<IRental[]>({
+  const { response, pending, reFetch } = useGet<{ items: IRental[] }>({
     url: `${endpoints.RENTALS}?${queryParams.toString()}`,
   });
-  const rentals = response || [];
+  const rentals = response?.items || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = rentals.length === limit;

@@ -86,10 +86,12 @@ export default function AllocationSummaryTable() {
   if (appliedFilters.status_code !== "all")
     queryParams.append("status_code", appliedFilters.status_code);
 
-  const { response, pending, reFetch } = useGet<IAllocationSummary[]>({
+  const { response, pending, reFetch } = useGet<{
+    items: IAllocationSummary[];
+  }>({
     url: `${endpoints.ALLOCATIONS}summary?${queryParams.toString()}`,
   });
-  const allocations = response || [];
+  const allocations = response?.items || [];
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = allocations.length === limit;

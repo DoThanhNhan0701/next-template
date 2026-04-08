@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   useForm,
   Controller,
@@ -11,7 +11,7 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
+import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
 import {
   Dialog,
   DialogContent,
@@ -42,46 +42,48 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { IOrgUnit } from "@/types/org";
 import { IStaff } from "@/types/staff";
-import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
-import { ITemplate, ITemplateStep } from "@/types/template";
 import { PlusIcon, Trash } from "lucide-react";
 
-type AllocationFormValues = z.input<typeof AllocationCreateSchema>;
+type RecoveryFormValues = z.input<typeof RecoveryCreateSchema>;
 
 /* ───── Per-item row component ───── */
-interface AllocationItemRowProps {
+interface RecoveryItemRowProps {
   index: number;
-  control: Control<AllocationFormValues>;
-  setValue: UseFormSetValue<AllocationFormValues>;
+  control: Control<RecoveryFormValues>;
+  setValue: UseFormSetValue<RecoveryFormValues>;
   locations: ILocation[];
+  unitId: number;
+  staffId: string | null;
   onRemove: () => void;
 }
 
-function AllocationItemRow({
+function RecoveryItemRow({
   index,
   control,
   setValue,
   locations,
+  unitId,
+  staffId,
   onRemove,
-}: AllocationItemRowProps) {
-  const [warehouseId, setWarehouseId] = useState<number>(0);
-
+}: RecoveryItemRowProps) {
   const { response: assetRes, pending: assetsPending } = useGet<
     IPhysicalAsset[]
   >(
     {
-      url: `${endpoints.PHYSICAL_ASSETS}?location_id=${warehouseId}&status_code=READY`,
+      url: endpoints.PHYSICAL_ASSETS,
+      config: {
+        params: {
+          status_code: "IN_USE",
+          ...(staffId ? { staff_id: staffId } : { unit_id: unitId }),
+        },
+      },
     },
-    { disabled: !warehouseId, deps: [warehouseId] },
+    { disabled: !unitId && !staffId, deps: [unitId, staffId] },
   );
 
   const assets = assetRes || [];
-
-  useEffect(() => {
-    setValue(`items.${index}.asset_id`, 0);
-  }, [warehouseId, index, setValue]);
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-4">
@@ -95,46 +97,35 @@ function AllocationItemRow({
         <Trash size={12} />
       </Button>
 
-      {/* Issuing Warehouse */}
-      <Field className="gap-1 flex-1">
-        <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Locations *</FieldLabel>
-        <Select
-          onValueChange={(val) => {
-            const vid = Number(val);
-            setWarehouseId(vid);
-            setValue(`items.${index}.location_id`, vid);
-          }}
-          value={warehouseId ? warehouseId.toString() : ""}
-        >
-          <SelectTrigger className="h-9 text-xs">
-            <SelectValue placeholder="Select location" />
-          </SelectTrigger>
-          <SelectContent>
-            {locations.map((loc) => (
-              <SelectItem key={loc.id} value={loc.id.toString()}>
-                {loc.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-
       {/* Physical Asset */}
       <Controller
         name={`items.${index}.asset_id`}
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Physical Asset *</FieldLabel>
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Physical Asset *
+            </FieldLabel>
             <Select
-              onValueChange={(val) => field.onChange(Number(val))}
+              onValueChange={(val) => {
+                const aid = Number(val);
+                field.onChange(aid);
+                // Auto-fill location if asset is selected
+                const selectedAsset = assets.find((a) => a.id === aid);
+                if (selectedAsset?.location_id) {
+                  setValue(
+                    `items.${index}.location_id`,
+                    selectedAsset.location_id,
+                  );
+                }
+              }}
               value={field.value ? field.value.toString() : ""}
-              disabled={!warehouseId}
+              disabled={!unitId}
             >
               <SelectTrigger className="h-9 text-xs">
                 <SelectValue
                   placeholder={
-                    !warehouseId
+                    !unitId
                       ? "Select unit first"
                       : assetsPending
                         ? "Loading..."
@@ -155,13 +146,44 @@ function AllocationItemRow({
         )}
       />
 
+      {/* Recovering Locations */}
+      <Controller
+        name={`items.${index}.location_id`}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field className="gap-1 flex-1">
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Locations *
+            </FieldLabel>
+            <Select
+              onValueChange={(val) => field.onChange(Number(val))}
+              value={field.value ? field.value.toString() : ""}
+            >
+              <SelectTrigger className="h-9 text-xs">
+                <SelectValue placeholder="Select location" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations.map((loc) => (
+                  <SelectItem key={loc.id} value={loc.id.toString()}>
+                    {loc.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
       {/* Quantity */}
       <Controller
         name={`items.${index}.quantity`}
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-24">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Qty *</FieldLabel>
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Qty *
+            </FieldLabel>
             <Input
               type="number"
               className="h-9 text-xs"
@@ -184,7 +206,7 @@ interface Props {
   onSuccess: () => void;
 }
 
-export default function AllocationVoucherModal({
+export default function RecoveryVoucherModal({
   isOpen,
   onClose,
   onSuccess,
@@ -203,36 +225,22 @@ export default function AllocationVoucherModal({
     { url: endpoints.LOCATIONS },
     { disabled: !isOpen },
   );
-  const { response: templateRes } = useGet<ITemplate[]>(
-    { url: endpoints.TEMPLATES },
-    { disabled: !isOpen },
-  );
-  const { response: userRes } = useGet<IUser[]>(
-    { url: endpoints.USERS },
-    { disabled: !isOpen },
-  );
 
   const orgUnits = orgRes || [];
   const staffs = staffRes || [];
   const locations = locationRes || [];
-  const users = userRes || [];
-  const activeAllocationTemplate = templateRes?.find(
-    (t) => t.is_active && t.document_type === "allocation",
-  );
 
-  const form = useForm<AllocationFormValues>({
-    resolver: zodResolver(AllocationCreateSchema),
+  const form = useForm<RecoveryFormValues>({
+    resolver: zodResolver(RecoveryCreateSchema),
     defaultValues: {
-      allocated_to_type: "user",
+      recovered_from_type: "user",
       unit_id: 0,
       staff_id: null,
-      allocation_date: new Date().toISOString().split("T")[0],
+      recovery_date: new Date().toISOString().split("T")[0],
       location_id: null,
       reason: "",
       external_link: "",
       items: [],
-      approver_step_1_id: null,
-      approver_step_2_id: null,
     },
   });
 
@@ -246,6 +254,11 @@ export default function AllocationVoucherModal({
     name: "unit_id",
   });
 
+  const watchedStaffId = (useWatch({
+    control: form.control,
+    name: "staff_id",
+  }) || null) as string | null;
+
   useEffect(() => {
     form.setValue("staff_id", null);
   }, [watchedUnitId, form]);
@@ -253,10 +266,10 @@ export default function AllocationVoucherModal({
   useEffect(() => {
     if (isOpen) {
       form.reset({
-        allocated_to_type: "user",
+        recovered_from_type: "user",
         unit_id: 0,
         staff_id: null,
-        allocation_date: new Date().toISOString().split("T")[0],
+        recovery_date: new Date().toISOString().split("T")[0],
         location_id: null,
         reason: "",
         external_link: "",
@@ -267,47 +280,16 @@ export default function AllocationVoucherModal({
             quantity: 1,
           },
         ],
-        approver_step_1_id: null,
-        approver_step_2_id: null,
       });
     }
   }, [isOpen, form]);
 
-  const onSubmit = async (data: AllocationFormValues) => {
-    // Transform data for backend
-    const workflow_assignments = [];
-    if (activeAllocationTemplate?.steps && activeAllocationTemplate.steps.length > 0) {
-      if (data.approver_step_1_id) {
-        workflow_assignments.push({
-          step_id: activeAllocationTemplate.steps[0].id,
-          user_id: data.approver_step_1_id,
-        });
-      }
-      if (activeAllocationTemplate.steps.length > 1 && data.approver_step_2_id) {
-        workflow_assignments.push({
-          step_id: activeAllocationTemplate.steps[1].id,
-          user_id: data.approver_step_2_id,
-        });
-      }
-    }
-
-    const payload = {
-      allocated_to_type: data.allocated_to_type,
-      unit_id: data.unit_id,
-      staff_id: data.staff_id,
-      allocation_date: data.allocation_date,
-      reason: data.reason,
-      external_link: data.external_link,
-      location_id: data.location_id,
-      items: data.items,
-      workflow_assignments,
-    };
-
+  const onSubmit = async (data: RecoveryFormValues) => {
     await mutate(
       {
-        url: endpoints.ALLOCATIONS,
+        url: endpoints.RECOVERIES,
         method: "post",
-        body: payload,
+        body: data,
       },
       {
         onSuccess: (res) => {
@@ -326,9 +308,9 @@ export default function AllocationVoucherModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
-          <DialogTitle>Create Allocation Voucher</DialogTitle>
+          <DialogTitle>Create Recovery Voucher</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Fill in details to create a new allocation voucher.
+            Fill in details to create a new recovery voucher.
           </DialogDescription>
         </DialogHeader>
 
@@ -377,7 +359,7 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Recipient (Staff)</FieldLabel>
+                        <FieldLabel>Recovered From (Staff)</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -387,10 +369,18 @@ export default function AllocationVoucherModal({
                               ? field.value.toString()
                               : ""
                           }
-                          disabled={!watchedUnitId || Number(watchedUnitId) === 0}
+                          disabled={
+                            !watchedUnitId || Number(watchedUnitId) === 0
+                          }
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={!watchedUnitId || Number(watchedUnitId) === 0 ? "Select unit first" : "Select staff"} />
+                            <SelectValue
+                              placeholder={
+                                !watchedUnitId || Number(watchedUnitId) === 0
+                                  ? "Select unit first"
+                                  : "Select staff"
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -419,12 +409,16 @@ export default function AllocationVoucherModal({
                   />
 
                   <Controller
-                    name="allocation_date"
+                    name="recovery_date"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Allocation Date *</FieldLabel>
-                        <Input type="date" {...field} value={field.value ?? ""} />
+                        <FieldLabel>Recovery Date *</FieldLabel>
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -442,7 +436,11 @@ export default function AllocationVoucherModal({
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
                           }
-                          value={field.value !== null && field.value !== undefined ? field.value.toString() : ""}
+                          value={
+                            field.value !== null && field.value !== undefined
+                              ? field.value.toString()
+                              : ""
+                          }
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select locations" />
@@ -476,11 +474,11 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Allocation Reason *</FieldLabel>
+                        <FieldLabel>Recovery Reason *</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="Reason for allocation"
+                          placeholder="Reason for recovery"
                           className="min-h-[80px]"
                         />
                         {fieldState.invalid && (
@@ -531,73 +529,18 @@ export default function AllocationVoucherModal({
 
                 <div className="flex flex-col gap-3">
                   {fields.map((item, index) => (
-                    <AllocationItemRow
+                    <RecoveryItemRow
                       key={item.id}
                       index={index}
                       control={form.control}
                       setValue={form.setValue}
                       locations={locations}
+                      unitId={Number(watchedUnitId)}
+                      staffId={watchedStaffId}
                       onRemove={() => remove(index)}
                     />
                   ))}
                 </div>
-              </div>
-
-              {/* Approval Process */}
-              <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  Approval Process
-                </h3>
-                <FieldGroup className="grid grid-cols-2 gap-3">
-                  {(activeAllocationTemplate?.steps || []).map((step: ITemplateStep, idx) => {
-                    const name =
-                      idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
-                    return (
-                      <Controller
-                        key={step.id}
-                        name={name as keyof AllocationFormValues}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field className="gap-1">
-                            <FieldLabel>{step.name}</FieldLabel>
-                            <Select
-                              onValueChange={(val) =>
-                                field.onChange(val === "none" ? null : val)
-                              }
-                              value={
-                                field.value !== null && field.value !== undefined
-                                  ? field.value.toString()
-                                  : ""
-                              }
-                            >
-                              <SelectTrigger className="h-9">
-                                <SelectValue placeholder="Select approver" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem
-                                  value="none"
-                                  className="text-muted-foreground italic"
-                                >
-                                  (None)
-                                </SelectItem>
-                                {users
-                                  .filter((u) => u.is_active)
-                                  .map((u) => (
-                                    <SelectItem key={u.id} value={u.id.toString()}>
-                                      {u.full_name}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                    );
-                  })}
-                </FieldGroup>
               </div>
             </div>
           </div>
