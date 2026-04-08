@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const PhysicalAssetSchema = z.object({
-  asset_code: z.string().min(1, "Asset code is required"),
+  asset_code: z.string().optional().nullable(),
   name: z.string().min(1, "Asset name is required"),
   serial_number: z.string().optional(),
   model: z.string().optional(),
@@ -22,6 +22,7 @@ export const PhysicalAssetSchema = z.object({
   measure_unit_id: z.coerce.number().int().min(0).nullable().optional(),
   holder_id: z.coerce.number().int().nullable().optional(),
   holder_name: z.string().nullable().optional(),
+  staff_id: z.coerce.number().int().nullable().optional(),
   category_id: z.coerce.number().int().nullable().optional(),
   supplier_id: z.coerce.number().int().nullable().optional(),
   manager_id: z.coerce.number().int().nullable().optional(),
@@ -37,7 +38,7 @@ export const PhysicalAssetSchema = z.object({
 }).refine(
   (data) => {
     const hasLocation = !!data.location_id || !!data.location;
-    const hasHolder = !!data.holder_id || !!data.holder_name;
+    const hasHolder = !!data.holder_id || !!data.holder_name || !!data.staff_id;
     return !(hasLocation && hasHolder);
   },
   {

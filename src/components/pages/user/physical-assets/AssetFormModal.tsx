@@ -39,10 +39,10 @@ import { IStatus } from "@/types/status";
 import { ILocation } from "@/types/location";
 import { ISupplier } from "@/types/supplier";
 import { IUnit } from "@/types/unit";
-import { IUser } from "@/types/auth";
 import { ICatalogType } from "@/types/catalog-type";
 import { IUsageMode } from "@/types/usage-mode";
 import { IOrgUnit } from "@/types/org";
+import { IStaff } from "@/types/staff";
 import MultiAttachmentUpload from "@/components/common/MultiAttachmentUpload";
 
 interface Props {
@@ -84,10 +84,6 @@ export default function AssetFormModal({
     { url: endpoints.UNITS },
     { disabled: !isOpen },
   );
-  const { response: userRes } = useGet<IUser[]>(
-    { url: endpoints.USERS },
-    { disabled: !isOpen },
-  );
   const { response: catalogRes } = useGet<ICatalogType[]>(
     {
       url: endpoints.CATALOG_TYPES,
@@ -105,15 +101,19 @@ export default function AssetFormModal({
     { url: endpoints.ORG_UNITS },
     { disabled: !isOpen },
   );
+  const { response: staffRes } = useGet<IStaff[]>(
+    { url: endpoints.STAFFS },
+    { disabled: !isOpen },
+  );
 
   const statuses = statusRes || [];
   const locations = locationRes || [];
   const suppliers = supplierRes || [];
   const units = unitRes || [];
-  const users = userRes || [];
   const categories = catalogRes || [];
   const usageModes = usageModeRes || [];
   const orgUnits = orgRes || [];
+  const staffs = staffRes || [];
 
   const form = useForm({
     resolver: zodResolver(PhysicalAssetSchema),
@@ -141,6 +141,7 @@ export default function AssetFormModal({
       location_id: undefined,
       usage_mode_id: undefined,
       manager_id: undefined,
+      staff_id: null,
       location: "",
       old_code: "",
       owner: "",
@@ -154,17 +155,11 @@ export default function AssetFormModal({
     name: "location_id",
   });
   const watchedLocation = useWatch({ control: form.control, name: "location" });
-  const watchedHolderId = useWatch({
-    control: form.control,
-    name: "holder_id",
-  });
-  const watchedHolderName = useWatch({
-    control: form.control,
-    name: "holder_name",
-  });
+  const watchedStaffId = useWatch({ control: form.control, name: "staff_id" });
+  const watchedUnitId = useWatch({ control: form.control, name: "unit_id" });
 
   const hasLocationValue = !!watchedLocationId || !!watchedLocation;
-  const hasHolderValue = !!watchedHolderId || !!watchedHolderName;
+  const hasHolderValue = !!watchedStaffId;
 
   useEffect(() => {
     if (isOpen) {
@@ -181,6 +176,7 @@ export default function AssetFormModal({
           holder_name: assetToEdit.holder_name || "",
           category_id: assetToEdit.category_id,
           unit_id: assetToEdit.unit_id,
+          staff_id: assetToEdit.staff_id,
           attachments: assetToEdit.attachments || [],
         } as z.infer<typeof PhysicalAssetSchema>);
       } else {
@@ -212,6 +208,7 @@ export default function AssetFormModal({
           old_code: "",
           owner: "",
           unit_id: null,
+          staff_id: null,
           attachments: [],
         } as z.infer<typeof PhysicalAssetSchema>);
       }
@@ -232,7 +229,7 @@ export default function AssetFormModal({
       warranty_expiration: data.warranty_expiration || null,
       purchase_ticket: data.purchase_ticket || null,
       request_ticket: data.request_ticket || null,
-      holder_name: data.holder_name || null,
+      staff_id: data.staff_id || null,
       old_code: data.old_code || null,
       unit_id: data.unit_id ?? 0,
       measure_unit_id: data.measure_unit_id ?? 0,
@@ -282,54 +279,14 @@ export default function AssetFormModal({
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
                   1. General Information
                 </h3>
-                <FieldGroup className="grid grid-cols-3 gap-3">
-                  <Controller
-                    name="asset_code"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field
-                        data-invalid={fieldState.invalid}
-                        className="gap-1"
-                      >
-                        <FieldLabel>Asset Code</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="e.g. LAP001"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="old_code"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field
-                        data-invalid={fieldState.invalid}
-                        className="gap-1"
-                      >
-                        <FieldLabel>Old Code</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="e.g. OLD-123"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+                <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
                     name="name"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field
                         data-invalid={fieldState.invalid}
-                        className="gap-1"
+                        className="gap-1 col-span-2"
                       >
                         <FieldLabel>Asset Name</FieldLabel>
                         <Input
@@ -344,44 +301,10 @@ export default function AssetFormModal({
                     )}
                   />
                   <Controller
-                    name="serial_number"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>Serial Number</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="e.g. SN12345678"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="model"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>Model</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="e.g. MacBook Pro A2779"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
                     name="category_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1">
+                      <Field className="gap-1 col-span-1">
                         <FieldLabel>Category</FieldLabel>
                         <Select
                           onValueChange={(val) =>
@@ -406,6 +329,60 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="old_code"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field
+                        data-invalid={fieldState.invalid}
+                        className="gap-1 col-span-1"
+                      >
+                        <FieldLabel>Old Code</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. OLD-123"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="serial_number"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1 col-span-1">
+                        <FieldLabel>Serial Number</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. SN12345678"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="model"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1 col-span-1">
+                        <FieldLabel>Model</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. MacBook Pro A2779"
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -620,11 +597,11 @@ export default function AssetFormModal({
                     )}
                   />
                   <Controller
-                    name="holder_id"
+                    name="staff_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-1">
-                        <FieldLabel>Holder (System User)</FieldLabel>
+                      <Field className="gap-1 col-span-3">
+                        <FieldLabel>Holder (Staff List)</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -633,7 +610,7 @@ export default function AssetFormModal({
                           disabled={hasLocationValue}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select holder" />
+                            <SelectValue placeholder="Select staff" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -642,65 +619,14 @@ export default function AssetFormModal({
                             >
                               (None)
                             </SelectItem>
-                            {users.map((u) => (
-                              <SelectItem key={u.id} value={u.id.toString()}>
-                                {u.full_name || u.username}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="holder_name"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field
-                        data-invalid={fieldState.invalid}
-                        className="gap-1 col-span-1"
-                      >
-                        <FieldLabel>Holder Name (Other)</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value || ""}
-                          placeholder="Type name if not in system"
-                          disabled={hasLocationValue}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="manager_id"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-1">
-                        <FieldLabel>Manager</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select manager" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              (None)
-                            </SelectItem>
-                            {users.map((u) => (
-                              <SelectItem key={u.id} value={u.id.toString()}>
-                                {u.full_name || u.username}
+                            {(watchedUnitId
+                              ? staffs.filter(
+                                  (s) => s.unit_id === Number(watchedUnitId),
+                                )
+                              : staffs
+                            ).map((s) => (
+                              <SelectItem key={s.id} value={s.id.toString()}>
+                                {s.full_name} ({s.staff_code})
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -809,23 +735,6 @@ export default function AssetFormModal({
                     )}
                   />
                   <Controller
-                    name="purchase_ticket"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>Purchase Ticket</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="Invoice, Receipt, or PO#"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
                     name="warranty_expiration"
                     control={form.control}
                     render={({ field, fieldState }) => (
@@ -852,6 +761,23 @@ export default function AssetFormModal({
                           type="date"
                           {...field}
                           value={field.value ?? ""}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="purchase_ticket"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1 col-span-1">
+                        <FieldLabel>Purchase Ticket</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="Invoice, Receipt, or PO#"
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
