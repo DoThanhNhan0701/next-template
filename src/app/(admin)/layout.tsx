@@ -17,6 +17,7 @@ import {
   Activity,
   MousePointerClick,
   Store,
+  Contact,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -34,6 +35,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const adminSidebarItems = [
     { title: "Dashboard", url: "/admin", icon: SquareDashedKanbanIcon },
     { title: "Users", url: "/admin/users", icon: Users },
+    { title: "Staffs", url: "/admin/staffs", icon: Contact },
     { title: "Roles", url: "/admin/roles", icon: Shield },
     { title: "Locations", url: "/admin/locations", icon: MapPin },
     { title: "Asset Groups", url: "/admin/asset-groups", icon: Layers },

@@ -38,6 +38,7 @@ export const endpoints = getEndPoint("api/v1", {
   RENTALS: "rentals/",
   ALLOCATIONS: "allocations/",
   RECOVERIES: "recoveries/",
+  STAFFS: "staffs/",
 });
 
 export const dynamicEndpoints = {
@@ -54,4 +55,5 @@ export const dynamicEndpoints = {
   PHYSICAL_ASSET_DETAIL: (id: number) => `/api/v1/physical-assets/${id}`,
   RENTAL_DETAIL: (id: number) => `/api/v1/rentals/${id}`,
   RENTAL_RETURN: (id: number) => `/api/v1/rentals/${id}/return`,
+  STAFF_DETAIL: (id: number) => `/api/v1/staffs/${id}`,
 };
