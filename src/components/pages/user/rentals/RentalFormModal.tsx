@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useEffect, useState } from "react";
+import {
+  useForm,
+  Controller,
+  useFieldArray,
+  type Control,
+  type UseFormSetValue,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RentalCreateSchema } from "@/components/schemas/user/rental.schema";
@@ -14,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Field,
   FieldLabel,
@@ -35,8 +42,152 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 import { IOrgUnit } from "@/types/org";
 import { ICustomer } from "@/types/customer";
 import { IPhysicalAsset } from "@/types/physical-asset";
+import { ILocation } from "@/types/location";
 import { PlusIcon, Trash } from "lucide-react";
 
+type RentalFormValues = z.input<typeof RentalCreateSchema>;
+
+/* ───── Per-item row component (can use hooks) ───── */
+interface RentalItemRowProps {
+  index: number;
+  control: Control<RentalFormValues>;
+  setValue: UseFormSetValue<RentalFormValues>;
+  locations: ILocation[];
+  onRemove: () => void;
+}
+
+function RentalItemRow({
+  index,
+  control,
+  setValue,
+  locations,
+  onRemove,
+}: RentalItemRowProps) {
+  const [locationId, setLocationId] = useState<number>(0);
+
+  // Fetch assets filtered by location & status READY
+  const { response: assetRes, pending: assetsPending } = useGet<
+    IPhysicalAsset[]
+  >(
+    {
+      url: `${endpoints.PHYSICAL_ASSETS}?location_id=${locationId}&status_code=READY`,
+    },
+    { disabled: !locationId, deps: [locationId] },
+  );
+
+  const assets = assetRes || [];
+
+  // Reset asset selection when location changes
+  useEffect(() => {
+    setValue(`items.${index}.asset_id`, 0);
+    setValue(`items.${index}.from_location_id`, locationId);
+  }, [locationId, index, setValue]);
+
+  return (
+    <div className="relative bg-muted/30 border rounded-lg p-3 grid grid-cols-2 gap-3">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
+        onClick={onRemove}
+      >
+        <Trash size={12} />
+      </Button>
+
+      {/* Location select */}
+      <Field className="gap-1 col-span-2 pr-6">
+        <FieldLabel>Location *</FieldLabel>
+        <Select
+          onValueChange={(val) => setLocationId(Number(val))}
+          value={locationId ? locationId.toString() : ""}
+        >
+          <SelectTrigger className="h-8 text-xs">
+            <SelectValue placeholder="Select location" />
+          </SelectTrigger>
+          <SelectContent>
+            {locations.map((loc) => (
+              <SelectItem key={loc.id} value={loc.id.toString()}>
+                {loc.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+
+      {/* Asset select (filtered by location) */}
+      <Controller
+        name={`items.${index}.asset_id`}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field className="gap-1 col-span-2">
+            <FieldLabel>Physical Assets *</FieldLabel>
+            <Select
+              onValueChange={(val) => field.onChange(Number(val))}
+              value={field.value ? field.value.toString() : ""}
+              disabled={!locationId}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue
+                  placeholder={
+                    !locationId
+                      ? "Select a location first"
+                      : assetsPending
+                        ? "Loading assets..."
+                        : "Select asset"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {assets.map((a) => (
+                  <SelectItem key={a.id} value={a.id.toString()}>
+                    {a.name} ({a.asset_code}) Quantity: {a.quantity}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      <Controller
+        name={`items.${index}.quantity`}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field className="gap-1">
+            <FieldLabel>Quantity *</FieldLabel>
+            <Input
+              type="number"
+              className="h-8 text-xs"
+              {...field}
+              onChange={(e) => field.onChange(Number(e.target.value))}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+      <Controller
+        name={`items.${index}.rental_revenue`}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field className="gap-1">
+            <FieldLabel>Item Revenue</FieldLabel>
+            <Input
+              type="number"
+              className="h-8 text-xs"
+              {...field}
+              onChange={(e) => field.onChange(Number(e.target.value))}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+    </div>
+  );
+}
+
+/* ───── Main modal ───── */
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -55,16 +206,16 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
     { url: endpoints.CUSTOMERS },
     { disabled: !isOpen },
   );
-  const { response: assetRes } = useGet<IPhysicalAsset[]>(
-    { url: endpoints.PHYSICAL_ASSETS },
+  const { response: locationRes } = useGet<ILocation[]>(
+    { url: endpoints.LOCATIONS },
     { disabled: !isOpen },
   );
 
   const orgUnits = orgRes || [];
   const customers = cusRes?.data || [];
-  const assets = assetRes || [];
+  const locations = locationRes || [];
 
-  const form = useForm({
+  const form = useForm<RentalFormValues>({
     resolver: zodResolver(RentalCreateSchema),
     defaultValues: {
       record_number: "",
@@ -114,7 +265,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
     }
   }, [isOpen, form]);
 
-  const onSubmit = async (data: z.infer<typeof RentalCreateSchema>) => {
+  const onSubmit = async (data: RentalFormValues) => {
     await mutate(
       {
         url: endpoints.RENTALS,
@@ -294,9 +445,13 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     name="reason"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1">
+                      <Field className="gap-1 col-span-2">
                         <FieldLabel>Reason</FieldLabel>
-                        <Input {...field} placeholder="e.g. For event" />
+                        <Textarea
+                          {...field}
+                          placeholder="e.g. For event"
+                          className="min-h-[80px]"
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -333,92 +488,14 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
 
                 <div className="flex flex-col gap-3">
                   {fields.map((item, index) => (
-                    <div
+                    <RentalItemRow
                       key={item.id}
-                      className="relative bg-muted/30 border rounded-lg p-3 grid grid-cols-2 gap-3"
-                    >
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash size={12} />
-                      </Button>
-                      <Controller
-                        name={`items.${index}.asset_id`}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field className="gap-1 col-span-2 pr-6">
-                            <FieldLabel>Asset *</FieldLabel>
-                            <Select
-                              onValueChange={(val) =>
-                                field.onChange(Number(val))
-                              }
-                              value={field.value ? field.value.toString() : ""}
-                            >
-                              <SelectTrigger className="h-8 text-xs">
-                                <SelectValue placeholder="Select asset" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {assets.map((a) => (
-                                  <SelectItem
-                                    key={a.id}
-                                    value={a.id.toString()}
-                                  >
-                                    {a.name} ({a.asset_code})
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                      <Controller
-                        name={`items.${index}.quantity`}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field className="gap-1">
-                            <FieldLabel>Quantity *</FieldLabel>
-                            <Input
-                              type="number"
-                              className="h-8 text-xs"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                            />
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                      <Controller
-                        name={`items.${index}.rental_revenue`}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field className="gap-1">
-                            <FieldLabel>Item Revenue</FieldLabel>
-                            <Input
-                              type="number"
-                              className="h-8 text-xs"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(Number(e.target.value))
-                              }
-                            />
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                    </div>
+                      index={index}
+                      control={form.control}
+                      setValue={form.setValue}
+                      locations={locations}
+                      onRemove={() => remove(index)}
+                    />
                   ))}
                   {form.formState.errors.items?.root && (
                     <p className="text-sm font-medium text-destructive">

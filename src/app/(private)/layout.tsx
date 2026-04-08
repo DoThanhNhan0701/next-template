@@ -2,18 +2,11 @@
 
 import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
-import Settings from "@/components/pages/layout-modals/Settings";
 import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser } from "@/redux/slices/auth";
 import { ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  LayoutDashboard,
-  Laptop,
-  Package,
-  Key,
-  BarChart3,
-} from "lucide-react";
+import { LayoutDashboard, Laptop, Package, Key, BarChart3 } from "lucide-react";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,7 +30,6 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Settings />
       <div className="h-screen flex flex-col overflow-hidden">
         <Header user={user} items={sidebarItems} />
         <div className="flex flex-1 overflow-hidden">

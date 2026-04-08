@@ -27,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import RentalReturnModal from "./RentalReturnModal";
 import {
   Pagination,
   PaginationContent,
@@ -45,6 +46,8 @@ import {
 import { Input } from "@/components/ui/input";
 import RentalFormModal from "./RentalFormModal";
 import { useMutation } from "@/hooks/useMutation";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 
 export default function RentalsTable() {
@@ -93,20 +96,22 @@ export default function RentalsTable() {
   const hasMore = rentals.length === limit;
 
   const [isCreating, setIsCreating] = useState(false);
-  const [rentalToReturn, setRentalToReturn] = useState<IRental | null>(null);
 
-  const { mutate: mutateReturn } = useMutation();
+  const { mutate: mutateReturn, pending: returnPending } = useMutation();
+  const [returnRentalId, setReturnRentalId] = useState<number | null>(null);
 
-  const handleReturnAction = async (rentalId: number) => {
-    const { error } = await mutateReturn({
-      url: dynamicEndpoints.RENTAL_RETURN(rentalId),
+  const handleReturnAction = async () => {
+    if (!returnRentalId) return;
+    const { response: res, error } = await mutateReturn({
+      url: dynamicEndpoints.RENTAL_RETURN(returnRentalId),
       method: "post",
     });
     if (error) {
-      alert("Lỗi khi hoàn trả tài sản");
+      getApiErrorMessage(error);
     } else {
-      alert("Hoàn trả thành công!");
+      getApiSuccessMessage(res);
       reFetch();
+      setReturnRentalId(null);
     }
   };
 
@@ -356,15 +361,8 @@ export default function RentalsTable() {
                       variant="ghost"
                       size="sm"
                       className="h-8 text-primary hover:bg-primary/10 hover:text-primary transition-all rounded-md"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Hoàn trả các tài sản trong phiếu này?",
-                          )
-                        ) {
-                          handleReturnAction(rental.id);
-                        }
-                      }}
+                      disabled={returnPending}
+                      onClick={() => setReturnRentalId(rental.id)}
                     >
                       <CornerDownLeft size={14} className="mr-1.5" />
                       Hoàn trả
@@ -420,6 +418,14 @@ export default function RentalsTable() {
           onSuccess={() => reFetch()}
         />
       )}
+
+      {/* Return Confirmation Modal */}
+      <RentalReturnModal
+        isOpen={returnRentalId !== null}
+        onClose={() => setReturnRentalId(null)}
+        onConfirm={handleReturnAction}
+        pending={returnPending}
+      />
     </div>
   );
 }

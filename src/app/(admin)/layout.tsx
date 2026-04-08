@@ -2,7 +2,6 @@
 
 import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
-import Settings from "@/components/pages/layout-modals/Settings";
 import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser } from "@/redux/slices/auth";
 import { ReactNode, useEffect } from "react";
@@ -40,14 +39,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { title: "Asset Groups", url: "/admin/asset-groups", icon: Layers },
     { title: "Catalog Types", url: "/admin/catalog-types", icon: Grid },
     { title: "Asset Status", url: "/admin/statuses", icon: Activity },
-    { title: "Usage Modes", url: "/admin/usage-modes", icon: MousePointerClick },
+    {
+      title: "Usage Modes",
+      url: "/admin/usage-modes",
+      icon: MousePointerClick,
+    },
     { title: "Suppliers", url: "/admin/suppliers", icon: Store },
     { title: "Customers", url: "/admin/customers", icon: Users },
   ];
 
   return (
     <>
-      <Settings />
       <div className="h-screen flex flex-col overflow-hidden">
         <Header user={user} items={adminSidebarItems} />
         <div className="flex flex-1 overflow-hidden">
