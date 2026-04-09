@@ -16,3 +16,47 @@ export interface ITask {
 }
 
 export type TaskStatus = ITask["status"];
+
+export interface DetailItem {
+  id: number;
+  asset?: {
+    name: string;
+    asset_code: string;
+  };
+  quantity: number;
+  location?: {
+    name: string;
+    code: string;
+  };
+}
+
+export interface ApprovalHistory {
+  id: number;
+  step_name: string;
+  requester_name: string;
+  status: string;
+  comment: string;
+  action_date: string;
+}
+
+export interface DocumentDetail {
+  id: number;
+  record_number: string;
+  allocated_to_name: string;
+  allocated_to_type: string;
+  allocation_date: string;
+  reason?: string;
+  created_at: string;
+  issuer_name?: string;
+  unit?: {
+    name: string;
+  };
+  creator?: {
+    full_name: string;
+  };
+  status_obj?: {
+    name: string;
+    code: string;
+  };
+  details?: DetailItem[];
+}

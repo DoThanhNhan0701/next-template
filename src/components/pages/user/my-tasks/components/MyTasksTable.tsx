@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ITask, TaskStatus } from "@/types/task";
@@ -44,11 +45,17 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApproveTaskModal } from "./ApproveTaskModal";
 import { RejectTaskModal } from "./RejectTaskModal";
-import { toast } from "sonner";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export default function MyTasksTable() {
-  const [activeTab, setActiveTab] = useState<TaskStatus>("PENDING");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TaskStatus>(
+    (searchParams.get("tab") as TaskStatus) || "PENDING",
+  );
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
   const [skip, setSkip] = useState(0);
@@ -90,7 +97,6 @@ export default function MyTasksTable() {
   };
 
   const getProcessIcon = () => {
-    // Default icon, can be customized later if needed
     return <Check size={14} className="text-emerald-500" />;
   };
 
@@ -101,7 +107,7 @@ export default function MyTasksTable() {
 
   const onApproveConfirm = async (comment: string) => {
     if (!selectedTask) return;
-    
+
     await mutate(
       {
         url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(selectedTask.id),
@@ -112,15 +118,15 @@ export default function MyTasksTable() {
         },
       },
       {
-        onSuccess: () => {
-          toast.success("Phê duyệt yêu cầu thành công");
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
           setIsApproveModalOpen(false);
           reFetch();
         },
-        onError: () => {
-          toast.error("Phê duyệt yêu cầu thất bại");
+        onError: (error) => {
+          getApiErrorMessage(error);
         },
-      }
+      },
     );
   };
 
@@ -142,27 +148,29 @@ export default function MyTasksTable() {
         },
       },
       {
-        onSuccess: () => {
-          toast.success("Rejected request successfully");
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
           setIsRejectModalOpen(false);
           reFetch();
         },
-        onError: () => {
-          toast.error("Failed to reject request");
+        onError: (error) => {
+          getApiErrorMessage(error);
         },
-      }
+      },
     );
   };
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
-        {/* New Tabs styled like AssetFormModal */}
         <Tabs
           value={activeTab}
           onValueChange={(val) => {
             setActiveTab(val as TaskStatus);
             setSkip(0);
+            const params = new URLSearchParams(searchParams.toString());
+            params.set("tab", val);
+            router.replace(`${pathname}?${params.toString()}`);
           }}
           className="w-full lg:w-fit h-full"
         >
@@ -368,6 +376,11 @@ export default function MyTasksTable() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() =>
+                          router.push(
+                            `/my-tasks/${task.document_id}?status=${task.status}`,
+                          )
+                        }
                         className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
                         title="View Details"
                       >
