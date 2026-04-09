@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { ITask, TaskStatus } from "@/types/task";
 import {
   Search,
@@ -42,6 +42,10 @@ import {
   TableEmptyRow,
 } from "@/components/common/TableStateDisplay";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ApproveTaskModal } from "./ApproveTaskModal";
+import { RejectTaskModal } from "./RejectTaskModal";
+import { toast } from "sonner";
+import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 
 export default function MyTasksTable() {
   const [activeTab, setActiveTab] = useState<TaskStatus>("PENDING");
@@ -49,6 +53,9 @@ export default function MyTasksTable() {
   const [appliedQ, setAppliedQ] = useState("");
   const [skip, setSkip] = useState(0);
   const limit = 10;
+  const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
 
   const queryParams = new URLSearchParams();
   queryParams.append("skip", skip.toString());
@@ -59,9 +66,11 @@ export default function MyTasksTable() {
 
   if (appliedQ) queryParams.append("q", appliedQ);
 
-  const { response, pending } = useGet<ITask[]>({
+  const { response, pending, reFetch } = useGet<ITask[]>({
     url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}`,
   });
+
+  const { mutate, pending: mutatePending } = useMutation();
 
   const tasks = response || [];
   const currentPage = Math.floor(skip / limit) + 1;
@@ -83,6 +92,66 @@ export default function MyTasksTable() {
   const getProcessIcon = () => {
     // Default icon, can be customized later if needed
     return <Check size={14} className="text-emerald-500" />;
+  };
+
+  const handleApprove = (task: ITask) => {
+    setSelectedTask(task);
+    setIsApproveModalOpen(true);
+  };
+
+  const onApproveConfirm = async (comment: string) => {
+    if (!selectedTask) return;
+    
+    await mutate(
+      {
+        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(selectedTask.id),
+        method: "post",
+        body: {
+          status: "APPROVED",
+          comment: comment,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Phê duyệt yêu cầu thành công");
+          setIsApproveModalOpen(false);
+          reFetch();
+        },
+        onError: () => {
+          toast.error("Phê duyệt yêu cầu thất bại");
+        },
+      }
+    );
+  };
+
+  const handleReject = (task: ITask) => {
+    setSelectedTask(task);
+    setIsRejectModalOpen(true);
+  };
+
+  const onRejectConfirm = async (comment: string) => {
+    if (!selectedTask) return;
+
+    await mutate(
+      {
+        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(selectedTask.id),
+        method: "post",
+        body: {
+          status: "REJECTED",
+          comment: comment,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Rejected request successfully");
+          setIsRejectModalOpen(false);
+          reFetch();
+        },
+        onError: () => {
+          toast.error("Failed to reject request");
+        },
+      }
+    );
   };
 
   return (
@@ -310,6 +379,7 @@ export default function MyTasksTable() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => handleApprove(task)}
                             className="h-8 w-8 rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
                             title="Approve"
                           >
@@ -318,6 +388,7 @@ export default function MyTasksTable() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => handleReject(task)}
                             className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
                             title="Reject"
                           >
@@ -369,6 +440,22 @@ export default function MyTasksTable() {
           </PaginationContent>
         </Pagination>
       ) : null}
+
+      <ApproveTaskModal
+        task={selectedTask}
+        isOpen={isApproveModalOpen}
+        onClose={() => setIsApproveModalOpen(false)}
+        onConfirm={onApproveConfirm}
+        isSubmitting={mutatePending}
+      />
+
+      <RejectTaskModal
+        task={selectedTask}
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onConfirm={onRejectConfirm}
+        isSubmitting={mutatePending}
+      />
     </div>
   );
 }

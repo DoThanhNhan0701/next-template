@@ -61,4 +61,5 @@ export const dynamicEndpoints = {
   STAFF_DETAIL: (id: number) => `/api/v1/staffs/${id}`,
   TRANSFER_DETAIL: (id: number) => `/api/v1/transfers/${id}`,
   TRANSFER_ATTACHMENTS: (id: number) => `/api/v1/transfers/${id}/attachments`,
+  WORKFLOW_TASK_COMPLETE: (id: number) => `/api/v1/workflows/tasks/${id}/complete`,
 };
