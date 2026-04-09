@@ -40,6 +40,7 @@ export const endpoints = getEndPoint("api/v1", {
   RECOVERIES: "recoveries/",
   STAFFS: "staffs/",
   TEMPLATES: "workflows/templates/",
+  TRANSFERS: "transfers/",
 });
 
 export const dynamicEndpoints = {
@@ -57,4 +58,6 @@ export const dynamicEndpoints = {
   RENTAL_DETAIL: (id: number) => `/api/v1/rentals/${id}`,
   RENTAL_RETURN: (id: number) => `/api/v1/rentals/${id}/return`,
   STAFF_DETAIL: (id: number) => `/api/v1/staffs/${id}`,
+  TRANSFER_DETAIL: (id: number) => `/api/v1/transfers/${id}`,
+  TRANSFER_ATTACHMENTS: (id: number) => `/api/v1/transfers/${id}/attachments`,
 };

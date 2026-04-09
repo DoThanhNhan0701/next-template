@@ -118,7 +118,7 @@ export default function RentalsTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-xl border border-border/50 shadow-sm transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
@@ -245,24 +245,16 @@ export default function RentalsTable() {
               <TableHead className="font-semibold h-10 px-4">
                 Rental Info
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Date
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 Asset Details
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 Quantity
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Client
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Status
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Reason
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">Client</TableHead>
+              <TableHead className="font-semibold h-10 px-4">Status</TableHead>
+              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right">
                 Actions
               </TableHead>
@@ -301,9 +293,7 @@ export default function RentalsTable() {
                         size={12}
                         className="text-muted-foreground/60"
                       />
-                      <span>
-                        {rental.lease_date?.split("T")[0] || "N/A"}
-                      </span>
+                      <span>{rental.lease_date?.split("T")[0] || "N/A"}</span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3">
@@ -321,10 +311,7 @@ export default function RentalsTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm">
                     <div className="flex items-center gap-2">
-                      <Users
-                        size={14}
-                        className="text-blue-600/70 shrink-0"
-                      />
+                      <Users size={14} className="text-blue-600/70 shrink-0" />
                       <span>{rental.customer_name}</span>
                     </div>
                   </TableCell>

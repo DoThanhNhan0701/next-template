@@ -1,0 +1,367 @@
+"use client";
+
+import { useEffect } from "react";
+import { useForm, useWatch, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { ITransfer } from "@/types/transfer";
+import { useGet } from "@/hooks/useGet";
+import { IOrgUnit } from "@/types/org";
+import { ILocation } from "@/types/location";
+import { IPhysicalAsset } from "@/types/physical-asset";
+import { IUser } from "@/types/auth";
+import { ITemplate } from "@/types/template";
+import { SourceInfoSection } from "./components/SourceInfoSection";
+import { AssetSelectionSection } from "./components/AssetSelectionSection";
+import { TargetDestinationSection } from "./components/TargetDestinationSection";
+import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
+
+export interface IStaff {
+  id: number;
+  full_name: string;
+  unit_id?: number;
+}
+
+const TransferSchema = z.object({
+  source_type: z.enum(["holder", "unit", "location"]),
+  source_id: z.number().min(1, "Source is required"),
+  target_unit_id: z.number().optional().nullable(),
+  target_id: z.number().optional().nullable(),
+  location_id: z.number().optional().nullable(),
+  approver_step_1_id: z.number().optional().nullable(),
+  approver_step_2_id: z.number().optional().nullable(),
+  transfer_date: z.string().min(1, "Transfer date is required"),
+  external_link: z.string().optional().nullable(),
+  reason: z.string().optional().nullable(),
+  details: z
+    .array(
+      z.object({
+        asset_id: z.number().min(1, "Required"),
+        quantity: z.number().min(1, "Required"),
+      }),
+    )
+    .min(1, "At least one asset is required"),
+});
+
+export type TransferFormValues = z.infer<typeof TransferSchema>;
+
+interface ITransferPayload {
+  transfer_type: "holder" | "unit" | "location";
+  transfer_date: string;
+  reason: string;
+  external_link: string;
+  items: Array<{
+    asset_id: number;
+    quantity: number;
+    from_location_id: number;
+  }>;
+  workflow_assignments: Array<{
+    step_id: number;
+    user_id: number;
+  }>;
+  to_unit_id?: number;
+  to_staff_id?: number;
+  from_staff_id?: number;
+  from_unit_id?: number;
+  to_location_id?: number;
+}
+
+interface TransferFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: (data: unknown, method: string) => void;
+  transferToEdit?: ITransfer | null;
+}
+
+
+export default function TransferFormModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  transferToEdit,
+}: TransferFormModalProps) {
+  const isEditing = !!transferToEdit;
+  const { mutate, pending } = useMutation();
+
+  const form = useForm<TransferFormValues>({
+    resolver: zodResolver(TransferSchema),
+    defaultValues: {
+      source_type: "holder",
+      source_id: 0,
+      target_unit_id: null,
+      target_id: null,
+      location_id: null,
+      approver_step_1_id: null,
+      approver_step_2_id: null,
+      transfer_date: new Date().toISOString().split("T")[0],
+      external_link: "",
+      reason: "",
+      details: [{ asset_id: 0, quantity: 1 }],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "details",
+  });
+
+  // Fetch target options based on type
+  const { response: staffRes } = useGet<{ items: IStaff[] }>({
+    url: endpoints.STAFFS,
+  });
+  const staffs = staffRes?.items || [];
+
+  const { response: orgRes } = useGet<IOrgUnit[]>({
+    url: endpoints.ORG_UNITS,
+  });
+  const orgs = orgRes || [];
+
+  const { response: locRes } = useGet<ILocation[]>({
+    url: endpoints.LOCATIONS,
+  });
+  const locations = locRes || [];
+
+  const { response: userRes } = useGet<IUser[]>(
+    { url: endpoints.USERS },
+    { disabled: !isOpen },
+  );
+  const { response: templateRes } = useGet<ITemplate[]>(
+    { url: endpoints.TEMPLATES },
+    { disabled: !isOpen },
+  );
+
+  const users = userRes || [];
+  const activeTransferTemplate = templateRes?.find(
+    (t) => t.is_active && t.document_type === "transfer",
+  );
+
+  const watchedType = useWatch({
+    control: form.control,
+    name: "source_type",
+  });
+
+  const sourceId = useWatch({
+    control: form.control,
+    name: "source_id",
+  });
+
+  const watchedDetails = useWatch({
+    control: form.control,
+    name: "details",
+  });
+
+  const hasSelectedAssets = watchedDetails?.some((d) => d && d.asset_id > 0);
+
+  const watchedTargetUnitId = useWatch({
+    control: form.control,
+    name: "target_unit_id",
+  });
+
+  // Construct filtered asset URL
+  const filterParam =
+    watchedType === "holder"
+      ? "staff_id"
+      : watchedType === "unit"
+        ? "unit_id"
+        : "location_id";
+  const assetUrl = sourceId
+    ? `${endpoints.PHYSICAL_ASSETS}?${filterParam}=${sourceId}&limit=100`
+    : "";
+
+  const {
+    response: assetRes,
+    pending: assetsPending,
+    reFetch: reFetchAssets,
+  } = useGet<{ items: IPhysicalAsset[] }>(
+    { url: assetUrl },
+    { disabled: !sourceId, deps: [assetUrl] },
+  );
+  const assets = assetRes?.items || [];
+
+  useEffect(() => {
+    if (isOpen) {
+      if (transferToEdit) {
+        // Handle edit if needed
+      } else {
+        form.reset({
+          source_type: "holder",
+          source_id: 0,
+          target_unit_id: null,
+          target_id: null,
+          location_id: null,
+          approver_step_1_id: null,
+          approver_step_2_id: null,
+          transfer_date: new Date().toISOString().split("T")[0],
+          external_link: "",
+          reason: "",
+          details: [{ asset_id: 0, quantity: 1 }],
+        });
+      }
+    }
+  }, [isOpen, transferToEdit, form]);
+
+  const onSubmit = async (data: TransferFormValues) => {
+    const url = isEditing
+      ? dynamicEndpoints.TRANSFER_DETAIL(transferToEdit.id)
+      : endpoints.TRANSFERS;
+    const method = isEditing ? "patch" : "post";
+
+    // Transform data for backend based on working structure
+    const transfer_type = data.source_type;
+
+    // Construct base payload fields
+    const payload: ITransferPayload = {
+      transfer_type,
+      transfer_date: data.transfer_date,
+      reason: data.reason || "",
+      external_link: data.external_link || "",
+      items: data.details.map((item) => ({
+        asset_id: item.asset_id,
+        quantity: item.quantity,
+        from_location_id: transfer_type === "location" ? data.source_id : 0,
+      })),
+      workflow_assignments: [],
+    };
+
+    // Specific fields based on transfer type
+    if (transfer_type === "holder") {
+      payload.to_unit_id = data.target_unit_id || 0;
+      payload.to_staff_id = data.target_id || 0;
+      payload.from_staff_id = data.source_id;
+    } else if (transfer_type === "unit") {
+      payload.to_unit_id = data.target_id || 0;
+      payload.from_unit_id = data.source_id;
+    } else if (transfer_type === "location") {
+      payload.to_location_id = data.target_id || 0;
+    }
+
+    // Override location if geo location is specified
+    if (data.location_id) {
+      payload.to_location_id = data.location_id;
+    }
+
+    // Map workflow assignments
+    if (
+      activeTransferTemplate?.steps &&
+      activeTransferTemplate.steps.length > 0
+    ) {
+      if (data.approver_step_1_id) {
+        payload.workflow_assignments.push({
+          step_id: activeTransferTemplate.steps[0].id,
+          user_id: data.approver_step_1_id,
+        });
+      }
+      if (
+        activeTransferTemplate.steps.length > 1 &&
+        data.approver_step_2_id
+      ) {
+        payload.workflow_assignments.push({
+          step_id: activeTransferTemplate.steps[1].id,
+          user_id: data.approver_step_2_id,
+        });
+      }
+    }
+
+    await mutate(
+      {
+        url,
+        method,
+        body: payload,
+      },
+      {
+        onSuccess: (res) => {
+          getApiSuccessMessage(res);
+          onSuccess(res, method);
+          onClose();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
+      },
+    );
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+          <DialogTitle>
+            {isEditing ? "Edit Transfer" : "Create New Transfer"}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            {isEditing
+              ? "Modify the information of the selected asset transfer."
+              : "Register a new asset transfer by specifying source, selection, and destination."}
+          </DialogDescription>
+        </DialogHeader>
+
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
+          <div className="flex-1 overflow-y-auto p-6 space-y-8">
+            <SourceInfoSection
+              form={form}
+              staffs={staffs}
+              orgs={orgs}
+              locations={locations}
+              watchedType={watchedType}
+            />
+
+            {sourceId > 0 && (
+              <AssetSelectionSection
+                form={form}
+                fields={fields}
+                append={append}
+                remove={remove}
+                assets={assets}
+                assetsPending={assetsPending}
+                reFetchAssets={reFetchAssets}
+              />
+            )}
+
+            {hasSelectedAssets && (
+              <TargetDestinationSection
+                form={form}
+                staffs={staffs}
+                orgs={orgs}
+                locations={locations}
+                watchedType={watchedType}
+                watchedTargetUnitId={watchedTargetUnitId}
+              />
+            )}
+
+            {hasSelectedAssets && (
+              <ApprovalProcessSection
+                form={form}
+                users={users}
+                activeTransferTemplate={activeTransferTemplate}
+              />
+            )}
+          </div>
+
+          <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending} className="min-w-[120px]">
+              {pending ? "Processing..." : isEditing ? "Save Changes" : "Create Transfer"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

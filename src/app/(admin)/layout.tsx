@@ -55,7 +55,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="h-screen flex flex-col overflow-hidden">
         <Header user={user} items={adminSidebarItems} />
         <div className="flex flex-1 overflow-hidden">
-          <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-xl border border-(--surface-border-color) bg-(--surface-container)">
+          <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
             <Sidebar items={adminSidebarItems} />
             <section className="relative flex-1 p-2 overflow-auto">
               {children}

@@ -6,7 +6,14 @@ import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser } from "@/redux/slices/auth";
 import { ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LayoutDashboard, Laptop, Package, Key, BarChart3 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Laptop,
+  Package,
+  Key,
+  BarChart3,
+  ArrowRightLeft,
+} from "lucide-react";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,6 +33,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     { title: "Inventory (Stocks)", url: "/inventory", icon: Package },
     { title: "Rentals", url: "/rentals", icon: Key },
     { title: "Summary", url: "/summary", icon: BarChart3 },
+    { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
   ];
 
   return (
@@ -33,7 +41,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
       <div className="h-screen flex flex-col overflow-hidden">
         <Header user={user} items={sidebarItems} />
         <div className="flex flex-1 overflow-hidden">
-          <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-xl border border-(--surface-border-color) bg-(--surface-container)">
+          <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
             <Sidebar items={sidebarItems} />
             <section className="relative flex-1 p-2 overflow-auto">
               {children}
