@@ -77,3 +77,74 @@ export interface IPhysicalAssetCreate {
 }
 
 export type IPhysicalAssetUpdate = Partial<IPhysicalAssetCreate>;
+
+export interface IPhysicalAssetDetail {
+  id: number;
+  asset_code: string;
+  name: string;
+  serial_number: string | null;
+  model: string | null;
+  request_ticket: string | null;
+  importance_id: number | null;
+  initial_location_id: number | null;
+  owner: string | null;
+  risk_owner_id: number | null;
+  old_code: string | null;
+  purchase_ticket: string | null;
+  purchase_date: string | null;
+  system_declaration_date: string | null;
+  cost: number;
+  depreciation_period: number | null;
+  depreciation_value: number | null;
+  warranty_expiration: string | null;
+  quantity: number | null;
+  unit_id: number | null;
+  staff_id: number | null;
+  holder_name: string | null;
+  category_id: number | null;
+  supplier_id: number | null;
+  manager_id: number | null;
+  status_id: number | null;
+  usage_mode_id: number | null;
+  location_id: number | null;
+  asset_system_id: number | null;
+  location: string | null;
+  specifications: string;
+  notes: string;
+  attachments: string[];
+  management_type: string;
+  current_stock: number | null;
+  supplier: { name: string; } | null;
+  status_obj: { code: string; name: string; color: string; } | null;
+  importance_obj: { code: string; name: string; color: string; } | null;
+  usage_mode: { name: string; color: string; } | null;
+  category: { name: string; } | null;
+  unit: { name: string; } | null;
+  location_obj: { name: string; } | null;
+  total_quantity: number;
+  allocated_quantity: number;
+  rented_quantity: number;
+  in_stock_quantity: number;
+  maintenance_quantity: number;
+  liquidated_quantity: number;
+  process_history?: ILifecycleLog[];
+  change_log?: ILifecycleLog[];
+}
+
+export interface ILifecycleLog {
+  date: string;
+  document_number: string | null;
+  action_type: string;
+  dept_name: string | null;
+  external_link: string | null;
+  location_name: string | null;
+  notes: string | null;
+  old_location_name: string | null;
+  old_user_name: string | null;
+  quantity: number | null;
+  ref_id: number;
+  status_name: string;
+  total_amount: number;
+  unit_price: number;
+  user_name: string | null;
+}

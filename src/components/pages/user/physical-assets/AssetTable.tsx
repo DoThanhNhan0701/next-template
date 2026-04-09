@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IPhysicalAsset } from "@/types/physical-asset";
@@ -14,6 +15,7 @@ import {
   Filter,
   X,
   RotateCcw,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +56,7 @@ import {
 import { Laptop } from "lucide-react";
 
 export default function AssetTable() {
+  const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -449,14 +452,28 @@ export default function AssetTable() {
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
-                        onClick={() => setAssetToEdit(asset)}
-                      >
-                        <EditIcon size={14} />
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() =>
+                            router.push(`/physical-assets/${asset.id}`)
+                          }
+                          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
+                          title="View Details"
+                        >
+                          <Eye size={14} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
+                          onClick={() => setAssetToEdit(asset)}
+                          title="Edit Asset"
+                        >
+                          <EditIcon size={14} />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
