@@ -13,6 +13,7 @@ import {
   Key,
   BarChart3,
   ArrowRightLeft,
+  ClipboardList,
 } from "lucide-react";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
@@ -29,6 +30,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
 
   const sidebarItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "My Tasks", url: "/my-tasks", icon: ClipboardList },
     { title: "Physical Assets", url: "/physical-assets", icon: Laptop },
     { title: "Inventory (Stocks)", url: "/inventory", icon: Package },
     { title: "Rentals", url: "/rentals", icon: Key },
