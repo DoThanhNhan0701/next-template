@@ -217,7 +217,7 @@ export default function RecoveryVoucherModal({
     { url: endpoints.ORG_UNITS },
     { disabled: !isOpen },
   );
-  const { response: staffRes } = useGet<IStaff[]>(
+  const { response: staffRes } = useGet<{ items: IStaff[] }>(
     { url: endpoints.STAFFS },
     { disabled: !isOpen },
   );
@@ -227,7 +227,7 @@ export default function RecoveryVoucherModal({
   );
 
   const orgUnits = orgRes || [];
-  const staffs = staffRes || [];
+  const staffs = staffRes?.items || [];
   const locations = locationRes || [];
 
   const form = useForm<RecoveryFormValues>({
