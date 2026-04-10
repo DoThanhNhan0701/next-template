@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function OverviewTab({ asset }: { asset: IPhysicalAssetDetail }) {
+export default function OverviewTab({ asset }: Readonly<{ asset: IPhysicalAssetDetail }>) {
   return (
     <div className="flex flex-col gap-4">
       {/* Stats Bar */}
@@ -162,7 +162,7 @@ export default function OverviewTab({ asset }: { asset: IPhysicalAssetDetail }) 
               </Button>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="rounded-lg border border-dashed border-border/50 bg-muted/10 min-h-[120px] flex flex-col items-center justify-center gap-2 hover:bg-muted/20 transition-colors cursor-pointer group">
+              <div className="rounded-lg border border-dashed border-border/50 bg-muted/10 min-h-30 flex flex-col items-center justify-center gap-2 hover:bg-muted/20 transition-colors cursor-pointer group">
                 <div className="w-8 h-8 rounded-full bg-background/60 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
                   <ImageIcon className="w-3.5 h-3.5 text-muted-foreground/60" />
                 </div>
@@ -183,7 +183,7 @@ export default function OverviewTab({ asset }: { asset: IPhysicalAssetDetail }) 
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 flex-1 flex flex-col">
-              <div className="aspect-square bg-muted/20 rounded-lg flex items-center justify-center border border-border/20 mb-6 max-h-[250px]">
+              <div className="aspect-square bg-muted/20 rounded-lg flex items-center justify-center border border-border/20 mb-6 max-h-62.5">
                 <Box className="w-12 h-12 text-muted-foreground/30" />
               </div>
 
@@ -218,12 +218,12 @@ function StatItem({
   label,
   value,
   valueColor = "text-foreground",
-}: {
+}: Readonly<{
   icon: React.ReactNode;
   label: string;
   value: number;
   valueColor?: string;
-}) {
+}>) {
   return (
     <div className="flex items-center gap-3 p-3 hover:bg-muted/20 transition-colors">
       <div className="shrink-0 w-8 h-8 rounded-full bg-background shadow-sm border border-border/30 flex items-center justify-center">
@@ -247,13 +247,13 @@ function InfoRow({
   value,
   highlight = false,
   bold = false,
-}: {
+}: Readonly<{
   icon: string;
   label: string;
   value: string;
   highlight?: boolean;
   bold?: boolean;
-}) {
+}>) {
   return (
     <div className="flex flex-col gap-0.5">
       <div className="flex items-center gap-1.5 text-sm text-muted-foreground">

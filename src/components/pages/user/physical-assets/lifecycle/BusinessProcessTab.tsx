@@ -13,9 +13,9 @@ import Link from "next/link";
 
 export default function BusinessProcessTab({
   history,
-}: {
+}: Readonly<{
   history: ILifecycleLog[];
-}) {
+}>) {
   if (!history || history.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
@@ -43,7 +43,7 @@ export default function BusinessProcessTab({
   };
 
   return (
-    <div className="border border-(--surface-border-color) rounded-lg w-full overflow-hidden [&_div[data-slot=table-container]]:max-h-[450px] [&_div[data-slot=table-container]]:overflow-auto">
+    <div className="border border-(--surface-border-color) rounded-lg w-full overflow-hidden [&_div[data-slot=table-container]]:max-h-112.5 [&_div[data-slot=table-container]]:overflow-auto">
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm outline outline-border/20">
           <TableRow>
@@ -51,7 +51,7 @@ export default function BusinessProcessTab({
               STT
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40">Ngày</TableHead>
-            <TableHead className="font-semibold h-10 px-4 min-w-[150px]">
+            <TableHead className="font-semibold h-10 px-4 min-w-37.5">
               Nghiệp vụ
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40">
@@ -65,7 +65,7 @@ export default function BusinessProcessTab({
         <TableBody className="divide-y divide-(--surface-border-color)">
           {history.map((log, i) => (
             <TableRow
-              key={i}
+              key={log.ref_id + `${i}`}
               className="group hover:bg-primary/3 transition-colors relative"
             >
               <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">

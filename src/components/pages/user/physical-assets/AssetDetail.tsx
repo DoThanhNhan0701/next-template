@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import LifecycleTab from "./lifecycle/LifecycleTab";
 import OverviewTab from "./overview/OverviewTab";
 
-export default function AssetDetail({ id }: { id: string }) {
+export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const router = useRouter();
   const { response: asset, pending } = useGet<IPhysicalAssetDetail>({
     url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
@@ -23,7 +23,7 @@ export default function AssetDetail({ id }: { id: string }) {
       <div className="p-4 flex flex-col gap-4">
         <Skeleton className="h-16 w-full" />
         <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-[400px] w-full" />
+        <Skeleton className="h-100 w-full" />
       </div>
     );
   }
@@ -31,7 +31,7 @@ export default function AssetDetail({ id }: { id: string }) {
   if (!asset) return null;
 
   return (
-    <div className="w-full h-full min-h-0 flex flex-col gap-4 px-4 py-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="w-full h-full flex flex-col gap-4 px-4 py-3 animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -133,7 +133,7 @@ export default function AssetDetail({ id }: { id: string }) {
         {/* Placeholder contents for other tabs */}
         <TabsContent
           value="history"
-          className="pt-2 outline-none focus-visible:ring-0"
+          className="pt-2 flex-1 outline-none focus-visible:ring-0"
         >
           <LifecycleTab assetId={Number(id)} />
         </TabsContent>

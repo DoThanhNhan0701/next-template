@@ -12,7 +12,7 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function SystemLogTab({ logs }: { logs: ILifecycleLog[] }) {
+export default function SystemLogTab({ logs }: Readonly<{ logs: ILifecycleLog[] }>) {
   if (!logs || logs.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
@@ -48,18 +48,21 @@ export default function SystemLogTab({ logs }: { logs: ILifecycleLog[] }) {
   };
 
   return (
-    <div className="border border-(--surface-border-color) rounded-lg flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
+    <div className="border border-(--surface-border-color) rounded-lg w-full [&_div[data-slot=table-container]]:max-h-100 [&_div[data-slot=table-container]]:overflow-y-auto">
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
           <TableRow>
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
               STT
             </TableHead>
-            <TableHead className="font-semibold h-10 px-4 min-w-[100px] w-32">
+            <TableHead className="font-semibold h-10 px-4 min-w-25 w-32">
               Ngày
             </TableHead>
-            <TableHead className="font-semibold h-10 px-4 min-w-[300px]">
-              Nghiệp vụ
+            <TableHead className="font-semibold h-10 px-4 min-w-37.5">
+              Loại nghiệp vụ
+            </TableHead>
+            <TableHead className="font-semibold h-10 px-4 min-w-37.5">
+              Chi tiết
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40 text-center">
               Số chứng từ
@@ -72,7 +75,7 @@ export default function SystemLogTab({ logs }: { logs: ILifecycleLog[] }) {
         <TableBody className="divide-y divide-(--surface-border-color)">
           {logs.map((log, i) => (
             <TableRow
-              key={i}
+              key={log.ref_id + `${i}`}
               className="group hover:bg-primary/3 transition-colors relative"
             >
               <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">
@@ -89,23 +92,21 @@ export default function SystemLogTab({ logs }: { logs: ILifecycleLog[] }) {
                 </div>
               </TableCell>
               <TableCell className="px-4 py-2">
-                <div className="flex flex-col items-start gap-2.5 w-full">
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "px-3 py-1 font-semibold text-xs rounded-full shadow-none w-fit",
-                      log.action_type === "Phê duyệt quy trình"
-                        ? "border-amber-200 bg-amber-50 text-amber-600"
-                        : "border-orange-200 bg-orange-50 text-orange-600",
-                    )}
-                  >
-                    {log.action_type || "-"}
-                  </Badge>
-                  <div className="bg-slate-50/70 border border-slate-200/60 rounded-md p-2.5 text-[11px] text-slate-700 leading-relaxed shadow-sm w-full font-medium whitespace-break-spaces">
-                    {log.status_name || log.notes || "-"}
-                  </div>
-                </div>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "px-3 py-1 font-semibold text-xs rounded-full shadow-none w-fit",
+                    log.action_type === "Phê duyệt quy trình"
+                      ? "border-amber-200 bg-amber-50 text-amber-600"
+                      : "border-orange-200 bg-orange-50 text-orange-600",
+                  )}
+                >
+                  {log.action_type || "-"}
+                </Badge>
               </TableCell>
+              <TableCell className="px-4 py-2">
+                  {log.status_name || log.notes || "-"}
+Fix c              </TableCell>
               <TableCell className="px-4 py-1.5 text-center">
                 {log.document_number ? (
                   <Link

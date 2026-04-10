@@ -9,7 +9,7 @@ interface LifecycleTabProps {
   assetId: number;
 }
 
-export default function LifecycleTab({ assetId }: LifecycleTabProps) {
+export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
   const { response: data } = useGet<{
     change_log?: ILifecycleLog[];
     process_history?: ILifecycleLog[];
@@ -20,8 +20,8 @@ export default function LifecycleTab({ assetId }: LifecycleTabProps) {
   const processHistory = data?.process_history || [];
   const changeLog = data?.change_log || [];
   return (
-    <div className="mt-2">
-      <Tabs defaultValue="process" className="w-full">
+    <div className="mt-2 h-full">
+      <Tabs defaultValue="process" className="w-full h-full">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-foreground/80">
             Lịch sử biến động
@@ -44,7 +44,7 @@ export default function LifecycleTab({ assetId }: LifecycleTabProps) {
         <TabsContent value="process" className="m-0 border-none outline-none">
           <BusinessProcessTab history={processHistory} />
         </TabsContent>
-        <TabsContent value="system" className="m-0 border-none outline-none">
+        <TabsContent value="system" className="m-0 border-none outline-none flex-1">
           <SystemLogTab logs={changeLog} />
         </TabsContent>
       </Tabs>
