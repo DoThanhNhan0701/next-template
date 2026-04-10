@@ -81,16 +81,8 @@ export function ApprovalProcessSection({
                             <SelectItem
                               key={`approver-choice-${idx}-${u.id}`}
                               value={u.id.toString()}
-                              className="px-4 py-3 focus:bg-primary/5 cursor-pointer border-b last:border-0 border-muted/20"
                             >
-                              <div className="flex flex-col gap-0.5">
-                                <span className="font-bold text-sm text-foreground">
-                                  {u.full_name}
-                                </span>
-                                <span className="text-[10px] text-muted-foreground font-medium tracking-tight">
-                                  {u.email}
-                                </span>
-                              </div>
+                              {u.full_name} ({u.username})
                             </SelectItem>
                           ))}
                       </SelectContent>

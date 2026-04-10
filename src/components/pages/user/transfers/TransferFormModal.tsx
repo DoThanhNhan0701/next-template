@@ -27,12 +27,7 @@ import { SourceInfoSection } from "./components/SourceInfoSection";
 import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { TargetDestinationSection } from "./components/TargetDestinationSection";
 import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
-
-export interface IStaff {
-  id: number;
-  full_name: string;
-  unit_id?: number;
-}
+import { IStaff } from "@/types/staff";
 
 const TransferSchema = z.object({
   source_type: z.enum(["holder", "unit", "location"]),
@@ -84,7 +79,6 @@ interface TransferFormModalProps {
   onSuccess: (data: unknown, method: string) => void;
   transferToEdit?: ITransfer | null;
 }
-
 
 export default function TransferFormModal({
   isOpen,
@@ -263,10 +257,7 @@ export default function TransferFormModal({
           user_id: data.approver_step_1_id,
         });
       }
-      if (
-        activeTransferTemplate.steps.length > 1 &&
-        data.approver_step_2_id
-      ) {
+      if (activeTransferTemplate.steps.length > 1 && data.approver_step_2_id) {
         payload.workflow_assignments.push({
           step_id: activeTransferTemplate.steps[1].id,
           user_id: data.approver_step_2_id,
@@ -357,7 +348,11 @@ export default function TransferFormModal({
               Cancel
             </Button>
             <Button type="submit" disabled={pending} className="min-w-[120px]">
-              {pending ? "Processing..." : isEditing ? "Save Changes" : "Create Transfer"}
+              {pending
+                ? "Processing..."
+                : isEditing
+                  ? "Save Changes"
+                  : "Create Transfer"}
             </Button>
           </div>
         </form>

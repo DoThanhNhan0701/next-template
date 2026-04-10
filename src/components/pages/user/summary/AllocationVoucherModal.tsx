@@ -97,7 +97,7 @@ function AllocationItemRow({
 
       {/* Issuing Warehouse */}
       <Field className="gap-1 flex-1">
-        <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+        <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
           Locations *
         </FieldLabel>
         <Select
@@ -127,7 +127,7 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
               Physical Asset *
             </FieldLabel>
             <Select
@@ -149,7 +149,7 @@ function AllocationItemRow({
               <SelectContent>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code})
+                    {a.name} - {a.asset_code} - SL: {a?.quantity ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -165,7 +165,7 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-24">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
               Qty *
             </FieldLabel>
             <Input
@@ -617,7 +617,7 @@ export default function AllocationVoucherModal({
                                         key={u.id}
                                         value={u.id.toString()}
                                       >
-                                        {u.full_name}
+                                        {u.full_name} ({u.username})
                                       </SelectItem>
                                     ))}
                                 </SelectContent>

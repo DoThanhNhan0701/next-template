@@ -19,7 +19,7 @@ import {
 import { TransferFormValues } from "../TransferFormModal";
 import { IOrgUnit } from "@/types/org";
 import { ILocation } from "@/types/location";
-import { IStaff } from "../TransferFormModal";
+import { IStaff } from "@/types/staff";
 
 interface SourceInfoSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -115,7 +115,7 @@ export function SourceInfoSection({
                         key={`source-staff-${s.id}`}
                         value={s.id.toString()}
                       >
-                        {s.full_name}
+                        {s.full_name} - ({s.staff_code})
                       </SelectItem>
                     ))}
                   {watchedType === "unit" &&

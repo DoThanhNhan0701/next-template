@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TransferFormValues, IStaff } from "../TransferFormModal";
+import { TransferFormValues } from "../TransferFormModal";
 import { IOrgUnit } from "@/types/org";
 import { ILocation } from "@/types/location";
+import { IStaff } from "@/types/staff";
 
 interface TargetDestinationSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -246,7 +247,7 @@ export function TargetDestinationSection({
               <Input
                 type="date"
                 {...field}
-                className="h-12 bg-white rounded-md border-muted-foreground/20"
+                className="bg-white rounded-md border-muted-foreground/20"
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -265,7 +266,7 @@ export function TargetDestinationSection({
                 placeholder="https://..."
                 {...field}
                 value={field.value || ""}
-                className="h-12 bg-white rounded-md border-muted-foreground/20"
+                className="bg-white rounded-md border-muted-foreground/20"
               />
               <FieldError errors={[fieldState.error]} />
             </Field>

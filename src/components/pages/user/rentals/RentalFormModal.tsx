@@ -341,13 +341,13 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Unit *</FieldLabel>
+                        <FieldLabel>Owning/Managing Unit *</FieldLabel>
                         <Select
                           onValueChange={(val) => field.onChange(Number(val))}
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select unit" />
+                            <SelectValue placeholder="Select owning/managing unit" />
                           </SelectTrigger>
                           <SelectContent>
                             {orgUnits.map((o) => (
