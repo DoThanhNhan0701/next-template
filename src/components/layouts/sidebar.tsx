@@ -53,7 +53,10 @@ export default function Sidebar({ items = defaultItems }: SidebarProps) {
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => {
-              const isActive = pathname === item.url;
+              const isActive =
+                item.url === "/"
+                  ? pathname === "/"
+                  : pathname === item.url || pathname.startsWith(item.url + "/");
               return (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton

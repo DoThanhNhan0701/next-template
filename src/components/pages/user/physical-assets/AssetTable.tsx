@@ -15,7 +15,6 @@ import {
   Filter,
   X,
   RotateCcw,
-  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -95,35 +94,7 @@ export default function AssetTable() {
 
   // Helper for Status Badge
   const getStatusInfo = (statusId: number) => {
-    const status = statuses.find((s) => s.id === statusId);
-    if (!status) return { label: `Status ${statusId}`, color: "bg-muted" };
-
-    const name = status.name.toLowerCase();
-    if (name.includes("active") || name.includes("đang dùng"))
-      return {
-        label: status.name,
-        color: "bg-emerald-500/15 text-emerald-600 border-emerald-500/20",
-      };
-    if (name.includes("maintenance") || name.includes("bảo trì"))
-      return {
-        label: status.name,
-        color: "bg-amber-500/15 text-amber-600 border-amber-500/20",
-      };
-    if (name.includes("broken") || name.includes("hỏng"))
-      return {
-        label: status.name,
-        color: "bg-red-500/15 text-red-600 border-red-500/20",
-      };
-    if (name.includes("retired") || name.includes("thanh lý"))
-      return {
-        label: status.name,
-        color: "bg-slate-500/15 text-slate-600 border-slate-500/20",
-      };
-
-    return {
-      label: status.name,
-      color: "bg-primary/10 text-primary border-primary/20",
-    };
+    return statuses.find((s) => s.id === statusId);
   };
 
   // Helper for Importance Accent
@@ -353,13 +324,14 @@ export default function AssetTable() {
               />
             ) : (
               assets.map((asset) => {
-                const statusInfo = getStatusInfo(asset.status_id);
+                const status = getStatusInfo(asset.status_id);
                 const usageMode = getUsageModeLabel(asset.usage_mode_id);
 
                 return (
                   <TableRow
                     key={asset.id}
-                    className="group hover:bg-primary/3 transition-colors relative"
+                    onClick={() => router.push(`/physical-assets/${asset.id}`)}
+                    className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                   >
                     <TableCell className="px-4 py-1.5 relative overflow-hidden">
                       {/* Importance Accent */}
@@ -443,12 +415,22 @@ export default function AssetTable() {
                     <TableCell className="px-4 py-1.5 text-center">
                       <Badge
                         variant="outline"
+                        style={
+                          status?.color
+                            ? {
+                                backgroundColor: `${status.color}20`,
+                                color: status.color,
+                                borderColor: `${status.color}40`,
+                              }
+                            : {}
+                        }
                         className={cn(
                           "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none",
-                          statusInfo.color,
+                          !status?.color &&
+                            "bg-primary/10 text-primary border-primary/20",
                         )}
                       >
-                        {statusInfo.label}
+                        {status?.name || `Status ${asset.status_id}`}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-right">
@@ -456,19 +438,11 @@ export default function AssetTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() =>
-                            router.push(`/physical-assets/${asset.id}`)
-                          }
-                          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
-                          title="View Details"
-                        >
-                          <Eye size={14} />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
-                          onClick={() => setAssetToEdit(asset)}
+                          className="h-8 w-8 rounded-full hover:bg-amber-50 text-amber-600 transition-all active:scale-90"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAssetToEdit(asset);
+                          }}
                           title="Edit Asset"
                         >
                           <EditIcon size={14} />

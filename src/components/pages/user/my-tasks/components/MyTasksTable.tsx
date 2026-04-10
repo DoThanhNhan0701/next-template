@@ -10,7 +10,6 @@ import {
   Filter,
   X,
   RotateCcw,
-  Eye,
   Check,
   CheckCircle2,
   XCircle,
@@ -298,7 +297,12 @@ export default function MyTasksTable() {
               tasks.map((task) => (
                 <TableRow
                   key={task.id}
-                  className="group hover:bg-primary/3 transition-colors relative"
+                  onClick={() =>
+                    router.push(
+                      `/my-tasks/${task.document_id}?status=${task.status}`,
+                    )
+                  }
+                  className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                 >
                   <TableCell className="px-4 py-2 relative overflow-hidden">
                     {/* Status Accent */}
@@ -373,26 +377,15 @@ export default function MyTasksTable() {
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          router.push(
-                            `/my-tasks/${task.document_id}?status=${task.status}`,
-                          )
-                        }
-                        className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
-                        title="View Details"
-                      >
-                        <Eye size={14} />
-                      </Button>
-
                       {task.status === "PENDING" && (
                         <>
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleApprove(task)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleApprove(task);
+                            }}
                             className="h-8 w-8 rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
                             title="Approve"
                           >
@@ -401,7 +394,10 @@ export default function MyTasksTable() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleReject(task)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleReject(task);
+                            }}
                             className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
                             title="Reject"
                           >

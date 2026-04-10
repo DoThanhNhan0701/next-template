@@ -97,9 +97,13 @@ export default function Header({ user, items = defaultItems }: Props) {
   ];
 
   const activeItem =
-    items.find((item) => item.url === pathname) ||
-    items.find((item) => item.url !== "/" && pathname.startsWith(item.url)) ||
-    items[0];
+    [...items]
+      .filter((item) =>
+        item.url === "/"
+          ? pathname === "/"
+          : pathname === item.url || pathname.startsWith(item.url + "/"),
+      )
+      .sort((a, b) => b.url.length - a.url.length)[0] || items[0];
 
   return (
     <header className="flex items-center px-4 min-h-10">
