@@ -7,6 +7,10 @@ import { endpoints } from "@/config/endpoints";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, RefreshCcw, Search } from "lucide-react";
+import { toast } from "sonner";
+import { useMutation } from "@/hooks/useMutation";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { getApiErrorMessage } from "@/utils/api-error";
 import OrgUnitFormModal from "./OrgUnitFormModal";
 import OrgUnitDetailView from "./OrgUnitDetailView";
 import OrgUnitDeleteDialog from "./OrgUnitDeleteDialog";
@@ -34,6 +38,9 @@ export default function OrganizationalStructurePage() {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [unitToDelete, setUnitToDelete] = useState<OrgUnit | null>(null);
+  const [isParentDisabled, setIsParentDisabled] = useState(false);
+
+  const { mutate } = useMutation();
 
   const flatUnits = useMemo(() => {
     const flatten = (units: OrgUnit[]): OrgUnit[] => {
@@ -80,34 +87,32 @@ export default function OrganizationalStructurePage() {
   const handleCreateRoot = () => {
     setUnitToEdit(null);
     setParentUnit(null);
+    setIsParentDisabled(false);
     setIsFormOpen(true);
   };
 
   const handleAddChild = (node: TreeNode) => {
     setUnitToEdit(null);
     setParentUnit({ id: Number(node.id), name: node.name });
+    setIsParentDisabled(true);
     setIsFormOpen(true);
   };
 
   const handleEdit = (node: TreeNode | OrgUnit) => {
-    const unit =
-      "children" in node
-        ? node
-        : flatUnits.find((u) => u.id.toString() === node.id);
+    // Correctly find the full OrgUnit by comparing string IDs to be type-safe
+    const unit = flatUnits.find((u) => u.id.toString() === node.id.toString());
     if (unit) {
-      setUnitToEdit(unit as OrgUnit);
+      setUnitToEdit(unit);
       setParentUnit(null);
+      setIsParentDisabled(false);
       setIsFormOpen(true);
     }
   };
 
   const handleDeleteTrigger = (node: TreeNode | OrgUnit) => {
-    const unit =
-      "children" in node
-        ? node
-        : flatUnits.find((u) => u.id.toString() === node.id);
+    const unit = flatUnits.find((u) => u.id.toString() === node.id.toString());
     if (unit) {
-      setUnitToDelete(unit as OrgUnit);
+      setUnitToDelete(unit);
       setIsDeleteOpen(true);
     }
   };
@@ -115,6 +120,52 @@ export default function OrganizationalStructurePage() {
   const handleSelect = (node: TreeNode) => {
     const unit = flatUnits.find((u) => u.id.toString() === node.id);
     if (unit) setSelectedUnit(unit);
+  };
+
+  const handleMove = async (nodeId: string, targetParentId: string | null) => {
+    const unit = flatUnits.find((u) => u.id.toString() === nodeId);
+    if (!unit) return;
+
+    // Type casting to number
+    const targetId = targetParentId ? Number(targetParentId) : null;
+
+    // Check if target is same as current parent
+    if (unit.parent_id === targetId) return;
+
+    // Check for circular reference: cannot move a parent into its own branch
+    if (targetId !== null) {
+      const isDescendant = (id: number, target: number): boolean => {
+        if (id === target) return true;
+        const u = flatUnits.find((u) => u.id === id);
+        if (!u) return false;
+        return (u.children || []).some((child) =>
+          isDescendant(child.id, target),
+        );
+      };
+
+      if (isDescendant(unit.id, targetId)) {
+        toast.error("Invalid move: cannot move a unit to its own branch.");
+        return;
+      }
+    }
+
+    // Call API using useMutation for consistency
+    await mutate(
+      {
+        url: `${endpoints.ORG_UNITS}${unit.id}/`,
+        method: "patch",
+        body: { parent_id: targetId },
+      },
+      {
+        onSuccess: (res) => {
+          getApiSuccessMessage(res);
+          reFetch();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
+      },
+    );
   };
 
   if (loading && !data) {
@@ -174,6 +225,7 @@ export default function OrganizationalStructurePage() {
                 onEdit={handleEdit}
                 onDelete={handleDeleteTrigger}
                 onSelect={handleSelect}
+                onMove={handleMove}
                 selectedId={selectedUnit?.id.toString()}
               />
             ) : (
@@ -203,6 +255,7 @@ export default function OrganizationalStructurePage() {
         onClose={() => setIsFormOpen(false)}
         unitToEdit={unitToEdit}
         parentUnit={parentUnit}
+        isParentDisabled={isParentDisabled}
         onSuccess={() => {
           reFetch();
           setSelectedUnit(null); // Clear selection to refresh details if needed

@@ -47,6 +47,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  isParentDisabled?: boolean;
 }
 
 export default function OrgUnitFormModal({
@@ -55,6 +56,7 @@ export default function OrgUnitFormModal({
   isOpen,
   onClose,
   onSuccess,
+  isParentDisabled = false,
 }: Props) {
   const isEditing = !!unitToEdit;
   const { mutate, pending } = useMutation<IOrgUnit>();
@@ -65,6 +67,57 @@ export default function OrgUnitFormModal({
     { disabled: !isOpen },
   );
   const users = userRes || [];
+
+  // Fetch all organizational units for parent selection
+  const { response: unitsRes } = useGet<IOrgUnit[]>(
+    { url: endpoints.ORG_UNITS },
+    { disabled: !isOpen },
+  );
+  const allUnits = unitsRes || [];
+
+  // Helper to format units hierarchically
+  const availableParentUnits = (() => {
+    interface HierarchicalOrgUnit extends IOrgUnit {
+      displayName: string;
+    }
+
+    const excludeIds = new Set<number>();
+    if (unitToEdit) {
+      excludeIds.add(unitToEdit.id);
+      // Recursively add all descendants to exclude list
+      const addDescendants = (id: number) => {
+        allUnits
+          .filter((u) => u.parent_id === id)
+          .forEach((child) => {
+            excludeIds.add(child.id);
+            addDescendants(child.id);
+          });
+      };
+      addDescendants(unitToEdit.id);
+    }
+
+    const formatTree = (
+      parentId: number | null = null,
+      depth = 0,
+    ): HierarchicalOrgUnit[] => {
+      return allUnits
+        .filter((u) => u.parent_id === parentId && !excludeIds.has(u.id))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .reduce<HierarchicalOrgUnit[]>((acc, unit) => {
+          const children = formatTree(unit.id, depth + 1);
+          return [
+            ...acc,
+            {
+              ...unit,
+              displayName: `${"\u00A0\u00A0\u00A0\u00A0".repeat(depth)}${depth > 0 ? "└─ " : ""}${unit.name} (${unit.code})`,
+            },
+            ...children,
+          ];
+        }, []);
+    };
+
+    return formatTree();
+  })();
 
   const form = useForm<IOrgUnitFormValues>({
     resolver: zodResolver(OrgUnitSchema),
@@ -113,6 +166,10 @@ export default function OrgUnitFormModal({
 
   const onSubmit = async (data: IOrgUnitFormValues) => {
     const cleanedData = cleanFormData(data);
+
+    // Explicitly allow null for parent_id and leader_id to unset them
+    if (data.parent_id === null) cleanedData.parent_id = null;
+    if (data.leader_id === null) cleanedData.leader_id = null;
     const url = isEditing
       ? `${endpoints.ORG_UNITS}${unitToEdit.id}/`
       : endpoints.ORG_UNITS;
@@ -199,6 +256,38 @@ export default function OrgUnitFormModal({
                       <SelectItem value="company">Company</SelectItem>
                       <SelectItem value="branch">Branch</SelectItem>
                       <SelectItem value="department">Department</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="parent_id"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field className="col-span-2">
+                  <FieldLabel>Parent Unit</FieldLabel>
+                  <Select
+                    onValueChange={(val) =>
+                      field.onChange(val === "none" ? null : Number(val))
+                    }
+                    value={field.value?.toString() || ""}
+                    disabled={isParentDisabled}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select parent unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">(None - Root Unit)</SelectItem>
+                      {availableParentUnits.map((unit) => (
+                        <SelectItem key={unit.id} value={unit.id.toString()}>
+                          {unit.displayName}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   {fieldState.invalid && (

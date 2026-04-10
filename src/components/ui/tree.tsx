@@ -50,6 +50,7 @@ interface TreeProps {
   onEdit?: (node: TreeNode) => void;
   onDelete?: (node: TreeNode) => void;
   onSelect?: (node: TreeNode) => void;
+  onMove?: (nodeId: string, targetParentId: string | null) => void;
   selectedId?: string;
 }
 
@@ -60,6 +61,7 @@ interface TreeItemProps {
   onEdit?: (node: TreeNode) => void;
   onDelete?: (node: TreeNode) => void;
   onSelect?: (node: TreeNode) => void;
+  onMove?: (nodeId: string, targetParentId: string | null) => void;
   selectedId?: string;
   isLastChild?: boolean;
 }
@@ -77,17 +79,62 @@ const getUnitIcon = (unitType?: string, isOpen?: boolean) => {
   }
 };
 
-function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, selectedId, isLastChild }: Readonly<TreeItemProps>) {
+function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, selectedId, isLastChild }: Readonly<TreeItemProps>) {
   const [isOpen, setIsOpen] = React.useState(level < 1);
+  const [isDragOver, setIsDragOver] = React.useState(false);
+  const [isDragging, setIsDragging] = React.useState(false);
   const hasChildren = node.children && node.children.length > 0;
   const isSelected = selectedId === node.id;
+
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData("nodeId", node.id);
+    e.dataTransfer.effectAllowed = "move";
+    // Ensure the drag is recognized
+    e.dataTransfer.setData("text/plain", node.name);
+    
+    // Use a timeout to apply the style AFTER the drag ghost is created
+    setTimeout(() => setIsDragging(true), 0);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = "move";
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const draggedNodeId = e.dataTransfer.getData("nodeId");
+    if (draggedNodeId && draggedNodeId !== node.id) {
+      onMove?.(draggedNodeId, node.id);
+    }
+  };
 
   return (
     <Collapsible.Root open={isOpen} onOpenChange={setIsOpen} className="relative">
       <div
+        draggable
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
         className={cn(
-          "group flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-all cursor-pointer relative",
+          "group flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-all duration-200 cursor-pointer relative",
           isSelected && "bg-primary/5 text-primary shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]",
+          isDragOver && "bg-primary/10 ring-2 ring-primary/40 scale-[1.01] z-10",
+          isDragging && "opacity-30 border-2 border-dashed border-primary/50 grayscale pointer-events-none",
         )}
         style={{ marginLeft: `${level * 24}px` }}
         onClick={() => onSelect?.(node)}
@@ -205,6 +252,7 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, selectedId, 
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onSelect={onSelect}
+                onMove={onMove}
                 selectedId={selectedId}
                 isLastChild={index === node.children!.length - 1}
               />
@@ -216,9 +264,13 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, selectedId, 
   );
 }
 
-export function Tree({ data, className, onAdd, onEdit, onDelete, onSelect, selectedId }: TreeProps) {
+export function Tree({ data, className, onAdd, onEdit, onDelete, onSelect, onMove, selectedId }: TreeProps) {
+  const [isRootDragOver, setIsRootDragOver] = React.useState(false);
+
   return (
-    <div className={cn("w-full py-2", className)}>
+    <div 
+      className={cn("w-full py-2", className)}
+    >
       {data.map((node, index) => (
         <TreeItem 
           key={node.id} 
@@ -228,10 +280,35 @@ export function Tree({ data, className, onAdd, onEdit, onDelete, onSelect, selec
           onEdit={onEdit}
           onDelete={onDelete}
           onSelect={onSelect}
+          onMove={onMove}
           selectedId={selectedId}
           isLastChild={index === data.length - 1}
         />
       ))}
+
+      {/* Move to root drop zone */}
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          setIsRootDragOver(true);
+        }}
+        onDragLeave={() => setIsRootDragOver(false)}
+        onDrop={(e) => {
+          setIsRootDragOver(false);
+          const draggedNodeId = e.dataTransfer.getData("nodeId");
+          if (draggedNodeId) {
+            onMove?.(draggedNodeId, null);
+          }
+        }}
+        className={cn(
+          "mt-4 p-4 border-2 border-dashed border-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
+          isRootDragOver && "border-primary bg-primary/5 text-primary scale-[1.02]"
+        )}
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        Drop here to make Root Unit
+      </div>
     </div>
   );
 }
