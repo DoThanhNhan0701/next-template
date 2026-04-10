@@ -12,7 +12,9 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function SystemLogTab({ logs }: Readonly<{ logs: ILifecycleLog[] }>) {
+export default function SystemLogTab({
+  logs,
+}: Readonly<{ logs: ILifecycleLog[] }>) {
   if (!logs || logs.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
@@ -105,8 +107,8 @@ export default function SystemLogTab({ logs }: Readonly<{ logs: ILifecycleLog[] 
                 </Badge>
               </TableCell>
               <TableCell className="px-4 py-2">
-                  {log.status_name || log.notes || "-"}
-Fix c              </TableCell>
+                {log.status_name || log.notes || "-"}
+              </TableCell>
               <TableCell className="px-4 py-1.5 text-center">
                 {log.document_number ? (
                   <Link
