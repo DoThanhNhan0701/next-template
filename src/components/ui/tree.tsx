@@ -1,7 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { ChevronRight, Folder, FolderOpen, Plus, Building2, Network, Users, MoreVertical, Edit2, Trash2 } from "lucide-react";
+import {
+  ChevronRight,
+  Folder,
+  FolderOpen,
+  Plus,
+  Building2,
+  Network,
+  Users,
+  MoreVertical,
+  Edit2,
+  Trash2,
+} from "lucide-react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import {
   DropdownMenu,
@@ -34,12 +45,12 @@ export interface OrgUnit {
 }
 
 export function convertToTreeNodes(units: OrgUnit[]): TreeNode[] {
-  return units.map(unit => ({
+  return units.map((unit) => ({
     id: unit.id.toString(),
     name: unit.name,
     code: unit.code,
     unit_type: unit.unit_type,
-    children: unit.children ? convertToTreeNodes(unit.children) : undefined
+    children: unit.children ? convertToTreeNodes(unit.children) : undefined,
   }));
 }
 
@@ -68,18 +79,32 @@ interface TreeItemProps {
 
 const getUnitIcon = (unitType?: string, isOpen?: boolean) => {
   switch (unitType) {
-    case 'company':
+    case "company":
       return <Building2 className="h-4 w-4 text-blue-600" />;
-    case 'branch':
+    case "branch":
       return <Network className="h-4 w-4 text-amber-600" />;
-    case 'department':
+    case "department":
       return <Users className="h-4 w-4 text-emerald-600" />;
     default:
-      return isOpen ? <FolderOpen className="h-4 w-4 text-primary" /> : <Folder className="h-4 w-4 text-primary" />;
+      return isOpen ? (
+        <FolderOpen className="h-4 w-4 text-primary" />
+      ) : (
+        <Folder className="h-4 w-4 text-primary" />
+      );
   }
 };
 
-function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, selectedId, isLastChild }: Readonly<TreeItemProps>) {
+function TreeItem({
+  node,
+  level,
+  onAdd,
+  onEdit,
+  onDelete,
+  onSelect,
+  onMove,
+  selectedId,
+  isLastChild,
+}: Readonly<TreeItemProps>) {
   const [isOpen, setIsOpen] = React.useState(level < 1);
   const [isDragOver, setIsDragOver] = React.useState(false);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -91,7 +116,7 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
     e.dataTransfer.effectAllowed = "move";
     // Ensure the drag is recognized
     e.dataTransfer.setData("text/plain", node.name);
-    
+
     // Use a timeout to apply the style AFTER the drag ghost is created
     setTimeout(() => setIsDragging(true), 0);
   };
@@ -122,7 +147,11 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
   };
 
   return (
-    <Collapsible.Root open={isOpen} onOpenChange={setIsOpen} className="relative">
+    <Collapsible.Root
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className={cn("relative", isDragOver && "z-50")}
+    >
       <div
         draggable
         onDragStart={handleDragStart}
@@ -132,18 +161,21 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
         onDrop={handleDrop}
         className={cn(
           "group flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-all duration-200 cursor-pointer relative",
-          isSelected && "bg-primary/5 text-primary shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]",
-          isDragOver && "bg-primary/10 ring-2 ring-primary/40 scale-[1.01] z-10",
-          isDragging && "opacity-30 border-2 border-dashed border-primary/50 grayscale pointer-events-none",
+          isSelected &&
+            "bg-primary/5 text-primary shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]",
+          isDragOver &&
+            "bg-primary/10 ring-2 ring-inset ring-primary/40 scale-[1.01] z-10",
+          isDragging &&
+            "opacity-30 border-2 border-dashed border-primary/50 grayscale pointer-events-none",
         )}
         style={{ marginLeft: `${level * 24}px` }}
         onClick={() => onSelect?.(node)}
       >
         {/* Connection Lines */}
         {level > 0 && (
-          <div 
+          <div
             className="absolute left-[-14px] top-0 bottom-0 w-px bg-border group-hover:bg-primary/30 transition-colors"
-            style={{ height: isLastChild && !hasChildren ? '20px' : '100%' }}
+            style={{ height: isLastChild && !hasChildren ? "20px" : "100%" }}
           />
         )}
         {level > 0 && (
@@ -153,14 +185,14 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
         <div className="flex items-center gap-1 min-w-[20px]">
           {hasChildren ? (
             <Collapsible.Trigger asChild>
-              <button 
+              <button
                 className="flex items-center justify-center h-5 w-5 hover:bg-muted rounded transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ChevronRight
                   className={cn(
                     "h-3.5 w-3.5 transition-transform duration-200",
-                    isOpen && "rotate-90"
+                    isOpen && "rotate-90",
                   )}
                 />
               </button>
@@ -171,18 +203,22 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
         </div>
 
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className={cn(
-            "p-1 rounded bg-muted/50 transition-colors",
-            isSelected && "bg-primary/10"
-          )}>
+          <div
+            className={cn(
+              "p-1 rounded bg-muted/50 transition-colors",
+              isSelected && "bg-primary/10",
+            )}
+          >
             {getUnitIcon(node.unit_type, isOpen)}
           </div>
-          
+
           <div className="flex flex-col min-w-0">
-            <span className={cn(
-              "text-sm font-medium truncate leading-tight",
-              isSelected && "text-primary font-semibold"
-            )}>
+            <span
+              className={cn(
+                "text-sm font-medium truncate leading-tight",
+                isSelected && "text-primary font-semibold",
+              )}
+            >
               {node.name}
             </span>
             {node.code && (
@@ -227,7 +263,7 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
                 </DropdownMenuItem>
               )}
               {onDelete && (
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={() => onDelete(node)}
                   className="text-destructive focus:text-destructive"
                 >
@@ -244,10 +280,10 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
         <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
           <div className="flex flex-col">
             {node.children!.map((child, index) => (
-              <TreeItem 
-                key={child.id} 
-                node={child} 
-                level={level + 1} 
+              <TreeItem
+                key={child.id}
+                node={child}
+                level={level + 1}
                 onAdd={onAdd}
                 onEdit={onEdit}
                 onDelete={onDelete}
@@ -264,19 +300,26 @@ function TreeItem({ node, level, onAdd, onEdit, onDelete, onSelect, onMove, sele
   );
 }
 
-export function Tree({ data, className, onAdd, onEdit, onDelete, onSelect, onMove, selectedId }: TreeProps) {
+export function Tree({
+  data,
+  className,
+  onAdd,
+  onEdit,
+  onDelete,
+  onSelect,
+  onMove,
+  selectedId,
+}: TreeProps) {
   const [isRootDragOver, setIsRootDragOver] = React.useState(false);
 
   return (
-    <div 
-      className={cn("w-full py-2", className)}
-    >
+    <div className={cn("w-full py-2", className)}>
       {data.map((node, index) => (
-        <TreeItem 
-          key={node.id} 
-          node={node} 
-          level={0} 
-          onAdd={onAdd} 
+        <TreeItem
+          key={node.id}
+          node={node}
+          level={0}
+          onAdd={onAdd}
           onEdit={onEdit}
           onDelete={onDelete}
           onSelect={onSelect}
@@ -303,7 +346,8 @@ export function Tree({ data, className, onAdd, onEdit, onDelete, onSelect, onMov
         }}
         className={cn(
           "mt-4 p-4 border-2 border-dashed border-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
-          isRootDragOver && "border-primary bg-primary/5 text-primary scale-[1.02]"
+          isRootDragOver &&
+            "border-primary bg-primary/5 text-primary scale-[1.02]",
         )}
       >
         <Plus className="w-4 h-4 mr-2" />

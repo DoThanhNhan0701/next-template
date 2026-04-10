@@ -1,4 +1,7 @@
-"use client";
+export const metadata = {
+  title: "Admin Dashboard | Asset Management System",
+  description: "View admin overview and metrics",
+};
 
 export default function AdminPage() {
   return (
