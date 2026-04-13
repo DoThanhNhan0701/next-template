@@ -44,6 +44,9 @@ import { IOrgUnit } from "@/types/org";
 import { IStaff } from "@/types/staff";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
+import { ITemplate, ITemplateStep } from "@/types/template";
+import { IUser } from "@/types/auth";
+import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { PlusIcon, Trash } from "lucide-react";
 
 type RecoveryFormValues = z.input<typeof RecoveryCreateSchema>;
@@ -225,10 +228,19 @@ export default function RecoveryVoucherModal({
     { url: endpoints.LOCATIONS },
     { disabled: !isOpen },
   );
+  const { response: activeTemplate } = useGet<ITemplate>(
+    { url: `${endpoints.TEMPLATE_ACTIVE}recovery` },
+    { disabled: !isOpen },
+  );
+  const { response: userRes } = useGet<IUser[]>(
+    { url: endpoints.USERS },
+    { disabled: !isOpen },
+  );
 
   const orgUnits = orgRes || [];
   const staffs = staffRes?.items || [];
   const locations = locationRes || [];
+  const users = userRes || [];
 
   const form = useForm<RecoveryFormValues>({
     resolver: zodResolver(RecoveryCreateSchema),
@@ -273,24 +285,28 @@ export default function RecoveryVoucherModal({
         location_id: null,
         reason: "",
         external_link: "",
-        items: [
-          {
-            location_id: 0,
-            asset_id: 0,
-            quantity: 1,
-          },
-        ],
+        approver_step_1_id: null,
+        approver_step_2_id: null,
+        items: [{ location_id: 0, asset_id: 0, quantity: 1 }],
       });
     }
   }, [isOpen, form]);
 
   const onSubmit = async (data: RecoveryFormValues) => {
+    const workflow_assignments: { step_id: number; user_id: number }[] = [];
+    if (activeTemplate?.steps?.length) {
+      if (data.approver_step_1_id) {
+        workflow_assignments.push({ step_id: activeTemplate.steps[0].id, user_id: data.approver_step_1_id });
+      }
+      if (activeTemplate.steps.length > 1 && data.approver_step_2_id) {
+        workflow_assignments.push({ step_id: activeTemplate.steps[1].id, user_id: data.approver_step_2_id });
+      }
+    }
+    const { approver_step_1_id, approver_step_2_id, ...rest } = data as RecoveryFormValues & { approver_step_1_id?: number | null; approver_step_2_id?: number | null };
+    void approver_step_1_id; void approver_step_2_id;
+
     await mutate(
-      {
-        url: endpoints.RECOVERIES,
-        method: "post",
-        body: data,
-      },
+      { url: endpoints.RECOVERIES, method: "post", body: { ...rest, workflow_assignments } },
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
@@ -542,6 +558,37 @@ export default function RecoveryVoucherModal({
                   ))}
                 </div>
               </div>
+
+              {/* Approval Process */}
+              {activeTemplate && (activeTemplate.steps || []).length > 0 && (
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-sm font-semibold text-primary border-b pb-1">Approval Process</h3>
+                  <FieldGroup className="grid grid-cols-2 gap-3">
+                    {(activeTemplate.steps || []).map((step: ITemplateStep, idx) => {
+                      const name = idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
+                      return (
+                        <Controller
+                          key={step.id}
+                          name={name as keyof RecoveryFormValues}
+                          control={form.control}
+                          render={({ field, fieldState }) => (
+                            <Field className="gap-1">
+                              <FieldLabel>{step.name}</FieldLabel>
+                              <ApproverSelect
+                                step={step}
+                                allUsers={users}
+                                value={field.value != null ? field.value.toString() : ""}
+                                onChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                              />
+                              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                          )}
+                        />
+                      );
+                    })}
+                  </FieldGroup>
+                </div>
+              )}
             </div>
           </div>
 

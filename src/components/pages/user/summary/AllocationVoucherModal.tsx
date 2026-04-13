@@ -48,6 +48,40 @@ import { IPhysicalAsset } from "@/types/physical-asset";
 import { ITemplate, ITemplateStep } from "@/types/template";
 import { PlusIcon, Trash } from "lucide-react";
 
+/* ── ApproverSelect: fetch users by role if step has default_assignee_role_id ── */
+function ApproverSelect({
+  step,
+  allUsers,
+  value,
+  onChange,
+}: {
+  step: ITemplateStep;
+  allUsers: IUser[];
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const hasRole = !!step.default_assignee_role_id;
+  const options = hasRole
+    ? allUsers.filter((u) => u.is_active && u.role_id === step.default_assignee_role_id)
+    : allUsers.filter((u) => u.is_active);
+
+  return (
+    <Select onValueChange={onChange} value={value}>
+      <SelectTrigger className="h-9">
+        <SelectValue placeholder="Select approver" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="none" className="text-muted-foreground italic">(None)</SelectItem>
+        {options.map((u) => (
+          <SelectItem key={u.id} value={u.id.toString()}>
+            {u.full_name} ({u.username})
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 type AllocationFormValues = z.input<typeof AllocationCreateSchema>;
 
 /* ───── Per-item row component ───── */
@@ -587,39 +621,12 @@ export default function AllocationVoucherModal({
                           render={({ field, fieldState }) => (
                             <Field className="gap-1">
                               <FieldLabel>{step.name}</FieldLabel>
-                              <Select
-                                onValueChange={(val) =>
-                                  field.onChange(val === "none" ? null : val)
-                                }
-                                value={
-                                  field.value !== null &&
-                                  field.value !== undefined
-                                    ? field.value.toString()
-                                    : ""
-                                }
-                              >
-                                <SelectTrigger className="h-9">
-                                  <SelectValue placeholder="Select approver" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem
-                                    value="none"
-                                    className="text-muted-foreground italic"
-                                  >
-                                    (None)
-                                  </SelectItem>
-                                  {users
-                                    .filter((u) => u.is_active)
-                                    .map((u) => (
-                                      <SelectItem
-                                        key={u.id}
-                                        value={u.id.toString()}
-                                      >
-                                        {u.full_name} ({u.username})
-                                      </SelectItem>
-                                    ))}
-                                </SelectContent>
-                              </Select>
+                              <ApproverSelect
+                                step={step}
+                                allUsers={users}
+                                value={field.value != null ? field.value.toString() : ""}
+                                onChange={(val) => field.onChange(val === "none" ? null : val)}
+                              />
                               {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                               )}

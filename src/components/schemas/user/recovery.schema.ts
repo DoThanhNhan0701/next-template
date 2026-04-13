@@ -14,6 +14,8 @@ export const RecoveryCreateSchema = z.object({
   location_id: z.coerce.number().optional().nullable(),
   reason: z.string().min(1, "Recovery reason is required"),
   external_link: z.string().optional().default(""),
+  approver_step_1_id: z.number().nullable().optional(),
+  approver_step_2_id: z.number().nullable().optional(),
   items: z
     .array(RecoveryCreateItemSchema)
     .min(1, "At least one asset is required"),

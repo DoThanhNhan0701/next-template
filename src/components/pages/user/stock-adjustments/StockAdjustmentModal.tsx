@@ -31,8 +31,8 @@ import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { ITemplate, ITemplateStep } from "@/types/template";
 import { IUser } from "@/types/auth";
+import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { PlusIcon, Trash } from "lucide-react";
-
 const DetailSchema = z.object({
   asset_id: z.number().min(1, "Please select an asset"),
   location_id: z.number().min(1, "Please select a location"),
@@ -405,22 +405,12 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
                           render={({ field, fieldState }) => (
                             <Field className="gap-1">
                               <FieldLabel>{step.name}</FieldLabel>
-                              <Select
-                                onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                              <ApproverSelect
+                                step={step}
+                                allUsers={users}
                                 value={field.value != null ? field.value.toString() : ""}
-                              >
-                                <SelectTrigger className="h-9">
-                                  <SelectValue placeholder="Select approver" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="none" className="text-muted-foreground italic">(None)</SelectItem>
-                                  {users.filter((u) => u.is_active).map((u) => (
-                                    <SelectItem key={u.id} value={u.id.toString()}>
-                                      {u.full_name} ({u.username})
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                                onChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                              />
                               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                             </Field>
                           )}

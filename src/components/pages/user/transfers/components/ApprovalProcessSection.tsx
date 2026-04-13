@@ -2,22 +2,11 @@
 
 import { UserCircle2 } from "lucide-react";
 import { UseFormReturn, Controller } from "react-hook-form";
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
 import { TransferFormValues } from "../TransferFormModal";
 import { IUser } from "@/types/auth";
 import { ITemplate, ITemplateStep } from "@/types/template";
+import { ApproverSelect } from "@/components/common/ApproverSelect";
 
 interface ApprovalProcessSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -25,15 +14,8 @@ interface ApprovalProcessSectionProps {
   activeTransferTemplate: ITemplate | undefined;
 }
 
-export function ApprovalProcessSection({
-  form,
-  users,
-  activeTransferTemplate,
-}: ApprovalProcessSectionProps) {
-  if (
-    !activeTransferTemplate?.steps ||
-    activeTransferTemplate.steps.length === 0
-  ) {
+export function ApprovalProcessSection({ form, users, activeTransferTemplate }: ApprovalProcessSectionProps) {
+  if (!activeTransferTemplate?.steps || activeTransferTemplate.steps.length === 0) {
     return null;
   }
 
@@ -47,8 +29,7 @@ export function ApprovalProcessSection({
       <div className="bg-muted/20 border rounded-md p-6 space-y-6">
         <FieldGroup className="grid grid-cols-2 gap-8">
           {activeTransferTemplate.steps.map((step: ITemplateStep, idx) => {
-            const name =
-              idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
+            const name = idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
             return (
               <Controller
                 key={`transfer-approver-${step.id}`}
@@ -59,34 +40,13 @@ export function ApprovalProcessSection({
                     <FieldLabel className="text-[10px] font-black text-muted-foreground/80 tracking-[0.15em] mb-1">
                       {step.name}
                     </FieldLabel>
-                    <Select
-                      onValueChange={(val) =>
-                        field.onChange(val === "none" ? null : Number(val))
-                      }
+                    <ApproverSelect
+                      step={step}
+                      allUsers={users}
                       value={field.value ? field.value.toString() : ""}
-                    >
-                      <SelectTrigger className="h-14 bg-white rounded-md border-muted-foreground/30 shadow-sm transition-all hover:border-primary/50 focus:ring-4 focus:ring-primary/5">
-                        <SelectValue placeholder="Select approver..." />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[300px]">
-                        <SelectItem
-                          value="none"
-                          className="text-muted-foreground italic text-xs px-4 py-3"
-                        >
-                          (No approver required)
-                        </SelectItem>
-                        {users
-                          .filter((u) => u.is_active)
-                          .map((u) => (
-                            <SelectItem
-                              key={`approver-choice-${idx}-${u.id}`}
-                              value={u.id.toString()}
-                            >
-                              {u.full_name} ({u.username})
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+                      onChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                      triggerClassName="h-14 bg-white rounded-md border-muted-foreground/30 shadow-sm transition-all hover:border-primary/50 focus:ring-4 focus:ring-primary/5"
+                    />
                     <FieldError errors={[fieldState.error]} />
                   </Field>
                 )}

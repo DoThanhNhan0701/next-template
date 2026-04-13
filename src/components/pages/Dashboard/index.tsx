@@ -115,7 +115,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
             Welcome back,{" "}
-            <span className="text-primary">{user?.full_name || "User"}</span>!
+            <span className="text-primary" suppressHydrationWarning>{user?.full_name || "User"}</span>!
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             Here&apos;s your daily asset overview.
