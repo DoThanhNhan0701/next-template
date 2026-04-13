@@ -134,12 +134,12 @@ export default function AllocationSummaryTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="Owning/Managing Unit" />
+                  <SelectValue placeholder="Organization" />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Owning/Managing Unit</SelectItem>
+              <SelectItem value="all">Organization</SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}

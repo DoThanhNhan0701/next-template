@@ -208,13 +208,13 @@ export default function StaffFormModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Owning/Managing Unit</FieldLabel>
+                  <FieldLabel>Organization</FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(Number(val))}
                     value={field.value?.toString() || ""}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a owning/managing unit" />
+                      <SelectValue placeholder="Select organization" />
                     </SelectTrigger>
                     <SelectContent>
                       {units

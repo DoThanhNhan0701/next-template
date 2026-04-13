@@ -463,7 +463,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
-                        <FieldLabel>Owning/Managing Unit</FieldLabel>
+                        <FieldLabel>Organization</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
