@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import auth from './slices/auth';
 import stockAdjustment from './slices/stockAdjustment';
+import allocation from './slices/allocation';
 import { injectStore } from '@/utils/axiosInstance';
 
 
@@ -9,6 +10,7 @@ export const store = configureStore({
   reducer: {
     auth,
     stockAdjustment,
+    allocation,
   },
 });
 

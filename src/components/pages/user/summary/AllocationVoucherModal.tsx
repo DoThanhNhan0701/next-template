@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useForm,
   Controller,
@@ -47,6 +48,8 @@ import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { ITemplate, ITemplateStep } from "@/types/template";
 import { PlusIcon, Trash } from "lucide-react";
+import { AppDispatch, RootState } from "@/redux";
+import { closeAllocation } from "@/redux/slices/allocation";
 
 /* ── ApproverSelect: fetch users by role if step has default_assignee_role_id ── */
 function ApproverSelect({
@@ -91,6 +94,8 @@ interface AllocationItemRowProps {
   setValue: UseFormSetValue<AllocationFormValues>;
   locations: ILocation[];
   onRemove: () => void;
+  prefillLocationId?: number;
+  prefillAssetId?: number;
 }
 
 function AllocationItemRow({
@@ -99,8 +104,10 @@ function AllocationItemRow({
   setValue,
   locations,
   onRemove,
+  prefillLocationId,
+  prefillAssetId,
 }: AllocationItemRowProps) {
-  const [warehouseId, setWarehouseId] = useState<number>(0);
+  const [warehouseId, setWarehouseId] = useState<number>(prefillLocationId ?? 0);
 
   const { response: assetRes, pending: assetsPending } = useGet<{
     items: IPhysicalAsset[];
@@ -114,8 +121,16 @@ function AllocationItemRow({
   const assets = assetRes?.items || [];
 
   useEffect(() => {
-    setValue(`items.${index}.asset_id`, 0);
+    // Only clear asset when user manually changes location (not on initial prefill)
+    setValue(`items.${index}.location_id`, warehouseId);
   }, [warehouseId, index, setValue]);
+
+  // Set prefill asset after assets load
+  useEffect(() => {
+    if (prefillAssetId && assets.length > 0) {
+      setValue(`items.${index}.asset_id`, prefillAssetId);
+    }
+  }, [prefillAssetId, assets, index, setValue]);
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-4">
@@ -230,6 +245,13 @@ export default function AllocationVoucherModal({
   onSuccess,
 }: Props) {
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { prefill } = useSelector((state: RootState) => state.allocation);
+
+  const handleClose = () => {
+    dispatch(closeAllocation());
+    onClose();
+  };
 
   const { response: orgRes } = useGet<IOrgUnit[]>(
     { url: endpoints.ORG_UNITS },
@@ -291,7 +313,7 @@ export default function AllocationVoucherModal({
     if (isOpen) {
       form.reset({
         allocated_to_type: "user",
-        unit_id: 0,
+        unit_id: prefill?.unit_id ?? 0,
         staff_id: null,
         allocation_date: new Date().toISOString().split("T")[0],
         location_id: null,
@@ -299,8 +321,8 @@ export default function AllocationVoucherModal({
         external_link: "",
         items: [
           {
-            location_id: 0,
-            asset_id: 0,
+            location_id: prefill?.location_id ?? 0,
+            asset_id: prefill?.asset_id ?? 0,
             quantity: 1,
           },
         ],
@@ -356,7 +378,7 @@ export default function AllocationVoucherModal({
         onSuccess: (res) => {
           getApiSuccessMessage(res);
           onSuccess();
-          onClose();
+          handleClose();
         },
         onError: (err) => {
           getApiErrorMessage(err);
@@ -366,7 +388,7 @@ export default function AllocationVoucherModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
           <DialogTitle>Create Allocation Voucher</DialogTitle>
@@ -452,8 +474,8 @@ export default function AllocationVoucherModal({
                             </SelectItem>
                             {(watchedUnitId && Number(watchedUnitId) !== 0
                               ? staffs.filter(
-                                  (s) => s.unit_id === Number(watchedUnitId),
-                                )
+                                (s) => s.unit_id === Number(watchedUnitId),
+                              )
                               : []
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
@@ -597,6 +619,8 @@ export default function AllocationVoucherModal({
                       setValue={form.setValue}
                       locations={locations}
                       onRemove={() => remove(index)}
+                      prefillLocationId={index === 0 ? prefill?.location_id : undefined}
+                      prefillAssetId={index === 0 ? prefill?.asset_id : undefined}
                     />
                   ))}
                 </div>
@@ -604,40 +628,40 @@ export default function AllocationVoucherModal({
 
               {/* Approval Process */}
               {activeAllocationTemplate && (activeAllocationTemplate.steps || []).length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  Approval Process
-                </h3>
-                <FieldGroup className="grid grid-cols-2 gap-3">
-                  {(activeAllocationTemplate?.steps || []).map(
-                    (step: ITemplateStep, idx) => {
-                      const name =
-                        idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
-                      return (
-                        <Controller
-                          key={step.id}
-                          name={name as keyof AllocationFormValues}
-                          control={form.control}
-                          render={({ field, fieldState }) => (
-                            <Field className="gap-1">
-                              <FieldLabel>{step.name}</FieldLabel>
-                              <ApproverSelect
-                                step={step}
-                                allUsers={users}
-                                value={field.value != null ? field.value.toString() : ""}
-                                onChange={(val) => field.onChange(val === "none" ? null : val)}
-                              />
-                              {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]} />
-                              )}
-                            </Field>
-                          )}
-                        />
-                      );
-                    },
-                  )}
-                </FieldGroup>
-              </div>
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-sm font-semibold text-primary border-b pb-1">
+                    Approval Process
+                  </h3>
+                  <FieldGroup className="grid grid-cols-2 gap-3">
+                    {(activeAllocationTemplate?.steps || []).map(
+                      (step: ITemplateStep, idx) => {
+                        const name =
+                          idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
+                        return (
+                          <Controller
+                            key={step.id}
+                            name={name as keyof AllocationFormValues}
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                              <Field className="gap-1">
+                                <FieldLabel>{step.name}</FieldLabel>
+                                <ApproverSelect
+                                  step={step}
+                                  allUsers={users}
+                                  value={field.value != null ? field.value.toString() : ""}
+                                  onChange={(val) => field.onChange(val === "none" ? null : val)}
+                                />
+                                {fieldState.invalid && (
+                                  <FieldError errors={[fieldState.error]} />
+                                )}
+                              </Field>
+                            )}
+                          />
+                        );
+                      },
+                    )}
+                  </FieldGroup>
+                </div>
               )}
             </div>
           </div>
@@ -646,7 +670,7 @@ export default function AllocationVoucherModal({
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleClose}
               className="w-24"
             >
               Cancel

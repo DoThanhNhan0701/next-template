@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useGet } from "@/hooks/useGet";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
@@ -13,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import LifecycleTab from "./lifecycle/LifecycleTab";
 import OverviewTab from "./overview/OverviewTab";
 import AssetFormModal from "./AssetFormModal";
+import { AppDispatch } from "@/redux";
+import { openAllocation } from "@/redux/slices/allocation";
 import { QRCodeSVG } from "qrcode.react";
 
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
@@ -20,6 +23,17 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "overview";
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleDispatch = () => {
+    if (!asset) return;
+    dispatch(openAllocation({
+      asset_id: asset.id,
+      location_id: asset.location_id ?? 0,
+      unit_id: asset.unit_id ?? 0,
+    }));
+    router.push("/dispatch-recovery");
+  };
 
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -98,6 +112,10 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             <Button onClick={() => setIsEditOpen(true)}>
               <Edit className="w-4 h-4" />
               Edit profile
+            </Button>
+            <Button variant="outline" onClick={handleDispatch}>
+              <ArrowLeft className="w-4 h-4 rotate-180" />
+              Dispatch
             </Button>
           </div>
         </div>
