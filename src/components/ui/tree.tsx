@@ -150,21 +150,20 @@ function TreeItem({
     <Collapsible.Root
       open={isOpen}
       onOpenChange={setIsOpen}
-      className={cn("relative", isDragOver && "z-50")}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={cn("relative rounded-md transition-all duration-200", isDragOver && "bg-primary/5 z-50")}
+      style={isDragOver ? { boxShadow: "0 0 0 2px hsl(var(--primary) / 0.7)" } : undefined}
     >
       <div
         draggable
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
         className={cn(
           "group flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-all duration-200 cursor-pointer relative",
           isSelected &&
             "bg-primary/5 text-primary shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]",
-          isDragOver &&
-            "bg-primary/10 outline outline-2 outline-primary/60 scale-[1.01] z-10",
           isDragging &&
             "opacity-30 border-2 border-dashed border-primary/50 grayscale pointer-events-none",
         )}
@@ -345,10 +344,10 @@ export function Tree({
           }
         }}
         className={cn(
-          "mt-4 p-4 border-2 border-dashed border-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
-          isRootDragOver &&
-            "border-primary bg-primary/5 text-primary scale-[1.02]",
+          "mt-4 p-4 rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
+          isRootDragOver ? "bg-primary/5 text-primary" : "border-2 border-dashed border-muted",
         )}
+        style={isRootDragOver ? { boxShadow: "0 0 0 2px hsl(var(--primary) / 0.7)" } : undefined}
       >
         <Plus className="w-4 h-4 mr-2" />
         Drop here to make Root Unit
