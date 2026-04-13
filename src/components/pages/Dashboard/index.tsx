@@ -226,7 +226,7 @@ export default function DashboardPage() {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="h-[280px] flex flex-col justify-end gap-6 pb-6 pt-4 px-4 overflow-hidden">
+          <CardContent className="h-[calc(100%-61px)] flex flex-col justify-end gap-6 pb-6 pt-4 px-4 overflow-hidden">
             {/* Visual Chart Bars Mockup */}
             <div className="flex items-end justify-between h-full gap-2 md:gap-4 lg:gap-6 px-2">
               {[65, 45, 75, 55, 90, 40, 60, 80, 70, 85].map((height, i) => (

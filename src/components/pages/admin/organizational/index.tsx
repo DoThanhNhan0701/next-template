@@ -15,12 +15,14 @@ import OrgUnitFormModal from "./OrgUnitFormModal";
 import OrgUnitDetailView from "./OrgUnitDetailView";
 import OrgUnitDeleteDialog from "./OrgUnitDeleteDialog";
 import { OrgUnit } from "@/components/ui/tree";
+import { IOrgUnit } from "@/types/org";
 
 export default function OrganizationalStructurePage() {
   const {
     response: data,
     pending: loading,
     reFetch,
+    setResponse: setData,
   } = useGet<OrgUnit[]>({
     url: endpoints.ORG_UNITS + "tree",
   });
@@ -41,6 +43,76 @@ export default function OrganizationalStructurePage() {
   const [isParentDisabled, setIsParentDisabled] = useState(false);
 
   const { mutate } = useMutation();
+
+  // --- Local state updaters (no refetch needed) ---
+  const insertUnit = (units: OrgUnit[], newUnit: OrgUnit): OrgUnit[] => {
+    if (newUnit.parent_id === null) return [...units, { ...newUnit, children: [] }];
+    return units.map((u) => {
+      if (u.id === newUnit.parent_id) {
+        return { ...u, children: [...(u.children || []), { ...newUnit, children: [] }] };
+      }
+      if (u.children?.length) return { ...u, children: insertUnit(u.children, newUnit) };
+      return u;
+    });
+  };
+
+  const updateUnit = (units: OrgUnit[], updated: OrgUnit): OrgUnit[] => {
+    return units.map((u) => {
+      if (u.id === updated.id) return { ...updated, children: u.children || [] };
+      if (u.children?.length) return { ...u, children: updateUnit(u.children, updated) };
+      return u;
+    });
+  };
+
+  const removeUnit = (units: OrgUnit[], id: number): OrgUnit[] => {
+    return units
+      .filter((u) => u.id !== id)
+      .map((u) => ({
+        ...u,
+        children: u.children?.length ? removeUnit(u.children, id) : u.children,
+      }));
+  };
+
+  const handleFormSuccess = (savedUnit: IOrgUnit) => {
+    setData((prev) => {
+      if (!prev) return prev;
+      const existingNode = flatUnits.find((u) => u.id === savedUnit.id);
+      const unitWithChildren: OrgUnit = {
+        ...savedUnit,
+        address: savedUnit.address ?? null,
+        description: savedUnit.description ?? null,
+        // preserve existing children when updating
+        children: existingNode?.children || [],
+      };
+
+      if (!existingNode) {
+        // New unit: insert at correct parent
+        return insertUnit(prev, unitWithChildren);
+      }
+
+      const parentChanged = existingNode.parent_id !== savedUnit.parent_id;
+      if (parentChanged) {
+        // Remove from old position, insert at new position
+        const withoutOld = removeUnit(prev, savedUnit.id);
+        return insertUnit(withoutOld, unitWithChildren);
+      }
+
+      // Same position: just update in place
+      return updateUnit(prev, unitWithChildren);
+    });
+    setSelectedUnit((prev) => ({
+      ...(prev || {}),
+      ...savedUnit,
+      address: savedUnit.address ?? null,
+      description: savedUnit.description ?? null,
+      children: flatUnits.find((u) => u.id === savedUnit.id)?.children || [],
+    } as OrgUnit));
+  };
+
+  const handleDeleteSuccess = (deletedId: number) => {
+    setData((prev) => (prev ? removeUnit(prev, deletedId) : prev));
+    setSelectedUnit(null);
+  };
 
   const flatUnits = useMemo(() => {
     const flatten = (units: OrgUnit[]): OrgUnit[] => {
@@ -152,14 +224,14 @@ export default function OrganizationalStructurePage() {
     // Call API using useMutation for consistency
     await mutate(
       {
-        url: `${endpoints.ORG_UNITS}${unit.id}/`,
+        url: `${endpoints.ORG_UNITS}${unit.id}`,
         method: "patch",
         body: { parent_id: targetId },
       },
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
-          reFetch();
+          handleFormSuccess(res as OrgUnit);
         },
         onError: (err) => {
           getApiErrorMessage(err);
@@ -256,9 +328,8 @@ export default function OrganizationalStructurePage() {
         unitToEdit={unitToEdit}
         parentUnit={parentUnit}
         isParentDisabled={isParentDisabled}
-        onSuccess={() => {
-          reFetch();
-          setSelectedUnit(null); // Clear selection to refresh details if needed
+        onSuccess={(savedUnit) => {
+          handleFormSuccess(savedUnit);
         }}
       />
 
@@ -268,8 +339,7 @@ export default function OrganizationalStructurePage() {
         unitId={unitToDelete?.id || null}
         unitName={unitToDelete?.name || null}
         onSuccess={() => {
-          reFetch();
-          setSelectedUnit(null);
+          if (unitToDelete) handleDeleteSuccess(unitToDelete.id);
         }}
       />
     </div>

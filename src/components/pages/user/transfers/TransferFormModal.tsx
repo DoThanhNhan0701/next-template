@@ -352,7 +352,7 @@ export default function TransferFormModal({
                 ? "Processing..."
                 : isEditing
                   ? "Save Changes"
-                  : "Create Transfer"}
+                  : "Create"}
             </Button>
           </div>
         </form>

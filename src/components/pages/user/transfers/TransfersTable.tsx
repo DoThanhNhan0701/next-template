@@ -176,7 +176,7 @@ export default function TransfersTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Create Transfer
+            Create
           </Button>
         </div>
       </div>

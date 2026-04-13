@@ -46,7 +46,7 @@ interface Props {
   parentUnit?: { id: number; name: string } | null;
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (savedUnit: IOrgUnit) => void;
   isParentDisabled?: boolean;
 }
 
@@ -184,7 +184,7 @@ export default function OrgUnitFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
-          onSuccess();
+          onSuccess(res);
           onClose();
         },
         onError: (err) => {

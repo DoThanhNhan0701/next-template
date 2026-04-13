@@ -164,7 +164,7 @@ function TreeItem({
           isSelected &&
             "bg-primary/5 text-primary shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]",
           isDragOver &&
-            "bg-primary/10 ring-2 ring-inset ring-primary/40 scale-[1.01] z-10",
+            "bg-primary/10 outline outline-2 outline-primary/60 scale-[1.01] z-10",
           isDragging &&
             "opacity-30 border-2 border-dashed border-primary/50 grayscale pointer-events-none",
         )}
