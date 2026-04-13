@@ -19,6 +19,7 @@ import {
   Store,
   Contact,
   Building2,
+  GitBranch,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -52,6 +53,7 @@ export default function AdminLayout({
     },
     { title: "Suppliers", url: "/admin/suppliers", icon: Store },
     { title: "Customers", url: "/admin/customers", icon: Users },
+    { title: "Approval Workflows", url: "/admin/workflow-templates", icon: GitBranch },
   ];
 
   return (
