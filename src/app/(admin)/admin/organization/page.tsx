@@ -1,8 +1,8 @@
 import OrganizationalStructurePage from "@/components/pages/admin/organizational";
 
 export const metadata = {
-  title: "Organizational Structure | Admin",
-  description: "Manage organizational structures in the system",
+  title: "Organization | Admin",
+  description: "Manage organization structure",
 };
 
 export default function Page() {

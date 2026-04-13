@@ -272,12 +272,12 @@ export default function AssetFormModal({
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Physical Asset" : "Declare New Physical Asset"}
+            {isEditing ? "Edit Asset" : "Declare New Asset"}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
-              ? "Modify the information of the selected physical asset."
-              : "Fill in the required details to register a new physical asset in the system."}
+              ? "Modify the information of the selected asset."
+              : "Fill in the required details to register a new asset in the system."}
           </DialogDescription>
         </DialogHeader>
 

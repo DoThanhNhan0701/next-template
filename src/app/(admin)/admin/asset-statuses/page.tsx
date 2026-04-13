@@ -1,8 +1,8 @@
 import StatusesPage from "@/components/pages/admin/statuses";
 
 export const metadata = {
-  title: "Statuses | Asset Management System",
-  description: "Manage statuses",
+  title: "Asset Statuses | Asset Management System",
+  description: "Manage asset statuses",
 };
 
 export default function Page() {

@@ -1,8 +1,8 @@
 import StaffsPage from "@/components/pages/admin/staffs";
 
 export const metadata = {
-  title: "Staffs | Asset Management System",
-  description: "Manage staffs",
+  title: "Staff | Asset Management System",
+  description: "Manage staff",
 };
 
 export default function Page() {

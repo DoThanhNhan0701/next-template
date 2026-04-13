@@ -121,7 +121,7 @@ function RentalItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 col-span-2">
-            <FieldLabel>Physical Assets *</FieldLabel>
+            <FieldLabel>Assets *</FieldLabel>
             <Select
               onValueChange={(val) => field.onChange(Number(val))}
               value={field.value ? field.value.toString() : ""}

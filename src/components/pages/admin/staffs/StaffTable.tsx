@@ -155,7 +155,7 @@ export default function StaffTable() {
               <TableEmptyRow
                 colSpan={6}
                 icon={Contact}
-                message="No staffs found"
+                message="No staff found"
                 description="Add your first staff member using the button above."
               />
             ) : (

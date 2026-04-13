@@ -45,7 +45,7 @@ export function AssetSelectionSection({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wider">
           <Box size={20} />
-          <span>2. Physical Assets Selection</span>
+          <span>2. Assets Selection</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -93,7 +93,7 @@ export function AssetSelectionSection({
 
             <div className="flex-1 space-y-1">
               <label className="text-[11px] font-semibold text-muted-foreground tracking-wider block">
-                Select Physical Asset *
+                Select Asset *
               </label>
               <Controller
                 name={`details.${index}.asset_id`}

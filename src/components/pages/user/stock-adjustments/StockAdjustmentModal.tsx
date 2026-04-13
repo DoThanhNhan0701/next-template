@@ -304,7 +304,7 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
-          <DialogTitle>Create Stock Adjustment</DialogTitle>
+          <DialogTitle>Create Stock In/Out</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Create a new stock increase or decrease record.
           </DialogDescription>

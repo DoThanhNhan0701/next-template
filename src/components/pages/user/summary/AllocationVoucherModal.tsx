@@ -155,14 +155,14 @@ function AllocationItemRow({
         </Select>
       </Field>
 
-      {/* Physical Asset */}
+      {/* Asset */}
       <Controller
         name={`items.${index}.asset_id`}
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
             <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Physical Asset *
+              Asset *
             </FieldLabel>
             <Select
               onValueChange={(val) => field.onChange(Number(val))}
@@ -573,7 +573,7 @@ export default function AllocationVoucherModal({
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between border-b pb-1">
                   <h3 className="text-sm font-semibold text-primary">
-                    Physical Assets Selection
+                    Assets Selection
                   </h3>
                   <Button
                     type="button"

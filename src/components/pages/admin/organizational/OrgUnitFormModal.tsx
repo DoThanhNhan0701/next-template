@@ -200,8 +200,8 @@ export default function OrgUnitFormModal({
         <DialogHeader>
           <DialogTitle>
             {isEditing
-              ? "Edit Organizational Unit"
-              : "Create New Organizational Unit"}
+              ? "Edit Organization Unit"
+              : "Create New Organization Unit"}
           </DialogTitle>
           <DialogDescription>
             {isEditing

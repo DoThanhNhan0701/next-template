@@ -117,7 +117,7 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
               <TableEmptyRow
                 colSpan={7}
                 icon={PackageSearch}
-                message="No stock adjustments found"
+                message="No stock in/out records found"
                 description="Create a new adjustment using the button above."
               />
             ) : (
