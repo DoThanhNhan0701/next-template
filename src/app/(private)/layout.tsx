@@ -14,6 +14,7 @@ import {
   BarChart3,
   ArrowRightLeft,
   ClipboardList,
+  PackageSearch,
 } from "lucide-react";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
@@ -36,6 +37,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     { title: "Rentals", url: "/rentals", icon: Key },
     { title: "Summary", url: "/summary", icon: BarChart3 },
     { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
+    { title: "Stock Adjustments", url: "/stock-adjustments", icon: PackageSearch },
   ];
 
   return (

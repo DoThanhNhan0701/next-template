@@ -149,7 +149,7 @@ function AllocationItemRow({
               <SelectContent>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} - {a.asset_code} - SL: {a?.quantity ?? 0}
+                    {a.name} ({a.asset_code}) Quantity: {a.quantity}
                   </SelectItem>
                 ))}
               </SelectContent>

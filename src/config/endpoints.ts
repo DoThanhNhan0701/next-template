@@ -40,6 +40,7 @@ export const endpoints = getEndPoint("api/v1", {
   RECOVERIES: "recoveries/",
   STAFFS: "staffs/",
   TEMPLATES: "workflows/templates/",
+  TEMPLATE_ACTIVE: "workflows/templates/active/",
   TRANSFERS: "transfers/",
   WORKFLOW_TASKS: "workflows/tasks/",
 });

@@ -30,8 +30,8 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { IWorkflowTemplate } from "@/types/workflow-template";
 import { IRole } from "@/types/rbac";
-import { IStaff } from "@/types/staff";
 import { PlusIcon, Trash2Icon, GripVertical, Shield, User } from "lucide-react";
+import { IUser } from "@/types/auth";
 
 const StepSchema = z.object({
   id: z.number().optional(),
@@ -75,7 +75,7 @@ function StepAssigneeFields({
   control,
   setValue,
   roles,
-  staffs,
+  users,
 }: {
   index: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,7 +83,7 @@ function StepAssigneeFields({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: any;
   roles: IRole[];
-  staffs: IStaff[];
+  users: IUser[];
 }) {
   const roleId = useWatch({ control, name: `steps.${index}.default_assignee_role_id` });
   const userId = useWatch({ control, name: `steps.${index}.default_assignee_user_id` });
@@ -160,10 +160,9 @@ function StepAssigneeFields({
                   <SelectValue placeholder="Select staff..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {staffs.map((s) => (
+                  {users.map((s) => (
                     <SelectItem key={s.id} value={s.id.toString()}>
-                      {s.full_name}
-                      {s.unit?.name && <span className="text-muted-foreground ml-1 text-xs">({s.unit.name})</span>}
+                      {s.full_name} ({s.username})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -194,10 +193,10 @@ export default function WorkflowTemplateFormModal({ templateToEdit, isOpen, onCl
   const { mutate, pending } = useMutation<IWorkflowTemplate>();
 
   const { response: rolesRes } = useGet<IRole[]>({ url: endpoints.RBAC_ROLES }, { disabled: !isOpen });
-  const { response: staffsRes } = useGet<{ items: IStaff[] } | IStaff[]>({ url: endpoints.STAFFS }, { disabled: !isOpen });
+  const { response: usersRes } = useGet< IUser[]>({ url: endpoints.USERS }, { disabled: !isOpen });
 
   const roles = rolesRes || [];
-  const staffs = Array.isArray(staffsRes) ? staffsRes : (staffsRes?.items ?? []);
+  const users = Array.isArray(usersRes) ? usersRes :  [];
 
   const form = useForm<FormValues>({
     resolver: zodResolver(TemplateSchema),
@@ -372,7 +371,7 @@ export default function WorkflowTemplateFormModal({ templateToEdit, isOpen, onCl
                           control={form.control}
                           setValue={form.setValue}
                           roles={roles}
-                          staffs={staffs}
+                          users={users}
                         />
                       </div>
 
