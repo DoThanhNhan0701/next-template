@@ -127,6 +127,8 @@ export interface IPhysicalAssetDetail {
   in_stock_quantity: number;
   maintenance_quantity: number;
   liquidated_quantity: number;
+  catalog_group_name?: string | null;
+  group_name?: string | null;
   process_history?: ILifecycleLog[];
   change_log?: ILifecycleLog[];
 }

@@ -3,7 +3,7 @@
 import { useGet } from "@/hooks/useGet";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,16 @@ import OverviewTab from "./overview/OverviewTab";
 
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") ?? "overview";
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", value);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
   const { response: asset, pending } = useGet<IPhysicalAssetDetail>({
-    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
+    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)) + '/',
   });
 
   if (pending) {
@@ -89,7 +97,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         {/* Tabs styled like mockup */}
         <div className="w-full">
           <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/40 rounded-lg">
