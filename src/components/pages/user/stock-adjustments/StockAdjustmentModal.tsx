@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,6 +32,8 @@ import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { ITemplate, ITemplateStep } from "@/types/template";
 import { IUser } from "@/types/auth";
+import { AppDispatch, RootState } from "@/redux";
+import { closeStockAdjustment } from "@/redux/slices/stockAdjustment";
 import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { PlusIcon, Trash } from "lucide-react";
 const DetailSchema = z.object({
@@ -57,7 +60,6 @@ interface Props {
   onClose: () => void;
   onSuccess: () => void;
 }
-
 function DetailRow({
   index,
   control,
@@ -233,6 +235,13 @@ function DetailRow({
 
 export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Props) {
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { prefill } = useSelector((state: RootState) => state.stockAdjustment);
+
+  const handleClose = () => {
+    dispatch(closeStockAdjustment());
+    onClose();
+  };
 
   const { response: locationRes } = useGet<ILocation[]>(
     { url: endpoints.LOCATIONS },
@@ -272,10 +281,16 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
         external_link: "",
         approver_step_1_id: null,
         approver_step_2_id: null,
-        details: [{ asset_id: 0, location_id: 0, adjustment_type: "INCREASE", quantity_diff: 1, notes: "" }],
+        details: [{
+          asset_id: prefill?.asset_id ?? 0,
+          location_id: prefill?.location_id ?? 0,
+          adjustment_type: prefill?.adjustment_type ?? "INCREASE",
+          quantity_diff: 1,
+          notes: "",
+        }],
       });
     }
-  }, [isOpen, form]);
+  }, [isOpen, prefill, form]);
 
   const onSubmit = async (data: FormValues) => {
     const workflow_assignments: { step_id: number; user_id: number }[] = [];
@@ -294,14 +309,14 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
     await mutate(
       { url: "/api/v1/stock-adjustments", method: "post", body: { ...rest, attachments: [], workflow_assignments } },
       {
-        onSuccess: (res) => { getApiSuccessMessage(res); onSuccess(); onClose(); },
+        onSuccess: (res) => { getApiSuccessMessage(res); onSuccess(); handleClose(); },
         onError: (err) => { getApiErrorMessage(err); },
       },
     );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
           <DialogTitle>Create Stock In/Out</DialogTitle>
@@ -425,7 +440,7 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
           </div>
 
           <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
-            <Button type="button" variant="outline" onClick={onClose} className="w-24">Cancel</Button>
+            <Button type="button" variant="outline" onClick={handleClose} className="w-24">Cancel</Button>
             <Button type="submit" disabled={pending} className="w-24">
               {pending ? "Saving..." : "Create"}
             </Button>

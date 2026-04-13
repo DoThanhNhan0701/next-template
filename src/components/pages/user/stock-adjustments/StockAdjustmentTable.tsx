@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useGet } from "@/hooks/useGet";
 import { IStockAdjustment } from "@/types/stock-adjustment";
 import {
@@ -19,12 +20,17 @@ import {
 } from "@/components/ui/pagination";
 import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
 import StockAdjustmentModal from "./StockAdjustmentModal";
+import { RootState } from "@/redux";
 
 export default function StockAdjustmentTable({ defaultType }: { defaultType: "INCREASE" | "DECREASE" }) {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [q, setQ] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isManualOpen, setIsManualOpen] = useState(false);
+
+  // Also open when Redux prefill is set (from Inventory page)
+  const { isOpen: isReduxOpen } = useSelector((state: RootState) => state.stockAdjustment);
+  const isModalOpen = isManualOpen || isReduxOpen;
 
   const [appliedFilters, setAppliedFilters] = useState({ q: "" });
 
@@ -84,7 +90,7 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
-          <Button onClick={() => setIsModalOpen(true)} className="h-10 bg-primary/95 hover:bg-primary">
+          <Button onClick={() => setIsManualOpen(true)} className="h-10 bg-primary/95 hover:bg-primary">
             Create
           </Button>
         </div>
@@ -92,7 +98,7 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
 
       <StockAdjustmentModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => setIsManualOpen(false)}
         onSuccess={() => { reFetch(); }}
       />
 

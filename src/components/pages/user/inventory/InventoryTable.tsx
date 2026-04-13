@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStock } from "@/types/stock";
 import { ILocation } from "@/types/location";
-import { Search, X, RotateCcw, MapPin, Package } from "lucide-react";
+import { Search, X, RotateCcw, MapPin, Package, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import {
   TableLoadingRows,
   TableEmptyRow,
@@ -36,10 +37,15 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AppDispatch } from "@/redux";
+import { openStockAdjustment } from "@/redux/slices/stockAdjustment";
+import { useRouter } from "next/navigation";
 
 export default function InventoryTable() {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   // Filter state
   const [q, setQ] = useState("");
@@ -78,6 +84,15 @@ export default function InventoryTable() {
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = stocks.length === limit;
+
+  const handleStockAction = (stock: IStock, type: "INCREASE" | "DECREASE") => {
+    dispatch(openStockAdjustment({
+      asset_id: stock.asset_id,
+      location_id: stock.location_id,
+      adjustment_type: type,
+    }));
+    router.push("/stock-in-out");
+  };
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
@@ -188,23 +203,26 @@ export default function InventoryTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[40%]">
+              <TableHead className="font-semibold h-10 px-4 w-[35%]">
                 Asset Information
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[30%]">
+              <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 Location
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[30%]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-[15%]">
                 Quantity
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right w-[25%]">
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={3} rows={6} />
+              <TableLoadingRows colSpan={4} rows={6} />
             ) : stocks.length === 0 ? (
               <TableEmptyRow
-                colSpan={3}
+                colSpan={4}
                 icon={Package}
                 message="No inventory items found"
                 description="No stock records match your current filters. Try adjusting your search or location."
@@ -248,6 +266,28 @@ export default function InventoryTable() {
                       }`}
                     >
                       {stock.quantity}
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-green-600 hover:bg-green-500/10 hover:text-green-700 text-xs gap-1"
+                        onClick={() => handleStockAction(stock, "INCREASE")}
+                      >
+                        <ArrowUpCircle size={13} />
+                        Stock In
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-red-500 hover:bg-red-500/10 hover:text-red-600 text-xs gap-1"
+                        onClick={() => handleStockAction(stock, "DECREASE")}
+                      >
+                        <ArrowDownCircle size={13} />
+                        Stock Out
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>

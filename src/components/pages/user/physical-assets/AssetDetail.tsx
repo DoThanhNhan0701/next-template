@@ -139,9 +139,23 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         </TabsContent>
         <TabsContent
           value="specs"
-          className="p-8 text-center text-sm text-muted-foreground"
+          className="mt-4 outline-none focus-visible:ring-0"
         >
-          No technical specifications available.
+          {asset.specifications ? (
+            <div className="rounded-xl border border-border/50 overflow-hidden">
+              <div className="bg-muted/40 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-primary">Technical Specifications</span>
+              </div>
+              <div className="px-4 py-4">
+                <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{asset.specifications}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="p-8 text-center text-sm text-muted-foreground">
+              No technical specifications available.
+            </div>
+          )}
         </TabsContent>
         <TabsContent
           value="docs"
