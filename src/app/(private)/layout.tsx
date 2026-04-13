@@ -32,12 +32,12 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const sidebarItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "My Tasks", url: "/my-tasks", icon: ClipboardList },
-    { title: "Physical Assets", url: "/physical-assets", icon: Laptop },
-    { title: "Inventory (Stocks)", url: "/inventory", icon: Package },
+    { title: "Assets", url: "/assets", icon: Laptop },
+    { title: "Inventory", url: "/inventory", icon: Package },
     { title: "Rentals", url: "/rentals", icon: Key },
-    { title: "Summary", url: "/summary", icon: BarChart3 },
+    { title: "Dispatch & Recovery", url: "/dispatch-recovery", icon: BarChart3 },
     { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
-    { title: "Stock Adjustments", url: "/stock-adjustments", icon: PackageSearch },
+    { title: "Stock In/Out", url: "/stock-in-out", icon: PackageSearch },
   ];
 
   return (

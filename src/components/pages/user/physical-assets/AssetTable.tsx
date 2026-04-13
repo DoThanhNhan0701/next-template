@@ -330,7 +330,7 @@ export default function AssetTable() {
                 return (
                   <TableRow
                     key={asset.id}
-                    onClick={() => router.push(`/physical-assets/${asset.id}`)}
+                    onClick={() => router.push(`/assets/${asset.id}`)}
                     className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                   >
                     <TableCell className="px-4 py-1.5 relative overflow-hidden">
