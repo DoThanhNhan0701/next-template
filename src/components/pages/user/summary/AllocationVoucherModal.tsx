@@ -209,8 +209,8 @@ export default function AllocationVoucherModal({
     { url: endpoints.LOCATIONS },
     { disabled: !isOpen },
   );
-  const { response: templateRes } = useGet<ITemplate[]>(
-    { url: endpoints.TEMPLATES },
+  const { response: activeAllocationTemplate } = useGet<ITemplate>(
+    { url: `${endpoints.TEMPLATE_ACTIVE}allocation` },
     { disabled: !isOpen },
   );
   const { response: userRes } = useGet<IUser[]>(
@@ -222,9 +222,6 @@ export default function AllocationVoucherModal({
   const staffs = staffRes?.items || [];
   const locations = locationRes || [];
   const users = userRes || [];
-  const activeAllocationTemplate = templateRes?.find(
-    (t) => t.is_active && t.document_type === "allocation",
-  );
 
   const form = useForm<AllocationFormValues>({
     resolver: zodResolver(AllocationCreateSchema),
@@ -572,6 +569,7 @@ export default function AllocationVoucherModal({
               </div>
 
               {/* Approval Process */}
+              {activeAllocationTemplate && (activeAllocationTemplate.steps || []).length > 0 && (
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
                   Approval Process
@@ -633,6 +631,7 @@ export default function AllocationVoucherModal({
                   )}
                 </FieldGroup>
               </div>
+              )}
             </div>
           </div>
 

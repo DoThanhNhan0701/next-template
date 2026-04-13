@@ -57,7 +57,7 @@ export function ApprovalProcessSection({
                 render={({ field, fieldState }) => (
                   <Field className="gap-2.5">
                     <FieldLabel className="text-[10px] font-black text-muted-foreground/80 tracking-[0.15em] mb-1">
-                      {idx === 0 ? "Step 1: Approval" : "Step 2: Approval"}
+                      {step.name}
                     </FieldLabel>
                     <Select
                       onValueChange={(val) =>

@@ -131,15 +131,12 @@ export default function TransferFormModal({
     { url: endpoints.USERS },
     { disabled: !isOpen },
   );
-  const { response: templateRes } = useGet<ITemplate[]>(
-    { url: endpoints.TEMPLATES },
+  const { response: activeTransferTemplate } = useGet<ITemplate>(
+    { url: `${endpoints.TEMPLATE_ACTIVE}transfer` },
     { disabled: !isOpen },
   );
 
   const users = userRes || [];
-  const activeTransferTemplate = templateRes?.find(
-    (t) => t.is_active && t.document_type === "transfer",
-  );
 
   const watchedType = useWatch({
     control: form.control,
@@ -338,7 +335,7 @@ export default function TransferFormModal({
               <ApprovalProcessSection
                 form={form}
                 users={users}
-                activeTransferTemplate={activeTransferTemplate}
+                activeTransferTemplate={activeTransferTemplate ?? undefined}
               />
             )}
           </div>
