@@ -6,7 +6,7 @@ import { useGet } from "@/hooks/useGet";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer, SendHorizonal, Undo2 } from "lucide-react";
+import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer, SendHorizonal, Undo2, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +17,7 @@ import AssetFormModal from "./AssetFormModal";
 import { AppDispatch } from "@/redux";
 import { openAllocation } from "@/redux/slices/allocation";
 import { openRecovery } from "@/redux/slices/recovery";
+import { openRental } from "@/redux/slices/rental";
 import { QRCodeSVG } from "qrcode.react";
 
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
@@ -46,6 +47,17 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
       reason: `Thu hồi tài sản: ${asset.name}`,
     }));
     router.push("/dispatch-recovery?tab=recoveries");
+  };
+
+  const handleRental = () => {
+    if (!asset) return;
+    dispatch(openRental({
+      asset_id: asset.id,
+      location_id: asset.location_id ?? 0,
+      unit_id: asset.unit_id ?? 0,
+      reason: `Cho thuê tài sản: ${asset.name}`,
+    }));
+    router.push("/rentals");
   };
 
   const handleTabChange = (value: string) => {
@@ -122,6 +134,10 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
+            <Button variant="outline" onClick={handleRental}>
+              <BookOpen className="w-4 h-4" />
+              Rentals
+            </Button>
             <Button variant="outline" onClick={handleDispatch}>
               <SendHorizonal className="w-4 h-4" />
               Dispatch

@@ -36,6 +36,9 @@ import {
 } from "@/components/ui/select";
 import { useMutation } from "@/hooks/useMutation";
 import { useGet } from "@/hooks/useGet";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux";
+import { closeRental } from "@/redux/slices/rental";
 import { endpoints } from "@/config/endpoints";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
@@ -47,13 +50,15 @@ import { PlusIcon, Trash } from "lucide-react";
 
 type RentalFormValues = z.input<typeof RentalCreateSchema>;
 
-/* ───── Per-item row component (can use hooks) ───── */
+/* ───── Per-item row component ───── */
 interface RentalItemRowProps {
   index: number;
   control: Control<RentalFormValues>;
   setValue: UseFormSetValue<RentalFormValues>;
   locations: ILocation[];
   onRemove: () => void;
+  initialLocationId?: number;
+  initialAssetId?: number;
 }
 
 function RentalItemRow({
@@ -62,29 +67,34 @@ function RentalItemRow({
   setValue,
   locations,
   onRemove,
+  initialLocationId = 0,
+  initialAssetId = 0,
 }: RentalItemRowProps) {
-  const [locationId, setLocationId] = useState<number>(0);
+  const [locationId, setLocationId] = useState<number>(initialLocationId);
+  const [initialized, setInitialized] = useState(false);
 
-  // Fetch assets filtered by location & status READY
   const { response: assetRes, pending: assetsPending } = useGet<{
     items: IPhysicalAsset[];
   }>(
-    {
-      url: `${endpoints.PHYSICAL_ASSETS}?location_id=${locationId}&status_code=READY`,
-    },
+    { url: `${endpoints.PHYSICAL_ASSETS}?location_id=${locationId}&status_code=READY` },
     { disabled: !locationId, deps: [locationId] },
   );
 
   const assets = assetRes?.items || [];
 
-  // Reset asset selection when location changes
   useEffect(() => {
-    setValue(`items.${index}.asset_id`, 0);
     setValue(`items.${index}.from_location_id`, locationId);
   }, [locationId, index, setValue]);
 
+  useEffect(() => {
+    if (!initialized && assets.length > 0 && initialAssetId) {
+      setValue(`items.${index}.asset_id`, initialAssetId);
+      setInitialized(true);
+    }
+  }, [assets, initialized, initialAssetId, index, setValue]);
+
   return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 grid grid-cols-2 gap-3">
+    <div className="relative bg-muted/30 border rounded-lg p-3 flex flex-col gap-2">
       <Button
         type="button"
         variant="ghost"
@@ -95,94 +105,102 @@ function RentalItemRow({
         <Trash size={12} />
       </Button>
 
-      {/* Location select */}
-      <Field className="gap-1 col-span-2 pr-6">
-        <FieldLabel>Location *</FieldLabel>
-        <Select
-          onValueChange={(val) => setLocationId(Number(val))}
-          value={locationId ? locationId.toString() : ""}
-        >
-          <SelectTrigger className="h-8 text-xs">
-            <SelectValue placeholder="Select location" />
-          </SelectTrigger>
-          <SelectContent>
-            {locations.map((loc) => (
-              <SelectItem key={loc.id} value={loc.id.toString()}>
-                {loc.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
+      {/* Row 1: Location + Asset */}
+      <div className="grid grid-cols-2 gap-2 pr-6">
+        <Field className="gap-1">
+          <FieldLabel>Location *</FieldLabel>
+          <Select
+            onValueChange={(val) => {
+              setLocationId(Number(val));
+              setInitialized(false);
+              setValue(`items.${index}.asset_id`, 0);
+            }}
+            value={locationId ? locationId.toString() : ""}
+          >
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select location" />
+            </SelectTrigger>
+            <SelectContent>
+              {locations.map((loc) => (
+                <SelectItem key={loc.id} value={loc.id.toString()}>
+                  {loc.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
 
-      {/* Asset select (filtered by location) */}
-      <Controller
-        name={`items.${index}.asset_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 col-span-2">
-            <FieldLabel>Assets *</FieldLabel>
-            <Select
-              onValueChange={(val) => field.onChange(Number(val))}
-              value={field.value ? field.value.toString() : ""}
-              disabled={!locationId}
-            >
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue
-                  placeholder={
-                    !locationId
-                      ? "Select a location first"
-                      : assetsPending
-                        ? "Loading assets..."
-                        : "Select asset"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {assets.map((a) => (
-                  <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a.quantity}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
+        <Controller
+          name={`items.${index}.asset_id`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className="gap-1">
+              <FieldLabel>Asset *</FieldLabel>
+              <Select
+                onValueChange={(val) => field.onChange(Number(val))}
+                value={field.value ? field.value.toString() : ""}
+                disabled={!locationId}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue
+                    placeholder={
+                      !locationId
+                        ? "Select location first"
+                        : assetsPending
+                          ? "Loading..."
+                          : "Select asset"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {assets.map((a) => (
+                    <SelectItem key={a.id} value={a.id.toString()}>
+                      {a.name} ({a.asset_code}) — qty: {a.quantity}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </div>
 
-      <Controller
-        name={`items.${index}.quantity`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1">
-            <FieldLabel>Quantity *</FieldLabel>
-            <Input
-              type="number"
-              className="h-8 text-xs"
-              {...field}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-      <Controller
-        name={`items.${index}.rental_revenue`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1">
-            <FieldLabel>Item Revenue</FieldLabel>
-            <Input
-              type="number"
-              className="h-8 text-xs"
-              {...field}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
+      {/* Row 2: Quantity + Revenue */}
+      <div className="grid grid-cols-2 gap-2">
+        <Controller
+          name={`items.${index}.quantity`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className="gap-1">
+              <FieldLabel>Quantity *</FieldLabel>
+              <Input
+                type="number"
+                className="h-8 text-xs"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          name={`items.${index}.rental_revenue`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className="gap-1">
+              <FieldLabel>Item Revenue</FieldLabel>
+              <Input
+                type="number"
+                className="h-8 text-xs"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </div>
     </div>
   );
 }
@@ -196,8 +214,14 @@ interface Props {
 
 export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { prefill } = useSelector((state: RootState) => state.rental);
 
-  // Fetch metadata
+  const handleClose = () => {
+    dispatch(closeRental());
+    onClose();
+  };
+
   const { response: orgRes } = useGet<IOrgUnit[]>(
     { url: endpoints.ORG_UNITS },
     { disabled: !isOpen },
@@ -242,11 +266,11 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
     if (isOpen) {
       form.reset({
         record_number: "",
-        unit_id: 0,
+        unit_id: prefill?.unit_id ?? 0,
         customer_id: 0,
         lease_date: new Date().toISOString().split("T")[0],
         duration_days: 1,
-        reason: "",
+        reason: prefill?.reason ?? "",
         total_revenue: 0,
         contract_number: "",
         notes: "",
@@ -254,29 +278,25 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
         attachments: [],
         items: [
           {
-            asset_id: 0,
+            asset_id: prefill?.asset_id ?? 0,
             quantity: 1,
-            from_location_id: 0,
+            from_location_id: prefill?.location_id ?? 0,
             rental_revenue: 0,
             lessee_location: "",
           },
         ],
       });
     }
-  }, [isOpen, form]);
+  }, [isOpen, prefill, form]);
 
   const onSubmit = async (data: RentalFormValues) => {
     await mutate(
-      {
-        url: endpoints.RENTALS,
-        method: "post",
-        body: data,
-      },
+      { url: endpoints.RENTALS, method: "post", body: data },
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
           onSuccess();
-          onClose();
+          handleClose();
         },
         onError: (err) => {
           getApiErrorMessage(err);
@@ -286,7 +306,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
           <DialogTitle>Create Rental Record</DialogTitle>
@@ -311,15 +331,10 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     name="record_number"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field
-                        data-invalid={fieldState.invalid}
-                        className="gap-1"
-                      >
+                      <Field data-invalid={fieldState.invalid} className="gap-1">
                         <FieldLabel>Record Number *</FieldLabel>
                         <Input {...field} placeholder="e.g. CT20240001" />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -330,9 +345,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       <Field className="gap-1">
                         <FieldLabel>Contract Number</FieldLabel>
                         <Input {...field} placeholder="e.g. HD/123" />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -357,9 +370,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                             ))}
                           </SelectContent>
                         </Select>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -384,9 +395,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                             ))}
                           </SelectContent>
                         </Select>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -397,9 +406,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       <Field className="gap-1">
                         <FieldLabel>Lease Date *</FieldLabel>
                         <Input type="date" {...field} />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -412,13 +419,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                         <Input
                           type="number"
                           {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
+                          onChange={(e) => field.onChange(Number(e.target.value))}
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -431,13 +434,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                         <Input
                           type="number"
                           {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
+                          onChange={(e) => field.onChange(Number(e.target.value))}
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
@@ -452,21 +451,17 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                           placeholder="e.g. For event"
                           className="min-h-[80px]"
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
                 </FieldGroup>
               </div>
 
-              {/* Items Information */}
+              {/* Rental Assets */}
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between border-b pb-1">
-                  <h3 className="text-sm font-semibold text-primary">
-                    Rental Assets
-                  </h3>
+                  <h3 className="text-sm font-semibold text-primary">Rental Assets</h3>
                   <Button
                     type="button"
                     variant="outline"
@@ -486,7 +481,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                   </Button>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                   {fields.map((item, index) => (
                     <RentalItemRow
                       key={item.id}
@@ -495,6 +490,8 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       setValue={form.setValue}
                       locations={locations}
                       onRemove={() => remove(index)}
+                      initialLocationId={item.from_location_id || 0}
+                      initialAssetId={item.asset_id || 0}
                     />
                   ))}
                   {form.formState.errors.items?.root && (
@@ -508,12 +505,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
           </div>
 
           <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="w-24"
-            >
+            <Button type="button" variant="outline" onClick={handleClose} className="w-24">
               Cancel
             </Button>
             <Button type="submit" disabled={pending} className="w-24">

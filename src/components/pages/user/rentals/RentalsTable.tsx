@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux";
+import { closeRental } from "@/redux/slices/rental";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IRental } from "@/types/rental";
@@ -52,6 +55,9 @@ import {
 } from "@/components/common/TableStateDisplay";
 
 export default function RentalsTable() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { isOpen: rentalReduxOpen } = useSelector((state: RootState) => state.rental);
+
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -65,6 +71,10 @@ export default function RentalsTable() {
     unit_id: "all",
     customer_id: "all",
   });
+
+  const [isCreating, setIsCreating] = useState(false);
+
+  const isModalOpen = isCreating || rentalReduxOpen;
 
   // Fetch metadata for filters
   const { response: orgRes } = useGet<IOrgUnit[]>({
@@ -95,8 +105,6 @@ export default function RentalsTable() {
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = rentals.length === limit;
-
-  const [isCreating, setIsCreating] = useState(false);
 
   const { mutate: mutateReturn, pending: returnPending } = useMutation();
   const [returnRentalId, setReturnRentalId] = useState<number | null>(null);
@@ -381,10 +389,10 @@ export default function RentalsTable() {
         </Pagination>
       ) : null}
 
-      {isCreating && (
+      {isModalOpen && (
         <RentalFormModal
-          isOpen={isCreating}
-          onClose={() => setIsCreating(false)}
+          isOpen={isModalOpen}
+          onClose={() => { setIsCreating(false); dispatch(closeRental()); }}
           onSuccess={() => reFetch()}
         />
       )}
