@@ -37,6 +37,9 @@ import {
 } from "@/components/ui/select";
 import { useMutation } from "@/hooks/useMutation";
 import { useGet } from "@/hooks/useGet";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux";
+import { closeRecovery } from "@/redux/slices/recovery";
 import { endpoints } from "@/config/endpoints";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
@@ -60,6 +63,7 @@ interface RecoveryItemRowProps {
   unitId: number;
   staffId: string | null;
   onRemove: () => void;
+  prefillAssetId?: number;
 }
 
 function RecoveryItemRow({
@@ -70,6 +74,7 @@ function RecoveryItemRow({
   unitId,
   staffId,
   onRemove,
+  prefillAssetId,
 }: RecoveryItemRowProps) {
   const { response: assetRes, pending: assetsPending } = useGet<{
     items: IPhysicalAsset[];
@@ -78,7 +83,6 @@ function RecoveryItemRow({
       url: endpoints.PHYSICAL_ASSETS,
       config: {
         params: {
-          status_code: "IN_USE",
           ...(staffId ? { staff_id: staffId } : { unit_id: unitId }),
         },
       },
@@ -87,6 +91,12 @@ function RecoveryItemRow({
   );
 
   const assets = assetRes?.items || [];
+
+  // Auto-select prefill asset once assets finish loading
+  useEffect(() => {
+    if (!prefillAssetId || assetsPending || !assetRes?.items?.length) return;
+    setValue(`items.${index}.asset_id`, prefillAssetId);
+  }, [prefillAssetId, assetsPending, assetRes, index, setValue]);
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-4">
@@ -215,6 +225,13 @@ export default function RecoveryVoucherModal({
   onSuccess,
 }: Props) {
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { prefill } = useSelector((state: RootState) => state.recovery);
+
+  const handleClose = () => {
+    dispatch(closeRecovery());
+    onClose();
+  };
 
   const { response: orgRes } = useGet<IOrgUnit[]>(
     { url: endpoints.ORG_UNITS },
@@ -279,18 +296,18 @@ export default function RecoveryVoucherModal({
     if (isOpen) {
       form.reset({
         recovered_from_type: "user",
-        unit_id: 0,
+        unit_id: prefill?.unit_id ?? 0,
         staff_id: null,
         recovery_date: new Date().toISOString().split("T")[0],
         location_id: null,
-        reason: "",
+        reason: prefill?.reason ?? "",
         external_link: "",
         approver_step_1_id: null,
         approver_step_2_id: null,
-        items: [{ location_id: 0, asset_id: 0, quantity: 1 }],
+        items: [{ location_id: prefill?.location_id ?? 0, asset_id: prefill?.asset_id ?? 0, quantity: 1 }],
       });
     }
-  }, [isOpen, form]);
+  }, [isOpen, prefill, form]);
 
   const onSubmit = async (data: RecoveryFormValues) => {
     const workflow_assignments: { step_id: number; user_id: number }[] = [];
@@ -311,7 +328,7 @@ export default function RecoveryVoucherModal({
         onSuccess: (res) => {
           getApiSuccessMessage(res);
           onSuccess();
-          onClose();
+          handleClose();
         },
         onError: (err) => {
           getApiErrorMessage(err);
@@ -321,7 +338,7 @@ export default function RecoveryVoucherModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
           <DialogTitle>Create Recovery Voucher</DialogTitle>
@@ -407,8 +424,8 @@ export default function RecoveryVoucherModal({
                             </SelectItem>
                             {(watchedUnitId && Number(watchedUnitId) !== 0
                               ? staffs.filter(
-                                  (s) => s.unit_id === Number(watchedUnitId),
-                                )
+                                (s) => s.unit_id === Number(watchedUnitId),
+                              )
                               : []
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
@@ -546,7 +563,7 @@ export default function RecoveryVoucherModal({
                 <div className="flex flex-col gap-3">
                   {fields.map((item, index) => (
                     <RecoveryItemRow
-                      key={item.id}
+                      key={`${item.id}-${prefill?.unit_id ?? 0}`}
                       index={index}
                       control={form.control}
                       setValue={form.setValue}
@@ -554,6 +571,7 @@ export default function RecoveryVoucherModal({
                       unitId={Number(watchedUnitId)}
                       staffId={watchedStaffId}
                       onRemove={() => remove(index)}
+                      prefillAssetId={index === 0 ? prefill?.asset_id : undefined}
                     />
                   ))}
                 </div>
@@ -596,7 +614,7 @@ export default function RecoveryVoucherModal({
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleClose}
               className="w-24"
             >
               Cancel

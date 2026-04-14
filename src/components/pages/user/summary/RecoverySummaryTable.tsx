@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IRecoverySummary } from "@/types/recovery";
@@ -56,7 +58,9 @@ export default function RecoverySummaryTable() {
   const [q, setQ] = useState("");
   const [unitId, setUnitId] = useState<string>("all");
   const [statusCode, setStatusCode] = useState<string>("all");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isManualOpen, setIsManualOpen] = useState(false);
+  const { isOpen: isReduxOpen } = useSelector((state: RootState) => state.recovery);
+  const isModalOpen = isManualOpen || isReduxOpen;
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
@@ -207,7 +211,7 @@ export default function RecoverySummaryTable() {
           </Button>
 
           <Button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsManualOpen(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             Create
@@ -217,7 +221,7 @@ export default function RecoverySummaryTable() {
 
       <RecoveryVoucherModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => setIsManualOpen(false)}
         onSuccess={() => setAppliedFilters((prev) => ({ ...prev }))}
       />
 

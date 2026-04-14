@@ -1,36 +1,36 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-export interface AllocationPrefill {
+export interface RecoveryPrefill {
     asset_id: number;
     location_id: number;
     unit_id: number;
     reason?: string;
 }
 
-interface AllocationState {
-    prefill: AllocationPrefill | null;
+interface RecoveryState {
+    prefill: RecoveryPrefill | null;
     isOpen: boolean;
 }
 
-const initialState: AllocationState = {
+const initialState: RecoveryState = {
     prefill: null,
     isOpen: false,
 };
 
-const allocationSlice = createSlice({
-    name: 'allocation',
+const recoverySlice = createSlice({
+    name: 'recovery',
     initialState,
     reducers: {
-        openAllocation: (state, action: PayloadAction<AllocationPrefill>) => {
+        openRecovery: (state, action: PayloadAction<RecoveryPrefill>) => {
             state.prefill = action.payload;
             state.isOpen = true;
         },
-        closeAllocation: (state) => {
+        closeRecovery: (state) => {
             state.isOpen = false;
             state.prefill = null;
         },
     },
 });
 
-export const { openAllocation, closeAllocation } = allocationSlice.actions;
-export default allocationSlice.reducer;
+export const { openRecovery, closeRecovery } = recoverySlice.actions;
+export default recoverySlice.reducer;

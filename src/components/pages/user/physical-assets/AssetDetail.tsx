@@ -6,7 +6,7 @@ import { useGet } from "@/hooks/useGet";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer } from "lucide-react";
+import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer, SendHorizonal, Undo2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +16,7 @@ import OverviewTab from "./overview/OverviewTab";
 import AssetFormModal from "./AssetFormModal";
 import { AppDispatch } from "@/redux";
 import { openAllocation } from "@/redux/slices/allocation";
+import { openRecovery } from "@/redux/slices/recovery";
 import { QRCodeSVG } from "qrcode.react";
 
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
@@ -31,8 +32,20 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
       asset_id: asset.id,
       location_id: asset.location_id ?? 0,
       unit_id: asset.unit_id ?? 0,
+      reason: `Cấp phát tài sản: ${asset.name}`,
     }));
     router.push("/dispatch-recovery");
+  };
+
+  const handleRecovery = () => {
+    if (!asset) return;
+    dispatch(openRecovery({
+      asset_id: asset.id,
+      location_id: asset.location_id ?? 0,
+      unit_id: asset.unit_id ?? 0,
+      reason: `Thu hồi tài sản: ${asset.name}`,
+    }));
+    router.push("/dispatch-recovery?tab=recoveries");
   };
 
   const handleTabChange = (value: string) => {
@@ -109,13 +122,17 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
+            <Button variant="outline" onClick={handleDispatch}>
+              <SendHorizonal className="w-4 h-4" />
+              Dispatch
+            </Button>
+            <Button variant="outline" onClick={handleRecovery}>
+              <Undo2 className="w-4 h-4" />
+              Recovery
+            </Button>
             <Button onClick={() => setIsEditOpen(true)}>
               <Edit className="w-4 h-4" />
-              Edit profile
-            </Button>
-            <Button variant="outline" onClick={handleDispatch}>
-              <ArrowLeft className="w-4 h-4 rotate-180" />
-              Dispatch
+              Edit asset
             </Button>
           </div>
         </div>

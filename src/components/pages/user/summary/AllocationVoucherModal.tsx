@@ -317,7 +317,7 @@ export default function AllocationVoucherModal({
         staff_id: null,
         allocation_date: new Date().toISOString().split("T")[0],
         location_id: null,
-        reason: "",
+        reason: prefill?.reason ?? "",
         external_link: "",
         items: [
           {
