@@ -83,7 +83,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
   return (
     <>
-      <div className="w-full h-full flex flex-col gap-4 px-4 py-3 animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-auto">
+      <div className="w-full h-full flex flex-col gap-4 p-3 animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           {/* Placeholder contents for other tabs */}
           <TabsContent
             value="history"
-            className="pt-2 flex-1 outline-none focus-visible:ring-0"
+            className="pt-2 outline-none focus-visible:ring-0 h-[70svh]"
           >
             <LifecycleTab assetId={Number(id)} />
           </TabsContent>

@@ -36,6 +36,7 @@ export interface IPhysicalAsset {
   notes: string;
   management_type?: "unique" | "batch";
   attachments?: string[] | null;
+  holding_qty: number | null
 }
 
 export interface IPhysicalAssetCreate {
@@ -149,4 +150,6 @@ export interface ILifecycleLog {
   total_amount: number;
   unit_price: number;
   user_name: string | null;
+  doc_status: string | null;
+  doc_status_color: string | null;
 }

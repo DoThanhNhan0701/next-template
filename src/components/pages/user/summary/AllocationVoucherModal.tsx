@@ -198,7 +198,7 @@ function AllocationItemRow({
               <SelectContent>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a.quantity}
+                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -510,41 +510,16 @@ export default function AllocationVoucherModal({
                   />
 
                   <Controller
-                    name="location_id"
+                    name="external_link"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Locations</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={
-                            field.value !== null && field.value !== undefined
-                              ? field.value.toString()
-                              : ""
-                          }
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select locations" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              (None)
-                            </SelectItem>
-                            {locations.map((loc) => (
-                              <SelectItem
-                                key={loc.id}
-                                value={loc.id.toString()}
-                              >
-                                {loc.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FieldLabel>External Ticket Link</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. Jira/Helpdesk link"
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -563,24 +538,6 @@ export default function AllocationVoucherModal({
                           value={field.value ?? ""}
                           placeholder="Reason for allocation"
                           className="min-h-[80px]"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  <Controller
-                    name="external_link"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-2">
-                        <FieldLabel>External Ticket Link</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="e.g. Jira/Helpdesk link"
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />

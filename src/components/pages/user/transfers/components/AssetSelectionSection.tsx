@@ -120,7 +120,7 @@ export function AssetSelectionSection({
                             key={`asset-${a.id}`}
                             value={a.id.toString()}
                           >
-                           {a.name} ({a.asset_code}) Quantity: {a.quantity}
+                            {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
                           </SelectItem>
                         ))}
                         {assets.length === 0 && !assetsPending && (

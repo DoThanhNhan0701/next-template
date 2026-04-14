@@ -50,7 +50,7 @@ export default function SystemLogTab({
   };
 
   return (
-    <div className="border border-(--surface-border-color) rounded-lg w-full [&_div[data-slot=table-container]]:max-h-100 [&_div[data-slot=table-container]]:overflow-y-auto">
+    <div className="border border-(--surface-border-color) rounded-lg w-full flex flex-col flex-1 min-h-0 overflow-x-auto [&_div[data-slot=table-container]]:flex-1 [&_div[data-slot=table-container]]:min-h-0 [&_div[data-slot=table-container]]:overflow-y-auto">
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
           <TableRow>
@@ -71,6 +71,12 @@ export default function SystemLogTab({
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40 text-right pr-6">
               Người dùng
+            </TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-20 text-center">
+              Số lượng
+            </TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-36">
+              Trạng thái
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -124,9 +130,29 @@ export default function SystemLogTab({
                 )}
               </TableCell>
               <TableCell className="px-4 py-1.5 text-right pr-6">
-                <strong className="text-foreground text-sm font-bold tracking-wide whitespace-normal">
+                <strong className="text-foreground text-sm font-bold tracking-wide whitespace-nowrap">
                   {log.user_name || "—"}
                 </strong>
+              </TableCell>
+              <TableCell className="px-4 py-1.5 text-center text-sm font-semibold">
+                {log.quantity ?? "-"}
+              </TableCell>
+              <TableCell className="px-4 py-1.5">
+                {log.doc_status ? (
+                  <Badge
+                    variant="outline"
+                    className="px-2 py-0.5 text-xs font-medium rounded-full"
+                    style={{
+                      backgroundColor: `${log.doc_status_color}1a`,
+                      color: log.doc_status_color ?? undefined,
+                      borderColor: `${log.doc_status_color}40`,
+                    }}
+                  >
+                    {log.doc_status}
+                  </Badge>
+                ) : (
+                  <span className="text-muted-foreground text-xs italic">-</span>
+                )}
               </TableCell>
             </TableRow>
           ))}

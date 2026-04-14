@@ -43,7 +43,7 @@ export default function BusinessProcessTab({
   };
 
   return (
-    <div className="border border-(--surface-border-color) rounded-lg w-full overflow-hidden [&_div[data-slot=table-container]]:max-h-112.5 [&_div[data-slot=table-container]]:overflow-auto">
+    <div className="border border-(--surface-border-color) rounded-lg w-full flex flex-col flex-1 min-h-0 overflow-x-auto [&_div[data-slot=table-container]]:flex-1 [&_div[data-slot=table-container]]:min-h-0 [&_div[data-slot=table-container]]:overflow-y-auto">
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm outline outline-border/20">
           <TableRow>
@@ -59,6 +59,12 @@ export default function BusinessProcessTab({
             </TableHead>
             <TableHead className="font-semibold h-10 px-4">
               Người dùng/Vị trí
+            </TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-20 text-center">
+              Số lượng
+            </TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-36">
+              Trạng thái
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -97,19 +103,39 @@ export default function BusinessProcessTab({
                 )}
               </TableCell>
               <TableCell className="px-4 py-1.5">
-                <div className="flex flex-col gap-0.5 text-xs text-muted-foreground w-max">
-                  <div className="flex items-center gap-1.5 opacity-80">
+                <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5 opacity-80 whitespace-nowrap">
                     <span>
                       {log.old_location_name ||
                         log.old_user_name ||
                         "Kho / Mặc định"}
                     </span>
-                    <ArrowRight className="w-3 h-3" />
+                    <ArrowRight className="w-3 h-3 shrink-0" />
                   </div>
-                  <strong className="text-foreground text-sm font-bold tracking-wide">
+                  <strong className="text-foreground text-sm font-bold tracking-wide whitespace-nowrap">
                     {log.user_name || log.location_name || "—"}
                   </strong>
                 </div>
+              </TableCell>
+              <TableCell className="px-4 py-1.5 text-center text-sm font-semibold">
+                {log.quantity ?? "-"}
+              </TableCell>
+              <TableCell className="px-4 py-1.5">
+                {log.doc_status ? (
+                  <Badge
+                    variant="outline"
+                    className="px-2 py-0.5 text-xs font-medium rounded-full"
+                    style={{
+                      backgroundColor: `${log.doc_status_color}1a`,
+                      color: log.doc_status_color ?? undefined,
+                      borderColor: `${log.doc_status_color}40`,
+                    }}
+                  >
+                    {log.doc_status}
+                  </Badge>
+                ) : (
+                  <span className="text-muted-foreground text-xs italic">-</span>
+                )}
               </TableCell>
             </TableRow>
           ))}

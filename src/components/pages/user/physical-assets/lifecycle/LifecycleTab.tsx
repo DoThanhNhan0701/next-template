@@ -20,8 +20,8 @@ export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
   const processHistory = data?.process_history || [];
   const changeLog = data?.change_log || [];
   return (
-    <div className="mt-2 h-full">
-      <Tabs defaultValue="process" className="w-full h-full">
+    <div className="mt-2 flex flex-col h-full">
+      <Tabs defaultValue="process" className="w-full flex flex-col h-full">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-foreground/80">
             Lịch sử biến động
@@ -41,10 +41,10 @@ export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
             </TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="process" className="m-0 border-none outline-none">
+        <TabsContent value="process" className="m-0 border-none outline-none flex flex-col flex-1 min-h-0 overflow-hidden">
           <BusinessProcessTab history={processHistory} />
         </TabsContent>
-        <TabsContent value="system" className="m-0 border-none outline-none flex-1">
+        <TabsContent value="system" className="m-0 border-none outline-none flex flex-col flex-1 min-h-0 overflow-hidden">
           <SystemLogTab logs={changeLog} />
         </TabsContent>
       </Tabs>

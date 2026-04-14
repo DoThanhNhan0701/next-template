@@ -160,7 +160,7 @@ function DetailRow({
               <SelectContent>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a.quantity}
+                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
