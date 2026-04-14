@@ -6,4 +6,5 @@ export interface IStock {
   location_id: number;
   location_name: string;
   quantity: number;
+  management_type: "bulk" | "unique";
 }

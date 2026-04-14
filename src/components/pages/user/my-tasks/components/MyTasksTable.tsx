@@ -299,7 +299,7 @@ export default function MyTasksTable() {
                   key={task.id}
                   onClick={() =>
                     router.push(
-                      `/my-tasks/${task.document_id}?status=${task.status}`,
+                      `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
                     )
                   }
                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"

@@ -20,7 +20,7 @@ export const endpoints = getEndPoint("api/v1", {
   ROLE: "role",
   USERS: "users",
 
-  LOCATIONS: "locations/",
+  LOCATIONS: "locations",
   RBAC_ROLES: "rbac/roles",
   RBAC_PERMISSIONS: "rbac/permissions",
   ASSET_GROUPS: "asset-groups/",

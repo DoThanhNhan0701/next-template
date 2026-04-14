@@ -206,23 +206,26 @@ export default function InventoryTable() {
               <TableHead className="font-semibold h-10 px-4 w-[35%]">
                 Asset Information
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%]">
+              <TableHead className="font-semibold h-10 px-4 w-[20%] text-center">
                 Location
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[15%]">
+              <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
+                Loại quản lý
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
                 Quantity
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right w-[25%]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-[20%]">
                 Actions
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={4} rows={6} />
+              <TableLoadingRows colSpan={5} rows={6} />
             ) : stocks.length === 0 ? (
               <TableEmptyRow
-                colSpan={4}
+                colSpan={5}
                 icon={Package}
                 message="No inventory items found"
                 description="No stock records match your current filters. Try adjusting your search or location."
@@ -249,8 +252,8 @@ export default function InventoryTable() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex items-center gap-2 px-2.5 py-1.5 bg-secondary/30 rounded-md w-fit">
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2 px-2.5 py-1.5 bg-secondary/30 rounded-md w-fit mx-auto">
                       <MapPin size={14} className="text-primary/70 shrink-0" />
                       <span className="text-sm font-medium">
                         {stock.location_name || "Unknown Location"}
@@ -258,23 +261,38 @@ export default function InventoryTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
+                    {stock.management_type === "unique" ? (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-600">
+                        Theo Mã
+                      </span>
+                    ) : stock.management_type === "bulk" ? (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-600">
+                        Theo SL
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-muted text-muted-foreground">
+                        {stock.management_type || "—"}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
-                        stock.quantity > 0
-                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                          : "bg-red-500/10 text-red-600 border border-red-500/20"
-                      }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
+                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                        : "bg-red-500/10 text-red-600 border border-red-500/20"
+                        }`}
                     >
                       {stock.quantity}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-green-600 hover:bg-green-500/10 hover:text-green-700 text-xs gap-1"
+                        className="h-7 px-2 text-green-600 hover:bg-green-500/10 hover:text-green-700 text-xs gap-1 disabled:opacity-40"
                         onClick={() => handleStockAction(stock, "INCREASE")}
+                        disabled={stock.management_type === "unique"}
                       >
                         <ArrowUpCircle size={13} />
                         Stock In
@@ -282,8 +300,9 @@ export default function InventoryTable() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-red-500 hover:bg-red-500/10 hover:text-red-600 text-xs gap-1"
+                        className="h-7 px-2 text-red-500 hover:bg-red-500/10 hover:text-red-600 text-xs gap-1 disabled:opacity-40"
                         onClick={() => handleStockAction(stock, "DECREASE")}
+                        disabled={stock.management_type === "unique"}
                       >
                         <ArrowDownCircle size={13} />
                         Stock Out

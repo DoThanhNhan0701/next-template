@@ -82,6 +82,7 @@ interface TaskDetailProps {
 export default function TaskDetail({ id }: TaskDetailProps) {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
+  const documentType = searchParams.get("document_type") ?? "allocation";
   const router = useRouter();
   const [comment, setComment] = useState("");
   const { mutate, pending: mutatePending } = useMutation();
@@ -99,7 +100,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     pending: historyPending,
     reFetch: reFetchHistory,
   } = useGet<ApprovalHistory[]>({
-    url: dynamicEndpoints.WORKFLOW_HISTORY("allocation", Number(id)),
+    url: dynamicEndpoints.WORKFLOW_HISTORY(documentType, Number(id)),
   });
 
   const { response: myTasksResponse, reFetch: reFetchMyTasks } = useGet<
@@ -112,7 +113,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
   });
 
   const activeTask = (myTasksResponse || []).find(
-    (t) => t.document_id === Number(id) && t.document_type === "allocation",
+    (t) => t.document_id === Number(id) && t.document_type === documentType,
   );
 
   const handleAction = async (status: "APPROVED" | "REJECTED") => {
