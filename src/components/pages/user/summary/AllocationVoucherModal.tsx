@@ -113,11 +113,13 @@ function AllocationItemRow({
     items: IPhysicalAsset[];
   }>(
     {
-      url: `${endpoints.PHYSICAL_ASSETS}?location_id=${warehouseId}&status_code=READY`,
+      url: endpoints.PHYSICAL_ASSETS,
+      config: { params: { location_id: warehouseId, limit: 200, status_code: "READY" } },
     },
     { disabled: !warehouseId, deps: [warehouseId] },
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const assets = assetRes?.items || [];
 
   useEffect(() => {

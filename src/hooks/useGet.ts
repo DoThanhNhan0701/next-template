@@ -1,16 +1,18 @@
 import { axiosInstance } from '@/utils/axiosInstance';
 import { useQuery, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import type { AxiosRequestConfig } from 'axios';
+import type { DependencyList } from 'react';
 
 export const useGet = <T = unknown>(
   { url, config }: { url: string; config?: AxiosRequestConfig },
   options?: {
     disabled?: boolean;
     queryKey?: QueryKey;
+    deps?: DependencyList;
   },
 ) => {
   const queryClient = useQueryClient();
-  const key: QueryKey = options?.queryKey ?? [url];
+  const key: QueryKey = options?.queryKey ?? [url, ...(options?.deps ?? [])];
 
   const { data: response, isFetching, error, refetch } = useQuery<T>({
     queryKey: key,

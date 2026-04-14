@@ -80,7 +80,7 @@ function DetailRow({
   const { response: assetRes, pending: assetsPending } = useGet<{ items: IPhysicalAsset[] }>(
     {
       url: endpoints.PHYSICAL_ASSETS,
-      config: { params: { location_id: locationId, limit: 200 } },
+      config: { params: { location_id: locationId, limit: 200, status_code: "READY" } },
     },
     { disabled: !locationId || locationId === 0, deps: [locationId] },
   );
