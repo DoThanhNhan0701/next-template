@@ -45,72 +45,29 @@ export function TargetDestinationSection({
         {watchedType === "holder" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <Controller
-              name="target_unit_id"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field>
-                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest ">
-                    Step 1: Select unit for filtering
-                  </FieldLabel>
-                  <Select
-                    onValueChange={(val) => {
-                      field.onChange(Number(val));
-                      form.setValue("target_id", null);
-                    }}
-                    value={field.value ? field.value.toString() : ""}
-                  >
-                    <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                      <SelectValue placeholder="Select target unit..." />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      {orgs.map((o) => (
-                        <SelectItem
-                          key={`target-unit-filter-${o.id}`}
-                          value={o.id.toString()}
-                        >
-                          {o.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FieldError errors={[fieldState.error]} />
-                </Field>
-              )}
-            />
-
-            <Controller
               name="target_id"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-                    Step 2: Select specific personnel
+                    Select specific personnel
                   </FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(Number(val))}
                     value={field.value ? field.value.toString() : ""}
-                    disabled={!watchedTargetUnitId}
                   >
                     <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                      <SelectValue
-                        placeholder={
-                          watchedTargetUnitId
-                            ? "Select specific personnel..."
-                            : "Select unit first..."
-                        }
-                      />
+                      <SelectValue placeholder="Select specific personnel..." />
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px]">
-                      {staffs
-                        .filter((s) => s.unit_id === watchedTargetUnitId)
-                        .map((s) => (
-                          <SelectItem
-                            key={`target-staff-${s.id}`}
-                            value={s.id.toString()}
-                          >
-                            {s.full_name}
-                          </SelectItem>
-                        ))}
+                      {staffs.map((s) => (
+                        <SelectItem
+                          key={`target-staff-${s.id}`}
+                          value={s.id.toString()}
+                        >
+                          {s.full_name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FieldError errors={[fieldState.error]} />

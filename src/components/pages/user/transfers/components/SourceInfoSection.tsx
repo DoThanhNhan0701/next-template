@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Building2, MapPin } from "lucide-react";
+import { User, MapPin } from "lucide-react";
 import { UseFormReturn, Controller } from "react-hook-form";
 import {
   Field,
@@ -61,20 +61,13 @@ export function SourceInfoSection({
                 }}
                 className="w-full"
               >
-                <TabsList className="grid w-full grid-cols-3 h-16 p-1 bg-muted/30">
+                <TabsList className="grid w-full grid-cols-2 h-16 p-1 bg-muted/30">
                   <TabsTrigger
                     value="holder"
                     className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
                   >
                     <User className="w-4 h-4" />
                     <span className="text-xs font-medium">Personnel</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="unit"
-                    className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
-                  >
-                    <Building2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Unit</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="location"

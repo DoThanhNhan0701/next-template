@@ -218,17 +218,23 @@ export default function TransferFormModal({
       transfer_date: data.transfer_date,
       reason: data.reason || "",
       external_link: data.external_link || "",
-      items: data.details.map((item) => ({
-        asset_id: item.asset_id,
-        quantity: item.quantity,
-        from_location_id: transfer_type === "location" ? data.source_id : 0,
-      })),
+      items: data.details.map((item) => {
+        const assetObj = assets.find((a) => a.id === item.asset_id);
+        const from_location_id =
+          transfer_type === "location"
+            ? data.source_id
+            : assetObj?.location_id ?? 0;
+        return {
+          asset_id: item.asset_id,
+          quantity: item.quantity,
+          from_location_id,
+        };
+      }),
       workflow_assignments: [],
     };
 
     // Specific fields based on transfer type
     if (transfer_type === "holder") {
-      payload.to_unit_id = data.target_unit_id || 0;
       payload.to_staff_id = data.target_id || 0;
       payload.from_staff_id = data.source_id;
     } else if (transfer_type === "unit") {
