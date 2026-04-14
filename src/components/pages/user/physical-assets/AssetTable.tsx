@@ -374,10 +374,7 @@ export default function AssetTable() {
                             {getOrgUnitLabel(asset.unit_id) || "None"}
                           </span>
                         </div>
-                        <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
-                          <span className="opacity-60 italic">Owner:</span>
-                          <span>{asset.owner || "None"}</span>
-                        </div>
+
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
