@@ -36,7 +36,10 @@ export interface IPhysicalAsset {
   notes: string;
   management_type?: "unique" | "batch";
   attachments?: string[] | null;
-  holding_qty: number | null
+  holding_qty: number | null;
+  in_stock_quantity?: number;
+  allocated_quantity?: number;
+  rented_quantity?: number;
 }
 
 export interface IPhysicalAssetCreate {

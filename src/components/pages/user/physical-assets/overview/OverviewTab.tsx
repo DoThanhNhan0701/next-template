@@ -1,5 +1,24 @@
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
-import { IRental } from "@/types/rental";
+
+interface IAssetHolder {
+  name: string;
+  type: string;
+  quantity: number;
+  staff_id: number | null;
+  unit_id: number | null;
+  customer_id: number | null;
+  source_type: string;
+  source_number: string;
+  acquired_at: string;
+}
+
+interface IAssetStock {
+  asset_id: number;
+  location_id: number;
+  quantity: number;
+  location_code: string;
+  location_name: string;
+}
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,13 +37,14 @@ import {
   FileSpreadsheet,
   FileText,
   FileArchive,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Image from "next/image";
 import { useGet } from "@/hooks/useGet";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints } from "@/config/endpoints";
 
 const formatUrl = (url: string) => {
   if (!url) return "";
@@ -50,11 +70,17 @@ const getFileIcon = (url: string) => {
 export default function OverviewTab({ asset }: Readonly<{ asset: IPhysicalAssetDetail }>) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const { response: rentalRes } = useGet<{ items: IRental[] }>(
-    { url: `${endpoints.RENTALS}?asset_id=${asset.id}&status=ACTIVE` },
+  const { response: holdersRes } = useGet<IAssetHolder[]>(
+    { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(asset.id) },
     { deps: [asset.id] },
   );
-  const activeRental = rentalRes?.items?.[0] ?? null;
+  const holders = holdersRes ?? [];
+
+  const { response: stockRes } = useGet<IAssetStock[]>(
+    { url: dynamicEndpoints.PHYSICAL_ASSET_STOCK(asset.id) },
+    { deps: [asset.id] },
+  );
+  const stocks = stockRes ?? [];
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -92,22 +118,71 @@ export default function OverviewTab({ asset }: Readonly<{ asset: IPhysicalAssetD
                   <InfoRow icon="🏢" label="Managing unit" value={asset.unit?.name || "-"} />
                   <InfoRow icon="👤" label="Current holder" value={asset.holder_name || "-"} />
                   <InfoRow icon="📍" label="Current location" value={asset.location_obj?.name || "-"} />
-                  {activeRental && (
-                    <div className="flex flex-col gap-0.5">
-                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <span className="text-base opacity-70">🔑</span>
-                        Đang cho thuê
+                  {(holders.length > 0 || stocks.length > 0) && (() => {
+                    const userHolders = holders.filter(h => h.type === "user");
+                    const customerHolders = holders.filter(h => h.type === "customer");
+                    return (
+                      <div className="flex flex-col gap-3 pt-1 border-t border-border/30 pt-4">
+                        {userHolders.length > 0 && (
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                              <UserCheck className="w-3.5 h-3.5 text-blue-500" />
+                              Người đang dùng
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              {userHolders.map((h, i) => (
+                                <div key={i} className="flex items-center justify-between bg-blue-500/5 rounded-lg px-2.5 py-1.5 border border-blue-500/15">
+                                  <span className="text-sm font-medium text-foreground">{h.name}</span>
+                                  <span className="text-xs font-bold bg-blue-500/15 text-blue-600 px-2 py-0.5 rounded-full min-w-[28px] text-center">
+                                    {h.quantity}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {customerHolders.length > 0 && (
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                              <Clock className="w-3.5 h-3.5 text-amber-500" />
+                              Đang cho thuê
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              {customerHolders.map((h, i) => (
+                                <div key={i} className="flex items-center justify-between bg-amber-500/5 rounded-lg px-2.5 py-1.5 border border-amber-500/15">
+                                  <span className="text-sm font-medium text-foreground">{h.name}</span>
+                                  <span className="text-xs font-bold bg-amber-500/15 text-amber-600 px-2 py-0.5 rounded-full min-w-[28px] text-center">
+                                    {h.quantity}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {stocks.length > 0 && (
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                              <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+                              Vị trí hiện tại
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              {stocks.map((s, i) => (
+                                <div key={i} className="flex items-center justify-between bg-emerald-500/5 rounded-lg px-2.5 py-1.5 border border-emerald-500/15">
+                                  <span className="text-sm font-medium text-foreground">
+                                    [{s.location_code}] {s.location_name}
+                                  </span>
+                                  <span className="text-xs font-bold bg-emerald-500/15 text-emerald-600 px-2 py-0.5 rounded-full min-w-[28px] text-center">
+                                    {s.quantity}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="pl-6 flex flex-col gap-0.5">
-                        <span className="text-sm font-semibold text-amber-600">
-                          {activeRental.customer_name}
-                        </span>
-                        <span className="text-xs text-muted-foreground font-mono">
-                          #{activeRental.record_number}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                    );
+                  })()}
+
                 </CardContent>
               </Card>
 

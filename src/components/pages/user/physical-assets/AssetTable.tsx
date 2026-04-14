@@ -305,6 +305,9 @@ export default function AssetTable() {
                 Purchase Info
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
+                Loại quản lý
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center">
                 Status
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right">
@@ -314,10 +317,10 @@ export default function AssetTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : assets.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Laptop}
                 message="No assets declared yet"
                 description="Declare your first asset using the button above to get started."
@@ -415,23 +418,57 @@ export default function AssetTable() {
                     <TableCell className="px-4 py-1.5 text-center">
                       <Badge
                         variant="outline"
-                        style={
-                          status?.color
-                            ? {
-                                backgroundColor: `${status.color}20`,
-                                color: status.color,
-                                borderColor: `${status.color}40`,
-                              }
-                            : {}
-                        }
                         className={cn(
-                          "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none",
-                          !status?.color &&
-                            "bg-primary/10 text-primary border-primary/20",
+                          "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
+                          asset.management_type === "bulk"
+                            ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                            : "bg-blue-500/10 text-blue-600 border-blue-500/20",
                         )}
                       >
-                        {status?.name || `Status ${asset.status_id}`}
+                        {asset.management_type === "bulk" ? "Theo SL" : "Theo Mã"}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="px-4 py-1.5 text-center">
+                      <div className="flex flex-col items-center gap-1.5">
+                        {((asset.in_stock_quantity ?? 0) > 0 || (asset.allocated_quantity ?? 0) > 0 || (asset.rented_quantity ?? 0) > 0) && asset.management_type === "bulk" ? (
+                          <div className="flex items-center gap-1 flex-wrap justify-center">
+                            {(asset.in_stock_quantity ?? 0) > 0 && (
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
+                                Kho: {asset.in_stock_quantity}
+                              </span>
+                            )}
+                            {(asset.allocated_quantity ?? 0) > 0 && (
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 whitespace-nowrap">
+                                Dùng: {asset.allocated_quantity}
+                              </span>
+                            )}
+                            {(asset.rented_quantity ?? 0) > 0 && (
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 border border-purple-500/20 whitespace-nowrap">
+                                Thuê: {asset.rented_quantity}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <Badge
+                            variant="outline"
+                            style={
+                              status?.color
+                                ? {
+                                  backgroundColor: `${status.color}20`,
+                                  color: status.color,
+                                  borderColor: `${status.color}40`,
+                                }
+                                : {}
+                            }
+                            className={cn(
+                              "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
+                              !status?.color && "bg-primary/10 text-primary border-primary/20",
+                            )}
+                          >
+                            {status?.name || `Status ${asset.status_id}`}
+                          </Badge>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-right">
                       <div className="flex items-center justify-end gap-1">
