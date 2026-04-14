@@ -10,10 +10,10 @@ import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer, SendHorizonal, U
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import LifecycleTab from "./lifecycle/LifecycleTab";
+import { Skeleton } from "@/components/ui/skeleton"; import LifecycleTab from "./lifecycle/LifecycleTab";
 import OverviewTab from "./overview/OverviewTab";
 import AssetFormModal from "./AssetFormModal";
+import PrintQRModal from "./PrintQRModal";
 import { AppDispatch } from "@/redux";
 import { openAllocation } from "@/redux/slices/allocation";
 import { openRecovery } from "@/redux/slices/recovery";
@@ -25,6 +25,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "overview";
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleDispatch = () => {
@@ -243,30 +244,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 variant="outline"
                 size="sm"
                 className="gap-2"
-                onClick={() => {
-                  const printArea = document.getElementById("qr-print-area");
-                  if (!printArea) return;
-                  const win = window.open("", "_blank", "width=400,height=400");
-                  if (!win) return;
-                  win.document.write(`
-                    <html><head><title>QR - ${asset.asset_code}</title>
-                    <style>
-                      body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: monospace; }
-                      .wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px; }
-                      .code { font-size: 14px; font-weight: bold; letter-spacing: 0.15em; }
-                      .name { font-size: 11px; color: #666; }
-                    </style></head>
-                    <body><div class="wrap">
-                      ${printArea.querySelector("svg")?.outerHTML ?? ""}
-                      <div class="code">${asset.asset_code}</div>
-                      <div class="name">${asset.name}</div>
-                    </div></body></html>
-                  `);
-                  win.document.close();
-                  win.focus();
-                  win.print();
-                  win.close();
-                }}
+                onClick={() => setIsPrintModalOpen(true)}
               >
                 <Printer className="w-4 h-4" />
                 Print QR Code
@@ -282,6 +260,16 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           onClose={() => setIsEditOpen(false)}
           assetToEdit={asset as unknown as import("@/types/physical-asset").IPhysicalAsset}
           onSuccess={() => { setIsEditOpen(false); reFetch(); }}
+        />
+      )}
+
+      {asset && (
+        <PrintQRModal
+          isOpen={isPrintModalOpen}
+          onClose={() => setIsPrintModalOpen(false)}
+          assetCode={asset.asset_code}
+          assetName={asset.name}
+          assetId={asset.id}
         />
       )}
     </>

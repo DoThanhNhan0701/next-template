@@ -34,7 +34,7 @@ export interface IPhysicalAsset {
   location: string | null;
   specifications: string;
   notes: string;
-  management_type?: "unique" | "batch";
+  management_type?: "unique" | "bulk";
   attachments?: string[] | null;
   holding_qty: number | null;
   in_stock_quantity?: number;
