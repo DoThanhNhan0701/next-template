@@ -332,7 +332,7 @@ export default function AllocationVoucherModal({
         approver_step_2_id: null,
       });
     }
-  }, [isOpen, form]);
+  }, [isOpen, form, prefill?.asset_id, prefill?.location_id, prefill?.reason, prefill?.unit_id]);
 
   const onSubmit = async (data: AllocationFormValues) => {
     // Transform data for backend

@@ -18,7 +18,6 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { ITransfer } from "@/types/transfer";
 import { useGet } from "@/hooks/useGet";
-import { IOrgUnit } from "@/types/org";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { IUser } from "@/types/auth";
@@ -115,17 +114,10 @@ export default function TransferFormModal({
   const { response: staffRes } = useGet<{ items: IStaff[] }>({
     url: endpoints.STAFFS,
   });
-  const staffs = staffRes?.items || [];
-
-  const { response: orgRes } = useGet<IOrgUnit[]>({
-    url: endpoints.ORG_UNITS,
-  });
-  const orgs = orgRes || [];
 
   const { response: locRes } = useGet<ILocation[]>({
     url: endpoints.LOCATIONS,
   });
-  const locations = locRes || [];
 
   const { response: userRes } = useGet<IUser[]>(
     { url: endpoints.USERS },
@@ -136,6 +128,8 @@ export default function TransferFormModal({
     { disabled: !isOpen },
   );
 
+  const staffs = staffRes?.items || [];
+  const locations = locRes || [];
   const users = userRes || [];
 
   const watchedType = useWatch({
@@ -154,11 +148,6 @@ export default function TransferFormModal({
   });
 
   const hasSelectedAssets = watchedDetails?.some((d) => d && d.asset_id > 0);
-
-  const watchedTargetUnitId = useWatch({
-    control: form.control,
-    name: "target_unit_id",
-  });
 
   // Construct filtered asset URL
   const filterParam = watchedType === "holder" ? "staff_id" : "location_id";
@@ -322,10 +311,8 @@ export default function TransferFormModal({
               <TargetDestinationSection
                 form={form}
                 staffs={staffs}
-                orgs={orgs}
                 locations={locations}
                 watchedType={watchedType}
-                watchedTargetUnitId={watchedTargetUnitId}
               />
             )}
 

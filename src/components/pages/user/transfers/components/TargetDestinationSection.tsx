@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightCircle, Building2, MapPin } from "lucide-react";
+import { ArrowRightCircle, MapPin } from "lucide-react";
 import { UseFormReturn, Controller } from "react-hook-form";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import {
@@ -13,26 +13,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TransferFormValues } from "../TransferFormModal";
-import { IOrgUnit } from "@/types/org";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
 
 interface TargetDestinationSectionProps {
   form: UseFormReturn<TransferFormValues>;
   staffs: IStaff[];
-  orgs: IOrgUnit[];
   locations: ILocation[];
-  watchedType: "holder" | "unit" | "location";
-  watchedTargetUnitId: number | null | undefined;
+  watchedType: "holder" | "location";
 }
 
 export function TargetDestinationSection({
   form,
   staffs,
-  orgs,
   locations,
   watchedType,
-  watchedTargetUnitId,
 }: TargetDestinationSectionProps) {
   return (
     <div className="flex flex-col gap-3 pt-4 border-t">
@@ -66,44 +61,6 @@ export function TargetDestinationSection({
                           value={s.id.toString()}
                         >
                           {s.full_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FieldError errors={[fieldState.error]} />
-                </Field>
-              )}
-            />
-          </div>
-        )}
-
-        {watchedType === "unit" && (
-          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <Controller
-              name="target_id"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field>
-                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-                    Select new target unit
-                  </FieldLabel>
-                  <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={field.value ? field.value.toString() : ""}
-                  >
-                    <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="w-4 h-4 text-muted-foreground" />
-                        <SelectValue placeholder="Select target unit..." />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      {orgs.map((o) => (
-                        <SelectItem
-                          key={`target-unit-direct-${o.id}`}
-                          value={o.id.toString()}
-                        >
-                          {o.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

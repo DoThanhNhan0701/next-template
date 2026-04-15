@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetName, as
         { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(assetId) },
         { disabled: !isOpen, deps: [assetId] },
     );
-    const holders = holdersRes ?? [];
+    const holders = useMemo(() => holdersRes ?? [], [holdersRes]);
 
     // Auto-select first holder when data loads
     useEffect(() => {
@@ -100,7 +100,7 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetName, as
                         <div className="w-full flex flex-col gap-1.5">
                             <span className="text-sm font-medium">Tên người nhận</span>
                             <div className="flex flex-wrap gap-1.5">
-                                {holders.map((h, i) => (
+                                {holders.map((h: IHolder, i: number) => (
                                     <button
                                         key={i}
                                         type="button"

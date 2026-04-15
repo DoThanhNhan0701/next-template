@@ -17,6 +17,12 @@ import OrgUnitDeleteDialog from "./OrgUnitDeleteDialog";
 import { OrgUnit } from "@/components/ui/tree";
 import { IOrgUnit } from "@/types/org";
 
+const flattenOrgUnits = (units: OrgUnit[]): OrgUnit[] => {
+  return units.reduce((acc: OrgUnit[], unit) => {
+    return [...acc, unit, ...flattenOrgUnits(unit.children || [])];
+  }, []);
+};
+
 export default function OrganizationalStructurePage() {
   const {
     response: data,
@@ -43,6 +49,10 @@ export default function OrganizationalStructurePage() {
   const [isParentDisabled, setIsParentDisabled] = useState(false);
 
   const { mutate } = useMutation();
+
+  const flatUnits = useMemo(() => {
+    return data ? flattenOrgUnits(data) : [];
+  }, [data]);
 
   // --- Local state updaters (no refetch needed) ---
   const insertUnit = (units: OrgUnit[], newUnit: OrgUnit): OrgUnit[] => {
@@ -113,15 +123,6 @@ export default function OrganizationalStructurePage() {
     setData((prev) => (prev ? removeUnit(prev, deletedId) : prev));
     setSelectedUnit(null);
   };
-
-  const flatUnits = useMemo(() => {
-    const flatten = (units: OrgUnit[]): OrgUnit[] => {
-      return units.reduce((acc: OrgUnit[], unit) => {
-        return [...acc, unit, ...flatten(unit.children || [])];
-      }, []);
-    };
-    return data ? flatten(data) : [];
-  }, [data]);
 
   const hasInitialized = useRef(false);
   // Auto-select first unit on load

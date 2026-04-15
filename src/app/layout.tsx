@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/libs/theme-provider";
