@@ -1,26 +1,37 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { endpoints } from '@/config/endpoints';
 import { axiosInstance } from '@/utils/axiosInstance';
+import { AxiosResponse } from 'axios';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const inFlightRequests: Record<string, Promise<AxiosResponse<any>>> = {};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
+  const url = `${endpoints.WORKFLOW_TASKS}me?status=${status}&limit=1`;
+  if (!inFlightRequests[url]) {
+    inFlightRequests[url] = axiosInstance.get(url).then(res => {
+      delete inFlightRequests[url];
+      return res;
+    }).catch(err => {
+      delete inFlightRequests[url];
+      throw err;
+    });
+  }
+  return inFlightRequests[url];
+};
 
 export const actionFetchPendingCount = createAsyncThunk(
   'task/fetchPendingCount',
   async (_, thunkApi) => {
     try {
-      const response = await axiosInstance.get(
-        `${endpoints.WORKFLOW_TASKS}me?status=PENDING&limit=1`
-      );
+      const response = await getTaskCountByStatus('PENDING');
       return response.data.length || 0;
     } catch (error) {
       return thunkApi.rejectWithValue({
         message: (error as Error).message,
       });
     }
-  },
-  {
-    condition: (_, { getState }) => {
-      const { task } = getState() as { task: TaskState };
-      if (task.loading) return false;
-    },
   }
 );
 
@@ -29,9 +40,9 @@ export const actionFetchTaskCounts = createAsyncThunk(
   async (_, thunkApi) => {
     try {
       const [pending, approved, rejected] = await Promise.all([
-        axiosInstance.get(`${endpoints.WORKFLOW_TASKS}me?status=PENDING&limit=1`),
-        axiosInstance.get(`${endpoints.WORKFLOW_TASKS}me?status=APPROVED&limit=1`),
-        axiosInstance.get(`${endpoints.WORKFLOW_TASKS}me?status=REJECTED&limit=1`),
+        getTaskCountByStatus('PENDING'),
+        getTaskCountByStatus('APPROVED'),
+        getTaskCountByStatus('REJECTED'),
       ]);
 
       return {
@@ -48,7 +59,7 @@ export const actionFetchTaskCounts = createAsyncThunk(
   {
     condition: (_, { getState }) => {
       const { task } = getState() as { task: TaskState };
-      if (task.fetched || task.loading) {
+      if (task.loading) {
         return false;
       }
     },
@@ -79,7 +90,7 @@ const taskSlice = createSlice({
   name: 'task',
   initialState,
   reducers: {
-    updateCount: (state, action: { payload: { status: string; count: number } }) => {
+    updateCount: (state, action: PayloadAction<{ status: string; count: number }>) => {
       const { status, count } = action.payload;
       if (status === 'PENDING' || status === 'APPROVED' || status === 'REJECTED') {
         state.counts[status] = count;
