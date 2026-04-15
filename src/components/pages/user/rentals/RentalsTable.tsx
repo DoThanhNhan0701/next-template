@@ -6,18 +6,18 @@ import { AppDispatch, RootState } from "@/redux";
 import { closeRental } from "@/redux/slices/rental";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { IRental } from "@/types/rental";
+import { IRentalSummary } from "@/types/rental";
 import { IOrgUnit } from "@/types/org";
 import { ICustomer } from "@/types/customer";
 import {
-  FileText,
   Search,
   Building2,
   Users,
+  User,
   X,
   RotateCcw,
   Calendar,
-  CornerDownLeft,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,14 +45,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import RentalFormModal from "./RentalFormModal";
-import { useMutation } from "@/hooks/useMutation";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
+import { Badge } from "@/components/ui/badge";
 import {
   TableLoadingRows,
   TableEmptyRow,
 } from "@/components/common/TableStateDisplay";
+import RentalFormModal from "./RentalFormModal";
+import { useMutation } from "@/hooks/useMutation";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 
 export default function RentalsTable() {
   const dispatch = useDispatch<AppDispatch>();
@@ -98,7 +99,7 @@ export default function RentalsTable() {
   if (appliedFilters.customer_id !== "all")
     queryParams.append("customer_id", appliedFilters.customer_id);
 
-  const { response, pending, reFetch } = useGet<{ items: IRental[] }>({
+  const { response, pending, reFetch } = useGet<{ items: IRentalSummary[] }>({
     url: `${endpoints.RENTALS}?${queryParams.toString()}`,
   });
   const rentals = response?.items || [];
@@ -155,7 +156,7 @@ export default function RentalsTable() {
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-2">
           <Select value={unitId} onValueChange={setUnitId}>
-            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Building2
                   size={16}
@@ -177,7 +178,7 @@ export default function RentalsTable() {
           </Select>
 
           <Select value={customerId} onValueChange={setCustomerId}>
-            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Users
                   size={16}
@@ -250,30 +251,29 @@ export default function RentalsTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4">
-                Rental Info
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Asset Details
+                Rental Record
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Quantity
+                Customer
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Client</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Status</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right">
-                Actions
+              <TableHead className="font-semibold h-10 px-4 text-center">
+                Total Assets
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Lease Date
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center">
+                Status
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={5} rows={6} />
             ) : rentals.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
-                icon={FileText}
+                colSpan={5}
+                icon={ClipboardList}
                 message="No rentals found"
                 description="No rental records match your current search or filter criteria."
               />
@@ -283,67 +283,60 @@ export default function RentalsTable() {
                   key={rental.id}
                   className="group hover:bg-primary/3 transition-colors relative"
                 >
-                  <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/40 opacity-80" />
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/5 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
-                        <FileText size={18} />
-                      </div>
-                      <span className="font-semibold text-sm group-hover:text-primary transition-colors">
+                  <TableCell className="px-4 py-1.5">
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-sm">
                         {rental.record_number}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
+                        {rental.contract_number}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
+                  <TableCell className="px-4 py-1.5">
+                    <div className="flex flex-col gap-1 text-sm">
+                      <div className="flex items-center gap-2">
+                        <User size={12} className="text-muted-foreground" />
+                        <span className="font-medium text-foreground/80">
+                          {rental.customer_name}
+                        </span>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className="w-fit text-[10px] px-1.5 py-0"
+                      >
+                        {rental.customer_type === "individual"
+                          ? "Individual"
+                          : "Organization"}
+                      </Badge>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5 text-center font-medium">
+                    {rental.total_assets || 0}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5">
                     <div className="flex items-center gap-1.5">
                       <Calendar
                         size={12}
                         className="text-muted-foreground/60"
                       />
-                      <span>{rental.lease_date?.split("T")[0] || "N/A"}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1">
-                      <span className="font-semibold text-sm">
-                        {rental.asset_name}
-                      </span>
-                      <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
-                        {rental.asset_code}
+                      <span className="text-xs">
+                        {rental.lease_date?.split("T")[0] || "N/A"}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-medium">
-                    {rental.total_assets}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Users size={14} className="text-blue-600/70 shrink-0" />
-                      <span>{rental.customer_name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <span
-                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
-                      style={{ backgroundColor: rental.status_color }}
+                  <TableCell className="px-4 py-1.5 text-center">
+                    <Badge
+                      variant="outline"
+                      style={{
+                        backgroundColor: `${rental.status_color}15`,
+                        color: rental.status_color,
+                        borderColor: `${rental.status_color}30`,
+                      }}
+                      className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none"
                     >
                       {rental.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {rental.reason || "N/A"}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 text-primary hover:bg-primary/10 hover:text-primary transition-all rounded-md"
-                      disabled={returnPending}
-                      onClick={() => setReturnRentalId(rental.id)}
-                    >
-                      <CornerDownLeft size={14} className="mr-1.5" />
-                      Hoàn trả
-                    </Button>
+                    </Badge>
                   </TableCell>
                 </TableRow>
               ))
