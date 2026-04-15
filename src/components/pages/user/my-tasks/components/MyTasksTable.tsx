@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ITask, TaskStatus } from "@/types/task";
@@ -69,6 +72,7 @@ export default function MyTasksTable() {
 
   // Status filtering based on active tab
   queryParams.append("status", activeTab);
+  const dispatch = useDispatch<AppDispatch>();
 
   if (appliedQ) queryParams.append("q", appliedQ);
 
@@ -84,6 +88,13 @@ export default function MyTasksTable() {
   const tasks = response || [];
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = tasks.length === limit;
+
+  // Sync current tab count to Redux
+  useEffect(() => {
+    if (response) {
+      dispatch(updateCount({ status: activeTab, count: response.length }));
+    }
+  }, [response, activeTab, dispatch]);
 
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {

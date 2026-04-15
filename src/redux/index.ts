@@ -5,6 +5,7 @@ import stockAdjustment from './slices/stockAdjustment';
 import allocation from './slices/allocation';
 import recovery from './slices/recovery';
 import rental from './slices/rental';
+import task from './slices/task';
 import { injectStore } from '@/utils/axiosInstance';
 
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     allocation,
     recovery,
     rental,
+    task,
   },
 });
 

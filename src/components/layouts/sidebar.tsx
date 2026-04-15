@@ -18,6 +18,7 @@ export interface SidebarItem {
   title: string;
   url: string;
   icon: LucideIcon | React.ElementType;
+  badge?: number;
 }
 
 export const defaultItems: SidebarItem[] = [
@@ -75,9 +76,16 @@ export default function Sidebar({ items = defaultItems }: SidebarProps) {
                     asChild
                     className={isActive ? "bg-sidebar-accent" : ""}
                   >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                    <Link href={item.url} className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-2">
+                        <item.icon size={18} />
+                        <span>{item.title}</span>
+                      </div>
+                      {item.badge && item.badge > 0 ? (
+                        <div className="bg-red-500 text-white text-[10px] font-bold rounded-full size-5 flex items-center justify-center shrink-0">
+                          {item.badge}
+                        </div>
+                      ) : null}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

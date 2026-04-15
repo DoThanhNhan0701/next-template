@@ -112,6 +112,11 @@ export default function Header({ user, items = defaultItems }: Props) {
         <section className="flex items-center gap-1 h-full cursor-pointer">
           {activeItem.icon && <activeItem.icon size={13} />}
           <p className="text-sm leading-none">{activeItem.title}</p>
+          {activeItem.badge && activeItem.badge > 0 ? (
+            <div className="bg-red-500 text-white text-[9px] font-bold rounded-full size-4 flex items-center justify-center shrink-0 ml-1">
+              {activeItem.badge}
+            </div>
+          ) : null}
         </section>
       </div>
       <div className="ml-auto flex items-center shrink-0 gap-1">
