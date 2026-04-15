@@ -1,16 +1,22 @@
 {
   "Menu": {
     "dashboard": "Bảng điều khiển",
-    "myTasks": "Nhiệm vụ của tôi",
+    "my_tasks": "Nhiệm vụ của tôi",
     "assets": "Tài sản",
     "rentals": "Cho thuê",
     "inventory": "Kho hàng",
     "transfers": "Điều chuyển",
-    "stockInOut": "Nhập & Xuất kho",
-    "allocationRecovery": "Cấp phát & Thu hồi"
+    "stock_in_out": "Nhập & Xuất kho",
+    "allocation_recovery": "Cấp phát & Thu hồi",
+    "stocktaking": "Kiểm kê",
+    "maintenance": "Bảo trì"
   },
   "Language": {
     "en": "English",
     "vi": "Tiếng Việt"
+  },
+  "Common": {
+    "feature_under_development": "Tính năng đang phát triển",
+    "feature_under_development_description": "Chúng tôi đang nỗ lực hoàn thiện tính năng này. Vui lòng quay lại sau."
   }
 }

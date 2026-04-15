@@ -17,6 +17,8 @@ import {
   ArrowRightLeft,
   ClipboardList,
   PackageSearch,
+  ClipboardCheck,
+  Wrench,
 } from "lucide-react";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
@@ -33,7 +35,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const sidebarItems = [
     { title: t("dashboard"), url: "/dashboard", icon: LayoutDashboard },
     {
-      title: t("myTasks"),
+      title: t("my_tasks"),
       url: "/my-tasks",
       icon: ClipboardList,
       badge: counts.PENDING,
@@ -42,12 +44,14 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     { title: t("rentals"), url: "/rentals", icon: Key },
     { title: t("inventory"), url: "/inventory", icon: Package },
     { title: t("transfers"), url: "/transfers", icon: ArrowRightLeft },
-    { title: t("stockInOut"), url: "/stock-in-out", icon: PackageSearch },
+    { title: t("stock_in_out"), url: "/stock-in-out", icon: PackageSearch },
     {
-      title: t("allocationRecovery"),
+      title: t("allocation_recovery"),
       url: "/allocation-recovery",
       icon: BarChart3,
     },
+    { title: t("stocktaking"), url: "/stocktaking", icon: ClipboardCheck },
+    { title: t("maintenance"), url: "/maintenance", icon: Wrench },
   ];
 
   return (
