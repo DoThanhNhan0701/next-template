@@ -33,15 +33,15 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "My Tasks", url: "/my-tasks", icon: ClipboardList },
     { title: "Assets", url: "/assets", icon: Laptop },
+    { title: "Rentals", url: "/rentals", icon: Key },
     { title: "Inventory", url: "/inventory", icon: Package },
+    { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
     { title: "Stock In & Out", url: "/stock-in-out", icon: PackageSearch },
     {
       title: "Allocation & Recovery",
       url: "/allocation-recovery",
       icon: BarChart3,
     },
-    { title: "Rentals", url: "/rentals", icon: Key },
-    { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
   ];
 
   return (
