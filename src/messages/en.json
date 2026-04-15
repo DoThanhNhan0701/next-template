@@ -1,0 +1,16 @@
+{
+  "Menu": {
+    "dashboard": "Dashboard",
+    "myTasks": "My Tasks",
+    "assets": "Assets",
+    "rentals": "Rentals",
+    "inventory": "Inventory",
+    "transfers": "Transfers",
+    "stockInOut": "Stock In & Out",
+    "allocationRecovery": "Allocation & Recovery"
+  },
+  "Language": {
+    "en": "English",
+    "vi": "Tiếng Việt"
+  }
+}

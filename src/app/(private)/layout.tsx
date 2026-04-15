@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser } from "@/redux/slices/auth";
 import { ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
   Laptop,
@@ -20,6 +21,7 @@ import {
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
+  const t = useTranslations("Menu");
 
   useEffect(() => {
     const promise = dispatch(actionFetchUser());
@@ -30,15 +32,15 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   }, []);
 
   const sidebarItems = [
-    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    { title: "My Tasks", url: "/my-tasks", icon: ClipboardList },
-    { title: "Assets", url: "/assets", icon: Laptop },
-    { title: "Rentals", url: "/rentals", icon: Key },
-    { title: "Inventory", url: "/inventory", icon: Package },
-    { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
-    { title: "Stock In & Out", url: "/stock-in-out", icon: PackageSearch },
+    { title: t("dashboard"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("myTasks"), url: "/my-tasks", icon: ClipboardList },
+    { title: t("assets"), url: "/assets", icon: Laptop },
+    { title: t("rentals"), url: "/rentals", icon: Key },
+    { title: t("inventory"), url: "/inventory", icon: Package },
+    { title: t("transfers"), url: "/transfers", icon: ArrowRightLeft },
+    { title: t("stockInOut"), url: "/stock-in-out", icon: PackageSearch },
     {
-      title: "Allocation & Recovery",
+      title: t("allocationRecovery"),
       url: "/allocation-recovery",
       icon: BarChart3,
     },

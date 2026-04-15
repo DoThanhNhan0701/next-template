@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux";
 import { actionLogout } from "@/redux/slices/auth";
 import { type SidebarItem, defaultItems } from "./sidebar";
+import LanguageSwitcher from "../common/LanguageSwitcher";
 
 interface MenuToolbar {
   name: string;
@@ -114,7 +115,8 @@ export default function Header({ user, items = defaultItems }: Props) {
         </section>
       </div>
       <div className="ml-auto flex items-center shrink-0 gap-1">
-        <p className="text-sm leading-none">{user?.username}</p>
+        <p className="text-sm leading-none mr-2">{user?.username}</p>
+        <LanguageSwitcher />
         {menuToolbar.map((item) => (
           <Tooltip key={item.name}>
             <TooltipTrigger asChild>

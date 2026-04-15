@@ -1,5 +1,8 @@
+import createNextIntlPlugin from "next-intl/plugin";
 process.env.BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA = "true";
 import type { NextConfig } from "next";
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.2.21.177"],
@@ -20,4 +23,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

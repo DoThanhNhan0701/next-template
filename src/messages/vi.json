@@ -1,0 +1,16 @@
+{
+  "Menu": {
+    "dashboard": "Bảng điều khiển",
+    "myTasks": "Nhiệm vụ của tôi",
+    "assets": "Tài sản",
+    "rentals": "Cho thuê",
+    "inventory": "Kho hàng",
+    "transfers": "Điều chuyển",
+    "stockInOut": "Nhập & Xuất kho",
+    "allocationRecovery": "Cấp phát & Thu hồi"
+  },
+  "Language": {
+    "en": "English",
+    "vi": "Tiếng Việt"
+  }
+}
