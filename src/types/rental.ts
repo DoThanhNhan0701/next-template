@@ -5,8 +5,17 @@ export interface IRentalDetail {
   asset_id: number;
   asset: IPhysicalAsset;
   quantity: number;
+  returned_quantity: number;
   rental_revenue: number;
-  lessee_location: string | null;
+  from_location_id: number;
+  from_location: {
+    name: string;
+    code: string;
+    description: string | null;
+    is_active: boolean;
+    id: number;
+  };
+  lessee_location: string;
 }
 
 export interface IRental {
@@ -21,6 +30,52 @@ export interface IRental {
   status: string;
   status_color: string;
   reason: string | null;
+}
+
+export interface IRentalFull {
+  id: number;
+  record_number: string;
+  unit_id: number;
+  customer_id: number;
+  lease_date: string;
+  duration_days: number;
+  total_revenue: number;
+  contract_number: string;
+  notes: string;
+  external_link: string;
+  attachments: string[];
+  status_id: number;
+  status_obj: {
+    id: number;
+    category: string;
+    code: string;
+    name: string;
+    color: string;
+    is_system: boolean;
+  };
+  unit: {
+    name: string;
+    code: string;
+    unit_type: string;
+    parent_id: number | null;
+    leader_id: number | null;
+    address: string;
+    description: string;
+    is_active: boolean;
+    id: number;
+  };
+  customer: {
+    name: string;
+    customer_type: string;
+    identifier: string;
+    phone: string;
+    email: string;
+    address: string;
+    description: string;
+    is_active: boolean;
+    id: number;
+  };
+  details: IRentalDetail[];
 }
 
 export interface IRentalCreateItemPayload {

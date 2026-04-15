@@ -9,6 +9,7 @@ import { useGet } from "@/hooks/useGet";
 import { IRentalSummary } from "@/types/rental";
 import { IOrgUnit } from "@/types/org";
 import { ICustomer } from "@/types/customer";
+import { useRouter } from "next/navigation";
 import {
   Search,
   Building2,
@@ -56,6 +57,7 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
 export default function RentalsTable() {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen: rentalReduxOpen } = useSelector((state: RootState) => state.rental);
 
@@ -281,7 +283,8 @@ export default function RentalsTable() {
               rentals.map((rental) => (
                 <TableRow
                   key={rental.id}
-                  className="group hover:bg-primary/3 transition-colors relative"
+                  className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                  onClick={() => router.push(`/rentals/${rental.id}`)}
                 >
                   <TableCell className="px-4 py-1.5">
                     <div className="flex flex-col">
