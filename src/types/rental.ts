@@ -45,3 +45,18 @@ export interface IRentalCreatePayload {
   attachments: string[];
   items: IRentalCreateItemPayload[];
 }
+
+export interface IRentalSummary {
+  id: number;
+  record_number: string;
+  customer_name: string;
+  customer_type: "individual" | "organization";
+  contract_number: string;
+  lease_date: string;
+  return_date?: string;
+  total_assets: number;
+  status: string;
+  status_color: string;
+  notes?: string;
+}
+

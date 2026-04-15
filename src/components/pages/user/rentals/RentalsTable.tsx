@@ -125,8 +125,8 @@ export default function RentalsTable() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
+    <div className="w-full h-full flex flex-col min-h-0 p-4 gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4 backdrop-blur-md rounded-md shadow-sm transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
@@ -245,7 +245,6 @@ export default function RentalsTable() {
           </Button>
         </div>
       </div>
-
       <div className="border border-(--surface-border-color) rounded-lg flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
@@ -352,6 +351,7 @@ export default function RentalsTable() {
           </TableBody>
         </Table>
       </div>
+
 
       {rentals.length > 0 || skip > 0 ? (
         <Pagination className="flex w-full justify-end mt-1">
