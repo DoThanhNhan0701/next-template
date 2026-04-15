@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { IRentalFull } from "@/types/rental";
 import { ApprovalHistory } from "@/types/task";
 import { useRouter } from "next/navigation";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import {
     ChevronLeft, Package, MapPin, Clock, FileText,
     Building2, Phone, Mail, Calendar, DollarSign, Link2, FileCheck,
@@ -17,19 +21,38 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import RentalReturnModal from "./RentalReturnModal";
 
 interface Props { id: string; }
 
 export default function RentalDetail({ id }: Props) {
     const router = useRouter();
+    const [showReturnModal, setShowReturnModal] = useState(false);
 
-    const { response: detail, pending } = useGet<IRentalFull>({
+    const { response: detail, pending, reFetch } = useGet<IRentalFull>({
         url: dynamicEndpoints.RENTAL_DETAIL(Number(id)),
     });
 
     const { response: historyList, pending: historyPending } = useGet<ApprovalHistory[]>({
         url: dynamicEndpoints.WORKFLOW_HISTORY("rental", Number(id)),
     });
+
+    const { mutate: mutateReturn, pending: returnPending } = useMutation();
+
+    const handleReturnAction = async (data: Record<string, unknown>) => {
+        const { response: res, error } = await mutateReturn({
+            url: dynamicEndpoints.RENTAL_RETURN(Number(id)),
+            method: "post",
+            body: data,
+        });
+        if (error) {
+            getApiErrorMessage(error);
+        } else {
+            getApiSuccessMessage(res);
+            setShowReturnModal(false);
+            reFetch();
+        }
+    };
 
     if (pending && !detail) {
         return (
@@ -51,19 +74,30 @@ export default function RentalDetail({ id }: Props) {
     return (
         <div className="flex flex-col px-4 pb-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Back */}
-            <div className="flex items-center gap-3">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
-                    onClick={() => router.back()}
-                >
-                    <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <div className="flex flex-col gap-0.5">
-                    <h1 className="text-lg font-semibold text-foreground">Rental Detail</h1>
-                    <span className="text-xs text-muted-foreground">Rental Management</span>
+            <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
+                        onClick={() => router.back()}
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="flex flex-col gap-0.5">
+                        <h1 className="text-lg font-semibold text-foreground">Rental Detail</h1>
+                        <span className="text-xs text-muted-foreground">Rental Management</span>
+                    </div>
                 </div>
+
+                {isActive && (
+                    <Button
+                        onClick={() => setShowReturnModal(true)}
+                        className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all"
+                    >
+                        Hoàn trả
+                    </Button>
+                )}
             </div>
 
             {/* Summary */}
@@ -344,6 +378,15 @@ export default function RentalDetail({ id }: Props) {
                     )}
                 </CardContent>
             </Card>
+
+            {/* Return Modal */}
+            <RentalReturnModal
+                isOpen={showReturnModal}
+                onClose={() => setShowReturnModal(false)}
+                onConfirm={handleReturnAction}
+                pending={returnPending}
+                rentalDetail={detail}
+            />
         </div>
     );
 }
