@@ -6,11 +6,12 @@ import { useGet } from "@/hooks/useGet";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer, SendHorizonal, Undo2, BookOpen } from "lucide-react";
+import { ArrowLeft, Edit, Clock, Wrench, Info, QrCode, Printer, SendHorizonal, Undo2, BookOpen, Box } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton"; import LifecycleTab from "./lifecycle/LifecycleTab";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import OverviewTab from "./overview/OverviewTab";
 import AssetFormModal from "./AssetFormModal";
 import PrintQRModal from "./PrintQRModal";
@@ -206,21 +207,55 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             value="specs"
             className="mt-4 outline-none focus-visible:ring-0"
           >
-            {asset.specifications ? (
-              <div className="rounded-xl border border-border/50 overflow-hidden">
-                <div className="bg-muted/40 px-4 py-3 border-b border-border/50 flex items-center gap-2">
-                  <Wrench className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">Technical Specifications</span>
-                </div>
-                <div className="px-4 py-4">
-                  <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{asset.specifications}</p>
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                {asset.specifications ? (
+                  <div className="rounded-xl border border-border/50 overflow-hidden h-full">
+                    <div className="bg-muted/40 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+                      <Wrench className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-semibold text-primary">Technical Specifications</span>
+                    </div>
+                    <div className="px-4 py-4">
+                      <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{asset.specifications}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-sm text-muted-foreground rounded-xl border border-border/50 bg-muted/10 h-full flex items-center justify-center">
+                    No technical specifications available.
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="p-8 text-center text-sm text-muted-foreground">
-                No technical specifications available.
+              <div className="lg:col-span-1">
+                <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg h-full flex flex-col">
+                  <CardHeader className="py-4 flex-none items-center justify-center border-b border-border/40">
+                    <CardTitle className="text-sm font-semibold text-foreground/70">Model image</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 flex-1 flex flex-col">
+                    <div className="aspect-square bg-muted/20 rounded-lg flex items-center justify-center border border-border/20 mb-6 max-h-62.5">
+                      <Box className="w-12 h-12 text-muted-foreground/30" />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
+                        <span className="text-sm text-muted-foreground">Asset model</span>
+                        <span className="text-sm font-medium text-foreground">{asset.model || "—"}</span>
+                      </div>
+                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
+                        <span className="text-sm text-muted-foreground">Serial number</span>
+                        <span className="text-sm font-medium text-foreground">{asset.serial_number || "—"}</span>
+                      </div>
+                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
+                        <span className="text-sm text-muted-foreground">Management type</span>
+                        <span className="text-sm font-medium text-foreground capitalize">{asset.management_type || "—"}</span>
+                      </div>
+                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
+                        <span className="text-sm text-muted-foreground">Quantity</span>
+                        <span className="text-sm font-semibold text-foreground">{asset.quantity ?? "—"}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-            )}
+            </div>
           </TabsContent>
           <TabsContent
             value="docs"

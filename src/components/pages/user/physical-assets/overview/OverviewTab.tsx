@@ -97,8 +97,8 @@ export default function OverviewTab({ asset }: Readonly<{ asset: IPhysicalAssetD
         </Card>
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <div className="xl:col-span-2 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Management Info */}
               <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg">
@@ -122,7 +122,7 @@ export default function OverviewTab({ asset }: Readonly<{ asset: IPhysicalAssetD
                     const userHolders = holders.filter(h => h.type === "user");
                     const customerHolders = holders.filter(h => h.type === "customer");
                     return (
-                      <div className="flex flex-col gap-3 pt-1 border-t border-border/30 pt-4">
+                      <div className="flex flex-col gap-3 border-t border-border/30 pt-4">
                         {userHolders.length > 0 && (
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -281,39 +281,8 @@ export default function OverviewTab({ asset }: Readonly<{ asset: IPhysicalAssetD
             </Card>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="xl:col-span-1">
-            <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg h-full flex flex-col">
-              <CardHeader className="py-4 flex-none items-center justify-center border-b border-border/40">
-                <CardTitle className="text-sm font-semibold text-foreground/70">Model image</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="aspect-square bg-muted/20 rounded-lg flex items-center justify-center border border-border/20 mb-6 max-h-62.5">
-                  <Box className="w-12 h-12 text-muted-foreground/30" />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                    <span className="text-sm text-muted-foreground">Asset model</span>
-                    <span className="text-sm font-medium text-foreground">{asset.model || "—"}</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                    <span className="text-sm text-muted-foreground">Serial number</span>
-                    <span className="text-sm font-medium text-foreground">{asset.serial_number || "—"}</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                    <span className="text-sm text-muted-foreground">Management type</span>
-                    <span className="text-sm font-medium text-foreground capitalize">{asset.management_type || "—"}</span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                    <span className="text-sm text-muted-foreground">Quantity</span>
-                    <span className="text-sm font-semibold text-foreground">{asset.quantity ?? "—"}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
-      </div>
 
       <Dialog open={!!previewUrl} onOpenChange={(open) => !open && setPreviewUrl(null)}>
         <DialogContent className="max-w-4xl w-[90vw] h-[85vh] p-1 bg-transparent border-none shadow-none flex items-center justify-center">
