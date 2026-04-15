@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useGet } from "@/hooks/useGet";
 import { RentalReturnDocument } from "@/types/task";
+import { useRouter } from "next/navigation";
 import {
     Search,
     Filter,
@@ -47,6 +48,7 @@ import { IStatus } from "@/types/status";
 import { endpoints } from "@/config/endpoints";
 
 export default function RentalReturnTable() {
+    const router = useRouter();
     const [skip, setSkip] = useState(0);
     const [limit] = useState(20);
 
@@ -116,7 +118,7 @@ export default function RentalReturnTable() {
                 {/* Filters Group */}
                 <div className="flex flex-wrap items-center gap-2">
                     <Select value={statusCode} onValueChange={setStatusCode}>
-                        <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+                        <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
                             <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                                 <Filter
                                     size={16}
@@ -212,7 +214,8 @@ export default function RentalReturnTable() {
                                 return (
                                     <TableRow
                                         key={rentalReturn.id}
-                                        className="group hover:bg-primary/3 transition-colors relative"
+                                        className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                                        onClick={() => router.push(`/rentals/returns/${rentalReturn.id}`)}
                                     >
                                         <TableCell className="px-4 py-1.5">
                                             <div className="flex flex-col">
