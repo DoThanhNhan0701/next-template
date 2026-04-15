@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux";
 import { closeRental } from "@/redux/slices/rental";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IRentalSummary } from "@/types/rental";
 import { IOrgUnit } from "@/types/org";
@@ -29,7 +29,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import RentalReturnModal from "./RentalReturnModal";
 import {
   Pagination,
   PaginationContent,
@@ -52,14 +51,13 @@ import {
   TableEmptyRow,
 } from "@/components/common/TableStateDisplay";
 import RentalFormModal from "./RentalFormModal";
-import { useMutation } from "@/hooks/useMutation";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
 
 export default function RentalsTable() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isOpen: rentalReduxOpen } = useSelector((state: RootState) => state.rental);
+  const { isOpen: rentalReduxOpen } = useSelector(
+    (state: RootState) => state.rental,
+  );
 
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
@@ -108,24 +106,6 @@ export default function RentalsTable() {
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = rentals.length === limit;
-
-  const { mutate: mutateReturn, pending: returnPending } = useMutation();
-  const [returnRentalId, setReturnRentalId] = useState<number | null>(null);
-
-  const handleReturnAction = async () => {
-    if (!returnRentalId) return;
-    const { response: res, error } = await mutateReturn({
-      url: dynamicEndpoints.RENTAL_RETURN(returnRentalId),
-      method: "post",
-    });
-    if (error) {
-      getApiErrorMessage(error);
-    } else {
-      getApiSuccessMessage(res);
-      reFetch();
-      setReturnRentalId(null);
-    }
-  };
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-4 gap-4">
@@ -348,7 +328,6 @@ export default function RentalsTable() {
         </Table>
       </div>
 
-
       {rentals.length > 0 || skip > 0 ? (
         <Pagination className="flex w-full justify-end mt-1">
           <PaginationContent>
@@ -388,18 +367,13 @@ export default function RentalsTable() {
       {isModalOpen && (
         <RentalFormModal
           isOpen={isModalOpen}
-          onClose={() => { setIsCreating(false); dispatch(closeRental()); }}
+          onClose={() => {
+            setIsCreating(false);
+            dispatch(closeRental());
+          }}
           onSuccess={() => reFetch()}
         />
       )}
-
-      {/* Return Confirmation Modal */}
-      <RentalReturnModal
-        isOpen={returnRentalId !== null}
-        onClose={() => setReturnRentalId(null)}
-        onConfirm={handleReturnAction}
-        pending={returnPending}
-      />
     </div>
   );
 }
