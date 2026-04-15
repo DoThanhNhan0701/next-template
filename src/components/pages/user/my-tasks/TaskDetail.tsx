@@ -40,6 +40,7 @@ import {
   isStockAdjustmentDocument,
   isRecoveryDocument,
   isRentalReturnDocument,
+  isTransferDocument,
   getDocumentTitle,
 } from "@/types/task";
 import { endpoints } from "@/config/endpoints";
@@ -319,11 +320,78 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
+    } else if (isTransferDocument(detail)) {
+      // Transfer specific fields
+      const transferTypeLabel =
+        detail.transfer_type === "holder"
+          ? "Holder"
+          : detail.transfer_type === "location"
+            ? "Location"
+            : "Unit";
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-cyan-500/10 text-cyan-500",
+        label: "Transfer type",
+        value: transferTypeLabel,
+        badge: {
+          label: transferTypeLabel,
+          variant: "secondary",
+        },
+      });
+
+      fields.push({
+        icon: User,
+        iconColor: "bg-orange-500/10 text-orange-500",
+        label: "From",
+        value: detail.from_name,
+      });
+
+      fields.push({
+        icon: User,
+        iconColor: "bg-green-500/10 text-green-500",
+        label: "To",
+        value: detail.to_name,
+      });
+
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Transfer date",
+        value: new Date(detail.transfer_date).toLocaleDateString(),
+      });
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-purple-500/10 text-purple-500",
+        label: "Total assets",
+        value: detail.total_assets,
+      });
+
+      if (detail.external_link) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-cyan-500/10 text-cyan-500",
+          label: "External link",
+          value: (
+            <a
+              href={detail.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              View link
+            </a>
+          ),
+        });
+      }
     }
 
-    // Reason (common field for Allocation and Stock)
+    // Reason (common field for Allocation, Stock, and Transfer)
     if (
-      (isAllocationDocument(detail) || isStockAdjustmentDocument(detail)) &&
+      (isAllocationDocument(detail) ||
+        isStockAdjustmentDocument(detail) ||
+        isTransferDocument(detail)) &&
       detail.reason
     ) {
       fields.push({
@@ -419,6 +487,24 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           asset_code: item.asset.asset_code,
           quantity: item.quantity,
           condition: item.condition,
+        })),
+      };
+    } else if (isTransferDocument(detail) && detail.details.length > 0) {
+      detailItems = {
+        title: "Transferred asset list",
+        icon: Package,
+        columns: [
+          { key: "asset_name", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "from_location_name", label: "From Location" },
+          { key: "quantity", label: "Quantity", align: "center" as const },
+        ],
+        rows: detail.details.map((item) => ({
+          id: item.id,
+          asset_name: item.asset_name,
+          asset_code: item.asset_code,
+          from_location_name: item.from_location_name,
+          quantity: item.quantity,
         })),
       };
     }

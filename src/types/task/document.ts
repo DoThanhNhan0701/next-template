@@ -2,6 +2,7 @@ import { AllocationDocument } from "./allocation";
 import { StockAdjustmentDocument } from "./stock-adjustment";
 import { RecoveryDocument } from "./recovery";
 import { RentalReturnDocument } from "./rental-return";
+import { TransferDocument } from "./transfer";
 
 // ============================================
 // UNIFIED DOCUMENT DETAIL TYPE
@@ -9,13 +10,14 @@ import { RentalReturnDocument } from "./rental-return";
 
 /**
  * Union type for all document types
- * Add more document types here as needed (e.g., Transfer, Maintenance, etc.)
+ * Add more document types here as needed (e.g., Maintenance, Liquidation, etc.)
  */
 export type DocumentDetail =
     | AllocationDocument
     | StockAdjustmentDocument
     | RecoveryDocument
-    | RentalReturnDocument;
+    | RentalReturnDocument
+    | TransferDocument;
 
 // ============================================
 // TYPE GUARDS
@@ -68,6 +70,20 @@ export const isRentalReturnDocument = (
     doc: DocumentDetail,
 ): doc is RentalReturnDocument => {
     return "return_date" in doc && "rental" in doc && "to_location" in doc;
+};
+
+/**
+ * Type guard to check if document is a Transfer
+ */
+export const isTransferDocument = (
+    doc: DocumentDetail,
+): doc is TransferDocument => {
+    return (
+        "transfer_type" in doc &&
+        "transfer_date" in doc &&
+        "from_name" in doc &&
+        "to_name" in doc
+    );
 };
 
 // ============================================
