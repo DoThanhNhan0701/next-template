@@ -20,7 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -33,10 +33,12 @@ import {
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getApiErrorMessage } from "@/utils/api-error";
 import {
-  DetailItem,
   ApprovalHistory,
   DocumentDetail,
   ITask,
+  isAllocationDocument,
+  isStockAdjustmentDocument,
+  getDocumentTitle,
 } from "@/types/task";
 import { endpoints } from "@/config/endpoints";
 
@@ -92,7 +94,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     pending: detailPending,
     reFetch: reFetchDetail,
   } = useGet<DocumentDetail>({
-    url: dynamicEndpoints.ALL_LOCATION_DETAIL(Number(id)),
+    url: dynamicEndpoints.DOCUMENT_DETAIL(documentType, Number(id)),
   });
 
   const {
@@ -115,6 +117,162 @@ export default function TaskDetail({ id }: TaskDetailProps) {
   const activeTask = (myTasksResponse || []).find(
     (t) => t.document_id === Number(id) && t.document_type === documentType,
   );
+
+  // Format data động dựa trên API response
+  const formattedData = useMemo(() => {
+    if (!detail) return null;
+
+    // Document fields
+    const fields: Array<{
+      icon: React.ComponentType<{ className?: string }>;
+      iconColor: string;
+      label: string;
+      value: React.ReactNode;
+      badge?: { label: string; variant?: string };
+    }> = [];
+
+    // Check document type and format accordingly
+    if (isAllocationDocument(detail)) {
+      // Allocation specific fields
+      fields.push({
+        icon: User,
+        iconColor: "bg-primary/10 text-primary",
+        label: "Allocated to",
+        value: detail.allocated_to_name,
+        badge: {
+          label: detail.allocated_to_type === "user" ? "User" : "Unit",
+          variant: "secondary",
+        },
+      });
+
+      if (detail.unit?.name) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-blue-500/10 text-blue-500",
+          label: "Unit",
+          value: detail.unit.name,
+        });
+      }
+
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Allocation date",
+        value: new Date(detail.allocation_date).toLocaleDateString(),
+      });
+
+      if (detail.issuer_name) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-indigo-500/10 text-indigo-500",
+          label: "Issuer",
+          value: detail.issuer_name,
+        });
+      }
+    } else if (isStockAdjustmentDocument(detail)) {
+      // Stock adjustment specific fields
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Adjustment date",
+        value: new Date(detail.adjustment_date).toLocaleDateString(),
+      });
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-purple-500/10 text-purple-500",
+        label: "Total quantity",
+        value: detail.total_quantity,
+      });
+
+      if (detail.external_link) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-cyan-500/10 text-cyan-500",
+          label: "External link",
+          value: (
+            <a
+              href={detail.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              View link
+            </a>
+          ),
+        });
+      }
+    }
+
+    // Reason (common field)
+    if (detail.reason) {
+      fields.push({
+        icon: FileText,
+        iconColor: "bg-orange-500/10 text-orange-500",
+        label: "Reason",
+        value: (
+          <span className="text-sm font-medium text-muted-foreground italic">
+            {detail.reason}
+          </span>
+        ),
+      });
+    }
+
+    // Detail items (table data)
+    let detailItems = null;
+
+    if (isAllocationDocument(detail) && detail.details.length > 0) {
+      detailItems = {
+        title: "Allocated asset list",
+        icon: Package,
+        columns: [
+          { key: "asset", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "location", label: "Location" },
+          { key: "quantity", label: "Quantity", align: "center" as const },
+        ],
+        rows: detail.details.map((item) => ({
+          id: item.id,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.location.name || "-",
+          quantity: item.quantity,
+        })),
+      };
+    } else if (
+      isStockAdjustmentDocument(detail) &&
+      detail.details.length > 0
+    ) {
+      detailItems = {
+        title: "Stock adjustment list",
+        icon: Package,
+        columns: [
+          { key: "asset", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "location", label: "Location" },
+          { key: "type", label: "Type", align: "center" as const },
+          { key: "quantity", label: "Quantity", align: "center" as const },
+        ],
+        rows: detail.details.map((item) => ({
+          id: item.id,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.location.name || "-",
+          type: item.adjustment_type,
+          quantity: item.quantity_diff,
+        })),
+      };
+    }
+
+    // Document title
+    const documentTitle = getDocumentTitle(documentType);
+
+    return {
+      fields,
+      detailItems,
+      documentTitle,
+    };
+  }, [detail, documentType]);
 
   const handleAction = async (status: "APPROVED" | "REJECTED") => {
     if (!activeTask) return;
@@ -239,7 +397,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
             <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 py-3 px-4">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-sm font-semibold text-primary">
-                  Allocation information
+                  {formattedData?.documentTitle}
                 </CardTitle>
               </div>
               <Badge
@@ -255,116 +413,111 @@ export default function TaskDetail({ id }: TaskDetailProps) {
               </div>
 
               <div className="grid grid-cols-1 gap-x-6 gap-y-4">
-                {/* Holder */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <User className="w-5 h-5" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                      Allocated to
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="secondary"
-                        className="text-sm h-5 bg-muted text-muted-foreground px-2 font-bold"
+                {formattedData?.fields.map((field, index) => {
+                  const IconComponent = field.icon;
+                  return (
+                    <div key={index} className="flex items-start gap-4">
+                      <div
+                        className={`w-10 h-10 rounded-full ${field.iconColor} flex items-center justify-center shrink-0`}
                       >
-                        {detail.allocated_to_type === "user" ? "User" : "Unit"}
-                      </Badge>
-                      <span className="text-sm font-bold text-foreground">
-                        {detail.allocated_to_name}
-                      </span>
-                    </div>
-                    <span className="text-sm font-bold text-primary">
-                      {detail.unit?.name}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Date */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
-                    <History className="w-5 h-5" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                      Allocation date
-                    </span>
-                    <span className="text-sm font-bold text-foreground">
-                      {new Date(detail.allocation_date).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Reason */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                      Reason
-                    </span>
-                    <span className="text-sm font-medium text-muted-foreground italic">
-                      {detail.reason || "No reason provided"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <h3 className="text-sm font-semibold text-primary border-b pb-1 w-full flex items-center gap-2">
-                    <Package className="w-4 h-4" />
-                    Allocated asset list
-                  </h3>
-                </div>
-                <div className="rounded-xl border border-border/50 overflow-hidden shadow-sm">
-                  <Table>
-                    <TableHeader className="bg-sidebar-accent text-foreground border-b border-border/50">
-                      <TableRow className="hover:bg-transparent border-border/50">
-                        <TableHead className="text-sm font-bold text-muted-foreground h-11 px-4">
-                          Asset
-                        </TableHead>
-                        <TableHead className="text-sm font-bold text-muted-foreground h-11">
-                          Asset Code
-                        </TableHead>
-                        <TableHead className="text-sm font-bold text-muted-foreground h-11">
-                          Location
-                        </TableHead>
-                        <TableHead className="text-sm font-bold text-muted-foreground text-center h-11">
-                          Quantity
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {detail.details?.map((item: DetailItem) => (
-                        <TableRow
-                          key={item.id}
-                          className="border-border/50 hover:bg-muted/50 transition-colors"
-                        >
-                          <TableCell className="text-sm font-semibold text-foreground py-2 px-4">
-                            {item.asset?.name}
-                          </TableCell>
-                          <TableCell className="py-2">
-                            <code className="text-sm font-mono font-bold bg-muted text-muted-foreground px-2 py-0.5 rounded">
-                              {item.asset?.asset_code}
-                            </code>
-                          </TableCell>
-                          <TableCell className="py-2 text-sm text-muted-foreground font-medium">
-                            {item.location?.name || "-"}
-                          </TableCell>
-                          <TableCell className="text-center py-2">
-                            <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
-                              {item.quantity}
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-bold text-muted-foreground tracking-wider">
+                          {field.label}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {field.badge && (
+                            <Badge
+                              variant="secondary"
+                              className="text-sm h-5 bg-muted text-muted-foreground px-2 font-bold"
+                            >
+                              {field.badge.label}
+                            </Badge>
+                          )}
+                          {typeof field.value === "string" ||
+                            typeof field.value === "number" ? (
+                            <span className="text-sm font-bold text-foreground">
+                              {field.value}
                             </span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                          ) : (
+                            field.value
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+
+              {formattedData?.detailItems && (
+                <div className="mt-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <h3 className="text-sm font-semibold text-primary border-b pb-1 w-full flex items-center gap-2">
+                      <formattedData.detailItems.icon className="w-4 h-4" />
+                      {formattedData.detailItems.title}
+                    </h3>
+                  </div>
+                  <div className="rounded-xl border border-border/50 overflow-hidden shadow-sm">
+                    <Table>
+                      <TableHeader className="bg-sidebar-accent text-foreground border-b border-border/50">
+                        <TableRow className="hover:bg-transparent border-border/50">
+                          {formattedData.detailItems.columns.map((col) => (
+                            <TableHead
+                              key={col.key}
+                              className={`text-sm font-bold text-muted-foreground h-11 ${col.key === formattedData.detailItems!.columns[0].key ? "px-4" : ""} ${col.align === "center" ? "text-center" : ""}`}
+                            >
+                              {col.label}
+                            </TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {formattedData.detailItems.rows.map((row) => (
+                          <TableRow
+                            key={row.id}
+                            className="border-border/50 hover:bg-muted/50 transition-colors"
+                          >
+                            {formattedData.detailItems!.columns.map(
+                              (col, colIndex) => (
+                                <TableCell
+                                  key={col.key}
+                                  className={`py-2 ${colIndex === 0 ? "px-4" : ""} ${col.align === "center" ? "text-center" : ""}`}
+                                >
+                                  {col.key === "asset_code" ? (
+                                    <code className="text-sm font-mono font-bold bg-muted text-muted-foreground px-2 py-0.5 rounded">
+                                      {row[col.key as keyof typeof row]}
+                                    </code>
+                                  ) : col.key === "quantity" ? (
+                                    <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
+                                      {row[col.key as keyof typeof row]}
+                                    </span>
+                                  ) : col.key === "type" ? (
+                                    <Badge
+                                      variant="outline"
+                                      className={`${row[col.key as keyof typeof row] === "INCREASE" ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/20" : "bg-red-500/15 text-red-600 border-red-500/20"} px-2 py-0.5 font-bold text-xs`}
+                                    >
+                                      {row[col.key as keyof typeof row]}
+                                    </Badge>
+                                  ) : col.key === "asset" ? (
+                                    <span className="text-sm font-semibold text-foreground">
+                                      {row[col.key as keyof typeof row]}
+                                    </span>
+                                  ) : (
+                                    <span className="text-sm text-muted-foreground font-medium">
+                                      {row[col.key as keyof typeof row]}
+                                    </span>
+                                  )}
+                                </TableCell>
+                              ),
+                            )}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -390,7 +543,10 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                     </span>
                   </div>
                   <span className="text-sm font-semibold text-foreground">
-                    {detail.creator?.full_name || detail.issuer_name}
+                    {detail.creator?.full_name ||
+                      (isAllocationDocument(detail)
+                        ? detail.issuer_name
+                        : "N/A")}
                   </span>
                 </div>
 

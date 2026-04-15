@@ -70,4 +70,15 @@ export const dynamicEndpoints = {
   PHYSICAL_ASSET_LIFECYCLE: (id: number) => `/api/v1/physical-assets/${id}/lifecycle/`,
   WORKFLOW_HISTORY: (type: string, id: number) => `/api/v1/workflows/history/${type}/${id}`,
   STOCK_ADJUSTMENT_DETAIL: (id: number) => `/api/v1/stock-adjustments/${id}`,
+  DOCUMENT_DETAIL: (documentType: string, id: number) => {
+    const map: Record<string, string> = {
+      allocation: `/api/v1/allocations/${id}`,
+      stock_in: `/api/v1/stock-adjustments/${id}`,
+      stock_out: `/api/v1/stock-adjustments/${id}`,
+      transfer: `/api/v1/transfers/${id}`,
+      recovery: `/api/v1/recoveries/${id}`,
+      rental: `/api/v1/rentals/${id}`,
+    };
+    return map[documentType] ?? `/api/v1/allocations/${id}`;
+  },
 };
