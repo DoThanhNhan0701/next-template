@@ -9,6 +9,7 @@ export * from "./common";
 export * from "./allocation";
 export * from "./stock-adjustment";
 export * from "./recovery";
+export * from "./rental-return";
 
 // Workflow types
 export * from "./workflow";

@@ -39,6 +39,7 @@ import {
   isAllocationDocument,
   isStockAdjustmentDocument,
   isRecoveryDocument,
+  isRentalReturnDocument,
   getDocumentTitle,
 } from "@/types/task";
 import { endpoints } from "@/config/endpoints";
@@ -269,6 +270,55 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
+    } else if (isRentalReturnDocument(detail)) {
+      // Rental Return specific fields
+      fields.push({
+        icon: User,
+        iconColor: "bg-violet-500/10 text-violet-500",
+        label: "Customer",
+        value: detail.rental.customer.name,
+        badge: {
+          label:
+            detail.rental.customer.customer_type === "individual"
+              ? "Individual"
+              : "Organization",
+          variant: "secondary",
+        },
+      });
+
+      fields.push({
+        icon: FileText,
+        iconColor: "bg-blue-500/10 text-blue-500",
+        label: "Contract number",
+        value: detail.rental.contract_number,
+      });
+
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Return date",
+        value: new Date(detail.return_date).toLocaleDateString(),
+      });
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-indigo-500/10 text-indigo-500",
+        label: "Return to location",
+        value: detail.to_location.name,
+      });
+
+      if (detail.notes) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-amber-500/10 text-amber-500",
+          label: "Notes",
+          value: (
+            <span className="text-sm font-medium text-muted-foreground italic">
+              {detail.notes}
+            </span>
+          ),
+        });
+      }
     }
 
     // Reason (common field for Allocation and Stock)
@@ -348,6 +398,27 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           asset_code: item.asset.asset_code,
           location: item.location.name || "-",
           quantity: item.quantity,
+        })),
+      };
+    } else if (
+      isRentalReturnDocument(detail) &&
+      detail.details.length > 0
+    ) {
+      detailItems = {
+        title: "Returned asset list",
+        icon: Package,
+        columns: [
+          { key: "asset", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "condition", label: "Condition", align: "center" as const },
+        ],
+        rows: detail.details.map((item) => ({
+          id: item.id,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          quantity: item.quantity,
+          condition: item.condition,
         })),
       };
     }
@@ -587,6 +658,13 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                                     >
                                       {row[col.key as keyof typeof row]}
                                     </Badge>
+                                  ) : col.key === "condition" ? (
+                                    <Badge
+                                      variant="outline"
+                                      className="bg-blue-500/15 text-blue-600 border-blue-500/20 px-2 py-0.5 font-bold text-xs"
+                                    >
+                                      {row[col.key as keyof typeof row]}
+                                    </Badge>
                                   ) : col.key === "asset" ? (
                                     <span className="text-sm font-semibold text-foreground">
                                       {row[col.key as keyof typeof row]}
@@ -649,14 +727,18 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                   </div>
                   <div className="flex flex-col items-end">
                     <span className="text-sm font-semibold text-foreground">
-                      {new Date(detail.created_at).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      })}
+                      {detail.created_at
+                        ? new Date(detail.created_at).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })
+                        : "N/A"}
                     </span>
                     <span className="text-sm font-medium text-muted-foreground">
-                      {new Date(detail.created_at).toLocaleDateString()}
+                      {detail.created_at
+                        ? new Date(detail.created_at).toLocaleDateString()
+                        : "N/A"}
                     </span>
                   </div>
                 </div>

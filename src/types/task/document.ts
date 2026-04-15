@@ -1,6 +1,7 @@
 import { AllocationDocument } from "./allocation";
 import { StockAdjustmentDocument } from "./stock-adjustment";
 import { RecoveryDocument } from "./recovery";
+import { RentalReturnDocument } from "./rental-return";
 
 // ============================================
 // UNIFIED DOCUMENT DETAIL TYPE
@@ -13,7 +14,8 @@ import { RecoveryDocument } from "./recovery";
 export type DocumentDetail =
     | AllocationDocument
     | StockAdjustmentDocument
-    | RecoveryDocument;
+    | RecoveryDocument
+    | RentalReturnDocument;
 
 // ============================================
 // TYPE GUARDS
@@ -59,6 +61,15 @@ export const isRecoveryDocument = (
     );
 };
 
+/**
+ * Type guard to check if document is a Rental Return
+ */
+export const isRentalReturnDocument = (
+    doc: DocumentDetail,
+): doc is RentalReturnDocument => {
+    return "return_date" in doc && "rental" in doc && "to_location" in doc;
+};
+
 // ============================================
 // DOCUMENT TYPE ENUM
 // ============================================
@@ -68,6 +79,7 @@ export enum DocumentType {
     STOCK_IN = "stock_in",
     STOCK_OUT = "stock_out",
     RECOVERY = "recovery",
+    RENTAL_RETURN = "rental_return",
     TRANSFER = "transfer",
     MAINTENANCE = "maintenance",
     LIQUIDATION = "liquidation",
@@ -82,6 +94,7 @@ export const getDocumentTitle = (documentType: string): string => {
         stock_in: "Stock in information",
         stock_out: "Stock out information",
         recovery: "Recovery information",
+        rental_return: "Rental return information",
         transfer: "Transfer information",
         maintenance: "Maintenance information",
         liquidation: "Liquidation information",
