@@ -30,7 +30,7 @@ import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
 import { IStaff } from "@/types/staff";
 
 const TransferSchema = z.object({
-  source_type: z.enum(["holder", "unit", "location"]),
+  source_type: z.enum(["holder", "location"]),
   source_id: z.number().min(1, "Source is required"),
   target_unit_id: z.number().optional().nullable(),
   target_id: z.number().optional().nullable(),
@@ -53,7 +53,7 @@ const TransferSchema = z.object({
 export type TransferFormValues = z.infer<typeof TransferSchema>;
 
 interface ITransferPayload {
-  transfer_type: "holder" | "unit" | "location";
+  transfer_type: "holder" | "location";
   transfer_date: string;
   reason: string;
   external_link: string;
@@ -161,12 +161,7 @@ export default function TransferFormModal({
   });
 
   // Construct filtered asset URL
-  const filterParam =
-    watchedType === "holder"
-      ? "staff_id"
-      : watchedType === "unit"
-        ? "unit_id"
-        : "location_id";
+  const filterParam = watchedType === "holder" ? "staff_id" : "location_id";
   const assetUrl = sourceId
     ? `${endpoints.PHYSICAL_ASSETS}?${filterParam}=${sourceId}&limit=100`
     : "";
@@ -223,7 +218,7 @@ export default function TransferFormModal({
         const from_location_id =
           transfer_type === "location"
             ? data.source_id
-            : assetObj?.location_id ?? 0;
+            : (assetObj?.location_id ?? 0);
         return {
           asset_id: item.asset_id,
           quantity: item.quantity,
@@ -237,9 +232,6 @@ export default function TransferFormModal({
     if (transfer_type === "holder") {
       payload.to_staff_id = data.target_id || 0;
       payload.from_staff_id = data.source_id;
-    } else if (transfer_type === "unit") {
-      payload.to_unit_id = data.target_id || 0;
-      payload.from_unit_id = data.source_id;
     } else if (transfer_type === "location") {
       payload.to_location_id = data.target_id || 0;
     }
@@ -309,7 +301,6 @@ export default function TransferFormModal({
             <SourceInfoSection
               form={form}
               staffs={staffs}
-              orgs={orgs}
               locations={locations}
               watchedType={watchedType}
             />
@@ -321,6 +312,7 @@ export default function TransferFormModal({
                 append={append}
                 remove={remove}
                 assets={assets}
+                watchedType={watchedType}
                 assetsPending={assetsPending}
                 reFetchAssets={reFetchAssets}
               />

@@ -14,6 +14,7 @@ import {
   Calendar,
   ArrowRight,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -46,6 +47,7 @@ import {
 import TransferFormModal from "./TransferFormModal";
 
 export default function TransfersTable() {
+  const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -212,7 +214,8 @@ export default function TransfersTable() {
               transfers.map((item) => (
                 <TableRow
                   key={item.id}
-                  className="group hover:bg-primary/3 transition-colors relative"
+                  className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                  onClick={() => router.push(`/transfers/${item.id}`)}
                 >
                   <TableCell className="px-4 py-3 relative overflow-hidden">
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/40 opacity-80" />

@@ -29,6 +29,7 @@ interface AssetSelectionSectionProps {
   assets: IPhysicalAsset[];
   assetsPending: boolean;
   reFetchAssets: () => void;
+  watchedType: "holder" | "location";
 }
 
 export function AssetSelectionSection({
@@ -39,6 +40,7 @@ export function AssetSelectionSection({
   assets,
   assetsPending,
   reFetchAssets,
+  watchedType,
 }: AssetSelectionSectionProps) {
   return (
     <div className="space-y-4 pt-4 border-t">
@@ -105,12 +107,18 @@ export function AssetSelectionSection({
                       value={
                         detailField.value ? detailField.value.toString() : ""
                       }
-                      disabled={assetsPending}
+                      disabled={
+                        assetsPending || (!assetsPending && assets.length === 0)
+                      }
                     >
                       <SelectTrigger className="h-9 text-xs w-full">
                         <SelectValue
                           placeholder={
-                            assetsPending ? "Loading..." : "Select asset"
+                            assetsPending
+                              ? "Loading..."
+                              : assets.length === 0
+                                ? "No assets available"
+                                : "Select asset"
                           }
                         />
                       </SelectTrigger>
@@ -120,14 +128,12 @@ export function AssetSelectionSection({
                             key={`asset-${a.id}`}
                             value={a.id.toString()}
                           >
-                            {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
+                            {a.name} ({a.asset_code}) Quantity:{" "}
+                            {watchedType === "holder"
+                              ? (a?.holding_qty ?? 0)
+                              : (a?.current_stock ?? 0)}
                           </SelectItem>
                         ))}
-                        {assets.length === 0 && !assetsPending && (
-                          <div className="p-2 text-xs text-muted-foreground italic">
-                            No assets found at this source
-                          </div>
-                        )}
                       </SelectContent>
                     </Select>
                     <FieldError errors={[fieldState.error]} />

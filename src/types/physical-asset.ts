@@ -40,6 +40,7 @@ export interface IPhysicalAsset {
   in_stock_quantity?: number;
   allocated_quantity?: number;
   rented_quantity?: number;
+  current_stock?: number
 }
 
 export interface IPhysicalAssetCreate {

@@ -17,22 +17,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TransferFormValues } from "../TransferFormModal";
-import { IOrgUnit } from "@/types/org";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
 
 interface SourceInfoSectionProps {
   form: UseFormReturn<TransferFormValues>;
   staffs: IStaff[];
-  orgs: IOrgUnit[];
   locations: ILocation[];
-  watchedType: "holder" | "unit" | "location";
+  watchedType: "holder" | "location";
 }
 
 export function SourceInfoSection({
   form,
   staffs,
-  orgs,
   locations,
   watchedType,
 }: SourceInfoSectionProps) {
@@ -90,9 +87,7 @@ export function SourceInfoSection({
               <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
                 {watchedType === "holder"
                   ? "Select Source Personnel *"
-                  : watchedType === "unit"
-                    ? "Select Source Unit *"
-                    : "Select Source Location *"}
+                  : "Select Source Location *"}
               </FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
@@ -109,15 +104,6 @@ export function SourceInfoSection({
                         value={s.id.toString()}
                       >
                         {s.full_name} - ({s.staff_code})
-                      </SelectItem>
-                    ))}
-                  {watchedType === "unit" &&
-                    orgs.map((o) => (
-                      <SelectItem
-                        key={`source-unit-${o.id}`}
-                        value={o.id.toString()}
-                      >
-                        {o.name}
                       </SelectItem>
                     ))}
                   {watchedType === "location" &&
