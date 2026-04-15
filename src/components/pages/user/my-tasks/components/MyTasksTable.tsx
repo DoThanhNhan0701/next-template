@@ -72,9 +72,12 @@ export default function MyTasksTable() {
 
   if (appliedQ) queryParams.append("q", appliedQ);
 
-  const { response, pending, reFetch } = useGet<ITask[]>({
-    url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}`,
-  });
+  const { response, pending, reFetch } = useGet<ITask[]>(
+    {
+      url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}`,
+    },
+    { staleTime: 0 },
+  );
 
   const { mutate, pending: mutatePending } = useMutation();
 

@@ -96,26 +96,35 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     response: detail,
     pending: detailPending,
     reFetch: reFetchDetail,
-  } = useGet<DocumentDetail>({
-    url: dynamicEndpoints.DOCUMENT_DETAIL(documentType, Number(id)),
-  });
+  } = useGet<DocumentDetail>(
+    {
+      url: dynamicEndpoints.DOCUMENT_DETAIL(documentType, Number(id)),
+    },
+    { staleTime: 0 },
+  );
 
   const {
     response: historyList,
     pending: historyPending,
     reFetch: reFetchHistory,
-  } = useGet<ApprovalHistory[]>({
-    url: dynamicEndpoints.WORKFLOW_HISTORY(documentType, Number(id)),
-  });
+  } = useGet<ApprovalHistory[]>(
+    {
+      url: dynamicEndpoints.WORKFLOW_HISTORY(documentType, Number(id)),
+    },
+    { staleTime: 0 },
+  );
 
   const { response: myTasksResponse, reFetch: reFetchMyTasks } = useGet<
     ITask[]
-  >({
-    url: `${endpoints.WORKFLOW_TASKS}me`,
-    config: {
-      params: { status: status },
+  >(
+    {
+      url: `${endpoints.WORKFLOW_TASKS}me`,
+      config: {
+        params: { status: status },
+      },
     },
-  });
+    { staleTime: 0 },
+  );
 
   const activeTask = (myTasksResponse || []).find(
     (t) => t.document_id === Number(id) && t.document_type === documentType,
@@ -427,10 +436,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           quantity: item.quantity,
         })),
       };
-    } else if (
-      isStockAdjustmentDocument(detail) &&
-      detail.details.length > 0
-    ) {
+    } else if (isStockAdjustmentDocument(detail) && detail.details.length > 0) {
       detailItems = {
         title: "Stock adjustment list",
         icon: Package,
@@ -468,10 +474,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           quantity: item.quantity,
         })),
       };
-    } else if (
-      isRentalReturnDocument(detail) &&
-      detail.details.length > 0
-    ) {
+    } else if (isRentalReturnDocument(detail) && detail.details.length > 0) {
       detailItems = {
         title: "Returned asset list",
         icon: Package,
@@ -681,7 +684,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                             </Badge>
                           )}
                           {typeof field.value === "string" ||
-                            typeof field.value === "number" ? (
+                          typeof field.value === "number" ? (
                             <span className="text-sm font-bold text-foreground">
                               {field.value}
                             </span>
@@ -815,10 +818,10 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                     <span className="text-sm font-semibold text-foreground">
                       {detail.created_at
                         ? new Date(detail.created_at).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        })
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          })
                         : "N/A"}
                     </span>
                     <span className="text-sm font-medium text-muted-foreground">

@@ -9,6 +9,7 @@ export const useGet = <T = unknown>(
     disabled?: boolean;
     queryKey?: QueryKey;
     deps?: DependencyList;
+    staleTime?: number;
   },
 ) => {
   const queryClient = useQueryClient();
@@ -21,6 +22,7 @@ export const useGet = <T = unknown>(
       return res.data;
     },
     enabled: !options?.disabled,
+    staleTime: options?.staleTime,
   });
 
   const pending = isFetching;
