@@ -1,5 +1,6 @@
 import { AllocationDocument } from "./allocation";
 import { StockAdjustmentDocument } from "./stock-adjustment";
+import { RecoveryDocument } from "./recovery";
 
 // ============================================
 // UNIFIED DOCUMENT DETAIL TYPE
@@ -9,7 +10,10 @@ import { StockAdjustmentDocument } from "./stock-adjustment";
  * Union type for all document types
  * Add more document types here as needed (e.g., Transfer, Maintenance, etc.)
  */
-export type DocumentDetail = AllocationDocument | StockAdjustmentDocument;
+export type DocumentDetail =
+    | AllocationDocument
+    | StockAdjustmentDocument
+    | RecoveryDocument;
 
 // ============================================
 // TYPE GUARDS
@@ -37,7 +41,21 @@ export const isStockAdjustmentDocument = (
     return (
         "adjustment_date" in doc &&
         "total_quantity" in doc &&
-        !("allocated_to_name" in doc)
+        !("allocated_to_name" in doc) &&
+        !("recovery_date" in doc)
+    );
+};
+
+/**
+ * Type guard to check if document is a Recovery
+ */
+export const isRecoveryDocument = (
+    doc: DocumentDetail,
+): doc is RecoveryDocument => {
+    return (
+        "recovery_date" in doc &&
+        "recovered_from_type" in doc &&
+        "recovered_from_name" in doc
     );
 };
 
@@ -49,6 +67,7 @@ export enum DocumentType {
     ALLOCATION = "allocation",
     STOCK_IN = "stock_in",
     STOCK_OUT = "stock_out",
+    RECOVERY = "recovery",
     TRANSFER = "transfer",
     MAINTENANCE = "maintenance",
     LIQUIDATION = "liquidation",
@@ -62,6 +81,7 @@ export const getDocumentTitle = (documentType: string): string => {
         allocation: "Allocation information",
         stock_in: "Stock in information",
         stock_out: "Stock out information",
+        recovery: "Recovery information",
         transfer: "Transfer information",
         maintenance: "Maintenance information",
         liquidation: "Liquidation information",

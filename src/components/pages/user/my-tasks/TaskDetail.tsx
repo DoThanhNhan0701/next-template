@@ -38,6 +38,7 @@ import {
   ITask,
   isAllocationDocument,
   isStockAdjustmentDocument,
+  isRecoveryDocument,
   getDocumentTitle,
 } from "@/types/task";
 import { endpoints } from "@/config/endpoints";
@@ -202,10 +203,79 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
+    } else if (isRecoveryDocument(detail)) {
+      // Recovery specific fields
+      fields.push({
+        icon: User,
+        iconColor: "bg-rose-500/10 text-rose-500",
+        label: "Recovered from",
+        value: detail.recovered_from_name || detail.staff?.full_name || "N/A",
+        badge: {
+          label: detail.recovered_from_type === "user" ? "User" : "Unit",
+          variant: "secondary",
+        },
+      });
+
+      if (detail.unit?.name) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-blue-500/10 text-blue-500",
+          label: "Unit",
+          value: detail.unit.name,
+        });
+      }
+
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Recovery date",
+        value: new Date(detail.recovery_date).toLocaleDateString(),
+      });
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-purple-500/10 text-purple-500",
+        label: "Total quantity",
+        value: detail.total_quantity,
+      });
+
+      if (detail.notes) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-amber-500/10 text-amber-500",
+          label: "Notes",
+          value: (
+            <span className="text-sm font-medium text-muted-foreground italic">
+              {detail.notes}
+            </span>
+          ),
+        });
+      }
+
+      if (detail.external_link) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-cyan-500/10 text-cyan-500",
+          label: "External link",
+          value: (
+            <a
+              href={detail.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              View link
+            </a>
+          ),
+        });
+      }
     }
 
-    // Reason (common field)
-    if (detail.reason) {
+    // Reason (common field for Allocation and Stock)
+    if (
+      (isAllocationDocument(detail) || isStockAdjustmentDocument(detail)) &&
+      detail.reason
+    ) {
       fields.push({
         icon: FileText,
         iconColor: "bg-orange-500/10 text-orange-500",
@@ -251,7 +321,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "asset_code", label: "Asset Code" },
           { key: "location", label: "Location" },
           { key: "type", label: "Type", align: "center" as const },
-          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "quantity", label: "Quantity Diff", align: "center" as const },
         ],
         rows: detail.details.map((item) => ({
           id: item.id,
@@ -260,6 +330,24 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           location: item.location.name || "-",
           type: item.adjustment_type,
           quantity: item.quantity_diff,
+        })),
+      };
+    } else if (isRecoveryDocument(detail) && detail.details.length > 0) {
+      detailItems = {
+        title: "Recovered asset list",
+        icon: Package,
+        columns: [
+          { key: "asset", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "location", label: "Location" },
+          { key: "quantity", label: "Quantity", align: "center" as const },
+        ],
+        rows: detail.details.map((item) => ({
+          id: item.id,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.location.name || "-",
+          quantity: item.quantity,
         })),
       };
     }

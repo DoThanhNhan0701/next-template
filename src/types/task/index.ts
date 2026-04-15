@@ -8,6 +8,7 @@ export * from "./common";
 // Document types
 export * from "./allocation";
 export * from "./stock-adjustment";
+export * from "./recovery";
 
 // Workflow types
 export * from "./workflow";
