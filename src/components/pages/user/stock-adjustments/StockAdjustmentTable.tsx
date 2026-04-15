@@ -1,32 +1,38 @@
 "use client";
 
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { useGet } from "@/hooks/useGet";
-import { IStockAdjustment } from "@/types/stock-adjustment";
-import {
-  Search, X, RotateCcw, Calendar, ArrowUpCircle, ArrowDownCircle, PackageSearch,
-} from "lucide-react";
+import { TableEmptyRow, TableLoadingRows } from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
 import {
   Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious,
 } from "@/components/ui/pagination";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
-import StockAdjustmentModal from "./StockAdjustmentModal";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import { useGet } from "@/hooks/useGet";
 import { RootState } from "@/redux";
+import { endpoints } from "@/config/endpoints";
+import { IStockAdjustment } from "@/types/stock-adjustment";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Calendar,
+  PackageSearch,
+  RotateCcw,
+  Search, X,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import StockAdjustmentModal from "./StockAdjustmentModal";
 
 export default function StockAdjustmentTable({ defaultType }: { defaultType: "INCREASE" | "DECREASE" }) {
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [q, setQ] = useState("");
   const [isManualOpen, setIsManualOpen] = useState(false);
+  const router = useRouter();
 
   // Also open when Redux prefill is set (from Inventory page)
   const { isOpen: isReduxOpen } = useSelector((state: RootState) => state.stockAdjustment);
@@ -38,7 +44,7 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
 
   const { response, pending, reFetch } = useGet<{ items: IStockAdjustment[]; total: number }>({
-    url: `/api/v1/stock-adjustments?${queryParams.toString()}`,
+    url: `${endpoints.STOCK_ADJUSTMENTS}?${queryParams.toString()}`,
   });
 
   const items = response?.items || [];
@@ -128,7 +134,11 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
               />
             ) : (
               items.map((item) => (
-                <TableRow key={item.id} className="hover:bg-primary/3 transition-colors">
+                <TableRow
+                  key={item.id}
+                  className="hover:bg-primary/3 transition-colors cursor-pointer"
+                  onClick={() => router.push(`/stock-in-out/${item.id}`)}
+                >
                   <TableCell className="px-4 py-2">
                     <span className="font-mono text-xs bg-muted/50 px-1.5 py-0.5 rounded">
                       {item.record_number}

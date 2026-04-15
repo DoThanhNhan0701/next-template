@@ -34,25 +34,23 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     { title: "My Tasks", url: "/my-tasks", icon: ClipboardList },
     { title: "Assets", url: "/assets", icon: Laptop },
     { title: "Inventory", url: "/inventory", icon: Package },
+    { title: "Stock In/Out", url: "/stock-in-out", icon: PackageSearch },
     { title: "Rentals", url: "/rentals", icon: Key },
     { title: "Dispatch & Recovery", url: "/dispatch-recovery", icon: BarChart3 },
     { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
-    { title: "Stock In/Out", url: "/stock-in-out", icon: PackageSearch },
   ];
 
   return (
-    <>
-      <div className="h-screen flex flex-col overflow-hidden">
-        <Header user={user} items={sidebarItems} />
-        <div className="flex flex-1 overflow-hidden">
-          <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
-            <Sidebar items={sidebarItems} />
-            <section className="relative flex-1 p-2 overflow-auto">
-              {children}
-            </section>
-          </main>
-        </div>
+    <div className="h-screen flex flex-col overflow-hidden">
+      <Header user={user} items={sidebarItems} />
+      <div className="flex flex-1 overflow-hidden">
+        <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
+          <Sidebar items={sidebarItems} />
+          <section className="relative flex-1 p-2 overflow-auto">
+            {children}
+          </section>
+        </main>
       </div>
-    </>
+    </div>
   );
 }

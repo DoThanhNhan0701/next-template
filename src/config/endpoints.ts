@@ -43,6 +43,7 @@ export const endpoints = getEndPoint("api/v1", {
   TEMPLATE_ACTIVE: "workflows/templates/active/",
   TRANSFERS: "transfers/",
   WORKFLOW_TASKS: "workflows/tasks/",
+  STOCK_ADJUSTMENTS: "stock-adjustments",
 });
 
 export const dynamicEndpoints = {
@@ -68,4 +69,5 @@ export const dynamicEndpoints = {
   ALL_LOCATION_DETAIL: (id: number) => `/api/v1/allocations/${id}`,
   PHYSICAL_ASSET_LIFECYCLE: (id: number) => `/api/v1/physical-assets/${id}/lifecycle/`,
   WORKFLOW_HISTORY: (type: string, id: number) => `/api/v1/workflows/history/${type}/${id}`,
+  STOCK_ADJUSTMENT_DETAIL: (id: number) => `/api/v1/stock-adjustments/${id}`,
 };
