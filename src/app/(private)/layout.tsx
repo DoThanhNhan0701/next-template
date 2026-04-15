@@ -35,7 +35,11 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     { title: "Assets", url: "/assets", icon: Laptop },
     { title: "Inventory", url: "/inventory", icon: Package },
     { title: "Stock In & Out", url: "/stock-in-out", icon: PackageSearch },
-    { title: "Dispatch & Recovery", url: "/dispatch-recovery", icon: BarChart3 },
+    {
+      title: "Allocation & Recovery",
+      url: "/allocation-recovery",
+      icon: BarChart3,
+    },
     { title: "Rentals", url: "/rentals", icon: Key },
     { title: "Transfers", url: "/transfers", icon: ArrowRightLeft },
   ];

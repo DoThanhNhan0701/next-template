@@ -79,12 +79,12 @@ export default function RentalReturnModal({
 
   const { response: userRes } = useGet<IUser[]>(
     { url: endpoints.USERS },
-    { disabled: !isOpen }
+    { disabled: !isOpen },
   );
 
   const { response: activeTemplate } = useGet<ITemplate>(
     { url: `${endpoints.TEMPLATE_ACTIVE}rental_return` },
-    { disabled: !isOpen }
+    { disabled: !isOpen },
   );
 
   const { fields, replace } = useFieldArray({
@@ -111,13 +111,15 @@ export default function RentalReturnModal({
       form.reset({
         ...form.getValues(),
         items: initialItems,
-        to_location_id: rentalDetail.details[0]?.from_location_id?.toString() || "",
+        to_location_id:
+          rentalDetail.details[0]?.from_location_id?.toString() || "",
       });
     }
   }, [isOpen, rentalDetail, replace, form]);
 
   const onSubmit = (values: RentalReturnFormValues) => {
-    const workflow_assignments: Array<{ step_id: number; user_id: number }> = [];
+    const workflow_assignments: Array<{ step_id: number; user_id: number }> =
+      [];
     if (activeTemplate?.steps) {
       if (values.approver_step_1_id && activeTemplate.steps[0]) {
         workflow_assignments.push({
@@ -160,11 +162,9 @@ export default function RentalReturnModal({
             <Package className="w-5 h-5 text-primary" />
             Hoàn trả tài sản thuê
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs text-muted-foreground">
             Lập biên bản nhận lại tài sản từ khách hàng cho phiếu{" "}
-            <span className="font-semibold text-foreground">
-              {rentalDetail.record_number}
-            </span>
+            {rentalDetail.record_number}
           </DialogDescription>
         </DialogHeader>
 
@@ -189,7 +189,10 @@ export default function RentalReturnModal({
             <div className="space-y-4">
               {/* Return Date */}
               <div className="space-y-2">
-                <Label htmlFor="returnDate" className="text-xs font-semibold uppercase text-muted-foreground">
+                <Label
+                  htmlFor="returnDate"
+                  className="text-xs font-semibold uppercase text-muted-foreground"
+                >
                   Ngày trả thực tế
                 </Label>
                 <div className="relative">
@@ -205,7 +208,10 @@ export default function RentalReturnModal({
 
               {/* To Location */}
               <div className="space-y-2">
-                <Label htmlFor="toLocation" className="text-xs font-semibold uppercase text-muted-foreground">
+                <Label
+                  htmlFor="toLocation"
+                  className="text-xs font-semibold uppercase text-muted-foreground"
+                >
                   Kho nhận lại tài sản
                 </Label>
                 <Controller
@@ -227,14 +233,18 @@ export default function RentalReturnModal({
                   )}
                 />
                 <p className="text-xs text-muted-foreground italic">
-                  * Mặc định hệ thống sẽ trả về kho đã xuất ban đầu nếu không chọn kho khác.
+                  * Mặc định hệ thống sẽ trả về kho đã xuất ban đầu nếu không
+                  chọn kho khác.
                 </p>
               </div>
             </div>
 
             {/* General Notes */}
             <div className="space-y-2 flex flex-col">
-              <Label htmlFor="notes" className="text-xs font-semibold uppercase text-muted-foreground">
+              <Label
+                htmlFor="notes"
+                className="text-xs font-semibold uppercase text-muted-foreground"
+              >
                 Ghi chú chung
               </Label>
               <Textarea
@@ -257,7 +267,11 @@ export default function RentalReturnModal({
                   <tr>
                     <th className="px-3 py-2 text-left text-xs font-semibold">
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" defaultChecked />
+                        <input
+                          type="checkbox"
+                          className="rounded"
+                          defaultChecked
+                        />
                         Tên tài sản
                       </div>
                     </th>
@@ -277,7 +291,11 @@ export default function RentalReturnModal({
                     <tr key={field.id} className="hover:bg-muted/30">
                       <td className="px-3 py-2">
                         <div className="flex items-center gap-2">
-                          <input type="checkbox" className="rounded" defaultChecked />
+                          <input
+                            type="checkbox"
+                            className="rounded"
+                            defaultChecked
+                          />
                           <div>
                             <p className="font-medium">{field.asset_name}</p>
                             <code className="text-xs text-muted-foreground">
@@ -302,7 +320,9 @@ export default function RentalReturnModal({
                       </td>
                       <td className="px-3 py-2">
                         <Input
-                          {...form.register(`items.${index}.condition` as const)}
+                          {...form.register(
+                            `items.${index}.condition` as const,
+                          )}
                           placeholder="Bình thường"
                           className="h-8"
                         />
@@ -325,7 +345,8 @@ export default function RentalReturnModal({
               <div className="bg-muted/20 border rounded-md p-6 space-y-6">
                 <div className="grid grid-cols-2 gap-8">
                   {activeTemplate.steps.map((step, idx) => {
-                    const name = idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
+                    const name =
+                      idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
                     return (
                       <Controller
                         key={`rental-return-approver-${step.id}`}
@@ -340,7 +361,11 @@ export default function RentalReturnModal({
                               step={step}
                               allUsers={users}
                               value={field.value ? field.value.toString() : ""}
-                              onChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                              onChange={(val) =>
+                                field.onChange(
+                                  val === "none" ? null : Number(val),
+                                )
+                              }
                               triggerClassName="h-14 bg-white rounded-md border-muted-foreground/30 shadow-sm transition-all hover:border-primary/50 focus:ring-4 focus:ring-primary/5"
                             />
                             <FieldError errors={[fieldState.error]} />
