@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -95,31 +96,43 @@ interface SummarySectionProps {
   rejectedCount?: number;
 }
 
+const emptySubscribe = () => () => {};
+
 export function SummarySection({
   pendingCount = 0,
   approvedCount = 0,
   rejectedCount = 0,
 }: SummarySectionProps) {
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+
+  const displayPending = isClient ? pendingCount : 0;
+  const displayApproved = isClient ? approvedCount : 0;
+  const displayRejected = isClient ? rejectedCount : 0;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SummaryCard
           label="Pending"
-          value={pendingCount}
+          value={displayPending}
           description="Need priority processing"
           icon={Clock}
           color="orange"
         />
         <SummaryCard
           label="Completed"
-          value={approvedCount}
+          value={displayApproved}
           description="Good performance"
           icon={CheckCircle2}
           color="green"
         />
         <SummaryCard
           label="Rejected"
-          value={rejectedCount}
+          value={displayRejected}
           description="Review reason"
           icon={XCircle}
           color="red"

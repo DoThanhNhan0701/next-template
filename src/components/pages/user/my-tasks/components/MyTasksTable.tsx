@@ -8,6 +8,7 @@ import { updateCount } from "@/redux/slices/task";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ITask, TaskStatus } from "@/types/task";
+import { IAuditSession } from "@/types/audit";
 import {
   Search,
   Filter,
@@ -82,19 +83,58 @@ export default function MyTasksTable() {
     },
     { staleTime: 0 },
   );
+  
+  const { response: auditResponse, pending: auditPending } = useGet<IAuditSession[]>(
+    {
+      url: endpoints.AUDIT_MY_AUDITS,
+    },
+    {
+      staleTime: 0,
+    },
+  );
 
   const { mutate, pending: mutatePending } = useMutation();
 
   const tasks = response || [];
+
+  const filteredAudits = (auditResponse || []).filter(
+    (audit) => audit.status_obj.code === activeTab,
+  );
+
+  const mappedAudits: ITask[] = filteredAudits.map((audit) => ({
+    id: audit.id + 1000000, // Offset ID to avoid collisions with workflow tasks
+    instance_id: audit.id,
+    step_id: 0,
+    user_id: audit.assignee_id,
+    status: audit.status_obj.code as TaskStatus,
+    created_at: audit.created_at,
+    document_id: audit.id,
+    document_record_number: audit.title,
+    document_type: "audit",
+    requester_name: audit.assignee.full_name,
+    step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+    reason: "",
+  }));
+
+  const allTasks = [...tasks, ...mappedAudits].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = tasks.length === limit;
+  const isPending = pending || auditPending;
 
   // Sync current tab count to Redux
   useEffect(() => {
     if (response) {
-      dispatch(updateCount({ status: activeTab, count: response.length }));
+      dispatch(
+        updateCount({
+          status: activeTab,
+          count: response.length + (filteredAudits?.length || 0),
+        }),
+      );
     }
-  }, [response, activeTab, dispatch]);
+  }, [response, filteredAudits, activeTab, dispatch]);
 
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {
@@ -109,7 +149,10 @@ export default function MyTasksTable() {
     }
   };
 
-  const getProcessIcon = () => {
+  const getProcessIcon = (type?: string) => {
+    if (type === "audit") {
+      return <FileText size={14} className="text-blue-500" />;
+    }
     return <Check size={14} className="text-emerald-500" />;
   };
 
@@ -298,9 +341,9 @@ export default function MyTasksTable() {
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
+            {isPending ? (
               <TableLoadingRows colSpan={7} rows={6} />
-            ) : tasks.length === 0 ? (
+            ) : allTasks.length === 0 ? (
               <TableEmptyRow
                 colSpan={7}
                 icon={FileText}
@@ -308,16 +351,20 @@ export default function MyTasksTable() {
                 description="Everything is caught up! No tasks match your filters."
               />
             ) : (
-              tasks.map((task) => (
+              allTasks.map((task) => (
                 <TableRow
-                  key={task.id}
-                  onClick={() =>
-                    router.push(
-                      `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
-                    )
-                  }
-                  className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
-                >
+                   key={task.id}
+                   onClick={() => {
+                     if (task.document_type === "audit") {
+                       router.push(`/audit/sessions/${task.document_id}`);
+                       return;
+                     }
+                     router.push(
+                       `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
+                     );
+                   }}
+                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                 >
                   <TableCell className="px-4 py-2 relative overflow-hidden">
                     {/* Status Accent */}
                     <div
@@ -337,7 +384,7 @@ export default function MyTasksTable() {
                   <TableCell className="px-4 py-2">
                     <div className="flex items-center gap-2">
                       <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
-                        {getProcessIcon()}
+                        {getProcessIcon(task.document_type)}
                       </div>
                       <span className="text-xs font-bold text-foreground/80 capitalize">
                         {task.document_type}
@@ -428,7 +475,7 @@ export default function MyTasksTable() {
         </Table>
       </div>
 
-      {tasks.length > 0 || skip > 0 ? (
+      {allTasks.length > 0 || skip > 0 ? (
         <Pagination className="flex w-full justify-end mt-1">
           <PaginationContent>
             <PaginationItem>
@@ -436,10 +483,10 @@ export default function MyTasksTable() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
+                  if (skip > 0 && !isPending) setSkip(Math.max(0, skip - limit));
                 }}
                 className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
+                  skip === 0 || isPending ? "pointer-events-none opacity-50" : ""
                 }
               />
             </PaginationItem>
@@ -453,10 +500,10 @@ export default function MyTasksTable() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
+                  if (hasMore && !isPending) setSkip(skip + limit);
                 }}
                 className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
+                  !hasMore || isPending ? "pointer-events-none opacity-50" : ""
                 }
               />
             </PaginationItem>
