@@ -46,6 +46,8 @@ export const endpoints = getEndPoint("api/v1", {
   STOCK_ADJUSTMENTS: "stock-adjustments",
   AUDIT_MY_AUDITS: "audit/my-audits",
   AUDIT_SESSIONS: "audit/sessions",
+  AUDIT_BATCH_START: "audit/batch-start",
+  TREE: 'tree'
 });
 
 export const dynamicEndpoints = {

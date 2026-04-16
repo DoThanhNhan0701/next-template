@@ -1,0 +1,484 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useForm, Controller, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldGroup,
+} from "@/components/ui/field";
+import { endpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { useGet } from "@/hooks/useGet";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { ILocation } from "@/types/location";
+import { IOrgUnit } from "@/types/org";
+import { IUser } from "@/types/auth";
+import { Building2, MapPin, ChevronsUpDown, X } from "lucide-react";
+
+const AuditSchema = z
+  .object({
+    title: z.string().min(1, "Tiêu đề là bắt buộc"),
+    audit_type: z.enum(["unit", "location"]),
+    unit_ids: z.array(z.number()),
+    location_ids: z.array(z.number()),
+    assignee_id: z.number().nullable(),
+    due_date: z.string().min(1, "Hạn hoàn thành là bắt buộc"),
+  })
+  .refine(
+    (data) => {
+      if (data.audit_type === "unit") return data.unit_ids.length > 0;
+      if (data.audit_type === "location") return data.location_ids.length > 0;
+      return true;
+    },
+    {
+      message: "Vui lòng chọn ít nhất một mục",
+      path: ["unit_ids"],
+    },
+  );
+
+type AuditFormValues = z.infer<typeof AuditSchema>;
+
+interface AuditFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export default function AuditFormModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: AuditFormModalProps) {
+  const { mutate, pending } = useMutation();
+  const [unitDropdownOpen, setUnitDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const { response: locRes } = useGet<ILocation[]>(
+    { url: endpoints.LOCATIONS },
+    { disabled: !isOpen },
+  );
+  const { response: orgRes } = useGet<IOrgUnit[]>(
+    { url: endpoints.ORG_UNITS },
+    { disabled: !isOpen },
+  );
+  const { response: userRes } = useGet<IUser[]>(
+    { url: endpoints.USERS },
+    { disabled: !isOpen },
+  );
+
+  const locations = locRes || [];
+  const orgUnits = orgRes || [];
+  const users = userRes || [];
+
+  const form = useForm<AuditFormValues>({
+    resolver: zodResolver(AuditSchema),
+    defaultValues: {
+      title: "",
+      audit_type: "unit",
+      unit_ids: [],
+      location_ids: [],
+      assignee_id: null,
+      due_date: "",
+    },
+  });
+
+  const auditType = useWatch({ control: form.control, name: "audit_type" });
+  const selectedUnitIds =
+    useWatch({ control: form.control, name: "unit_ids" }) || [];
+  const selectedLocationIds =
+    useWatch({ control: form.control, name: "location_ids" }) || [];
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        title: "",
+        audit_type: "unit",
+        unit_ids: [],
+        location_ids: [],
+        assignee_id: null,
+        due_date: "",
+      });
+    }
+  }, [isOpen, form]);
+
+  const toggleUnit = (id: number) => {
+    const current = form.getValues("unit_ids");
+    form.setValue(
+      "unit_ids",
+      current.includes(id) ? current.filter((v) => v !== id) : [...current, id],
+    );
+  };
+
+  const toggleLocation = (id: number) => {
+    const current = form.getValues("location_ids");
+    form.setValue(
+      "location_ids",
+      current.includes(id) ? current.filter((v) => v !== id) : [...current, id],
+    );
+  };
+
+  const onSubmit = async (data: AuditFormValues) => {
+    const payload = {
+      title: data.title,
+      due_date: data.due_date ? `${data.due_date}T00:00:00.000Z` : null,
+      ...(data.audit_type === "unit"
+        ? { unit_ids: data.unit_ids }
+        : { location_ids: data.location_ids }),
+      ...(data.assignee_id ? { assignee_id: data.assignee_id } : {}),
+    };
+
+    await mutate(
+      {
+        url: endpoints.AUDIT_BATCH_START,
+        method: "post",
+        body: payload,
+      },
+      {
+        onSuccess: (res) => {
+          getApiSuccessMessage(res);
+          onSuccess();
+          onClose();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
+      },
+    );
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[560px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+          <DialogTitle>Tạo đợt kiểm kê</DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Tạo mới một đợt kiểm kê tài sản theo đơn vị hoặc kho.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col overflow-hidden"
+        >
+          <div className="p-6 space-y-6 overflow-y-auto">
+            {/* Section 1: Basic Info */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
+                1. Thông tin cơ bản
+              </h3>
+              <FieldGroup className="grid grid-cols-2 gap-6">
+                {/* Title */}
+                <Field className="col-span-2">
+                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+                    Tiêu đề *
+                  </FieldLabel>
+                  <Input
+                    placeholder="Nhập tiêu đề đợt kiểm kê..."
+                    {...form.register("title")}
+                    className="bg-background rounded-md border-muted-foreground/20 shadow-sm"
+                  />
+                  <FieldError errors={[form.formState.errors.title]} />
+                </Field>
+
+                {/* Audit Type tabs */}
+                <Controller
+                  name="audit_type"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Field className="col-span-2">
+                      <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+                        Loại kiểm kê *
+                      </FieldLabel>
+                      <Tabs
+                        value={field.value}
+                        onValueChange={(val) => {
+                          field.onChange(val);
+                          form.setValue("unit_ids", []);
+                          form.setValue("location_ids", []);
+                        }}
+                        className="w-full"
+                      >
+                        <TabsList className="grid w-full grid-cols-2 h-16 p-1 bg-muted/30">
+                          <TabsTrigger
+                            value="unit"
+                            className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm w-full"
+                          >
+                            <Building2 className="w-4 h-4" />
+                            <span className="text-xs font-medium">
+                              Theo đơn vị
+                            </span>
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="location"
+                            className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm w-full"
+                          >
+                            <MapPin className="w-4 h-4" />
+                            <span className="text-xs font-medium">
+                              Theo kho
+                            </span>
+                          </TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </Field>
+                  )}
+                />
+
+                {/* Multi-select: Unit */}
+                {auditType === "unit" && (
+                  <Field className="col-span-2">
+                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+                      Chọn đơn vị *
+                    </FieldLabel>
+                    <DropdownMenu
+                      open={unitDropdownOpen}
+                      onOpenChange={setUnitDropdownOpen}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="w-full px-3 py-2 flex items-center justify-between gap-2 bg-background rounded-md border border-muted-foreground/20 shadow-sm hover:border-primary/50 transition-colors text-left"
+                        >
+                          <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
+                            {selectedUnitIds.length === 0 ? (
+                              <span className="text-sm text-muted-foreground">
+                                Chọn đơn vị...
+                              </span>
+                            ) : (
+                              selectedUnitIds.map((id) => {
+                                const unit = orgUnits.find((u) => u.id === id);
+                                return (
+                                  <Badge
+                                    key={id}
+                                    variant="secondary"
+                                    className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap"
+                                  >
+                                    {unit?.name}
+                                    <span
+                                      role="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleUnit(id);
+                                      }}
+                                      className="ml-0.5 hover:text-destructive cursor-pointer"
+                                    >
+                                      <X size={10} />
+                                    </span>
+                                  </Badge>
+                                );
+                              })
+                            )}
+                          </div>
+                          <ChevronsUpDown
+                            size={16}
+                            className="text-muted-foreground shrink-0"
+                          />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto"
+                        align="start"
+                      >
+                        {orgUnits.map((u) => (
+                          <DropdownMenuCheckboxItem
+                            key={u.id}
+                            checked={selectedUnitIds.includes(u.id)}
+                            onCheckedChange={() => toggleUnit(u.id)}
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            {u.name}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <FieldError
+                      errors={[
+                        form.formState.errors.unit_ids as
+                          | { message?: string }
+                          | undefined,
+                      ]}
+                    />
+                  </Field>
+                )}
+
+                {/* Multi-select: Location */}
+                {auditType === "location" && (
+                  <Field className="col-span-2">
+                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+                      Chọn kho *
+                    </FieldLabel>
+                    <DropdownMenu
+                      open={locationDropdownOpen}
+                      onOpenChange={setLocationDropdownOpen}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="w-full px-3 py-2 flex items-center justify-between gap-2 bg-background rounded-md border border-muted-foreground/20 shadow-sm hover:border-primary/50 transition-colors text-left"
+                        >
+                          <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
+                            {selectedLocationIds.length === 0 ? (
+                              <span className="text-sm text-muted-foreground">
+                                Chọn kho...
+                              </span>
+                            ) : (
+                              selectedLocationIds.map((id) => {
+                                const loc = locations.find((l) => l.id === id);
+                                return (
+                                  <Badge
+                                    key={id}
+                                    variant="secondary"
+                                    className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap"
+                                  >
+                                    {loc?.name}
+                                    <span
+                                      role="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleLocation(id);
+                                      }}
+                                      className="ml-0.5 hover:text-destructive cursor-pointer"
+                                    >
+                                      <X size={10} />
+                                    </span>
+                                  </Badge>
+                                );
+                              })
+                            )}
+                          </div>
+                          <ChevronsUpDown
+                            size={16}
+                            className="text-muted-foreground shrink-0"
+                          />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto"
+                        align="start"
+                      >
+                        {locations.map((l) => (
+                          <DropdownMenuCheckboxItem
+                            key={l.id}
+                            checked={selectedLocationIds.includes(l.id)}
+                            onCheckedChange={() => toggleLocation(l.id)}
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            {l.name}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <FieldError
+                      errors={[
+                        form.formState.errors.location_ids as
+                          | { message?: string }
+                          | undefined,
+                      ]}
+                    />
+                  </Field>
+                )}
+              </FieldGroup>
+            </div>
+
+            {/* Section 2: Assignment & Deadline */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
+                2. Phân công & Thời hạn
+              </h3>
+              <FieldGroup className="grid grid-cols-2 gap-6">
+                {/* Assignee */}
+                <Controller
+                  name="assignee_id"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field>
+                      <div className="flex flex-col gap-1 mb-1">
+                        <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+                          Người thực hiện
+                        </FieldLabel>
+                        <span className="text-[10px] text-muted-foreground/60 leading-none">
+                          (Nếu để trống sẽ tự gắn cho leader)
+                        </span>
+                      </div>
+                      <Select
+                        value={field.value ? field.value.toString() : ""}
+                        onValueChange={(val) =>
+                          field.onChange(val ? Number(val) : null)
+                        }
+                      >
+                        <SelectTrigger className="bg-background rounded-md border-muted-foreground/20 shadow-sm">
+                          <SelectValue placeholder="Để trống — tự gắn..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users.map((u) => (
+                            <SelectItem key={u.id} value={u.id.toString()}>
+                              {u.full_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FieldError errors={[fieldState.error]} />
+                    </Field>
+                  )}
+                />
+
+                {/* Due Date */}
+                <Field>
+                  <div className="flex flex-col gap-1 mb-1">
+                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+                      Hạn hoàn thành *
+                    </FieldLabel>
+                    <div className="h-[10px]" /> {/* Spacer to align with Assignee label + hint */}
+                  </div>
+                  <Input
+                    type="date"
+                    {...form.register("due_date")}
+                    className="bg-background rounded-md border-muted-foreground/20 shadow-sm"
+                  />
+                  <FieldError errors={[form.formState.errors.due_date]} />
+                </Field>
+              </FieldGroup>
+            </div>
+          </div>
+
+          <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Hủy
+            </Button>
+            <Button type="submit" disabled={pending} className="min-w-[120px]">
+              {pending ? "Đang tạo..." : "Tạo đợt kiểm kê"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

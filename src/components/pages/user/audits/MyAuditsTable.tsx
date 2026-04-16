@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGet } from "@/hooks/useGet";
 import { endpoints } from "@/config/endpoints";
 import { IMyAuditsResponse } from "@/types/audit";
+import AuditFormModal from "./AuditFormModal";
 import {
     Search,
     X,
@@ -14,6 +15,7 @@ import {
     Building2,
     MapPin,
     Filter,
+    Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,6 +53,7 @@ export default function MyAuditsTable() {
     const [limit] = useState(20);
     const [searchInput, setSearchInput] = useState("");
     const [auditTypeInput, setAuditTypeInput] = useState<string>("all");
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     // Applied filters (only updated when Search button is clicked)
     const [q, setQ] = useState("");
@@ -63,16 +66,17 @@ export default function MyAuditsTable() {
 
     if (q) queryParams.append("q", q);
 
-    const { response, pending } = useGet<IMyAuditsResponse>({
+    const { response, pending, reFetch } = useGet<IMyAuditsResponse>({
         url: `${endpoints.AUDIT_MY_AUDITS}?${queryParams.toString()}`,
     });
 
     const allAudits = response || [];
 
     // Filter locally by audit_type
-    const audits = auditType === "all"
-        ? allAudits
-        : allAudits.filter(audit => audit.audit_type === auditType);
+    const audits =
+        auditType === "all"
+            ? allAudits
+            : allAudits.filter((audit) => audit.audit_type === auditType);
 
     const currentPage = Math.floor(skip / limit) + 1;
     const hasMore = allAudits.length === limit;
@@ -98,9 +102,7 @@ export default function MyAuditsTable() {
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                handleSearch();
-                            }
+                            if (e.key === "Enter") handleSearch();
                         }}
                     />
                     {searchInput && (
@@ -118,10 +120,7 @@ export default function MyAuditsTable() {
                     <Select value={auditTypeInput} onValueChange={setAuditTypeInput}>
                         <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
                             <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                                <Filter
-                                    size={16}
-                                    className="text-muted-foreground/70 shrink-0"
-                                />
+                                <Filter size={16} className="text-muted-foreground/70 shrink-0" />
                                 <div className="truncate flex-1 min-w-0">
                                     <SelectValue placeholder="All Types" />
                                 </div>
@@ -160,6 +159,14 @@ export default function MyAuditsTable() {
                     >
                         <RotateCcw size={16} className="text-muted-foreground/70" />
                     </Button>
+                    <Button
+                        variant="default"
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="h-10 px-4 transition-all active:scale-95 shrink-0"
+                    >
+                        <Plus size={16} className="mr-2" />
+                        Tạo mới
+                    </Button>
                 </div>
             </div>
 
@@ -167,21 +174,11 @@ export default function MyAuditsTable() {
                 <Table className="whitespace-nowrap">
                     <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
                         <TableRow>
-                            <TableHead className="font-semibold h-10 px-4">
-                                Title
-                            </TableHead>
-                            <TableHead className="font-semibold h-10 px-4">
-                                Type / Target
-                            </TableHead>
-                            <TableHead className="font-semibold h-10 px-4">
-                                Assignee
-                            </TableHead>
-                            <TableHead className="font-semibold h-10 px-4">
-                                Due Date
-                            </TableHead>
-                            <TableHead className="font-semibold h-10 px-4 text-center">
-                                Status
-                            </TableHead>
+                            <TableHead className="font-semibold h-10 px-4">Title</TableHead>
+                            <TableHead className="font-semibold h-10 px-4">Type / Target</TableHead>
+                            <TableHead className="font-semibold h-10 px-4">Assignee</TableHead>
+                            <TableHead className="font-semibold h-10 px-4">Due Date</TableHead>
+                            <TableHead className="font-semibold h-10 px-4 text-center">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody className="divide-y divide-(--surface-border-color)">
@@ -202,9 +199,7 @@ export default function MyAuditsTable() {
                                 >
                                     <TableCell className="px-4 py-1.5">
                                         <div className="flex flex-col">
-                                            <span className="font-semibold text-sm">
-                                                {audit.title}
-                                            </span>
+                                            <span className="font-semibold text-sm">{audit.title}</span>
                                             <span className="text-[10px] text-muted-foreground">
                                                 Created {new Date(audit.created_at).toLocaleDateString("vi-VN")}
                                             </span>
@@ -212,26 +207,19 @@ export default function MyAuditsTable() {
                                     </TableCell>
                                     <TableCell className="px-4 py-1.5">
                                         <div className="flex flex-col gap-1">
-                                            <Badge
-                                                variant="outline"
-                                                className="w-fit text-[10px] px-1.5 py-0"
-                                            >
+                                            <Badge variant="outline" className="w-fit text-[10px] px-1.5 py-0">
                                                 {audit.audit_type === "unit" ? "Organization" : "Location"}
                                             </Badge>
                                             <div className="flex items-center gap-1.5 text-sm">
                                                 {audit.audit_type === "unit" ? (
                                                     <>
                                                         <Building2 size={12} className="text-muted-foreground" />
-                                                        <span className="text-foreground/80">
-                                                            {audit.unit_obj?.name || "—"}
-                                                        </span>
+                                                        <span className="text-foreground/80">{audit.unit_obj?.name || "—"}</span>
                                                     </>
                                                 ) : (
                                                     <>
                                                         <MapPin size={12} className="text-muted-foreground" />
-                                                        <span className="text-foreground/80">
-                                                            {audit.location_obj?.name || "—"}
-                                                        </span>
+                                                        <span className="text-foreground/80">{audit.location_obj?.name || "—"}</span>
                                                     </>
                                                 )}
                                             </div>
@@ -247,13 +235,8 @@ export default function MyAuditsTable() {
                                     </TableCell>
                                     <TableCell className="px-4 py-1.5">
                                         <div className="flex items-center gap-1.5">
-                                            <Calendar
-                                                size={12}
-                                                className="text-muted-foreground/60"
-                                            />
-                                            <span className="text-xs">
-                                                {audit.due_date?.split("T")[0] || "N/A"}
-                                            </span>
+                                            <Calendar size={12} className="text-muted-foreground/60" />
+                                            <span className="text-xs">{audit.due_date?.split("T")[0] || "N/A"}</span>
                                         </div>
                                     </TableCell>
                                     <TableCell className="px-4 py-1.5 text-center">
@@ -286,9 +269,7 @@ export default function MyAuditsTable() {
                                     e.preventDefault();
                                     if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
                                 }}
-                                className={
-                                    skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                                }
+                                className={skip === 0 || pending ? "pointer-events-none opacity-50" : ""}
                             />
                         </PaginationItem>
                         <PaginationItem>
@@ -303,14 +284,18 @@ export default function MyAuditsTable() {
                                     e.preventDefault();
                                     if (hasMore && !pending) setSkip(skip + limit);
                                 }}
-                                className={
-                                    !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                                }
+                                className={!hasMore || pending ? "pointer-events-none opacity-50" : ""}
                             />
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
             ) : null}
+
+            <AuditFormModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSuccess={() => reFetch()}
+            />
         </div>
     );
 }

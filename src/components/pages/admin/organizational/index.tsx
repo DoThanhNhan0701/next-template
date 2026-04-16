@@ -30,7 +30,7 @@ export default function OrganizationalStructurePage() {
     reFetch,
     setResponse: setData,
   } = useGet<OrgUnit[]>({
-    url: endpoints.ORG_UNITS + "tree",
+    url: endpoints.ORG_UNITS + "/tree",
   });
 
   const [searchQuery, setSearchQuery] = useState("");
