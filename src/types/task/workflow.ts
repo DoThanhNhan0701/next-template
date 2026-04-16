@@ -7,7 +7,7 @@ export interface ITask {
     instance_id: number;
     step_id: number;
     user_id: number;
-    status: "PENDING" | "APPROVED" | "REJECTED";
+    status: "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED";
     created_at: string;
     document_id: number;
     document_record_number: string;

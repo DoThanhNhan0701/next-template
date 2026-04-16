@@ -66,11 +66,18 @@ export function CompleteAuditModal({
               </div>
             </div>
           </div>
-          
+
           <div className="mt-4 flex items-start gap-2.5 p-3 rounded-lg bg-orange-500/5 border border-orange-500/20 text-orange-200/90">
-            <AlertCircle size={14} className="mt-0.5 shrink-0 text-orange-500" />
+            <AlertCircle
+              size={14}
+              className="mt-0.5 shrink-0 text-orange-500"
+            />
             <p className="text-[10px] font-medium leading-relaxed">
-              Once completed, this audit will be moved to the <span className="text-emerald-400 font-bold uppercase tracking-wider">approved</span> status and can no longer be edited.
+              Once completed, this audit will be moved to the{" "}
+              <span className="text-emerald-400 font-bold uppercase tracking-wider">
+                complete
+              </span>{" "}
+              status and can no longer be edited.
             </p>
           </div>
         </div>
@@ -78,20 +85,14 @@ export function CompleteAuditModal({
         <DialogFooter className="p-5 pt-3 shrink-0 border-t bg-muted/10">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             onClick={onClose}
             disabled={isSubmitting}
-            className="h-9 px-4 font-bold uppercase text-[9px] tracking-widest hover:bg-muted/20"
           >
-            Go back
+            Cancel
           </Button>
-          <Button
-            type="button"
-            onClick={onConfirm}
-            disabled={isSubmitting}
-            className="h-9 bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase text-[9px] tracking-widest px-6 shadow-lg shadow-emerald-500/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            {isSubmitting ? "Completing..." : "Confirm & Complete"}
+          <Button type="button" onClick={onConfirm} disabled={isSubmitting}>
+            {isSubmitting ? "Completing..." : "Confirm"}
           </Button>
         </DialogFooter>
       </DialogContent>

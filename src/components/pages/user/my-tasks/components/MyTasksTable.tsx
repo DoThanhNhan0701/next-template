@@ -49,6 +49,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApproveTaskModal } from "./ApproveTaskModal";
 import { RejectTaskModal } from "./RejectTaskModal";
 import { CompleteAuditModal } from "./CompleteAuditModal";
+import { RejectAuditModal } from "./RejectAuditModal";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -67,7 +68,9 @@ export default function MyTasksTable() {
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [isAuditCompleteModalOpen, setIsAuditCompleteModalOpen] = useState(false);
+  const [isAuditCompleteModalOpen, setIsAuditCompleteModalOpen] =
+    useState(false);
+  const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
 
   const queryParams = new URLSearchParams();
   queryParams.append("skip", skip.toString());
@@ -85,8 +88,12 @@ export default function MyTasksTable() {
     },
     { staleTime: 0 },
   );
-  
-  const { response: auditResponse, pending: auditPending } = useGet<IAuditSession[]>(
+
+  const {
+    response: auditResponse,
+    pending: auditPending,
+    reFetch: auditReFetch,
+  } = useGet<IAuditSession[]>(
     {
       url: endpoints.AUDIT_MY_AUDITS,
     },
@@ -99,9 +106,15 @@ export default function MyTasksTable() {
 
   const tasks = response || [];
 
-  const filteredAudits = (auditResponse || []).filter(
-    (audit) => audit.status_obj.code === activeTab,
-  );
+  const filteredAudits = (auditResponse || []).filter((audit) => {
+    if (activeTab === "PENDING") {
+      return (
+        audit.status_obj.code === "PENDING" ||
+        audit.status_obj.code === "COMPLETED"
+      );
+    }
+    return audit.status_obj.code === activeTab;
+  });
 
   const mappedAudits: ITask[] = filteredAudits.map((audit) => ({
     id: audit.id + 1000000, // Offset ID to avoid collisions with workflow tasks
@@ -119,7 +132,8 @@ export default function MyTasksTable() {
   }));
 
   const allTasks = [...tasks, ...mappedAudits].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
   );
 
   const currentPage = Math.floor(skip / limit) + 1;
@@ -179,7 +193,6 @@ export default function MyTasksTable() {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditCompleteModalOpen(false);
-          reFetch();
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -215,7 +228,33 @@ export default function MyTasksTable() {
 
   const handleReject = (task: ITask) => {
     setSelectedTask(task);
-    setIsRejectModalOpen(true);
+    if (task.document_type === "audit") {
+      setIsAuditRejectModalOpen(true);
+    } else {
+      setIsRejectModalOpen(true);
+    }
+  };
+
+  const onAuditRejectConfirm = async (reason: string) => {
+    if (!selectedTask) return;
+
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_REJECT(selectedTask.instance_id, reason),
+        method: "post",
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          setIsAuditRejectModalOpen(false);
+          reFetch();
+          auditReFetch();
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
+      },
+    );
   };
 
   const onRejectConfirm = async (comment: string) => {
@@ -380,18 +419,18 @@ export default function MyTasksTable() {
             ) : (
               allTasks.map((task) => (
                 <TableRow
-                   key={task.id}
-                   onClick={() => {
-                     if (task.document_type === "audit") {
-                       router.push(`/audit/sessions/${task.document_id}`);
-                       return;
-                     }
-                     router.push(
-                       `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
-                     );
-                   }}
-                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
-                 >
+                  key={task.id}
+                  onClick={() => {
+                    // if (task.document_type === "audit") {
+                    //   router.push(`/audit/sessions/${task.document_id}`);
+                    //   return;
+                    // }
+                    router.push(
+                      `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
+                    );
+                  }}
+                  className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                >
                   <TableCell className="px-4 py-2 relative overflow-hidden">
                     {/* Status Accent */}
                     <div
@@ -465,7 +504,7 @@ export default function MyTasksTable() {
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {task.status === "PENDING" && (
+                      {["PENDING", "COMPLETED"].includes(task.status) && (
                         <>
                           <Button
                             variant="ghost"
@@ -479,7 +518,8 @@ export default function MyTasksTable() {
                           >
                             <Check size={16} />
                           </Button>
-                          {task.document_type !== "audit" && (
+                          {(task.document_type !== "audit" ||
+                            task.status === "COMPLETED") && (
                             <Button
                               variant="ghost"
                               size="icon"
@@ -512,10 +552,13 @@ export default function MyTasksTable() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (skip > 0 && !isPending) setSkip(Math.max(0, skip - limit));
+                  if (skip > 0 && !isPending)
+                    setSkip(Math.max(0, skip - limit));
                 }}
                 className={
-                  skip === 0 || isPending ? "pointer-events-none opacity-50" : ""
+                  skip === 0 || isPending
+                    ? "pointer-events-none opacity-50"
+                    : ""
                 }
               />
             </PaginationItem>
@@ -561,6 +604,14 @@ export default function MyTasksTable() {
         isOpen={isAuditCompleteModalOpen}
         onClose={() => setIsAuditCompleteModalOpen(false)}
         onConfirm={onAuditCompleteConfirm}
+        isSubmitting={mutatePending}
+      />
+
+      <RejectAuditModal
+        task={selectedTask}
+        isOpen={isAuditRejectModalOpen}
+        onClose={() => setIsAuditRejectModalOpen(false)}
+        onConfirm={onAuditRejectConfirm}
         isSubmitting={mutatePending}
       />
     </div>
