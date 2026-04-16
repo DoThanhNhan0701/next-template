@@ -70,6 +70,7 @@ export const dynamicEndpoints = {
   TRANSFER_DETAIL: (id: number) => `/api/v1/transfers/${id}`,
   TRANSFER_ATTACHMENTS: (id: number) => `/api/v1/transfers/${id}/attachments`,
   WORKFLOW_TASK_COMPLETE: (id: number) => `/api/v1/workflows/tasks/${id}/complete`,
+  AUDIT_COMPLETE: (id: number) => `/api/v1/audit/${id}/complete`,
   ALL_LOCATION_DETAIL: (id: number) => `/api/v1/allocations/${id}`,
   PHYSICAL_ASSET_LIFECYCLE: (id: number) => `/api/v1/physical-assets/${id}/lifecycle/`,
   WORKFLOW_HISTORY: (type: string, id: number) => `/api/v1/workflows/history/${type}/${id}`,

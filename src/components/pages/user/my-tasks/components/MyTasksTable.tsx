@@ -48,6 +48,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApproveTaskModal } from "./ApproveTaskModal";
 import { RejectTaskModal } from "./RejectTaskModal";
+import { CompleteAuditModal } from "./CompleteAuditModal";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -66,6 +67,7 @@ export default function MyTasksTable() {
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [isAuditCompleteModalOpen, setIsAuditCompleteModalOpen] = useState(false);
 
   const queryParams = new URLSearchParams();
   queryParams.append("skip", skip.toString());
@@ -158,7 +160,32 @@ export default function MyTasksTable() {
 
   const handleApprove = (task: ITask) => {
     setSelectedTask(task);
-    setIsApproveModalOpen(true);
+    if (task.document_type === "audit") {
+      setIsAuditCompleteModalOpen(true);
+    } else {
+      setIsApproveModalOpen(true);
+    }
+  };
+
+  const onAuditCompleteConfirm = async () => {
+    if (!selectedTask) return;
+
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_COMPLETE(selectedTask.instance_id),
+        method: "post",
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          setIsAuditCompleteModalOpen(false);
+          reFetch();
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
+      },
+    );
   };
 
   const onApproveConfirm = async (comment: string) => {
@@ -452,18 +479,20 @@ export default function MyTasksTable() {
                           >
                             <Check size={16} />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleReject(task);
-                            }}
-                            className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
-                            title="Reject"
-                          >
-                            <CloseIcon size={16} />
-                          </Button>
+                          {task.document_type !== "audit" && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReject(task);
+                              }}
+                              className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
+                              title="Reject"
+                            >
+                              <CloseIcon size={16} />
+                            </Button>
+                          )}
                         </>
                       )}
                     </div>
@@ -524,6 +553,14 @@ export default function MyTasksTable() {
         isOpen={isRejectModalOpen}
         onClose={() => setIsRejectModalOpen(false)}
         onConfirm={onRejectConfirm}
+        isSubmitting={mutatePending}
+      />
+
+      <CompleteAuditModal
+        task={selectedTask}
+        isOpen={isAuditCompleteModalOpen}
+        onClose={() => setIsAuditCompleteModalOpen(false)}
+        onConfirm={onAuditCompleteConfirm}
         isSubmitting={mutatePending}
       />
     </div>
