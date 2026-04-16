@@ -71,6 +71,7 @@ export const dynamicEndpoints = {
   TRANSFER_ATTACHMENTS: (id: number) => `/api/v1/transfers/${id}/attachments`,
   WORKFLOW_TASK_COMPLETE: (id: number) => `/api/v1/workflows/tasks/${id}/complete`,
   AUDIT_COMPLETE: (id: number) => `/api/v1/audit/${id}/complete`,
+  AUDIT_APPROVE: (id: number) => `/api/v1/audit/${id}/approve`,
   AUDIT_REJECT: (id: number, reason: string) =>
     `/api/v1/audit/${id}/reject?reason=${encodeURIComponent(reason)}`,
   ALL_LOCATION_DETAIL: (id: number) => `/api/v1/allocations/${id}`,

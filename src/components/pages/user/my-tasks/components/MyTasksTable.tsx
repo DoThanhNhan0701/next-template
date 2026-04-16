@@ -50,6 +50,7 @@ import { ApproveTaskModal } from "./ApproveTaskModal";
 import { RejectTaskModal } from "./RejectTaskModal";
 import { CompleteAuditModal } from "./CompleteAuditModal";
 import { RejectAuditModal } from "./RejectAuditModal";
+import { ApproveAuditModal } from "./ApproveAuditModal";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -71,6 +72,7 @@ export default function MyTasksTable() {
   const [isAuditCompleteModalOpen, setIsAuditCompleteModalOpen] =
     useState(false);
   const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
+  const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
   const queryParams = new URLSearchParams();
   queryParams.append("skip", skip.toString());
@@ -83,9 +85,7 @@ export default function MyTasksTable() {
   if (appliedQ) queryParams.append("q", appliedQ);
 
   const { response, pending, reFetch } = useGet<ITask[]>(
-    {
-      url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}`,
-    },
+    { url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}` },
     { staleTime: 0 },
   );
 
@@ -94,12 +94,8 @@ export default function MyTasksTable() {
     pending: auditPending,
     reFetch: auditReFetch,
   } = useGet<IAuditSession[]>(
-    {
-      url: endpoints.AUDIT_MY_AUDITS,
-    },
-    {
-      staleTime: 0,
-    },
+    { url: endpoints.AUDIT_MY_AUDITS },
+    { staleTime: 0 },
   );
 
   const { mutate, pending: mutatePending } = useMutation();
@@ -175,10 +171,36 @@ export default function MyTasksTable() {
   const handleApprove = (task: ITask) => {
     setSelectedTask(task);
     if (task.document_type === "audit") {
-      setIsAuditCompleteModalOpen(true);
+      if (task.status === "COMPLETED") {
+        setIsAuditApproveModalOpen(true);
+      } else {
+        setIsAuditCompleteModalOpen(true);
+      }
     } else {
       setIsApproveModalOpen(true);
     }
+  };
+
+  const onAuditApproveConfirm = async (comment: string) => {
+    if (!selectedTask) return;
+
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_APPROVE(selectedTask.instance_id),
+        method: "post",
+        body: { comment },
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          setIsAuditApproveModalOpen(false);
+          auditReFetch();
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
+      },
+    );
   };
 
   const onAuditCompleteConfirm = async () => {
@@ -193,6 +215,7 @@ export default function MyTasksTable() {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditCompleteModalOpen(false);
+          auditReFetch();
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -247,7 +270,6 @@ export default function MyTasksTable() {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditRejectModalOpen(false);
-          reFetch();
           auditReFetch();
         },
         onError: (error) => {
@@ -612,6 +634,14 @@ export default function MyTasksTable() {
         isOpen={isAuditRejectModalOpen}
         onClose={() => setIsAuditRejectModalOpen(false)}
         onConfirm={onAuditRejectConfirm}
+        isSubmitting={mutatePending}
+      />
+
+      <ApproveAuditModal
+        task={selectedTask}
+        isOpen={isAuditApproveModalOpen}
+        onClose={() => setIsAuditApproveModalOpen(false)}
+        onConfirm={onAuditApproveConfirm}
         isSubmitting={mutatePending}
       />
     </div>
