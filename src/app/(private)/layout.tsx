@@ -50,7 +50,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
       url: "/allocation-recovery",
       icon: BarChart3,
     },
-    { title: t("stocktaking"), url: "/stocktaking", icon: ClipboardCheck },
+    { title: t("audits"), url: "/audits", icon: ClipboardCheck },
     { title: t("maintenance"), url: "/maintenance", icon: Wrench },
   ];
 
