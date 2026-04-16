@@ -443,10 +443,10 @@ export default function MyTasksTable() {
                 <TableRow
                   key={task.id}
                   onClick={() => {
-                    // if (task.document_type === "audit") {
-                    //   router.push(`/audit/sessions/${task.document_id}`);
-                    //   return;
-                    // }
+                    if (task.document_type === "audit") {
+                      router.push(`/audits/sessions/${task.document_id}`);
+                      return;
+                    }
                     router.push(
                       `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
                     );

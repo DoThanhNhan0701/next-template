@@ -1,6 +1,5 @@
-"use client";
-
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useGet } from "@/hooks/useGet";
 import { endpoints } from "@/config/endpoints";
 import { IMyAuditsResponse } from "@/types/audit";
@@ -49,6 +48,7 @@ import {
 } from "@/components/common/TableStateDisplay";
 
 export default function MyAuditsTable() {
+    const router = useRouter();
     const [skip, setSkip] = useState(0);
     const [limit] = useState(20);
     const [searchInput, setSearchInput] = useState("");
@@ -195,7 +195,8 @@ export default function MyAuditsTable() {
                             audits.map((audit) => (
                                 <TableRow
                                     key={audit.id}
-                                    className="group hover:bg-primary/3 transition-colors relative"
+                                    onClick={() => router.push(`/audits/sessions/${audit.id}`)}
+                                    className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                                 >
                                     <TableCell className="px-4 py-1.5">
                                         <div className="flex flex-col">

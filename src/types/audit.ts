@@ -31,6 +31,35 @@ export interface IAuditSession {
     location_obj: IAuditLocationObj | null;
 }
 
+export interface IAuditDetailItem {
+    id: number;
+    audit_session_id: number;
+    asset_id: number;
+    status_id: number;
+    notes: string | null;
+    proposed_action: string | null;
+    transfer_quantity: number | null;
+    target_unit_id: number | null;
+    target_staff_id: number | null;
+    target_holder_name: string | null;
+    target_location_id: number | null;
+    verified_at: string;
+    status_obj: IStatus;
+    asset: {
+        id: number;
+        asset_code: string;
+        name: string;
+        holder_name: string;
+        unit_id: number;
+        location_id: number | null;
+        status_obj: IStatus;
+        attachments: string[];
+    };
+    target_staff: IUser | null;
+    unit_quantity: number;
+}
+
 // API Response types
 export type IMyAuditsResponse = IAuditSession[];
 export type IAllAuditsResponse = IAuditSession[];
+export type IAuditDetailsResponse = IAuditDetailItem[];
