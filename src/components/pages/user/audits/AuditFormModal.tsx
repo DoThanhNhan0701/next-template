@@ -17,7 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -42,16 +41,23 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
 import { IUser } from "@/types/auth";
-import { Building2, MapPin, ChevronsUpDown, X } from "lucide-react";
+import {
+  Building2,
+  MapPin,
+  ChevronsUpDown,
+  X,
+  Search,
+  Check,
+} from "lucide-react";
 
 const AuditSchema = z
   .object({
-    title: z.string().min(1, "Tiêu đề là bắt buộc"),
+    title: z.string().min(1, "Title is required"),
     audit_type: z.enum(["unit", "location"]),
     unit_ids: z.array(z.number()),
     location_ids: z.array(z.number()),
     assignee_id: z.number().nullable(),
-    due_date: z.string().min(1, "Hạn hoàn thành là bắt buộc"),
+    due_date: z.string().min(1, "Due date is required"),
   })
   .refine(
     (data) => {
@@ -60,7 +66,7 @@ const AuditSchema = z
       return true;
     },
     {
-      message: "Vui lòng chọn ít nhất một mục",
+      message: "Please select at least one item",
       path: ["unit_ids"],
     },
   );
@@ -81,6 +87,8 @@ export default function AuditFormModal({
   const { mutate, pending } = useMutation();
   const [unitDropdownOpen, setUnitDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [unitSearch, setUnitSearch] = useState("");
+  const [locationSearch, setLocationSearch] = useState("");
 
   const { response: locRes } = useGet<ILocation[]>(
     { url: endpoints.LOCATIONS },
@@ -98,6 +106,13 @@ export default function AuditFormModal({
   const locations = locRes || [];
   const orgUnits = orgRes || [];
   const users = userRes || [];
+
+  const filteredUnits = orgUnits.filter((u) =>
+    u.name.toLowerCase().includes(unitSearch.toLowerCase()),
+  );
+  const filteredLocations = locations.filter((l) =>
+    l.name.toLowerCase().includes(locationSearch.toLowerCase()),
+  );
 
   const form = useForm<AuditFormValues>({
     resolver: zodResolver(AuditSchema),
@@ -179,9 +194,9 @@ export default function AuditFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[560px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 shrink-0 border-b">
-          <DialogTitle>Tạo đợt kiểm kê</DialogTitle>
+          <DialogTitle>Create audit batch</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Tạo mới một đợt kiểm kê tài sản theo đơn vị hoặc kho.
+            Create a new asset audit batch by unit or location.
           </DialogDescription>
         </DialogHeader>
 
@@ -189,34 +204,28 @@ export default function AuditFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col overflow-hidden"
         >
-          <div className="p-6 space-y-6 overflow-y-auto">
-            {/* Section 1: Basic Info */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
-                1. Thông tin cơ bản
-              </h3>
+          <div className="px-6 pb-6 space-y-6 overflow-y-auto">
+            <div className="flex flex-col gap-1">
               <FieldGroup className="grid grid-cols-2 gap-6">
-                {/* Title */}
-                <Field className="col-span-2">
-                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
-                    Tiêu đề *
+                <Field className="col-span-2 gap-1">
+                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                    Title *
                   </FieldLabel>
                   <Input
-                    placeholder="Nhập tiêu đề đợt kiểm kê..."
+                    placeholder="Enter audit batch title..."
                     {...form.register("title")}
                     className="bg-background rounded-md border-muted-foreground/20 shadow-sm"
                   />
                   <FieldError errors={[form.formState.errors.title]} />
                 </Field>
 
-                {/* Audit Type tabs */}
                 <Controller
                   name="audit_type"
                   control={form.control}
                   render={({ field }) => (
-                    <Field className="col-span-2">
-                      <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
-                        Loại kiểm kê *
+                    <Field className="col-span-2 gap-1">
+                      <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                        Audit type *
                       </FieldLabel>
                       <Tabs
                         value={field.value}
@@ -233,9 +242,7 @@ export default function AuditFormModal({
                             className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm w-full"
                           >
                             <Building2 className="w-4 h-4" />
-                            <span className="text-xs font-medium">
-                              Theo đơn vị
-                            </span>
+                            <span className="text-xs font-medium">By unit</span>
                           </TabsTrigger>
                           <TabsTrigger
                             value="location"
@@ -243,7 +250,7 @@ export default function AuditFormModal({
                           >
                             <MapPin className="w-4 h-4" />
                             <span className="text-xs font-medium">
-                              Theo kho
+                              By location
                             </span>
                           </TabsTrigger>
                         </TabsList>
@@ -254,9 +261,9 @@ export default function AuditFormModal({
 
                 {/* Multi-select: Unit */}
                 {auditType === "unit" && (
-                  <Field className="col-span-2">
-                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
-                      Chọn đơn vị *
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                      Select unit *
                     </FieldLabel>
                     <DropdownMenu
                       open={unitDropdownOpen}
@@ -270,7 +277,7 @@ export default function AuditFormModal({
                           <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
                             {selectedUnitIds.length === 0 ? (
                               <span className="text-sm text-muted-foreground">
-                                Chọn đơn vị...
+                                Select unit...
                               </span>
                             ) : (
                               selectedUnitIds.map((id) => {
@@ -304,19 +311,52 @@ export default function AuditFormModal({
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto"
+                        className="w-[--radix-popper-anchor-width] min-w-[--radix-popper-anchor-width] p-0"
                         align="start"
                       >
-                        {orgUnits.map((u) => (
-                          <DropdownMenuCheckboxItem
-                            key={u.id}
-                            checked={selectedUnitIds.includes(u.id)}
-                            onCheckedChange={() => toggleUnit(u.id)}
-                            onSelect={(e) => e.preventDefault()}
-                          >
-                            {u.name}
-                          </DropdownMenuCheckboxItem>
-                        ))}
+                        <div className="p-2 border-b bg-muted/20">
+                          <div className="relative">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              placeholder="Search unit..."
+                              value={unitSearch}
+                              onChange={(e) => setUnitSearch(e.target.value)}
+                              className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                          {filteredUnits.length === 0 ? (
+                            <div className="py-6 text-center text-xs text-muted-foreground">
+                              No unit found
+                            </div>
+                          ) : (
+                            filteredUnits.map((u) => (
+                              <div
+                                key={u.id}
+                                className={`
+                                  flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
+                                  hover:bg-accent hover:text-accent-foreground
+                                  ${selectedUnitIds.includes(u.id) ? "bg-accent/50" : ""}
+                                `}
+                                onClick={() => toggleUnit(u.id)}
+                              >
+                                <div className="p-1.5 rounded-md bg-primary/5 text-primary">
+                                  <Building2 size={14} />
+                                </div>
+                                <span className="flex-1 text-sm font-medium leading-none">
+                                  {u.name}
+                                </span>
+                                {selectedUnitIds.includes(u.id) && (
+                                  <Check
+                                    size={16}
+                                    className="text-primary animate-in zoom-in-50 duration-200"
+                                  />
+                                )}
+                              </div>
+                            ))
+                          )}
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <FieldError
@@ -331,9 +371,9 @@ export default function AuditFormModal({
 
                 {/* Multi-select: Location */}
                 {auditType === "location" && (
-                  <Field className="col-span-2">
-                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
-                      Chọn kho *
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                      Select location *
                     </FieldLabel>
                     <DropdownMenu
                       open={locationDropdownOpen}
@@ -347,7 +387,7 @@ export default function AuditFormModal({
                           <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
                             {selectedLocationIds.length === 0 ? (
                               <span className="text-sm text-muted-foreground">
-                                Chọn kho...
+                                Select location...
                               </span>
                             ) : (
                               selectedLocationIds.map((id) => {
@@ -381,19 +421,58 @@ export default function AuditFormModal({
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
-                        className="w-[--radix-dropdown-menu-trigger-width] max-h-60 overflow-y-auto"
+                        className="w-[--radix-popper-anchor-width] min-w-[--radix-popper-anchor-width] p-0"
                         align="start"
                       >
-                        {locations.map((l) => (
-                          <DropdownMenuCheckboxItem
-                            key={l.id}
-                            checked={selectedLocationIds.includes(l.id)}
-                            onCheckedChange={() => toggleLocation(l.id)}
-                            onSelect={(e) => e.preventDefault()}
-                          >
-                            {l.name}
-                          </DropdownMenuCheckboxItem>
-                        ))}
+                        <div className="p-2 border-b bg-muted/20">
+                          <div className="relative">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              placeholder="Search location..."
+                              value={locationSearch}
+                              onChange={(e) =>
+                                setLocationSearch(e.target.value)
+                              }
+                              className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                          {filteredLocations.length === 0 ? (
+                            <div className="py-6 text-center text-xs text-muted-foreground">
+                              No location found
+                            </div>
+                          ) : (
+                            filteredLocations.map((l) => (
+                              <div
+                                key={l.id}
+                                className={`
+                                  flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
+                                  hover:bg-accent hover:text-accent-foreground
+                                  ${
+                                    selectedLocationIds.includes(l.id)
+                                      ? "bg-accent/50"
+                                      : ""
+                                  }
+                                `}
+                                onClick={() => toggleLocation(l.id)}
+                              >
+                                <div className="p-1.5 rounded-md bg-primary/5 text-primary">
+                                  <MapPin size={14} />
+                                </div>
+                                <span className="flex-1 text-sm font-medium leading-none">
+                                  {l.name}
+                                </span>
+                                {selectedLocationIds.includes(l.id) && (
+                                  <Check
+                                    size={16}
+                                    className="text-primary animate-in zoom-in-50 duration-200"
+                                  />
+                                )}
+                              </div>
+                            ))
+                          )}
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <FieldError
@@ -409,23 +488,20 @@ export default function AuditFormModal({
             </div>
 
             {/* Section 2: Assignment & Deadline */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
-                2. Phân công & Thời hạn
-              </h3>
+            <div className="flex flex-col gap-1">
               <FieldGroup className="grid grid-cols-2 gap-6">
                 {/* Assignee */}
                 <Controller
                   name="assignee_id"
                   control={form.control}
                   render={({ field, fieldState }) => (
-                    <Field>
+                    <Field className="gap-1">
                       <div className="flex flex-col gap-1 mb-1">
-                        <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
-                          Người thực hiện
+                        <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                          Assignee
                         </FieldLabel>
                         <span className="text-[10px] text-muted-foreground/60 leading-none">
-                          (Nếu để trống sẽ tự gắn cho leader)
+                          (Leave empty to auto-assign to leader)
                         </span>
                       </div>
                       <Select
@@ -435,7 +511,7 @@ export default function AuditFormModal({
                         }
                       >
                         <SelectTrigger className="bg-background rounded-md border-muted-foreground/20 shadow-sm">
-                          <SelectValue placeholder="Để trống — tự gắn..." />
+                          <SelectValue placeholder="Leave empty — auto-assign..." />
                         </SelectTrigger>
                         <SelectContent>
                           {users.map((u) => (
@@ -451,12 +527,13 @@ export default function AuditFormModal({
                 />
 
                 {/* Due Date */}
-                <Field>
+                <Field className="gap-1">
                   <div className="flex flex-col gap-1 mb-1">
-                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
-                      Hạn hoàn thành *
+                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                      Due date *
                     </FieldLabel>
-                    <div className="h-[10px]" /> {/* Spacer to align with Assignee label + hint */}
+                    <div className="h-[10px]" />{" "}
+                    {/* Spacer to align with Assignee label + hint */}
                   </div>
                   <Input
                     type="date"
@@ -471,10 +548,10 @@ export default function AuditFormModal({
 
           <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
             <Button type="button" variant="outline" onClick={onClose}>
-              Hủy
+              Cancel
             </Button>
             <Button type="submit" disabled={pending} className="min-w-[120px]">
-              {pending ? "Đang tạo..." : "Tạo đợt kiểm kê"}
+              {pending ? "Creating..." : "Create audit batch"}
             </Button>
           </div>
         </form>
