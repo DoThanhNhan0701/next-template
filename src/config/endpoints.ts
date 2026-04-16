@@ -44,6 +44,8 @@ export const endpoints = getEndPoint("api/v1", {
   TRANSFERS: "transfers/",
   WORKFLOW_TASKS: "workflows/tasks/",
   STOCK_ADJUSTMENTS: "stock-adjustments",
+  AUDIT_MY_AUDITS: "audit/my-audits",
+  AUDIT_SESSIONS: "audit/sessions",
 });
 
 export const dynamicEndpoints = {
