@@ -29,6 +29,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? ""}
                 className="bg-white"
                 placeholder="e.g. BT20240001"
               />
@@ -46,6 +47,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? ""}
                 className="bg-white"
                 placeholder="e.g. TKT-10293"
               />
@@ -79,6 +81,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? ""}
                 className="bg-white"
                 placeholder="Who handed over the asset?"
               />
@@ -98,6 +101,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
             </FieldLabel>
             <Textarea
               {...field}
+              value={field.value ?? ""}
               className="min-h-[100px] bg-white"
               placeholder="Why is this asset being maintained?"
             />

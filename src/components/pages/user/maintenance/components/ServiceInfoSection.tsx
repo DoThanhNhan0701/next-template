@@ -28,6 +28,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? ""}
                 className="bg-white"
                 placeholder="e.g. Dell Warranty Center"
               />
@@ -66,6 +67,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? ""}
                 className="bg-white"
                 placeholder="Who received the asset?"
               />
@@ -104,6 +106,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? 0}
                 type="number"
                 className="bg-white"
                 onChange={(e) => field.onChange(Number(e.target.value))}
@@ -122,6 +125,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
               </FieldLabel>
               <Input
                 {...field}
+                value={field.value ?? 0}
                 type="number"
                 className="bg-white"
                 onChange={(e) => field.onChange(Number(e.target.value))}

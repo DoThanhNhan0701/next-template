@@ -155,16 +155,38 @@ export default function MaintenanceFormModal({
         // Handle edit mapping
       } else {
         form.reset({
-          record_number: `BT${new Date().getFullYear()}${Math.floor(Math.random() * 9000) + 1000}`,
-          ticket_number: `TKT-${Math.floor(Math.random() * 90000) + 10000}`,
+          record_number: "",
+          ticket_number: "",
+          reason: "",
+          handover_person: "",
+          taker_person_name: "",
+          taker_phone: null,
+          service_provider_name: "",
+          service_provider_address: null,
+          notes: null,
+          expected_cost: 0,
+          actual_cost: 0,
+          external_link: null,
           outing_date: new Date().toISOString().split("T")[0],
-          items: [{ asset_id: 0, quantity: 1, notes: "" }],
+          items: [
+            {
+              asset_id: 0,
+              quantity: 1,
+              notes: "",
+              from_location_id: 0,
+              from_staff_id: 0,
+              from_unit_id: 0,
+              return_to_location_id: null,
+            },
+          ],
+          workflow_assignments: [],
         });
       }
     }
   }, [isOpen, maintenanceToEdit, form]);
 
   const onSubmit = async (data: MaintenanceFormValues) => {
+    console.log(data);
     const url = isEditing
       ? dynamicEndpoints.MAINTENANCE_DETAIL(maintenanceToEdit.id)
       : endpoints.MAINTENANCES;
@@ -206,6 +228,8 @@ export default function MaintenanceFormModal({
     );
   };
 
+  console.log(activeTemplate);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[850px] h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
@@ -228,7 +252,9 @@ export default function MaintenanceFormModal({
         </DialogHeader>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, (err) =>
+            console.error("Validation Errors:", err),
+          )}
           className="flex-1 flex flex-col overflow-hidden"
         >
           <Tabs

@@ -44,13 +44,16 @@ export function ApprovalProcessSection({
     }
   }, [activeTemplate, form]);
 
-  if (!activeTemplate || !activeTemplate.steps || activeTemplate.steps.length === 0) {
+  if (
+    !activeTemplate ||
+    !activeTemplate.steps ||
+    activeTemplate.steps.length === 0
+  ) {
     return null;
   }
 
   return (
     <div className="flex flex-col gap-6">
-
       <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
         {activeTemplate.steps.map((step, index) => (
           <Controller

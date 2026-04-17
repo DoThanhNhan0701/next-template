@@ -159,7 +159,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
             size="sm"
             onClick={() => setSourceType("stock")}
             className={cn(
-              "h-10 px-4 rounded-lg flex items-center gap-2 font-bold transition-all",
+              "px-4 rounded-lg flex items-center gap-2 font-bold transition-all",
               sourceType === "stock"
                 ? "bg-emerald-600 text-white border-emerald-600 shadow-lg scale-105"
                 : "border-primary/20 text-muted-foreground bg-white",
@@ -173,7 +173,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
             size="sm"
             onClick={() => setSourceType("holder")}
             className={cn(
-              "h-10 px-4 rounded-lg flex items-center gap-2 font-bold transition-all",
+              "px-4 rounded-lg flex items-center gap-2 font-bold transition-all",
               sourceType === "holder"
                 ? "bg-blue-600 text-white border-blue-600 shadow-lg scale-105"
                 : "border-primary/20 text-muted-foreground bg-white",
@@ -184,15 +184,15 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
         </div>
 
         {/* Source Dropdown Selector */}
-        <div className="space-y-2 pt-2">
-          <label
+        <Field className="gap-1.5 pt-2">
+          <FieldLabel
             className={cn(
               "text-xs font-semibold",
               sourceType === "stock" ? "text-emerald-700" : "text-blue-700",
             )}
           >
-            {sourceType === "stock" ? "Chọn kho xuất" : "Chọn người giữ xuất"}
-          </label>
+            {sourceType === "stock" ? "Chọn kho xuất" : "Chọn người giữ xuất"} *
+          </FieldLabel>
           <Controller
             name={
               sourceType === "stock"
@@ -230,14 +230,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                     : holders.length === 0
                 }
               >
-                <SelectTrigger
-                  className={cn(
-                    "bg-white rounded-lg border-2 shadow-sm transition-all",
-                    sourceType === "stock"
-                      ? "border-emerald-100 focus:border-emerald-500"
-                      : "border-blue-100 focus:border-blue-500",
-                  )}
-                >
+                <SelectTrigger className="bg-white rounded-md border-border/60 shadow-none transition-all">
                   <SelectValue
                     placeholder={
                       sourceType === "stock"
@@ -269,7 +262,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
               </Select>
             )}
           />
-        </div>
+        </Field>
       </div>
     </div>
   );
@@ -356,8 +349,8 @@ export function AssetSelectionSection({
               <Trash size={14} />
             </Button>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="md:col-span-3">
                 <Controller
                   name={`items.${index}.asset_id`}
                   control={form.control}
@@ -399,7 +392,7 @@ export function AssetSelectionSection({
                           (!assetsPending && assets.length === 0)
                         }
                       >
-                        <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
+                        <SelectTrigger className="bg-white rounded-md border-border/60 shadow-none">
                           <SelectValue
                             placeholder={
                               assetsPending
@@ -415,8 +408,7 @@ export function AssetSelectionSection({
                             const sName = a.status_obj?.name || "";
                             const isUniqueRestricted =
                               a.management_type === "unique" &&
-                              (sName === "Dang cho thue" ||
-                                sName === "Đang cho thuê");
+                              sName === "Đang cho thuê";
 
                             return (
                               <SelectItem
@@ -457,8 +449,7 @@ export function AssetSelectionSection({
                         const sName = selAsset?.status_obj?.name || "";
                         const isRestricted =
                           selAsset?.management_type === "unique" &&
-                          (sName === "Dang cho thue" ||
-                            sName === "Đang cho thuê");
+                          sName === "Đang cho thuê";
 
                         if (!isRestricted) return null;
 
@@ -521,14 +512,27 @@ export function AssetSelectionSection({
                     <FieldLabel className="text-xs font-semibold text-muted-foreground">
                       Vị trí trả về
                     </FieldLabel>
+                    <p className="text-[10px] text-muted-foreground/70 italic -mt-0.5 mb-1">
+                      Để trống trả về nguồn gốc ban đầu
+                    </p>
                     <Select
-                      onValueChange={(val) => locField.onChange(Number(val))}
-                      value={locField.value ? locField.value.toString() : ""}
+                      onValueChange={(val) =>
+                        locField.onChange(val === "none" ? null : Number(val))
+                      }
+                      value={
+                        locField.value ? locField.value.toString() : "none"
+                      }
                     >
-                      <SelectTrigger className="h-10 bg-white/50 rounded-md border-muted-foreground/10 text-xs">
-                        <SelectValue placeholder="Keep original location" />
+                      <SelectTrigger className="bg-white rounded-md border-border/60 text-xs shadow-none">
+                        <SelectValue placeholder="Chọn vị trí trả về" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem
+                          value="none"
+                          className="text-muted-foreground italic text-xs"
+                        >
+                          (None) - Trả về nguồn gốc
+                        </SelectItem>
                         {locations.map((l) => (
                           <SelectItem
                             key={l.id}
@@ -548,7 +552,7 @@ export function AssetSelectionSection({
                 name={`items.${index}.notes`}
                 control={form.control}
                 render={({ field: notesField, fieldState }) => (
-                  <Field className="gap-1">
+                  <Field className="gap-1 justify-end">
                     <FieldLabel className="text-xs font-semibold text-muted-foreground">
                       Ghi chú item
                     </FieldLabel>
