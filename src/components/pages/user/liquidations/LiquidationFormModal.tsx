@@ -12,12 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ClipboardList,
-  Trash2,
-  Package,
-  UserCheck,
-} from "lucide-react";
+import { ClipboardList, Trash2, Package, UserCheck } from "lucide-react";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
@@ -48,41 +43,48 @@ export default function LiquidationFormModal({
   const isEditing = !!liquidationToEdit;
   const { mutate, pending } = useMutation();
 
-  const form: UseFormReturn<LiquidationFormValues> = useForm<LiquidationFormValues>({
-    resolver: zodResolver(LiquidationSchema),
-    defaultValues: {
-      record_number: "",
-      reason: "",
-      notes: null,
-      liquidation_date: new Date().toISOString().split("T")[0],
-      liquidation_type: "sell",
-      committee: null,
-      total_value: 0,
-      buyer_name: null,
-      external_link: null,
-      attachments: [],
-      items: [
-        {
-          asset_id: 0,
-          quantity: 1,
-          unit_value: 0,
-          remaining_value: 0,
-          notes: null,
-          from_location_id: 0,
-          from_staff_id: 0,
-          from_unit_id: 0,
-        },
-      ],
-      workflow_assignments: [],
-    },
-  });
+  const form: UseFormReturn<LiquidationFormValues> =
+    useForm<LiquidationFormValues>({
+      resolver: zodResolver(LiquidationSchema),
+      defaultValues: {
+        record_number: "",
+        reason: "",
+        notes: null,
+        liquidation_date: new Date().toISOString().split("T")[0],
+        liquidation_type: "sell",
+        committee: [],
+        total_value: 0,
+        buyer_name: null,
+        external_link: null,
+        attachments: [],
+        items: [
+          {
+            asset_id: 0,
+            quantity: 1,
+            unit_value: 0,
+            remaining_value: 0,
+            notes: null,
+            from_location_id: 0,
+            from_staff_id: 0,
+            from_unit_id: 0,
+          },
+        ],
+        workflow_assignments: [],
+      },
+    });
 
-  const { fields, append, remove } = useFieldArray<LiquidationFormValues, "items">({
+  const { fields, append, remove } = useFieldArray<
+    LiquidationFormValues,
+    "items"
+  >({
     control: form.control,
     name: "items",
   });
 
-  const { response: userRes } = useGet<IUser[]>({ url: endpoints.USERS }, { disabled: !isOpen });
+  const { response: userRes } = useGet<IUser[]>(
+    { url: endpoints.USERS },
+    { disabled: !isOpen },
+  );
 
   const { response: activeTemplate } = useGet<ITemplate>(
     { url: `${endpoints.TEMPLATE_ACTIVE}liquidation` },
@@ -108,10 +110,10 @@ export default function LiquidationFormModal({
           notes: null,
           liquidation_date: new Date().toISOString().split("T")[0],
           liquidation_type: "sell",
-          committee: "",
+          committee: [],
           total_value: 0,
-          buyer_name: "",
-          external_link: "",
+          buyer_name: null,
+          external_link: null,
           attachments: [],
           items: [
             {
@@ -170,7 +172,9 @@ export default function LiquidationFormModal({
               <Trash2 className="text-primary" size={20} />
             </div>
             <DialogTitle className="text-2xl font-bold text-primary tracking-tight">
-              {isEditing ? "Edit liquidation record" : "Create liquidation record"}
+              {isEditing
+                ? "Edit liquidation record"
+                : "Create liquidation record"}
             </DialogTitle>
           </div>
           <DialogDescription className="text-sm text-muted-foreground ml-11">
@@ -180,25 +184,43 @@ export default function LiquidationFormModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 flex flex-col overflow-hidden">
-          <Tabs defaultValue="general" className="flex-1 flex flex-col overflow-hidden">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
+          <Tabs
+            defaultValue="general"
+            className="flex-1 flex flex-col overflow-hidden"
+          >
             <div className="px-4 pb-4">
               <TabsList className="grid w-full grid-cols-3 h-16 p-1 bg-muted/30 z-10">
-                <TabsTrigger value="general" className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs">
+                <TabsTrigger
+                  value="general"
+                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs"
+                >
                   <ClipboardList size={16} /> Thông tin chung
                 </TabsTrigger>
-                <TabsTrigger value="assets" className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs">
+                <TabsTrigger
+                  value="assets"
+                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs"
+                >
                   <Package size={16} /> Lựa chọn tài sản
                 </TabsTrigger>
-                <TabsTrigger value="approval" className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs">
+                <TabsTrigger
+                  value="approval"
+                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs"
+                >
                   <UserCheck size={16} /> Quy trình phê duyệt
                 </TabsTrigger>
               </TabsList>
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
-              <TabsContent value="general" className="mt-0 outline-none">
-                <GeneralLiquidationSection form={form} />
+              <TabsContent
+                value="general"
+                className="px-6 py-6 focus-visible:outline-none"
+              >
+                <GeneralLiquidationSection form={form} users={users} />
               </TabsContent>
               <TabsContent value="assets" className="mt-0 outline-none">
                 <LiquidationAssetSelectionSection
@@ -224,7 +246,11 @@ export default function LiquidationFormModal({
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Processing..." : isEditing ? "Save changes" : "Confirm"}
+              {pending
+                ? "Processing..."
+                : isEditing
+                  ? "Save changes"
+                  : "Confirm"}
             </Button>
           </div>
         </form>

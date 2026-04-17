@@ -1,6 +1,5 @@
-"use client";
-
-import { UseFormReturn, Controller } from "react-hook-form";
+import { useState } from "react";
+import { UseFormReturn, Controller, useWatch } from "react-hook-form";
 import { LiquidationFormValues } from "../schema";
 import {
   Field,
@@ -10,7 +9,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -18,12 +22,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Search,
+  Check,
+  ChevronsUpDown,
+  X,
+  User as UserIcon,
+} from "lucide-react";
+import { IUser } from "@/types/auth";
 
 interface GeneralLiquidationSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
+  users: IUser[];
 }
 
-export function GeneralLiquidationSection({ form }: GeneralLiquidationSectionProps) {
+export function GeneralLiquidationSection({
+  form,
+  users,
+}: GeneralLiquidationSectionProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const selectedUserIds =
+    useWatch({
+      control: form.control,
+      name: "committee",
+    }) || [];
+
+  const filteredUsers = users.filter((u) =>
+    u.full_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const toggleUser = (id: number) => {
+    const current = form.getValues("committee");
+    if (current.includes(id)) {
+      form.setValue(
+        "committee",
+        current.filter((v) => v !== id),
+      );
+    } else {
+      form.setValue("committee", [...current, id]);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -95,7 +136,12 @@ export function GeneralLiquidationSection({ form }: GeneralLiquidationSectionPro
               <Input
                 {...field}
                 type="number"
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                value={field.value ?? 0}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === "" ? 0 : Number(e.target.value),
+                  )
+                }
                 className="bg-white h-11"
               />
               <FieldError errors={[fieldState.error]} />
@@ -104,24 +150,103 @@ export function GeneralLiquidationSection({ form }: GeneralLiquidationSectionPro
         />
       </FieldGroup>
 
-      <Controller
-        control={form.control}
-        name="committee"
-        render={({ field, fieldState }) => (
-          <Field className="gap-1">
-            <FieldLabel className="text-xs font-semibold text-muted-foreground">
-              Hội đồng thanh lý
-            </FieldLabel>
-            <Input
-              {...field}
-              value={field.value ?? ""}
-              className="bg-white h-11"
-              placeholder="Danh sách thành viên (cách nhau bởi dấu phẩy)"
-            />
-            <FieldError errors={[fieldState.error]} />
-          </Field>
-        )}
-      />
+      <Field className="gap-1">
+        <FieldLabel className="text-xs font-semibold text-muted-foreground">
+          Hội đồng thanh lý
+        </FieldLabel>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="w-full px-3 py-2 flex items-center justify-between gap-2 rounded-md border border-input shadow-sm hover:border-primary/50 transition-all text-left min-h-[44px]"
+            >
+              <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
+                {selectedUserIds.length === 0 ? (
+                  <span className="text-sm text-muted-foreground">
+                    Chọn thành viên hội đồng...
+                  </span>
+                ) : (
+                  selectedUserIds.map((id) => {
+                    const user = users.find((u) => u.id === id);
+                    return (
+                      <Badge
+                        key={id}
+                        variant="secondary"
+                        className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap bg-primary/10 text-primary border-none hover:bg-primary/20"
+                      >
+                        {user?.full_name}
+                        <span
+                          role="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleUser(id);
+                          }}
+                          className="ml-0.5 hover:text-destructive cursor-pointer"
+                        >
+                          <X size={10} />
+                        </span>
+                      </Badge>
+                    );
+                  })
+                )}
+              </div>
+              <ChevronsUpDown
+                size={16}
+                className="text-muted-foreground shrink-0"
+              />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-[--radix-popper-anchor-width] min-w-[--radix-popper-anchor-width] p-0"
+            align="start"
+          >
+            <div className="p-2 border-b bg-muted/20">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Tìm thành viên..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
+                />
+              </div>
+            </div>
+            <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+              {filteredUsers.length === 0 ? (
+                <div className="py-6 text-center text-xs text-muted-foreground">
+                  Không tìm thấy thành viên
+                </div>
+              ) : (
+                filteredUsers.map((u) => (
+                  <div
+                    key={u.id}
+                    className={`
+                      flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
+                      hover:bg-accent hover:text-accent-foreground
+                      ${selectedUserIds.includes(u.id) ? "bg-accent/50" : ""}
+                    `}
+                    onClick={() => toggleUser(u.id)}
+                  >
+                    <div className="p-1.5 rounded-md bg-primary/5 text-primary">
+                      <UserIcon size={14} />
+                    </div>
+                    <span className="flex-1 text-sm font-medium leading-none">
+                      {u.full_name}
+                    </span>
+                    {selectedUserIds.includes(u.id) && (
+                      <Check
+                        size={16}
+                        className="text-primary animate-in zoom-in-50 duration-200"
+                      />
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <FieldError errors={[form.formState.errors.committee]} />
+      </Field>
 
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Controller
@@ -136,6 +261,7 @@ export function GeneralLiquidationSection({ form }: GeneralLiquidationSectionPro
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white h-11"
+                placeholder="Tên người hoặc đơn vị mua..."
               />
               <FieldError errors={[fieldState.error]} />
             </Field>

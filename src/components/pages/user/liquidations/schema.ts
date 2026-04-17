@@ -6,7 +6,7 @@ export const LiquidationSchema = z.object({
   notes: z.string().nullable(),
   liquidation_date: z.string().min(1, "Required"),
   liquidation_type: z.string().min(1, "Required"),
-  committee: z.string().nullable(),
+  committee: z.array(z.number()),
   total_value: z.number(),
   buyer_name: z.string().nullable(),
   external_link: z.string().nullable(),
