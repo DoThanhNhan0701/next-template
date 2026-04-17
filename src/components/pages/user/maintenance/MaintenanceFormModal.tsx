@@ -228,8 +228,6 @@ export default function MaintenanceFormModal({
     );
   };
 
-  console.log(activeTemplate);
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[850px] h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">

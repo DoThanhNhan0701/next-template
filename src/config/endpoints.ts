@@ -49,6 +49,7 @@ export const endpoints = getEndPoint("api/v1", {
   AUDIT_BATCH_START: "audit/batch-start",
   TREE: 'tree',
   MAINTENANCES: "maintenances/",
+  LIQUIDATIONS: "liquidations/",
 });
 
 export const dynamicEndpoints = {
@@ -82,6 +83,7 @@ export const dynamicEndpoints = {
   WORKFLOW_HISTORY: (type: string, id: number) => `/api/v1/workflows/history/${type}/${id}`,
   STOCK_ADJUSTMENT_DETAIL: (id: number) => `/api/v1/stock-adjustments/${id}`,
   MAINTENANCE_DETAIL: (id: number) => `/api/v1/maintenances/${id}`,
+  LIQUIDATION_DETAIL: (id: number) => `/api/v1/liquidations/${id}`,
   DOCUMENT_DETAIL: (documentType: string, id: number) => {
     const map: Record<string, string> = {
       allocation: `/api/v1/allocations/${id}`,
@@ -90,6 +92,7 @@ export const dynamicEndpoints = {
       transfer: `/api/v1/transfers/${id}`,
       recovery: `/api/v1/recoveries/${id}`,
       rental: `/api/v1/rentals/${id}`,
+      liquidation: `/api/v1/liquidations/${id}`,
     };
     return map[documentType] ?? `/api/v1/allocations/${id}`;
   },

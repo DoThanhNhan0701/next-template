@@ -9,7 +9,8 @@
     "stock_in_out": "Stock In & Out",
     "allocation_recovery": "Allocation & Recovery",
     "audits": "Audits",
-    "maintenance": "Maintenance"
+    "maintenance": "Maintenance",
+    "liquidations": "Liquidations"
   },
   "Language": {
     "en": "English",

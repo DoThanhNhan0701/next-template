@@ -19,6 +19,7 @@ import {
   PackageSearch,
   ClipboardCheck,
   Wrench,
+  Trash2,
 } from "lucide-react";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
@@ -52,6 +53,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     },
     { title: t("audits"), url: "/audits", icon: ClipboardCheck },
     { title: t("maintenance"), url: "/maintenance", icon: Wrench },
+    { title: t("liquidations"), url: "/liquidations", icon: Trash2 },
   ];
 
   return (

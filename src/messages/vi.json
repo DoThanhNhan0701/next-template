@@ -9,7 +9,8 @@
     "stock_in_out": "Nhập & Xuất kho",
     "allocation_recovery": "Cấp phát & Thu hồi",
     "audits": "Kiểm kê",
-    "maintenance": "Bảo trì"
+    "maintenance": "Bảo trì",
+    "liquidations": "Thanh lý"
   },
   "Language": {
     "en": "English",
