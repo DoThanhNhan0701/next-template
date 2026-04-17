@@ -423,13 +423,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         title: "Allocated asset list",
         icon: Package,
         columns: [
+          { key: "no", label: "No", align: "center" as const },
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "location", label: "Location" },
           { key: "quantity", label: "Quantity", align: "center" as const },
         ],
-        rows: detail.details.map((item) => ({
+        rows: detail.details.map((item, index) => ({
           id: item.id,
+          no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
           location: item.location.name || "-",
@@ -441,14 +443,16 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         title: "Stock adjustment list",
         icon: Package,
         columns: [
+          { key: "no", label: "No", align: "center" as const },
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "location", label: "Location" },
           { key: "type", label: "Type", align: "center" as const },
           { key: "quantity", label: "Quantity Diff", align: "center" as const },
         ],
-        rows: detail.details.map((item) => ({
+        rows: detail.details.map((item, index) => ({
           id: item.id,
+          no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
           location: item.location.name || "-",
@@ -461,13 +465,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         title: "Recovered asset list",
         icon: Package,
         columns: [
+          { key: "no", label: "No", align: "center" as const },
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "location", label: "Location" },
           { key: "quantity", label: "Quantity", align: "center" as const },
         ],
-        rows: detail.details.map((item) => ({
+        rows: detail.details.map((item, index) => ({
           id: item.id,
+          no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
           location: item.location.name || "-",
@@ -479,13 +485,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         title: "Returned asset list",
         icon: Package,
         columns: [
+          { key: "no", label: "No", align: "center" as const },
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "quantity", label: "Quantity", align: "center" as const },
           { key: "condition", label: "Condition", align: "center" as const },
         ],
-        rows: detail.details.map((item) => ({
+        rows: detail.details.map((item, index) => ({
           id: item.id,
+          no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
           quantity: item.quantity,
@@ -497,13 +505,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         title: "Transferred asset list",
         icon: Package,
         columns: [
+          { key: "no", label: "No", align: "center" as const },
           { key: "asset_name", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "from_location_name", label: "From Location" },
           { key: "quantity", label: "Quantity", align: "center" as const },
         ],
-        rows: detail.details.map((item) => ({
+        rows: detail.details.map((item, index) => ({
           id: item.id,
+          no: index + 1,
           asset_name: item.asset_name,
           asset_code: item.asset_code,
           from_location_name: item.from_location_name,
@@ -684,7 +694,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                             </Badge>
                           )}
                           {typeof field.value === "string" ||
-                          typeof field.value === "number" ? (
+                            typeof field.value === "number" ? (
                             <span className="text-sm font-bold text-foreground">
                               {field.value}
                             </span>
@@ -713,7 +723,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                           {formattedData.detailItems.columns.map((col) => (
                             <TableHead
                               key={col.key}
-                              className={`text-sm font-bold text-muted-foreground h-11 ${col.key === formattedData.detailItems!.columns[0].key ? "px-4" : ""} ${col.align === "center" ? "text-center" : ""}`}
+                              className={`text-sm font-bold text-muted-foreground h-11 ${col.key === formattedData.detailItems!.columns[0].key ? "px-4 w-[5%]" : ""} ${col.align === "center" ? "text-center" : ""}`}
                             >
                               {col.label}
                             </TableHead>
@@ -754,6 +764,10 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                                     >
                                       {row[col.key as keyof typeof row]}
                                     </Badge>
+                                  ) : col.key === "no" ? (
+                                    <span className="text-muted-foreground">
+                                      {row[col.key as keyof typeof row]}
+                                    </span>
                                   ) : col.key === "asset" ? (
                                     <span className="text-sm font-semibold text-foreground">
                                       {row[col.key as keyof typeof row]}
@@ -818,10 +832,10 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                     <span className="text-sm font-semibold text-foreground">
                       {detail.created_at
                         ? new Date(detail.created_at).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                          })
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })
                         : "N/A"}
                     </span>
                     <span className="text-sm font-medium text-muted-foreground">

@@ -129,7 +129,7 @@ export default function LiquidationTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-             Create
+            Create
           </Button>
         </div>
       </div>
@@ -138,6 +138,9 @@ export default function LiquidationTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 Liquidation Info
               </TableHead>
@@ -152,23 +155,25 @@ export default function LiquidationTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : liquidations.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Trash2}
                 message="No liquidation records found"
                 description="No records match your search."
               />
             ) : (
-              liquidations.map((item) => (
+              liquidations.map((item, index) => (
                 <TableRow
                   key={item.id}
                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                   onClick={() => router.push(`/liquidations/${item.id}`)}
                 >
+                  <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/40 opacity-80" />
                     <div className="flex items-center gap-3">
                       <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
                         <FileText size={18} />

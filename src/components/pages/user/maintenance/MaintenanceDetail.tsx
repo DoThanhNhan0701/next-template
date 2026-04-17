@@ -166,6 +166,9 @@ export default function MaintenanceDetail({ id }: Props) {
               <Table className="whitespace-nowrap">
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
+                    <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                      No
+                    </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
                       Asset
                     </TableHead>
@@ -178,11 +181,15 @@ export default function MaintenanceDetail({ id }: Props) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {detail.details?.map((item) => (
+                  {detail.details?.map((item, index) => (
                     <TableRow
                       key={item.id}
                       className="border-border/50 hover:bg-muted/30"
                     >
+                      {/* No */}
+                      <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                        {index + 1}
+                      </TableCell>
                       <TableCell className="px-4 py-3">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-sm font-semibold text-foreground">

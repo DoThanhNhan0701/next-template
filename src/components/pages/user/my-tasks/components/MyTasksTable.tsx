@@ -461,6 +461,9 @@ export default function MyTasksTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider">
                 Record Number
               </TableHead>
@@ -486,16 +489,16 @@ export default function MyTasksTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {isPending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : paginatedTasks.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={8}
                 icon={FileText}
                 message="No tasks found"
                 description="Everything is caught up! No tasks match your filters."
               />
             ) : (
-              paginatedTasks.map((task) => (
+              paginatedTasks.map((task, index) => (
                 <TableRow
                   key={task.id}
                   onClick={() => {
@@ -509,18 +512,10 @@ export default function MyTasksTable() {
                   }}
                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                 >
+                  <TableCell className="px-4 py-2 text-center text-sm text-muted-foreground">
+                    {(localCurrentPage - 1) * 20 + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-2 relative overflow-hidden">
-                    {/* Status Accent */}
-                    <div
-                      className={cn(
-                        "absolute left-0 top-0 bottom-0 w-1 opacity-80",
-                        task.status === "PENDING"
-                          ? "bg-orange-500"
-                          : task.status === "APPROVED"
-                            ? "bg-emerald-500"
-                            : "bg-red-500",
-                      )}
-                    />
                     <span className="font-semibold text-sm group-hover:text-primary transition-colors">
                       {task.document_record_number}
                     </span>
@@ -598,19 +593,19 @@ export default function MyTasksTable() {
                           </Button>
                           {(task.document_type !== "audit" ||
                             task.status === "COMPLETED") && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleReject(task);
-                              }}
-                              className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
-                              title="Reject"
-                            >
-                              <CloseIcon size={16} />
-                            </Button>
-                          )}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleReject(task);
+                                }}
+                                className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
+                                title="Reject"
+                              >
+                                <CloseIcon size={16} />
+                              </Button>
+                            )}
                         </>
                       )}
                     </div>

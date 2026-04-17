@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { dynamicEndpoints } from "@/config/endpoints";
 import ViewAuditItemModal from "./ViewAuditItemModal";
 import {
-    ChevronLeft, 
-    ClipboardList, 
-    Calendar, 
-    User, 
-    MapPin, 
-    Building2, 
-    Clock, 
+    ChevronLeft,
+    ClipboardList,
+    Calendar,
+    User,
+    MapPin,
+    Building2,
+    Clock,
     Package,
     CheckCircle2,
     Info
@@ -128,6 +128,9 @@ export default function AuditDetail({ id }: Props) {
                             <Table className="whitespace-nowrap">
                                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                                     <TableRow>
+                                        <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                                            No
+                                        </TableHead>
                                         <TableHead className="px-4 h-10 text-xs font-semibold">Asset</TableHead>
                                         <TableHead className="px-4 h-10 text-xs font-semibold">Current State</TableHead>
                                         <TableHead className="px-4 h-10 text-xs font-semibold text-center">Audit Result</TableHead>
@@ -140,27 +143,32 @@ export default function AuditDetail({ id }: Props) {
                                     {itemsPending ? (
                                         Array.from({ length: 5 }).map((_, i) => (
                                             <TableRow key={i}>
-                                                <TableCell colSpan={4} className="p-4">
+                                                <TableCell colSpan={6} className="p-4">
                                                     <Skeleton className="h-10 w-full" />
                                                 </TableCell>
                                             </TableRow>
                                         ))
                                     ) : !items || items.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="h-40 text-center text-muted-foreground italic">
+                                            <TableCell colSpan={6} className="h-40 text-center text-muted-foreground italic">
                                                 No items found in this audit session.
                                             </TableCell>
                                         </TableRow>
                                     ) : (
-                                        items.map((item: IAuditDetailItem) => (
-                                            <TableRow 
-                                                key={item.id} 
+                                        items.map((item: IAuditDetailItem, index) => (
+                                            <TableRow
+                                                key={item.id}
                                                 className="border-border/50 hover:bg-muted/30 group cursor-pointer"
                                                 onClick={() => {
                                                     setSelectedItem(item);
                                                     setIsViewModalOpen(true);
                                                 }}
                                             >
+                                                {/* No */}
+                                                <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                                                    {index + 1}
+                                                </TableCell>
+
                                                 {/* 1. Asset Info */}
                                                 <TableCell className="px-4 py-3">
                                                     <div className="flex flex-col gap-0.5">
@@ -326,8 +334,8 @@ export default function AuditDetail({ id }: Props) {
                             <div className="flex flex-col gap-1">
                                 <span className="text-xs font-bold uppercase tracking-tight">Status Note</span>
                                 <p className="text-[11px] text-muted-foreground leading-relaxed italic">
-                                    {isCompleted 
-                                        ? "This audit session has been finalized and approved. No further changes can be made." 
+                                    {isCompleted
+                                        ? "This audit session has been finalized and approved. No further changes can be made."
                                         : "This audit session is currently active. Verification progress is being tracked."}
                                 </p>
                             </div>
@@ -336,7 +344,7 @@ export default function AuditDetail({ id }: Props) {
                 </div>
             </div>
 
-            <ViewAuditItemModal 
+            <ViewAuditItemModal
                 item={selectedItem}
                 isOpen={isViewModalOpen}
                 onClose={() => setIsViewModalOpen(false)}

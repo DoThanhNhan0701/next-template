@@ -232,6 +232,9 @@ export default function RentalsTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 Rental Record
               </TableHead>
@@ -251,21 +254,24 @@ export default function RentalsTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={5} rows={6} />
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : rentals.length === 0 ? (
               <TableEmptyRow
-                colSpan={5}
+                colSpan={6}
                 icon={ClipboardList}
                 message="No rentals found"
                 description="No rental records match your current search or filter criteria."
               />
             ) : (
-              rentals.map((rental) => (
+              rentals.map((rental, index) => (
                 <TableRow
                   key={rental.id}
                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                   onClick={() => router.push(`/rentals/${rental.id}`)}
                 >
+                  <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-1.5">
                     <div className="flex flex-col">
                       <span className="font-semibold text-sm">

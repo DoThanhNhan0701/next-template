@@ -179,6 +179,9 @@ export default function RentalReturnTable() {
                 <Table className="whitespace-nowrap">
                     <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
                         <TableRow>
+                            <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                                No
+                            </TableHead>
                             <TableHead className="font-semibold h-10 px-4">
                                 Record Number
                             </TableHead>
@@ -201,22 +204,25 @@ export default function RentalReturnTable() {
                     </TableHeader>
                     <TableBody className="divide-y divide-(--surface-border-color)">
                         {pending ? (
-                            <TableLoadingRows colSpan={6} rows={6} />
+                            <TableLoadingRows colSpan={7} rows={6} />
                         ) : rentalReturns.length === 0 ? (
                             <TableEmptyRow
-                                colSpan={6}
+                                colSpan={7}
                                 icon={ClipboardList}
                                 message="No rental returns found"
                                 description="Adjust filters to find rental return records."
                             />
                         ) : (
-                            rentalReturns.map((rentalReturn) => {
+                            rentalReturns.map((rentalReturn, index) => {
                                 return (
                                     <TableRow
                                         key={rentalReturn.id}
                                         className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                                         onClick={() => router.push(`/rentals/returns/${rentalReturn.id}`)}
                                     >
+                                        <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
+                                            {skip + index + 1}
+                                        </TableCell>
                                         <TableCell className="px-4 py-1.5">
                                             <div className="flex flex-col">
                                                 <span className="font-semibold text-sm">

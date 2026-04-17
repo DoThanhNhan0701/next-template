@@ -174,6 +174,9 @@ export default function MyAuditsTable() {
                 <Table className="whitespace-nowrap">
                     <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
                         <TableRow>
+                            <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                                No
+                            </TableHead>
                             <TableHead className="font-semibold h-10 px-4">Title</TableHead>
                             <TableHead className="font-semibold h-10 px-4">Type / Target</TableHead>
                             <TableHead className="font-semibold h-10 px-4">Assignee</TableHead>
@@ -183,21 +186,24 @@ export default function MyAuditsTable() {
                     </TableHeader>
                     <TableBody className="divide-y divide-(--surface-border-color)">
                         {pending ? (
-                            <TableLoadingRows colSpan={5} rows={6} />
+                            <TableLoadingRows colSpan={6} rows={6} />
                         ) : audits.length === 0 ? (
                             <TableEmptyRow
-                                colSpan={5}
+                                colSpan={6}
                                 icon={ClipboardList}
                                 message="No audits found"
                                 description="No audit sessions match your current search criteria."
                             />
                         ) : (
-                            audits.map((audit) => (
+                            audits.map((audit, index) => (
                                 <TableRow
                                     key={audit.id}
                                     onClick={() => router.push(`/audits/sessions/${audit.id}`)}
                                     className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                                 >
+                                    <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
+                                        {skip + index + 1}
+                                    </TableCell>
                                     <TableCell className="px-4 py-1.5">
                                         <div className="flex flex-col">
                                             <span className="font-semibold text-sm">{audit.title}</span>

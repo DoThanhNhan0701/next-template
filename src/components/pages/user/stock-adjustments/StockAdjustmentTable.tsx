@@ -113,6 +113,9 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">Record No.</TableHead>
               <TableHead className="font-semibold h-10 px-4">Asset</TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">Type</TableHead>
@@ -124,21 +127,24 @@ export default function StockAdjustmentTable({ defaultType }: { defaultType: "IN
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : items.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={8}
                 icon={PackageSearch}
                 message="No stock in/out records found"
                 description="Create a new adjustment using the button above."
               />
             ) : (
-              items.map((item) => (
+              items.map((item, index) => (
                 <TableRow
                   key={item.id}
                   className="hover:bg-primary/3 transition-colors cursor-pointer"
                   onClick={() => router.push(`/stock-in-out/${item.id}`)}
                 >
+                  <TableCell className="px-4 py-2 text-center text-sm text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-2">
                     <span className="font-mono text-xs bg-muted/50 px-1.5 py-0.5 rounded">
                       {item.record_number}

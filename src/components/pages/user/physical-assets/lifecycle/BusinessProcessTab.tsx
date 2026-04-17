@@ -47,6 +47,7 @@ export default function BusinessProcessTab({
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm outline outline-border/20">
           <TableRow>
+
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
               STT
             </TableHead>
@@ -74,6 +75,7 @@ export default function BusinessProcessTab({
               key={log.ref_id + `${i}`}
               className="group hover:bg-primary/3 transition-colors relative"
             >
+
               <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">
                 {i + 1}
               </TableCell>

@@ -97,19 +97,8 @@ export default function AssetTable() {
     return statuses.find((s) => s.id === statusId);
   };
 
-  // Helper for Importance Accent
-  const getImportanceColor = (id: number) => {
-    switch (id) {
-      case 1:
-        return "bg-red-500"; // High
-      case 2:
-        return "bg-blue-500"; // Standard
-      case 3:
-        return "bg-slate-400"; // Low
-      default:
-        return "bg-slate-200";
-    }
-  };
+  // Helper for Importance Accent (kept for future use)
+  // const getImportanceColor = (id: number) => { ... }
 
   // Helper for Usage Mode
   const getUsageModeLabel = (id: number | null) => {
@@ -294,6 +283,9 @@ export default function AssetTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">Asset</TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 Ownership
@@ -317,16 +309,16 @@ export default function AssetTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : assets.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={8}
                 icon={Laptop}
                 message="No assets declared yet"
                 description="Declare your first asset using the button above to get started."
               />
             ) : (
-              assets.map((asset) => {
+              assets.map((asset, index) => {
                 const status = getStatusInfo(asset.status_id);
                 const usageMode = getUsageModeLabel(asset.usage_mode_id);
 
@@ -336,14 +328,11 @@ export default function AssetTable() {
                     onClick={() => router.push(`/assets/${asset.id}`)}
                     className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                   >
+                    <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
+                      {skip + index + 1}
+                    </TableCell>
                     <TableCell className="px-4 py-1.5 relative overflow-hidden">
-                      {/* Importance Accent */}
-                      <div
-                        className={cn(
-                          "absolute left-0 top-0 bottom-0 w-1 opacity-80",
-                          getImportanceColor(asset.importance_id),
-                        )}
-                      />
+
                       <div className="flex items-center gap-2">
                         <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10">
                           <Laptop size={16} />

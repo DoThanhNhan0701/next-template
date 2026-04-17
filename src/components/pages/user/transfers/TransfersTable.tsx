@@ -187,6 +187,9 @@ export default function TransfersTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 Transfer Info
               </TableHead>
@@ -202,23 +205,25 @@ export default function TransfersTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : transfers.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={8}
                 icon={FileText}
                 message="No transfers found"
                 description="No transfer records match your search."
               />
             ) : (
-              transfers.map((item) => (
+              transfers.map((item, index) => (
                 <TableRow
                   key={item.id}
                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                   onClick={() => router.push(`/transfers/${item.id}`)}
                 >
+                  <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/40 opacity-80" />
                     <div className="flex items-center gap-3">
                       <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
                         <FileText size={18} />
