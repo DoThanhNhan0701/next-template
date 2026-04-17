@@ -37,7 +37,9 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     if (!pathname.startsWith("/my-tasks")) {
       dispatch(actionFetchPendingCount());
     }
-  }, [dispatch, pathname]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   const sidebarItems = [
     { title: t("dashboard"), url: "/dashboard", icon: LayoutDashboard },
