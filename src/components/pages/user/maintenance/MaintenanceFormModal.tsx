@@ -12,6 +12,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ClipboardList, Wrench, Package, UserCheck } from "lucide-react";
 import { endpoints, dynamicEndpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -41,19 +43,25 @@ const MaintenanceSchema = z.object({
   actual_cost: z.number(),
   external_link: z.string().nullable(),
   outing_date: z.string().min(1, "Required"),
-  items: z.array(z.object({
-    asset_id: z.number().min(1, "Required"),
-    quantity: z.number().min(1, "Required"),
-    notes: z.string().nullable(),
-    from_location_id: z.number(),
-    from_staff_id: z.number(),
-    from_unit_id: z.number(),
-    return_to_location_id: z.number().nullable(),
-  })).min(1, "At least one item is required"),
-  workflow_assignments: z.array(z.object({
-    step_id: z.number(),
-    user_id: z.number(),
-  })),
+  items: z
+    .array(
+      z.object({
+        asset_id: z.number().min(1, "Required"),
+        quantity: z.number().min(1, "Required"),
+        notes: z.string().nullable(),
+        from_location_id: z.number(),
+        from_staff_id: z.number(),
+        from_unit_id: z.number(),
+        return_to_location_id: z.number().nullable(),
+      }),
+    )
+    .min(1, "At least one item is required"),
+  workflow_assignments: z.array(
+    z.object({
+      step_id: z.number(),
+      user_id: z.number(),
+    }),
+  ),
 });
 
 export type MaintenanceFormValues = z.infer<typeof MaintenanceSchema>;
@@ -74,36 +82,42 @@ export default function MaintenanceFormModal({
   const isEditing = !!maintenanceToEdit;
   const { mutate, pending } = useMutation();
 
-  const form: UseFormReturn<MaintenanceFormValues> = useForm<MaintenanceFormValues>({
-    resolver: zodResolver(MaintenanceSchema),
-    defaultValues: {
-      record_number: "",
-      ticket_number: "",
-      reason: "",
-      handover_person: "",
-      taker_person_name: "",
-      taker_phone: null,
-      service_provider_name: "",
-      service_provider_address: null,
-      notes: null,
-      expected_cost: 0,
-      actual_cost: 0,
-      external_link: null,
-      outing_date: new Date().toISOString().split("T")[0],
-      items: [{ 
-        asset_id: 0, 
-        quantity: 1, 
-        notes: null, 
-        from_location_id: 0, 
-        from_staff_id: 0, 
-        from_unit_id: 0, 
-        return_to_location_id: null 
-      }],
-      workflow_assignments: [],
-    },
-  });
+  const form: UseFormReturn<MaintenanceFormValues> =
+    useForm<MaintenanceFormValues>({
+      resolver: zodResolver(MaintenanceSchema),
+      defaultValues: {
+        record_number: "",
+        ticket_number: "",
+        reason: "",
+        handover_person: "",
+        taker_person_name: "",
+        taker_phone: null,
+        service_provider_name: "",
+        service_provider_address: null,
+        notes: null,
+        expected_cost: 0,
+        actual_cost: 0,
+        external_link: null,
+        outing_date: new Date().toISOString().split("T")[0],
+        items: [
+          {
+            asset_id: 0,
+            quantity: 1,
+            notes: null,
+            from_location_id: 0,
+            from_staff_id: 0,
+            from_unit_id: 0,
+            return_to_location_id: null,
+          },
+        ],
+        workflow_assignments: [],
+      },
+    });
 
-  const { fields, append, remove } = useFieldArray<MaintenanceFormValues, "items">({
+  const { fields, append, remove } = useFieldArray<
+    MaintenanceFormValues,
+    "items"
+  >({
     control: form.control,
     name: "items",
   });
@@ -116,15 +130,19 @@ export default function MaintenanceFormModal({
     { url: endpoints.USERS },
     { disabled: !isOpen },
   );
-  
+
   const { response: activeTemplate } = useGet<ITemplate>(
     { url: `${endpoints.TEMPLATE_ACTIVE}maintenance` },
     { disabled: !isOpen },
   );
 
-  const { response: assetRes, pending: assetsPending, reFetch: reFetchAssets } = useGet<{ items: IPhysicalAsset[] }>(
+  const {
+    response: assetRes,
+    pending: assetsPending,
+    reFetch: reFetchAssets,
+  } = useGet<{ items: IPhysicalAsset[] }>(
     { url: `${endpoints.PHYSICAL_ASSETS}?limit=1000` },
-    { disabled: !isOpen }
+    { disabled: !isOpen },
   );
 
   const locations = locRes || [];
@@ -137,8 +155,8 @@ export default function MaintenanceFormModal({
         // Handle edit mapping
       } else {
         form.reset({
-          record_number: `BT${new Date().getFullYear()}${(Math.floor(Math.random() * 9000) + 1000)}`,
-          ticket_number: `TKT-${(Math.floor(Math.random() * 90000) + 10000)}`,
+          record_number: `BT${new Date().getFullYear()}${Math.floor(Math.random() * 9000) + 1000}`,
+          ticket_number: `TKT-${Math.floor(Math.random() * 90000) + 10000}`,
           outing_date: new Date().toISOString().split("T")[0],
           items: [{ asset_id: 0, quantity: 1, notes: "" }],
         });
@@ -156,16 +174,17 @@ export default function MaintenanceFormModal({
     const payload = {
       ...data,
       outing_date: new Date(data.outing_date).toISOString(),
-      items: data.items.map(item => {
-        const assetObj = assets.find(a => a.id === item.asset_id);
+      items: data.items.map((item) => {
+        const assetObj = assets.find((a) => a.id === item.asset_id);
         return {
           ...item,
           from_location_id: assetObj?.location_id || 0,
           from_staff_id: assetObj?.staff_id || 0,
           from_unit_id: assetObj?.unit_id || 0,
-          return_to_location_id: item.return_to_location_id || assetObj?.location_id || 0,
+          return_to_location_id:
+            item.return_to_location_id || assetObj?.location_id || 0,
         };
-      })
+      }),
     };
 
     await mutate(
@@ -189,15 +208,22 @@ export default function MaintenanceFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
-          <DialogTitle>
-            {isEditing ? "Edit Maintenance" : "Create New Maintenance"}
-          </DialogTitle>
-          <DialogDescription className="text-xs text-muted-foreground">
+      <DialogContent className="sm:max-w-[850px] h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+        <DialogHeader className="p-8 pb-6 shrink-0 border-b">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Wrench className="text-primary" size={20} />
+            </div>
+            <DialogTitle className="text-2xl font-bold text-primary tracking-tight">
+              {isEditing
+                ? "Edit maintenance record"
+                : "Create maintenance record"}
+            </DialogTitle>
+          </div>
+          <DialogDescription className="text-sm text-muted-foreground ml-11">
             {isEditing
-              ? "Modify the information of the selected maintenance record."
-              : "Register a new maintenance record by specifying details and selecting assets."}
+              ? "Update the maintenance details and asset allocations."
+              : "Register a new maintenance record with detailed tracking and approval workflow."}
           </DialogDescription>
         </DialogHeader>
 
@@ -205,32 +231,97 @@ export default function MaintenanceFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            <GeneralInfoSection form={form} />
-            <ServiceInfoSection form={form} />
-            <AssetSelectionSection 
-              form={form} 
-              fields={fields} 
-              append={append} 
-              remove={remove} 
-              assets={assets}
-              assetsPending={assetsPending}
-              reFetchAssets={reFetchAssets}
-              locations={locations}
-            />
-            <ApprovalProcessSection 
-              form={form} 
-              users={users} 
-              activeTemplate={activeTemplate ?? undefined} 
-            />
-          </div>
+          <Tabs
+            defaultValue="general"
+            className="flex-1 flex flex-col overflow-hidden"
+          >
+            <div className="px-8">
+              <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/30">
+                <TabsTrigger
+                  value="general"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                >
+                  <ClipboardList size={16} /> Thông tin chung
+                </TabsTrigger>
+                <TabsTrigger
+                  value="service"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                >
+                  <Wrench size={16} /> Dịch vụ sửa chữa
+                </TabsTrigger>
+                <TabsTrigger
+                  value="assets"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                >
+                  <Package size={16} /> Lựa chọn tài sản
+                </TabsTrigger>
+                <TabsTrigger
+                  value="approval"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                >
+                  <UserCheck size={16} /> Quy trình phê duyệt
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-          <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+              <TabsContent
+                value="general"
+                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
+              >
+                <GeneralInfoSection form={form} />
+              </TabsContent>
+              <TabsContent
+                value="service"
+                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
+              >
+                <ServiceInfoSection form={form} />
+              </TabsContent>
+              <TabsContent
+                value="assets"
+                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
+              >
+                <div className="space-y-4">
+                  <AssetSelectionSection
+                    form={form}
+                    fields={fields}
+                    append={append}
+                    remove={remove}
+                    assets={assets}
+                    assetsPending={assetsPending}
+                    reFetchAssets={reFetchAssets}
+                    locations={locations}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent
+                value="approval"
+                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
+              >
+                <ApprovalProcessSection
+                  form={form}
+                  users={users}
+                  activeTemplate={activeTemplate ?? undefined}
+                />
+              </TabsContent>
+            </div>
+          </Tabs>
+
+          <div className="p-6 border-t flex justify-end gap-3 shrink-0">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={pending} className="min-w-[120px]">
-              {pending ? "Processing..." : isEditing ? "Save Changes" : "Create"}
+            <Button type="submit" disabled={pending}>
+              {pending ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Processing...
+                </div>
+              ) : isEditing ? (
+                "Save changes"
+              ) : (
+                "Confirm"
+              )}
             </Button>
           </div>
         </form>

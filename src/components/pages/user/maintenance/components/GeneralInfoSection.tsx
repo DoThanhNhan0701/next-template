@@ -17,10 +17,7 @@ interface GeneralInfoSectionProps {
 
 export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
   return (
-    <div className="flex flex-col gap-3">
-      <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
-        1. General Information
-      </h3>
+    <div className="flex flex-col gap-6">
       
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Controller
@@ -28,7 +25,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="record_number"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Record Number *
               </FieldLabel>
               <Input {...field} className="h-12 bg-white" placeholder="e.g. BT20240001" />
@@ -41,7 +38,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="ticket_number"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Ticket Number *
               </FieldLabel>
               <Input {...field} className="h-12 bg-white" placeholder="e.g. TKT-10293" />
@@ -57,7 +54,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="outing_date"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Outing Date *
               </FieldLabel>
               <Input {...field} type="date" className="h-12 bg-white" />
@@ -70,7 +67,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="handover_person"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Handover Person *
               </FieldLabel>
               <Input {...field} className="h-12 bg-white" placeholder="Who handed over the asset?" />
@@ -100,7 +97,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="external_link"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 External Link
               </FieldLabel>
               <Input {...field} value={field.value || ""} className="h-12 bg-white" placeholder="https://..." />

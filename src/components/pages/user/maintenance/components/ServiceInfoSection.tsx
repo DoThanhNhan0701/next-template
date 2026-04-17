@@ -16,10 +16,7 @@ interface ServiceInfoSectionProps {
 
 export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
   return (
-    <div className="flex flex-col gap-3 pt-6 mt-6 border-t">
-      <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
-        2. Service Provider Information
-      </h3>
+    <div className="flex flex-col gap-6">
 
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Controller
@@ -40,7 +37,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_address"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Service Provider Address
               </FieldLabel>
               <Input {...field} value={field.value || ""} className="h-12 bg-white" placeholder="Where is it located?" />
@@ -56,7 +53,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_person_name"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Taker Name *
               </FieldLabel>
               <Input {...field} className="h-12 bg-white" placeholder="Who received the asset?" />
@@ -69,7 +66,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_phone"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Taker Phone
               </FieldLabel>
               <Input {...field} value={field.value || ""} className="h-12 bg-white" placeholder="Phone number" />
@@ -85,7 +82,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="expected_cost"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Expected Cost
               </FieldLabel>
               <Input 
@@ -103,7 +100,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="actual_cost"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase">
+              <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Actual Cost
               </FieldLabel>
               <Input 

@@ -49,10 +49,7 @@ export function ApprovalProcessSection({
   }
 
   return (
-    <div className="flex flex-col gap-3 pt-6 mt-6 border-t pb-6">
-      <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
-        4. Approval Process
-      </h3>
+    <div className="flex flex-col gap-6">
 
       <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
         {activeTemplate.steps.map((step, index) => (
@@ -63,7 +60,7 @@ export function ApprovalProcessSection({
             rules={{ required: "Approver is required" }}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest uppercase block">
+                <FieldLabel className="text-xs font-semibold text-muted-foreground block">
                   Step {index + 1}: {step.name}
                 </FieldLabel>
                 <Select

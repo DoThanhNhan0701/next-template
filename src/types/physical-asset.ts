@@ -162,3 +162,25 @@ export interface ILifecycleLog {
   doc_status: string | null;
   doc_status_color: string | null;
 }
+
+export interface IAssetStock {
+  asset_id: number;
+  location_id: number;
+  quantity: number;
+  location_code: string;
+  location_name: string;
+  staff_id: number | null;
+  unit_id: number | null;
+}
+
+export interface IAssetHolder {
+  name: string;
+  type: string;
+  quantity: number;
+  staff_id: number | null;
+  unit_id: number | null;
+  customer_id: number | null;
+  source_type: string;
+  source_number: string;
+  acquired_at: string;
+}
