@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useGet } from "@/hooks/useGet";
-import { dynamicEndpoints } from "@/config/endpoints";
-import { IAuditSession, IAuditDetailsResponse } from "@/types/audit";
 import { useRouter } from "next/navigation";
+import { dynamicEndpoints } from "@/config/endpoints";
+import ViewAuditItemModal from "./ViewAuditItemModal";
 import {
     ChevronLeft, 
     ClipboardList, 
@@ -16,6 +17,7 @@ import {
     CheckCircle2,
     Info
 } from "lucide-react";
+import { IAuditSession, IAuditDetailsResponse, IAuditDetailItem } from "@/types/audit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,6 +30,8 @@ interface Props { id: string; }
 
 export default function AuditDetail({ id }: Props) {
     const router = useRouter();
+    const [selectedItem, setSelectedItem] = useState<IAuditDetailItem | null>(null);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
     const { response: session, pending: sessionPending } = useGet<IAuditSession>({
         url: dynamicEndpoints.AUDIT_SESSION_DETAIL(Number(id)),
@@ -125,9 +129,11 @@ export default function AuditDetail({ id }: Props) {
                                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                                     <TableRow>
                                         <TableHead className="px-4 h-10 text-xs font-semibold">Asset</TableHead>
-                                        <TableHead className="px-4 h-10 text-xs font-semibold">Status</TableHead>
-                                        <TableHead className="px-4 h-10 text-xs font-semibold">Verified At</TableHead>
+                                        <TableHead className="px-4 h-10 text-xs font-semibold">Current State</TableHead>
+                                        <TableHead className="px-4 h-10 text-xs font-semibold text-center">Audit Result</TableHead>
+                                        <TableHead className="px-4 h-10 text-xs font-semibold">Action & Target</TableHead>
                                         <TableHead className="px-4 h-10 text-xs font-semibold">Notes</TableHead>
+                                        <TableHead className="px-4 h-10 text-xs font-semibold">Verified</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -146,39 +152,116 @@ export default function AuditDetail({ id }: Props) {
                                             </TableCell>
                                         </TableRow>
                                     ) : (
-                                        items.map((item) => (
-                                            <TableRow key={item.id} className="border-border/50 hover:bg-muted/30">
+                                        items.map((item: IAuditDetailItem) => (
+                                            <TableRow 
+                                                key={item.id} 
+                                                className="border-border/50 hover:bg-muted/30 group cursor-pointer"
+                                                onClick={() => {
+                                                    setSelectedItem(item);
+                                                    setIsViewModalOpen(true);
+                                                }}
+                                            >
+                                                {/* 1. Asset Info */}
                                                 <TableCell className="px-4 py-3">
                                                     <div className="flex flex-col gap-0.5">
-                                                        <span className="text-sm font-semibold text-foreground">{item.asset.name}</span>
-                                                        <code className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded w-fit text-muted-foreground uppercase">
+                                                        <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                                                            {item.asset.name}
+                                                        </span>
+                                                        <code className="text-[10px] font-mono bg-muted/80 px-1.5 py-0.5 rounded w-fit text-muted-foreground uppercase">
                                                             {item.asset.asset_code}
                                                         </code>
                                                     </div>
                                                 </TableCell>
+
+                                                {/* 2. Current State */}
                                                 <TableCell className="px-4 py-3">
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="flex items-center gap-1.5 text-xs">
+                                                            <User size={12} className="text-muted-foreground opacity-70" />
+                                                            <span className="font-medium text-foreground/80">
+                                                                {item.asset.holder_name || "N/A"}
+                                                            </span>
+                                                        </div>
+                                                        <Badge
+                                                            variant="outline"
+                                                            className="w-fit text-[9px] px-1.5 py-0 rounded-sm font-medium"
+                                                            style={{
+                                                                backgroundColor: `${item.asset.status_obj?.color}10`,
+                                                                color: item.asset.status_obj?.color,
+                                                                borderColor: `${item.asset.status_obj?.color}30`,
+                                                            }}
+                                                        >
+                                                            {item.asset.status_obj?.name}
+                                                        </Badge>
+                                                    </div>
+                                                </TableCell>
+
+                                                {/* 3. Audit Result */}
+                                                <TableCell className="px-4 py-3 text-center">
                                                     <Badge
                                                         variant="outline"
-                                                        className="px-2 py-0.5 text-[10px] font-bold rounded-full"
+                                                        className="px-2.5 py-0.5 text-[10px] font-bold rounded-full shadow-sm"
                                                         style={{
-                                                            backgroundColor: `${item.status_obj?.color}15`,
+                                                            backgroundColor: `${item.status_obj?.color}18`,
                                                             color: item.status_obj?.color,
-                                                            borderColor: `${item.status_obj?.color}30`,
+                                                            borderColor: `${item.status_obj?.color}40`,
                                                         }}
                                                     >
+                                                        {item.status_obj?.code === "MATCHED" && <CheckCircle2 size={10} className="mr-1" />}
                                                         {item.status_obj?.name}
                                                     </Badge>
                                                 </TableCell>
+
+                                                {/* 4. Action & Target */}
                                                 <TableCell className="px-4 py-3">
-                                                    <div className="flex flex-col text-[11px] text-muted-foreground">
-                                                        <span>{new Date(item.verified_at).toLocaleDateString("vi-VN")}</span>
-                                                        <span>{new Date(item.verified_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <div className="flex flex-col gap-1 max-w-[180px]">
+                                                        {item.proposed_action ? (
+                                                            <>
+                                                                <span className="text-[10px] font-bold text-amber-500 uppercase tracking-tight">
+                                                                    {item.proposed_action}
+                                                                </span>
+                                                                <div className="flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded border border-border/40">
+                                                                    {item.target_staff && <User size={10} />}
+                                                                    {item.target_location_id && <MapPin size={10} />}
+                                                                    <span className="truncate">
+                                                                        {item.target_staff?.full_name || item.target_holder_name || "System update"}
+                                                                    </span>
+                                                                    {(item.transfer_quantity !== null || item.unit_quantity !== null) && (
+                                                                        <span className="ml-auto font-bold text-primary">
+                                                                            qty: {item.transfer_quantity ?? item.unit_quantity}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-[11px] text-muted-foreground italic">No action required</span>
+                                                        )}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className="px-4 py-3 max-w-[200px] truncate">
-                                                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                                        <Info size={12} className="shrink-0 opacity-40" />
-                                                        <span className="italic">{item.notes || "No notes"}</span>
+
+                                                {/* 5. Notes */}
+                                                <TableCell className="px-4 py-3 min-w-[150px]">
+                                                    <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80 leading-relaxed italic line-clamp-2 hover:line-clamp-none transition-all">
+                                                        {item.notes ? (
+                                                            <>
+                                                                <Info size={12} className="shrink-0 mt-0.5 opacity-40 text-primary" />
+                                                                <span>{item.notes}</span>
+                                                            </>
+                                                        ) : (
+                                                            <span className="opacity-40">—</span>
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+
+                                                {/* 6. Verified Time */}
+                                                <TableCell className="px-4 py-3">
+                                                    <div className="flex flex-col text-[10px] items-end justify-center">
+                                                        <span className="font-bold text-foreground/70">
+                                                            {new Date(item.verified_at).toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit' })}
+                                                        </span>
+                                                        <span className="text-muted-foreground font-mono">
+                                                            {new Date(item.verified_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -252,6 +335,12 @@ export default function AuditDetail({ id }: Props) {
                     </div>
                 </div>
             </div>
+
+            <ViewAuditItemModal 
+                item={selectedItem}
+                isOpen={isViewModalOpen}
+                onClose={() => setIsViewModalOpen(false)}
+            />
         </div>
     );
 }
