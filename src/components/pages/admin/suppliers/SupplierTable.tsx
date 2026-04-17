@@ -101,6 +101,9 @@ export default function SupplierTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%] text-left">
                 Supplier
               </TableHead>
@@ -123,20 +126,23 @@ export default function SupplierTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : suppliers.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Truck}
                 message="No suppliers found"
                 description="Add your first supplier using the button above."
               />
             ) : (
-              suppliers.map((item) => (
+              suppliers.map((item, index) => (
                 <TableRow
                   key={item.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     <div className="flex flex-col">
                       <span>{item.name}</span>

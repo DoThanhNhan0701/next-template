@@ -75,6 +75,9 @@ export default function StatusTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
                 Code
               </TableHead>
@@ -94,20 +97,23 @@ export default function StatusTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={5} rows={6} />
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : statuses.length === 0 ? (
               <TableEmptyRow
-                colSpan={5}
+                colSpan={6}
                 icon={CircleDot}
                 message="No statuses found"
                 description="Add your first status using the button above."
               />
             ) : (
-              statuses.map((item) => (
+              statuses.map((item, index) => (
                 <TableRow
                   key={item.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     {item.code}
                   </TableCell>

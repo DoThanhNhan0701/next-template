@@ -109,6 +109,9 @@ export default function CustomerTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%] text-left">
                 Customer
               </TableHead>
@@ -131,20 +134,23 @@ export default function CustomerTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : customers.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Users}
                 message="No customers found"
                 description="Add your first customer using the button above."
               />
             ) : (
-              customers.map((item: ICustomer) => (
+              customers.map((item: ICustomer, index) => (
                 <TableRow
                   key={item.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-1.5">

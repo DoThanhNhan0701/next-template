@@ -128,6 +128,9 @@ export default function StaffTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
                 Staff Code
               </TableHead>
@@ -150,20 +153,23 @@ export default function StaffTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : staffs.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Contact}
                 message="No staff found"
                 description="Add your first staff member using the button above."
               />
             ) : (
-              staffs.map((staff) => (
+              staffs.map((staff, index) => (
                 <TableRow
                   key={staff.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     {staff.staff_code}
                   </TableCell>

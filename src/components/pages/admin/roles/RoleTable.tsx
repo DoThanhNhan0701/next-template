@@ -118,6 +118,9 @@ export default function RoleTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 Role Name
               </TableHead>
@@ -134,20 +137,23 @@ export default function RoleTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={4} rows={6} />
+              <TableLoadingRows colSpan={5} rows={6} />
             ) : roles.length === 0 ? (
               <TableEmptyRow
-                colSpan={4}
+                colSpan={5}
                 icon={Shield}
                 message="No roles found"
                 description="Add your first role using the button above."
               />
             ) : (
-              roles.map((role) => (
+              roles.map((role, index) => (
                 <TableRow
                   key={role.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     {role.name}
                   </TableCell>

@@ -135,6 +135,9 @@ export default function LocationTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 Code
               </TableHead>
@@ -154,20 +157,23 @@ export default function LocationTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={5} rows={6} />
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : locations.length === 0 ? (
               <TableEmptyRow
-                colSpan={5}
+                colSpan={6}
                 icon={MapPin}
                 message="No locations found"
                 description="Add your first location using the button above."
               />
             ) : (
-              locations.map((loc) => (
+              locations.map((loc, index) => (
                 <TableRow
                   key={loc.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     {loc.code}
                   </TableCell>

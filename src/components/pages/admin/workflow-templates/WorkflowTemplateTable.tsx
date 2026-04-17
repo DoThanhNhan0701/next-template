@@ -4,8 +4,18 @@ import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IWorkflowTemplate } from "@/types/workflow-template";
-import { EditIcon, Trash2Icon, PlusIcon, GitBranch, Lock, Unlock } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  EditIcon,
+  Trash2Icon,
+  PlusIcon,
+  GitBranch,
+  Lock,
+  Unlock,
+} from "lucide-react";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -26,8 +36,10 @@ export default function WorkflowTemplateTable() {
   const templates = response || [];
 
   const [isCreating, setIsCreating] = useState(false);
-  const [templateToEdit, setTemplateToEdit] = useState<IWorkflowTemplate | null>(null);
-  const [templateToDelete, setTemplateToDelete] = useState<IWorkflowTemplate | null>(null);
+  const [templateToEdit, setTemplateToEdit] =
+    useState<IWorkflowTemplate | null>(null);
+  const [templateToDelete, setTemplateToDelete] =
+    useState<IWorkflowTemplate | null>(null);
 
   const handleSaveSuccess = (saved: IWorkflowTemplate, isEdit: boolean) => {
     setResponse((prev) => {
@@ -68,27 +80,48 @@ export default function WorkflowTemplateTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[30%]">Workflow Name</TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">Document Type</TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">Steps</TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">Status</TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">Locked</TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%] text-right">Actions</TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[30%]">
+                Workflow Name
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[20%]">
+                Document Type
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
+                Steps
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
+                Status
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
+                Locked
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[20%] text-right">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : templates.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={GitBranch}
                 message="No workflows found"
                 description="Add your first approval workflow using the button above."
               />
             ) : (
-              templates.map((item) => (
-                <TableRow key={item.id} className="hover:bg-primary/5 transition-colors">
+              templates.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  className="hover:bg-primary/5 transition-colors"
+                >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium">
                     <div className="flex flex-col">
                       <span>{item.name}</span>
@@ -100,7 +133,8 @@ export default function WorkflowTemplateTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm">
-                    {DOCUMENT_TYPE_LABELS[item.document_type] ?? item.document_type}
+                    {DOCUMENT_TYPE_LABELS[item.document_type] ??
+                      item.document_type}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center text-sm">
                     {item.steps?.length ?? 0}
@@ -120,7 +154,10 @@ export default function WorkflowTemplateTable() {
                     {item.is_locked ? (
                       <Lock size={15} className="mx-auto text-amber-500" />
                     ) : (
-                      <Unlock size={15} className="mx-auto text-muted-foreground" />
+                      <Unlock
+                        size={15}
+                        className="mx-auto text-muted-foreground"
+                      />
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-right">

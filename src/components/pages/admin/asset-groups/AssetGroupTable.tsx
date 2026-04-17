@@ -122,6 +122,9 @@ export default function AssetGroupTable() {
         <Table className="whitespace-nowrap">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
+              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                No
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
                 Code
               </TableHead>
@@ -144,20 +147,23 @@ export default function AssetGroupTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : assetGroups.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Layers}
                 message="No asset groups found"
                 description="Add your first asset group using the button above."
               />
             ) : (
-              assetGroups.map((group) => (
+              assetGroups.map((group, index) => (
                 <TableRow
                   key={group.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
+                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
                   <TableCell className="px-4 py-3 font-medium text-foreground">
                     {group.code}
                   </TableCell>
