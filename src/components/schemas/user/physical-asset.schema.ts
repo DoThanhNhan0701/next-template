@@ -3,8 +3,8 @@ import { z } from "zod";
 export const PhysicalAssetSchema = z.object({
   asset_code: z.string().optional().nullable(),
   name: z.string().min(1, "Asset name is required"),
-  serial_number: z.string().optional(),
-  model: z.string().optional(),
+  serial_number: z.string().nullable().optional(),
+  model: z.string().nullable().optional(),
   request_ticket: z.string().nullable().optional(),
   importance_id: z.coerce.number().int().min(1, "Importance is required"),
   initial_location_id: z.coerce.number().int().nullable().optional(),
