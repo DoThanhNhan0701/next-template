@@ -28,7 +28,7 @@ export const endpoints = getEndPoint("api/v1", {
   CATALOG_GROUPS: "catalog-groups/",
   STATUSES: "statuses",
   USAGE_MODES: "usagemodes",
-  SUPPLIERS: "suppliers/",
+  SUPPLIERS: "suppliers",
   CUSTOMERS: "customers",
   PHYSICAL_ASSETS: "physical-assets",
   UNITS: "units/",
@@ -50,6 +50,7 @@ export const endpoints = getEndPoint("api/v1", {
   TREE: 'tree',
   MAINTENANCES: "maintenances",
   LIQUIDATIONS: "liquidations",
+  IMPORTANCES: "asset-classifications/importances",
 });
 
 export const dynamicEndpoints = {

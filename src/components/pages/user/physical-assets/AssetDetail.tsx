@@ -268,11 +268,38 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   Scan to identify asset <span className="font-mono font-bold text-foreground">{asset.asset_code}</span>
                 </p>
               </div>
-              <div id="qr-print-area" className="flex flex-col items-center gap-3 p-6 bg-white rounded-xl border border-border/50 shadow-sm">
-                <QRCodeSVG value={asset.asset_code} size={200} level="H" includeMargin={false} />
-                <div className="flex flex-col items-center gap-0.5">
-                  <span className="font-mono text-sm font-bold tracking-widest text-black">{asset.asset_code}</span>
-                  <span className="text-xs text-gray-500">{asset.name}</span>
+              <div id="qr-print-area" className="flex gap-6 items-center p-6 bg-white rounded-xl border border-border/60 shadow-sm max-w-lg">
+                {/* QR Code */}
+                <div className="shrink-0">
+                  <QRCodeSVG value={asset.asset_code} size={160} level="H" />
+                </div>
+
+                {/* Info */}
+                <div className="flex flex-col gap-3 flex-1 min-w-0">
+                  <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
+                    <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">Code</span>
+                    <span className="font-mono text-base font-bold text-gray-900 tracking-wider">{asset.asset_code}</span>
+                  </div>
+                  <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
+                    <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">Owner</span>
+                    <span className="text-sm font-semibold text-gray-800">{asset.owner || "—"}</span>
+                  </div>
+                  <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
+                    <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">Importance Level</span>
+                    {asset.importance_obj ? (
+                      <span
+                        className="text-sm font-bold w-fit"
+                        style={{ color: asset.importance_obj.color }}
+                      >
+                        {asset.importance_obj.name}
+                      </span>
+                    ) : (
+                      <span className="text-sm font-semibold text-gray-800">—</span>
+                    )}
+                  </div>
+                  <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400 text-center">
+                    RAINSCALES VIETNAM JSC.
+                  </span>
                 </div>
               </div>
               <Button
@@ -305,6 +332,8 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           assetCode={asset.asset_code}
           assetName={asset.name}
           assetId={asset.id}
+          owner={asset.owner}
+          importanceLevel={asset.importance_obj}
         />
       )}
     </>

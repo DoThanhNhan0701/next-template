@@ -38,10 +38,7 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { cleanFormData } from "@/utils/form";
 import { IPhysicalAsset } from "@/types/physical-asset";
-import { IStatus } from "@/types/status";
-import { ILocation } from "@/types/location";
-import { ISupplier } from "@/types/supplier";
-import { IUnit } from "@/types/unit";
+import { ILocation } from "@/types/location"; import { ISupplier } from "@/types/supplier";
 import { ICatalogType } from "@/types/catalog-type";
 import { IUsageMode } from "@/types/usage-mode";
 import { IOrgUnit } from "@/types/org";
@@ -65,16 +62,13 @@ export default function AssetFormModal({
   const { mutate, pending } = useMutation();
 
   // Fetch metadata
-  const { response: statusRes } = useGet<IStatus[]>(
-    {
-      url: endpoints.STATUSES + "?category=asset",
-    },
+  const { response: importanceRes } = useGet<{ id: number; code: string; name: string; color: string }[]>(
+    { url: endpoints.IMPORTANCES },
     { disabled: !isOpen },
   );
-  const { response: locationRes } = useGet<ILocation[]>(
-    {
-      url: endpoints.LOCATIONS,
-    },
+  const { response: locationRes } = useGet<ILocation[]>({
+    url: endpoints.LOCATIONS,
+  },
     { disabled: !isOpen },
   );
   const { response: supplierRes } = useGet<ISupplier[]>(
@@ -83,10 +77,7 @@ export default function AssetFormModal({
     },
     { disabled: !isOpen },
   );
-  const { response: unitRes } = useGet<IUnit[]>(
-    { url: endpoints.UNITS },
-    { disabled: !isOpen },
-  );
+
   const { response: catalogRes } = useGet<ICatalogType[]>(
     {
       url: endpoints.CATALOG_TYPES,
@@ -109,14 +100,13 @@ export default function AssetFormModal({
     { disabled: !isOpen },
   );
 
-  const statuses = statusRes || [];
   const locations = locationRes || [];
   const suppliers = supplierRes || [];
-  const units = unitRes || [];
   const categories = catalogRes || [];
   const usageModes = usageModeRes || [];
   const orgUnits = orgRes || [];
   const staffs = staffRes?.items || [];
+  const importances = importanceRes || [];
 
   const form = useForm({
     resolver: zodResolver(PhysicalAssetSchema),
@@ -336,6 +326,14 @@ export default function AssetFormModal({
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
+                        <div className={`mt-3 flex items-start gap-2 text-xs px-3 py-2 rounded-md border ${field.value === "unique" ? "bg-blue-50 border-blue-200 text-blue-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}>
+                          <CircleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                          {field.value === "unique" ? (
+                            <span>Mỗi tài sản được định danh bằng <strong>mã riêng biệt</strong> (serial number). Số lượng luôn là 1. Phù hợp với thiết bị có giá trị cao cần theo dõi từng cái.</span>
+                          ) : (
+                            <span>Tài sản được quản lý theo <strong>số lượng tổng</strong>, không phân biệt từng cái. Phù hợp với vật tư, phụ kiện hoặc hàng hóa nhập/xuất kho theo lô.</span>
+                          )}
+                        </div>
                       </Field>
                     )}
                   />
@@ -494,47 +492,6 @@ export default function AssetFormModal({
                     )}
                   />
                   <Controller
-                    name="status_id"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>Status</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              (None)
-                            </SelectItem>
-                            {statuses.map((s) => (
-                              <SelectItem key={s.id} value={s.id.toString()}>
-                                <div className="flex items-center gap-1.5">
-                                  <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: s.color }}
-                                  />
-                                  {s.name}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
                     name="usage_mode_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
@@ -591,9 +548,17 @@ export default function AssetFormModal({
                             >
                               (None)
                             </SelectItem>
-                            <SelectItem value="1">High</SelectItem>
-                            <SelectItem value="2">Standard</SelectItem>
-                            <SelectItem value="3">Low</SelectItem>
+                            {importances.map((imp) => (
+                              <SelectItem key={imp.id} value={imp.id.toString()}>
+                                <div className="flex items-center gap-1.5">
+                                  <div
+                                    className="w-2 h-2 rounded-full"
+                                    style={{ backgroundColor: imp.color }}
+                                  />
+                                  {imp.name}
+                                </div>
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         {fieldState.invalid && (
@@ -639,24 +604,6 @@ export default function AssetFormModal({
                     )}
                   />
                   <Controller
-                    name="location"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-2">
-                        <FieldLabel>Detailed Location</FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder="e.g. Floor 5, Desk 10"
-                          disabled={hasHolderValue}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
                     name="staff_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
@@ -681,8 +628,8 @@ export default function AssetFormModal({
                             </SelectItem>
                             {(watchedUnitId
                               ? staffs.filter(
-                                  (s) => s.unit_id === Number(watchedUnitId),
-                                )
+                                (s) => s.unit_id === Number(watchedUnitId),
+                              )
                               : staffs
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
@@ -728,7 +675,7 @@ export default function AssetFormModal({
                     name="quantity"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1">
+                      <Field className="gap-1 col-span-2">
                         <FieldLabel>Quantity</FieldLabel>
                         <Input
                           type="number"
@@ -737,41 +684,6 @@ export default function AssetFormModal({
                           placeholder="1"
                           disabled={watchedManagementMethod === "unique"}
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="measure_unit_id"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>Unit</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              (None)
-                            </SelectItem>
-                            {units.map((u) => (
-                              <SelectItem key={u.id} value={u.id.toString()}>
-                                {u.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
