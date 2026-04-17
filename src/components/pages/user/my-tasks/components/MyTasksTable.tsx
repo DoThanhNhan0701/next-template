@@ -64,8 +64,8 @@ export default function MyTasksTable() {
   );
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
-  const [skip, setSkip] = useState(0);
-  const limit = 10;
+  const [localCurrentPage, setLocalCurrentPage] = useState(1);
+  const limit = 1000; // Fetch a large set for local pagination
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -75,7 +75,6 @@ export default function MyTasksTable() {
   const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
   const queryParams = new URLSearchParams();
-  queryParams.append("skip", skip.toString());
   queryParams.append("limit", limit.toString());
 
   // Status filtering based on active tab
@@ -127,13 +126,26 @@ export default function MyTasksTable() {
     reason: "",
   }));
 
-  const allTasks = [...tasks, ...mappedAudits].sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-  );
+  const allTasks = [...tasks, ...mappedAudits]
+    .filter((task) => {
+      if (!appliedQ) return true;
+      const searchStr = appliedQ.toLowerCase();
+      return (
+        task.document_record_number.toLowerCase().includes(searchStr) ||
+        task.requester_name.toLowerCase().includes(searchStr) ||
+        task.step_name.toLowerCase().includes(searchStr)
+      );
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
 
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = tasks.length === limit;
+  const totalPages = Math.ceil(allTasks.length / 20);
+  const paginatedTasks = allTasks.slice(
+    (localCurrentPage - 1) * 20,
+    localCurrentPage * 20,
+  );
   const isPending = pending || auditPending;
 
   // Sync current tab count to Redux
@@ -311,7 +323,7 @@ export default function MyTasksTable() {
           value={activeTab}
           onValueChange={(val) => {
             setActiveTab(val as TaskStatus);
-            setSkip(0);
+            setLocalCurrentPage(1);
             const params = new URLSearchParams(searchParams.toString());
             params.set("tab", val);
             router.replace(`${pathname}?${params.toString()}`);
@@ -360,13 +372,19 @@ export default function MyTasksTable() {
             className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && setAppliedQ(q)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setAppliedQ(q);
+                setLocalCurrentPage(1);
+              }
+            }}
           />
           {q && (
             <button
               onClick={() => {
                 setQ("");
                 setAppliedQ("");
+                setLocalCurrentPage(1);
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
             >
@@ -391,7 +409,7 @@ export default function MyTasksTable() {
             onClick={() => {
               setQ("");
               setAppliedQ("");
-              setSkip(0);
+              setLocalCurrentPage(1);
             }}
             className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
@@ -431,7 +449,7 @@ export default function MyTasksTable() {
           <TableBody className="divide-y divide-(--surface-border-color)">
             {isPending ? (
               <TableLoadingRows colSpan={7} rows={6} />
-            ) : allTasks.length === 0 ? (
+            ) : paginatedTasks.length === 0 ? (
               <TableEmptyRow
                 colSpan={7}
                 icon={FileText}
@@ -439,7 +457,7 @@ export default function MyTasksTable() {
                 description="Everything is caught up! No tasks match your filters."
               />
             ) : (
-              allTasks.map((task) => (
+              paginatedTasks.map((task) => (
                 <TableRow
                   key={task.id}
                   onClick={() => {
@@ -566,7 +584,7 @@ export default function MyTasksTable() {
         </Table>
       </div>
 
-      {allTasks.length > 0 || skip > 0 ? (
+      {allTasks.length > 0 ? (
         <Pagination className="flex w-full justify-end mt-1">
           <PaginationContent>
             <PaginationItem>
@@ -574,30 +592,42 @@ export default function MyTasksTable() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (skip > 0 && !isPending)
-                    setSkip(Math.max(0, skip - limit));
+                  if (localCurrentPage > 1 && !isPending)
+                    setLocalCurrentPage(localCurrentPage - 1);
                 }}
                 className={
-                  skip === 0 || isPending
+                  localCurrentPage === 1 || isPending
                     ? "pointer-events-none opacity-50"
                     : ""
                 }
               />
             </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href="#"
+                  isActive={localCurrentPage === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setLocalCurrentPage(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
             <PaginationItem>
               <PaginationNext
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (hasMore && !isPending) setSkip(skip + limit);
+                  if (localCurrentPage < totalPages && !isPending)
+                    setLocalCurrentPage(localCurrentPage + 1);
                 }}
                 className={
-                  !hasMore || isPending ? "pointer-events-none opacity-50" : ""
+                  localCurrentPage === totalPages || isPending
+                    ? "pointer-events-none opacity-50"
+                    : ""
                 }
               />
             </PaginationItem>
