@@ -232,7 +232,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
               >
                 <SelectTrigger
                   className={cn(
-                    "h-12 bg-white rounded-lg border-2 shadow-sm transition-all",
+                    "bg-white rounded-lg border-2 shadow-sm transition-all",
                     sourceType === "stock"
                       ? "border-emerald-100 focus:border-emerald-500"
                       : "border-blue-100 focus:border-blue-500",
@@ -362,7 +362,7 @@ export function AssetSelectionSection({
                   name={`items.${index}.asset_id`}
                   control={form.control}
                   render={({ field: detailField, fieldState }) => (
-                    <Field>
+                    <Field className="gap-1">
                       <FieldLabel className="text-xs font-semibold text-muted-foreground">
                         Chọn tài sản *
                       </FieldLabel>
@@ -399,7 +399,7 @@ export function AssetSelectionSection({
                           (!assetsPending && assets.length === 0)
                         }
                       >
-                        <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
+                        <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
                           <SelectValue
                             placeholder={
                               assetsPending
@@ -493,13 +493,13 @@ export function AssetSelectionSection({
                   name={`items.${index}.quantity`}
                   control={form.control}
                   render={({ field: qtyField, fieldState }) => (
-                    <Field>
+                    <Field className="gap-1">
                       <FieldLabel className="text-xs font-semibold text-muted-foreground">
                         Số lượng *
                       </FieldLabel>
                       <Input
                         type="number"
-                        className="h-12 bg-white text-center font-semibold"
+                        className="bg-white text-center font-semibold"
                         {...qtyField}
                         onChange={(e) =>
                           qtyField.onChange(Number(e.target.value))
@@ -517,7 +517,7 @@ export function AssetSelectionSection({
                 name={`items.${index}.return_to_location_id`}
                 control={form.control}
                 render={({ field: locField, fieldState }) => (
-                  <Field>
+                  <Field className="gap-1">
                     <FieldLabel className="text-xs font-semibold text-muted-foreground">
                       Vị trí trả về
                     </FieldLabel>
@@ -548,14 +548,14 @@ export function AssetSelectionSection({
                 name={`items.${index}.notes`}
                 control={form.control}
                 render={({ field: notesField, fieldState }) => (
-                  <Field>
+                  <Field className="gap-1">
                     <FieldLabel className="text-xs font-semibold text-muted-foreground">
                       Ghi chú item
                     </FieldLabel>
                     <Input
                       {...notesField}
                       placeholder="Maintenance detail for this asset..."
-                      className="h-10 bg-white/50 rounded-md border-muted-foreground/10 text-xs"
+                      className="bg-white/50 rounded-md border-muted-foreground/10 text-xs"
                       value={notesField.value || ""}
                     />
                     <FieldError errors={[fieldState.error]} />

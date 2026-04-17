@@ -235,8 +235,8 @@ export default function MaintenanceFormModal({
             defaultValue="general"
             className="flex-1 flex flex-col overflow-hidden"
           >
-            <div className="px-8">
-              <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/30">
+            <div className="px-4 pb-4">
+              <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/30 z-10">
                 <TabsTrigger
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
@@ -264,7 +264,7 @@ export default function MaintenanceFormModal({
               </TabsList>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
               <TabsContent
                 value="general"
                 className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
