@@ -23,6 +23,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -64,6 +72,7 @@ export default function MyTasksTable() {
   );
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
+  const [selectedProcessType, setSelectedProcessType] = useState<string>("all");
   const [localCurrentPage, setLocalCurrentPage] = useState(1);
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
@@ -125,6 +134,9 @@ export default function MyTasksTable() {
 
   const allTasks = [...tasks, ...mappedAudits]
     .filter((task) => {
+      if (selectedProcessType !== "all" && task.document_type !== selectedProcessType) {
+        return false;
+      }
       if (!appliedQ) return true;
       const searchStr = appliedQ.toLowerCase();
       return (
@@ -329,6 +341,7 @@ export default function MyTasksTable() {
           onValueChange={(val) => {
             setActiveTab(val as TaskStatus);
             setLocalCurrentPage(1);
+            setSelectedProcessType("all");
             const params = new URLSearchParams(searchParams.toString());
             params.set("tab", val);
             router.replace(`${pathname}?${params.toString()}`);
@@ -400,13 +413,32 @@ export default function MyTasksTable() {
 
         {/* Filter Group */}
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="h-10 px-4 bg-background/50 border-border/50 transition-all hover:bg-background/80 flex items-center gap-2 text-xs font-semibold"
+          <Select
+            value={selectedProcessType}
+            onValueChange={(val) => {
+              setSelectedProcessType(val);
+              setLocalCurrentPage(1);
+            }}
           >
-            <Filter size={14} className="text-muted-foreground/70" />
-            <span>All Processes</span>
-          </Button>
+            <SelectTrigger className="h-10 px-4 bg-background/50 border-border/50 text-xs font-semibold hover:bg-background/80 transition-all w-[150px]">
+              <div className="flex items-center gap-2">
+                <Filter size={14} className="text-muted-foreground/70 shrink-0" />
+                <SelectValue placeholder="All Processes" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Processes</SelectItem>
+              <SelectItem value="allocation">Allocation</SelectItem>
+              <SelectItem value="audit">Audit</SelectItem>
+              <SelectItem value="liquidation">Liquidation</SelectItem>
+              <SelectItem value="maintenance">Maintenance</SelectItem>
+              <SelectItem value="recovery">Recovery</SelectItem>
+              <SelectItem value="rental">Rental</SelectItem>
+              <SelectItem value="stock_in">Stock In</SelectItem>
+              <SelectItem value="stock_out">Stock Out</SelectItem>
+              <SelectItem value="transfer">Transfer</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Button
             variant="outline"
@@ -415,6 +447,7 @@ export default function MyTasksTable() {
               setQ("");
               setAppliedQ("");
               setLocalCurrentPage(1);
+              setSelectedProcessType("all");
             }}
             className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
