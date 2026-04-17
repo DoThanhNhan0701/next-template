@@ -94,7 +94,12 @@ export function GeneralLiquidationSection({
               <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Ngày thanh lý *
               </FieldLabel>
-              <Input {...field} type="date" className="bg-white h-11" />
+              <Input
+                {...field}
+                type="date"
+                value={field.value ?? ""}
+                className="bg-white h-11"
+              />
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}
@@ -110,7 +115,7 @@ export function GeneralLiquidationSection({
               <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Hình thức thanh lý *
               </FieldLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger className="bg-white h-11 shadow-sm">
                   <SelectValue placeholder="Chọn hình thức" />
                 </SelectTrigger>

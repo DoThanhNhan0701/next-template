@@ -28,7 +28,7 @@ export const LiquidationSchema = z.object({
   workflow_assignments: z.array(
     z.object({
       step_id: z.number(),
-      user_id: z.number(),
+      user_id: z.number().min(1, "Required"),
     }),
   ),
 });

@@ -133,6 +133,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
                 type="number"
                 className="bg-white h-11"
                 {...field}
+                value={field.value ?? 0}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
               <FieldError errors={[fieldState.error]} />
@@ -151,6 +152,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
                 type="number"
                 className="bg-white h-11"
                 {...field}
+                value={field.value ?? 0}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
               <FieldError errors={[fieldState.error]} />
@@ -169,6 +171,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
                 type="number"
                 className="bg-white h-11"
                 {...field}
+                value={field.value ?? 0}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
               <FieldError errors={[fieldState.error]} />

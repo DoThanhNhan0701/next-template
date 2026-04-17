@@ -100,38 +100,44 @@ export default function LiquidationFormModal({
   const locations = locationRes || [];
 
   useEffect(() => {
-    if (isOpen) {
-      if (liquidationToEdit) {
-        // Handle edit mapping if needed
-      } else {
-        form.reset({
-          record_number: "",
-          reason: "",
-          notes: null,
-          liquidation_date: new Date().toISOString().split("T")[0],
-          liquidation_type: "sell",
-          committee: [],
-          total_value: 0,
-          buyer_name: null,
-          external_link: null,
-          attachments: [],
-          items: [
-            {
-              asset_id: 0,
-              quantity: 1,
-              unit_value: 0,
-              remaining_value: 0,
-              notes: "",
-              from_location_id: 0,
-              from_staff_id: 0,
-              from_unit_id: 0,
-            },
-          ],
-          workflow_assignments: [],
-        });
-      }
+    if (!isOpen) return;
+
+    if (liquidationToEdit) {
+      // Handle edit mapping if needed
+    } else {
+      const initialWorkflow =
+        activeTemplate?.steps?.map((step) => ({
+          step_id: step.id,
+          user_id: 0,
+        })) || [];
+
+      form.reset({
+        record_number: "",
+        reason: "",
+        notes: null,
+        liquidation_date: new Date().toISOString().split("T")[0],
+        liquidation_type: "sell",
+        committee: [],
+        total_value: 0,
+        buyer_name: null,
+        external_link: null,
+        attachments: [],
+        items: [
+          {
+            asset_id: 0,
+            quantity: 1,
+            unit_value: 0,
+            remaining_value: 0,
+            notes: "",
+            from_location_id: 0,
+            from_staff_id: 0,
+            from_unit_id: 0,
+          },
+        ],
+        workflow_assignments: initialWorkflow,
+      });
     }
-  }, [isOpen, liquidationToEdit, form]);
+  }, [isOpen, liquidationToEdit, form, activeTemplate]);
 
   const onSubmit = async (data: LiquidationFormValues) => {
     const url = isEditing
@@ -142,6 +148,7 @@ export default function LiquidationFormModal({
     const payload = {
       ...data,
       liquidation_date: new Date(data.liquidation_date).toISOString(),
+      committee: data.committee.join(","),
     };
 
     await mutate(
@@ -162,6 +169,21 @@ export default function LiquidationFormModal({
       },
     );
   };
+
+  const errors = form.formState.errors;
+  const hasGeneralErrors = !!(
+    errors.record_number ||
+    errors.reason ||
+    errors.liquidation_date ||
+    errors.liquidation_type ||
+    errors.committee ||
+    errors.total_value ||
+    errors.buyer_name ||
+    errors.external_link ||
+    errors.notes
+  );
+  const hasAssetsErrors = !!errors.items;
+  const hasApprovalErrors = !!errors.workflow_assignments;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -196,21 +218,30 @@ export default function LiquidationFormModal({
               <TabsList className="grid w-full grid-cols-3 h-16 p-1 bg-muted/30 z-10">
                 <TabsTrigger
                   value="general"
-                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs"
+                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
                   <ClipboardList size={16} /> Thông tin chung
+                  {hasGeneralErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
                 </TabsTrigger>
                 <TabsTrigger
                   value="assets"
-                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs"
+                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
                   <Package size={16} /> Lựa chọn tài sản
+                  {hasAssetsErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
                 </TabsTrigger>
                 <TabsTrigger
                   value="approval"
-                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs"
+                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
                   <UserCheck size={16} /> Quy trình phê duyệt
+                  {hasApprovalErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
                 </TabsTrigger>
               </TabsList>
             </div>
