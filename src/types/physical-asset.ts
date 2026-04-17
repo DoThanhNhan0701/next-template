@@ -40,7 +40,12 @@ export interface IPhysicalAsset {
   in_stock_quantity?: number;
   allocated_quantity?: number;
   rented_quantity?: number;
-  current_stock?: number
+  current_stock?: number;
+  status_obj?: { code: string; name: string; color: string; } | null;
+  location_obj?: { name: string; } | null;
+  category?: { name: string; } | null;
+  unit?: { name: string; } | null;
+  supplier?: { name: string; } | null;
 }
 
 export interface IPhysicalAssetCreate {

@@ -47,7 +47,8 @@ export const endpoints = getEndPoint("api/v1", {
   AUDIT_MY_AUDITS: "audit/my-audits",
   AUDIT_SESSIONS: "audit/sessions",
   AUDIT_BATCH_START: "audit/batch-start",
-  TREE: 'tree'
+  TREE: 'tree',
+  MAINTENANCES: "maintenances/",
 });
 
 export const dynamicEndpoints = {
@@ -80,6 +81,7 @@ export const dynamicEndpoints = {
   PHYSICAL_ASSET_LIFECYCLE: (id: number) => `/api/v1/physical-assets/${id}/lifecycle/`,
   WORKFLOW_HISTORY: (type: string, id: number) => `/api/v1/workflows/history/${type}/${id}`,
   STOCK_ADJUSTMENT_DETAIL: (id: number) => `/api/v1/stock-adjustments/${id}`,
+  MAINTENANCE_DETAIL: (id: number) => `/api/v1/maintenances/${id}`,
   DOCUMENT_DETAIL: (documentType: string, id: number) => {
     const map: Record<string, string> = {
       allocation: `/api/v1/allocations/${id}`,
