@@ -8,7 +8,7 @@ const inFlightRequests: Record<string, Promise<AxiosResponse<any>>> = {};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
-  const url = `${endpoints.WORKFLOW_TASKS}me?status=${status}&limit=1`;
+  const url = `${endpoints.WORKFLOW_TASKS}me?status=${status}`;
   if (!inFlightRequests[url]) {
     inFlightRequests[url] = axiosInstance.get(url).then(res => {
       delete inFlightRequests[url];
@@ -21,12 +21,36 @@ const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
   return inFlightRequests[url];
 };
 
+const getAuditCountByStatus = (status: string): Promise<number> => {
+  const url = endpoints.AUDIT_MY_AUDITS;
+  if (!inFlightRequests[url]) {
+    inFlightRequests[url] = axiosInstance.get(url).then(res => {
+      delete inFlightRequests[url];
+      return res;
+    }).catch(err => {
+      delete inFlightRequests[url];
+      throw err;
+    });
+  }
+  return inFlightRequests[url].then(res => {
+    const audits = res.data || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return audits.filter((a: any) => {
+      if (status === 'PENDING') return a.status_obj?.code === 'PENDING' || a.status_obj?.code === 'COMPLETED';
+      return a.status_obj?.code === status;
+    }).length;
+  });
+};
+
 export const actionFetchPendingCount = createAsyncThunk(
   'task/fetchPendingCount',
   async (_, thunkApi) => {
     try {
-      const response = await getTaskCountByStatus('PENDING');
-      return response.data.length || 0;
+      const [workflowRes, auditCount] = await Promise.all([
+        getTaskCountByStatus('PENDING'),
+        getAuditCountByStatus('PENDING'),
+      ]);
+      return (workflowRes.data.length || 0) + auditCount;
     } catch (error) {
       return thunkApi.rejectWithValue({
         message: (error as Error).message,
@@ -39,16 +63,22 @@ export const actionFetchTaskCounts = createAsyncThunk(
   'task/fetchCounts',
   async (_, thunkApi) => {
     try {
-      const [pending, approved, rejected] = await Promise.all([
+      const [
+        pending, approved, rejected,
+        pendingAudit, approvedAudit, rejectedAudit
+      ] = await Promise.all([
         getTaskCountByStatus('PENDING'),
         getTaskCountByStatus('APPROVED'),
         getTaskCountByStatus('REJECTED'),
+        getAuditCountByStatus('PENDING'),
+        getAuditCountByStatus('APPROVED'),
+        getAuditCountByStatus('REJECTED'),
       ]);
 
       return {
-        PENDING: pending.data.length || 0,
-        APPROVED: approved.data.length || 0,
-        REJECTED: rejected.data.length || 0,
+        PENDING: (pending.data.length || 0) + pendingAudit,
+        APPROVED: (approved.data.length || 0) + approvedAudit,
+        REJECTED: (rejected.data.length || 0) + rejectedAudit,
       };
     } catch (error) {
       return thunkApi.rejectWithValue({
@@ -65,6 +95,7 @@ export const actionFetchTaskCounts = createAsyncThunk(
     },
   },
 );
+
 
 interface TaskState {
   counts: {

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux";
-import { updateCount } from "@/redux/slices/task";
+import { updateCount, actionFetchPendingCount } from "@/redux/slices/task";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ITask, TaskStatus } from "@/types/task";
@@ -65,7 +65,6 @@ export default function MyTasksTable() {
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
   const [localCurrentPage, setLocalCurrentPage] = useState(1);
-  const limit = 1000; // Fetch a large set for local pagination
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -75,8 +74,6 @@ export default function MyTasksTable() {
   const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
   const queryParams = new URLSearchParams();
-  queryParams.append("limit", limit.toString());
-
   // Status filtering based on active tab
   queryParams.append("status", activeTab);
   const dispatch = useDispatch<AppDispatch>();
@@ -159,6 +156,14 @@ export default function MyTasksTable() {
       );
     }
   }, [response, filteredAudits, activeTab, dispatch]);
+
+  // If we are on a non-pending tab, we still need to fetch the pending count 
+  // because layout no longer fetches it when on /my-tasks
+  useEffect(() => {
+    if (activeTab !== "PENDING") {
+      dispatch(actionFetchPendingCount());
+    }
+  }, [activeTab, dispatch]);
 
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {

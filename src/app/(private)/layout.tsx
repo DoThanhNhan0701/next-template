@@ -22,7 +22,11 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { usePathname } from "next/navigation";
+
 export default function PrivateLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const { counts } = useSelector((state: RootState) => state.task);
@@ -30,8 +34,10 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     dispatch(actionFetchUser());
-    dispatch(actionFetchPendingCount());
-  }, [dispatch]);
+    if (!pathname.startsWith("/my-tasks")) {
+      dispatch(actionFetchPendingCount());
+    }
+  }, [dispatch, pathname]);
 
   const sidebarItems = [
     { title: t("dashboard"), url: "/dashboard", icon: LayoutDashboard },
