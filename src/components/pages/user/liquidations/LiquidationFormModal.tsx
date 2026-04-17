@@ -26,6 +26,7 @@ import { LiquidationAssetSelectionSection } from "./components/LiquidationAssetS
 import { LiquidationApprovalSection } from "./components/LiquidationApprovalSection";
 import { ILiquidation } from "@/types/liquidation";
 import { LiquidationSchema, LiquidationFormValues } from "./schema";
+import { IStaff } from "@/types/staff";
 
 interface LiquidationFormModalProps {
   isOpen: boolean;
@@ -81,7 +82,12 @@ export default function LiquidationFormModal({
     name: "items",
   });
 
-  const { response: userRes } = useGet<IUser[]>(
+  const { response: userStaffRes } = useGet<{ items: IStaff[] }>(
+    { url: endpoints.STAFFS },
+    { disabled: !isOpen },
+  );
+
+  const { response: usersRes } = useGet<IUser[]>(
     { url: endpoints.USERS },
     { disabled: !isOpen },
   );
@@ -96,8 +102,9 @@ export default function LiquidationFormModal({
     { disabled: !isOpen },
   );
 
-  const users = userRes || [];
+  const staffs = userStaffRes?.items || [];
   const locations = locationRes || [];
+  const users = usersRes || [];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -145,10 +152,33 @@ export default function LiquidationFormModal({
       : endpoints.LIQUIDATIONS;
     const method = isEditing ? "patch" : "post";
 
+    // Map committee IDs to staff full names
+    const committeeNames = data.committee
+      .map((id) => staffs.find((s) => s.id === id)?.full_name)
+      .filter(Boolean)
+      .join(", ");
+
+    // Clean items
+    const cleanedItems = data.items.map((item) => ({
+      asset_id: item.asset_id,
+      quantity: item.quantity,
+      unit_value: item.unit_value,
+      remaining_value: item.remaining_value,
+      notes: item.notes,
+      from_location_id: item.from_location_id,
+    }));
+
     const payload = {
-      ...data,
-      liquidation_date: new Date(data.liquidation_date).toISOString(),
-      committee: data.committee.join(","),
+      liquidation_date: data.liquidation_date, // Keep as YYYY-MM-DD
+      liquidation_type: data.liquidation_type,
+      reason: data.reason,
+      total_value: data.total_value,
+      buyer_name: data.buyer_name,
+      notes: data.notes,
+      external_link: data.external_link,
+      items: cleanedItems,
+      committee: committeeNames,
+      workflow_assignments: data.workflow_assignments,
     };
 
     await mutate(
@@ -251,7 +281,7 @@ export default function LiquidationFormModal({
                 value="general"
                 className="px-6 py-6 focus-visible:outline-none"
               >
-                <GeneralLiquidationSection form={form} users={users} />
+                <GeneralLiquidationSection form={form} users={staffs} />
               </TabsContent>
               <TabsContent value="assets" className="mt-0 outline-none">
                 <LiquidationAssetSelectionSection

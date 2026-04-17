@@ -30,11 +30,21 @@ interface AssetListItemProps {
   locations: ILocation[];
 }
 
-function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetListItemProps) {
+function AssetListItem({
+  index,
+  form,
+  remove,
+  isOnlyItem,
+  locations,
+}: AssetListItemProps) {
   const selectedLocationId = form.watch(`items.${index}.from_location_id`);
-  
-  const { response: assetRes, pending: assetsPending } = useGet<{ items: IPhysicalAsset[] }>(
-    { url: `${endpoints.PHYSICAL_ASSETS}?location_id=${selectedLocationId}&limit=1000` },
+
+  const { response: assetRes, pending: assetsPending } = useGet<{
+    items: IPhysicalAsset[];
+  }>(
+    {
+      url: `${endpoints.PHYSICAL_ASSETS}?location_id=${selectedLocationId}&limit=1000`,
+    },
     { disabled: !selectedLocationId, deps: [selectedLocationId] },
   );
 
@@ -53,7 +63,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
         <Trash size={14} />
       </Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Controller
           name={`items.${index}.from_location_id`}
           control={form.control}
@@ -69,7 +79,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
                 }}
                 value={field.value ? field.value.toString() : ""}
               >
-                <SelectTrigger className="bg-white h-11">
+                <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Chọn kho chứa" />
                 </SelectTrigger>
                 <SelectContent>
@@ -98,8 +108,12 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
                 value={field.value ? field.value.toString() : ""}
                 disabled={!selectedLocationId || assetsPending}
               >
-                <SelectTrigger className="bg-white h-11">
-                  <SelectValue placeholder={assetsPending ? "Đang tải tài sản..." : "Chọn tài sản"} />
+                <SelectTrigger className="bg-white">
+                  <SelectValue
+                    placeholder={
+                      assetsPending ? "Đang tải tài sản..." : "Chọn tài sản"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent className="max-h-[300px]">
                   {assets.map((a) => (
@@ -120,7 +134,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Controller
           name={`items.${index}.quantity`}
           control={form.control}
@@ -131,7 +145,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
               </FieldLabel>
               <Input
                 type="number"
-                className="bg-white h-11"
+                className="bg-white"
                 {...field}
                 value={field.value ?? 0}
                 onChange={(e) => field.onChange(Number(e.target.value))}
@@ -150,7 +164,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
               </FieldLabel>
               <Input
                 type="number"
-                className="bg-white h-11"
+                className="bg-white"
                 {...field}
                 value={field.value ?? 0}
                 onChange={(e) => field.onChange(Number(e.target.value))}
@@ -169,7 +183,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
               </FieldLabel>
               <Input
                 type="number"
-                className="bg-white h-11"
+                className="bg-white"
                 {...field}
                 value={field.value ?? 0}
                 onChange={(e) => field.onChange(Number(e.target.value))}
@@ -191,7 +205,7 @@ function AssetListItem({ index, form, remove, isOnlyItem, locations }: AssetList
             <Input
               {...field}
               placeholder="Ghi chú chi tiết cho tài sản này..."
-              className="bg-white h-11"
+              className="bg-white"
               value={field.value || ""}
             />
             <FieldError errors={[fieldState.error]} />

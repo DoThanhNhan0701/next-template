@@ -29,11 +29,11 @@ import {
   X,
   User as UserIcon,
 } from "lucide-react";
-import { IUser } from "@/types/auth";
+import { IStaff } from "@/types/staff";
 
 interface GeneralLiquidationSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
-  users: IUser[];
+  users: IStaff[];
 }
 
 export function GeneralLiquidationSection({
@@ -66,7 +66,7 @@ export function GeneralLiquidationSection({
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Controller
           control={form.control}
@@ -79,7 +79,7 @@ export function GeneralLiquidationSection({
               <Input
                 {...field}
                 value={field.value ?? ""}
-                className="bg-white h-11"
+                className="bg-white"
                 placeholder="e.g. TL20240001"
               />
               <FieldError errors={[fieldState.error]} />
@@ -98,7 +98,7 @@ export function GeneralLiquidationSection({
                 {...field}
                 type="date"
                 value={field.value ?? ""}
-                className="bg-white h-11"
+                className="bg-white"
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -116,7 +116,7 @@ export function GeneralLiquidationSection({
                 Hình thức thanh lý *
               </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
-                <SelectTrigger className="bg-white h-11 shadow-sm">
+                <SelectTrigger className="bg-white shadow-sm">
                   <SelectValue placeholder="Chọn hình thức" />
                 </SelectTrigger>
                 <SelectContent>
@@ -147,7 +147,7 @@ export function GeneralLiquidationSection({
                     e.target.value === "" ? 0 : Number(e.target.value),
                   )
                 }
-                className="bg-white h-11"
+                className="bg-white"
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -265,7 +265,7 @@ export function GeneralLiquidationSection({
               <Input
                 {...field}
                 value={field.value ?? ""}
-                className="bg-white h-11"
+                className="bg-white"
                 placeholder="Tên người hoặc đơn vị mua..."
               />
               <FieldError errors={[fieldState.error]} />
@@ -283,7 +283,7 @@ export function GeneralLiquidationSection({
               <Input
                 {...field}
                 value={field.value ?? ""}
-                className="bg-white h-11"
+                className="bg-white"
                 placeholder="Link drive, folder..."
               />
               <FieldError errors={[fieldState.error]} />
