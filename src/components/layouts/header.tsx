@@ -93,7 +93,9 @@ export default function Header({ user, items = defaultItems }: Props) {
         </section>
       </div>
       <div className="ml-auto flex items-center shrink-0 gap-1">
-        <p className="text-sm leading-none mr-2">{user?.username}</p>
+        <p className="text-sm leading-none mr-2" suppressHydrationWarning>
+          {user?.username}
+        </p>
         <LanguageSwitcher />
         {menuToolbar.map((item) => (
           <Tooltip key={item.name}>

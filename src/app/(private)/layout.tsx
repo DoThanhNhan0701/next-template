@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
@@ -23,29 +23,32 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
 import { SidebarItem } from "@/components/layouts/sidebar";
+import Loading from "@/components/common/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch, RootState } from "@/redux";
-import { actionFetchUser } from "@/redux/slices/auth";
 import { actionFetchPendingCount } from "@/redux/slices/task";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, loading: authLoading } = useSelector((state: RootState) => state.auth);
   const { counts } = useSelector((state: RootState) => state.task);
   const { hasPermission } = usePermissions();
   const t = useTranslations("Menu");
 
+  const pendingCountFetched = useRef(false);
+
   useEffect(() => {
-    dispatch(actionFetchUser());
+    if (pendingCountFetched.current) return;
+    pendingCountFetched.current = true;
 
     if (pathname !== "/my-tasks") {
       dispatch(actionFetchPendingCount());
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, []);
 
   const sidebarItems: SidebarItem[] = [
     { title: t("dashboard"), url: "/dashboard", icon: LayoutDashboard },
@@ -108,8 +111,13 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     },
   ].filter((item) => !item.permission || hasPermission(item.permission));
 
-  console.log(sidebarItems);
-  console.log(user);
+  if (authLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-(--surface-container)">
+        <Loading classNameSpinner="size-8" />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">

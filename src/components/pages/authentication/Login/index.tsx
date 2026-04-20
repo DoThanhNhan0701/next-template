@@ -1,9 +1,16 @@
 "use client";
 
+import { useState } from "react";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import Logo from "@public/icons/logo.png";
 import { Eye, EyeOff } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+
 import { LoginSchema } from "@/components/schemas/auth/login.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,18 +19,12 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-
 import { Input } from "@/components/ui/input";
-import { LoginRequest } from "@/types/auth/requests";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
-import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux";
-import { actionLogin } from "@/redux/slices/auth";
-
-import Logo from "@public/icons/logo.png";
+import { actionFetchUser, actionLogin } from "@/redux/slices/auth";
+import { LoginRequest } from "@/types/auth/requests";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
@@ -77,8 +78,9 @@ export default function LoginPage() {
               rememberMe: true,
             }),
           );
+          dispatch(actionFetchUser());
           getApiSuccessMessage(response);
-          router.push("/");
+          router.push("/dashboard");
         },
         onError: (error) => {
           getApiErrorMessage(error);

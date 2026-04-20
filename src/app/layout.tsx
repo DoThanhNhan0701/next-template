@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/libs/theme-provider";
+import AppBootstrap from "@/components/libs/app-bootstrap";
 import StoreProvider from "@/components/libs/store-provider";
 import QueryProvider from "@/components/libs/query-provider";
 import "./globals.css";
@@ -24,14 +25,16 @@ export default async function RootLayout({
     <html suppressHydrationWarning>
       <body className="text-[14px]">
         <StoreProvider>
-          <QueryProvider>
-            <ThemeProvider>
-              <NextIntlClientProvider messages={messages}>
-                <Toaster position="top-center" />
-                {children}
-              </NextIntlClientProvider>
-            </ThemeProvider>
-          </QueryProvider>
+          <AppBootstrap>
+            <QueryProvider>
+              <ThemeProvider>
+                <NextIntlClientProvider messages={messages}>
+                  <Toaster position="top-center" />
+                  {children}
+                </NextIntlClientProvider>
+              </ThemeProvider>
+            </QueryProvider>
+          </AppBootstrap>
         </StoreProvider>
       </body>
     </html>

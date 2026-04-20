@@ -2,10 +2,9 @@
 
 import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
-import { AppDispatch, RootState } from "@/redux";
-import { actionFetchUser } from "@/redux/slices/auth";
-import { ReactNode, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux";
+import { ReactNode } from "react";
+import { useSelector } from "react-redux";
 
 import {
   Users,
@@ -25,16 +24,7 @@ import {
 export default function AdminLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-
-  useEffect(() => {
-    const promise = dispatch(actionFetchUser());
-    return () => {
-      promise.abort();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const adminSidebarItems = [
     { title: "Dashboard", url: "/admin", icon: SquareDashedKanbanIcon },
