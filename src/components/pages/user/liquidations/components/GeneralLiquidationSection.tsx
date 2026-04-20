@@ -70,8 +70,8 @@ export function GeneralLiquidationSection({
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="flex flex-col gap-2">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <Controller
           control={form.control}
           name="record_number"
@@ -105,7 +105,7 @@ export function GeneralLiquidationSection({
         />
       </FieldGroup>
 
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <Controller
           control={form.control}
           name="liquidation_type"
@@ -252,7 +252,7 @@ export function GeneralLiquidationSection({
         <FieldError errors={[form.formState.errors.committee]} />
       </Field>
 
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <Controller
           control={form.control}
           name="buyer_name"

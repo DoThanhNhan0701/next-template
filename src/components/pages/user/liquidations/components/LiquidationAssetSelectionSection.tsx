@@ -63,7 +63,7 @@ function AssetListItem({
         <Trash size={14} />
       </Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <Controller
           name={`items.${index}.from_location_id`}
           control={form.control}
@@ -129,7 +129,7 @@ function AssetListItem({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         <Controller
           name={`items.${index}.quantity`}
           control={form.control}
@@ -227,7 +227,7 @@ export function LiquidationAssetSelectionSection({
   locations,
 }: LiquidationAssetSelectionSectionProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between border-b border-dashed pb-3">
         <label className="text-xs font-semibold text-primary">
           Chọn tài sản thanh lý
