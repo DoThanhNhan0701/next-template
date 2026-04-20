@@ -1,32 +1,31 @@
 "use client";
 
-import { useGet } from "@/hooks/useGet";
-import { dynamicEndpoints } from "@/config/endpoints";
-import { IMaintenanceFull } from "@/types/maintenance";
-import { ApprovalHistory } from "@/types/task";
 import { useRouter } from "next/navigation";
+
 import {
+  CalendarDays,
+  CheckCircle2,
   ChevronLeft,
-  Package,
-  User,
   Clock,
+  ExternalLink,
   FileText,
   History,
-  CheckCircle2,
-  XCircle,
-  Store,
-  Phone,
-  MapPin,
-  Wallet,
-  CalendarDays,
   Info,
-  ExternalLink,
+  MapPin,
+  Package,
+  Phone,
   StickyNote,
+  Store,
+  User,
+  Wallet,
+  XCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -35,7 +34,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
+import { dynamicEndpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IMaintenanceFull } from "@/types/maintenance";
+import { ApprovalHistory } from "@/types/task";
+import { formatDate, formatDateTime } from "@/utils/date";
 
 interface Props {
   id: string;
@@ -101,7 +104,7 @@ export default function MaintenanceDetail({ id }: Props) {
                 <FileText className="w-6 h-6 text-primary" />
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
                   Ticket Number
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
@@ -109,10 +112,7 @@ export default function MaintenanceDetail({ id }: Props) {
                 </span>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <CalendarDays size={12} />
-                  <span>
-                    Created:{" "}
-                    {new Date(detail.create_date).toLocaleDateString("vi-VN")}
-                  </span>
+                  <span>Created: {formatDate(detail.create_date)}</span>
                 </div>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function MaintenanceDetail({ id }: Props) {
             {/* Right: costs & status */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-4 py-2 rounded-xl bg-muted/30 border border-border/50 min-w-[120px]">
-                <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
+                <span className="text-[10px] text-muted-foreground font-semibold tracking-wider">
                   Expected Cost
                 </span>
                 <span className="text-base font-bold text-muted-foreground">
@@ -128,7 +128,7 @@ export default function MaintenanceDetail({ id }: Props) {
                 </span>
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-emerald-500/5 border border-emerald-510/10 min-w-[140px]">
-                <span className="text-xs text-emerald-600 font-semibold uppercase tracking-wider">
+                <span className="text-xs text-emerald-600 font-semibold tracking-wider">
                   Actual Cost
                 </span>
                 <span className="text-xl font-bold text-emerald-600">
@@ -228,23 +228,19 @@ export default function MaintenanceDetail({ id }: Props) {
             </CardHeader>
             <CardContent className="p-4 flex flex-col gap-4">
               <div className="flex items-center justify-between">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="text-xs font-semibold tracking-wider text-muted-foreground">
                   Outing Date
                 </div>
                 <span className="text-sm font-medium">
-                  {detail.outing_date
-                    ? new Date(detail.outing_date).toLocaleDateString("vi-VN")
-                    : "—"}
+                  {formatDate(detail.outing_date)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="text-xs font-semibold tracking-wider text-muted-foreground">
                   Return Date
                 </div>
                 <span className="text-sm font-medium text-emerald-600">
-                  {detail.return_date
-                    ? new Date(detail.return_date).toLocaleDateString("vi-VN")
-                    : "Pending"}
+                  {formatDate(detail.return_date)}
                 </span>
               </div>
               <Separator className="bg-border/40" />
@@ -254,7 +250,7 @@ export default function MaintenanceDetail({ id }: Props) {
                     <User size={12} className="text-primary" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-tight">
+                    <span className="text-[10px] font-bold text-muted-foreground tracking-tight">
                       Outing Handover
                     </span>
                     <span className="text-sm font-semibold">
@@ -267,7 +263,7 @@ export default function MaintenanceDetail({ id }: Props) {
                     <User size={12} className="text-emerald-600" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-tight">
+                    <span className="text-[10px] font-bold text-muted-foreground tracking-tight">
                       Return Receiver
                     </span>
                     <span className="text-sm font-semibold">
@@ -289,7 +285,7 @@ export default function MaintenanceDetail({ id }: Props) {
             </CardHeader>
             <CardContent className="p-4 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                   Vendor Name
                 </span>
                 <span className="text-sm font-semibold text-foreground">
@@ -307,7 +303,7 @@ export default function MaintenanceDetail({ id }: Props) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <User size={14} />
-                    <span className="text-xs font-semibold uppercase tracking-wider">
+                    <span className="text-xs font-semibold tracking-wider">
                       Taker
                     </span>
                   </div>
@@ -319,7 +315,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Phone size={14} />
-                      <span className="text-xs font-semibold uppercase tracking-wider">
+                      <span className="text-xs font-semibold tracking-wider">
                         Phone
                       </span>
                     </div>
@@ -344,7 +340,7 @@ export default function MaintenanceDetail({ id }: Props) {
               <div className="flex flex-col gap-1.5 pt-1">
                 <div className="flex items-center gap-2 text-muted-foreground mb-1">
                   <Wallet size={14} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">
+                  <span className="text-xs font-semibold tracking-wider">
                     Reason
                   </span>
                 </div>
@@ -356,7 +352,7 @@ export default function MaintenanceDetail({ id }: Props) {
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                   <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <StickyNote size={14} />
-                    <span className="text-xs font-semibold uppercase tracking-wider">
+                    <span className="text-xs font-semibold tracking-wider">
                       Notes
                     </span>
                   </div>
@@ -367,7 +363,7 @@ export default function MaintenanceDetail({ id }: Props) {
               )}
               {detail.external_link && (
                 <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                     External Link
                   </span>
                   <a
@@ -445,7 +441,7 @@ export default function MaintenanceDetail({ id }: Props) {
                     </TableCell>
                     <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold uppercase">
+                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
                           {hist.requester_name?.charAt(0)}
                         </div>
                         <span className="text-sm">{hist.requester_name}</span>
@@ -470,9 +466,7 @@ export default function MaintenanceDetail({ id }: Props) {
                       {hist.comment || "—"}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-xs text-muted-foreground">
-                      {hist.action_date
-                        ? new Date(hist.action_date).toLocaleString("vi-VN")
-                        : "—"}
+                      {formatDateTime(hist.action_date)}
                     </TableCell>
                   </TableRow>
                 ))}

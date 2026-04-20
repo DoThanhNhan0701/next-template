@@ -1,34 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux";
-import { closeRental } from "@/redux/slices/rental";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IRentalSummary } from "@/types/rental";
-import { IOrgUnit } from "@/types/org";
-import { ICustomer } from "@/types/customer";
+
 import { useRouter } from "next/navigation";
+
 import {
-  Search,
   Building2,
-  Users,
-  User,
-  X,
-  RotateCcw,
   Calendar,
   ClipboardList,
+  RotateCcw,
+  Search,
+  User,
+  Users,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -44,12 +38,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { AppDispatch, RootState } from "@/redux";
+import { closeRental } from "@/redux/slices/rental";
+import { ICustomer } from "@/types/customer";
+import { IOrgUnit } from "@/types/org";
+import { IRentalSummary } from "@/types/rental";
+import { formatDate } from "@/utils/date";
+
 import RentalFormModal from "./RentalFormModal";
 
 export default function RentalsTable() {
@@ -310,7 +315,7 @@ export default function RentalsTable() {
                         className="text-muted-foreground/60"
                       />
                       <span className="text-xs">
-                        {rental.lease_date?.split("T")[0] || "N/A"}
+                        {formatDate(rental.lease_date)}
                       </span>
                     </div>
                   </TableCell>

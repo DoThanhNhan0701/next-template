@@ -1,27 +1,26 @@
 "use client";
 
-import { useGet } from "@/hooks/useGet";
-import { useMutation } from "@/hooks/useMutation";
-import { dynamicEndpoints } from "@/config/endpoints";
+import { useMemo, useState } from "react";
+
+import { useRouter, useSearchParams } from "next/navigation";
+
 import {
+  CheckCircle2,
   ChevronLeft,
   Clock,
-  User,
-  Package,
-  CheckCircle2,
-  XCircle,
   FileText,
-  MessageSquare,
-  Plus,
   History,
+  MessageSquare,
+  Package,
+  Plus,
+  User,
+  XCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
+
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
-import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -30,21 +29,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { getApiErrorMessage } from "@/utils/api-error";
+import { Textarea } from "@/components/ui/textarea";
+import { dynamicEndpoints } from "@/config/endpoints";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import {
   ApprovalHistory,
   DocumentDetail,
   ITask,
+  getDocumentTitle,
   isAllocationDocument,
-  isStockAdjustmentDocument,
+  isLiquidationDocument,
   isRecoveryDocument,
   isRentalReturnDocument,
+  isStockAdjustmentDocument,
   isTransferDocument,
-  isLiquidationDocument,
-  getDocumentTitle,
 } from "@/types/task";
-import { endpoints } from "@/config/endpoints";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { formatDate } from "@/utils/date";
 
 const getStatusInfo = (statusName: string | undefined) => {
   const name = (statusName || "").toLowerCase();
@@ -171,7 +175,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Allocation date",
-        value: new Date(detail.allocation_date).toLocaleDateString(),
+        value: formatDate(detail.allocation_date),
       });
 
       if (detail.issuer_name) {
@@ -188,7 +192,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Adjustment date",
-        value: new Date(detail.adjustment_date).toLocaleDateString(),
+        value: formatDate(detail.adjustment_date),
       });
 
       fields.push({
@@ -241,7 +245,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Recovery date",
-        value: new Date(detail.recovery_date).toLocaleDateString(),
+        value: formatDate(detail.recovery_date),
       });
 
       fields.push({
@@ -308,7 +312,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Return date",
-        value: new Date(detail.return_date).toLocaleDateString(),
+        value: formatDate(detail.return_date),
       });
 
       fields.push({
@@ -368,7 +372,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Transfer date",
-        value: new Date(detail.transfer_date).toLocaleDateString(),
+        value: formatDate(detail.transfer_date),
       });
 
       fields.push({
@@ -422,13 +426,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Liquidation date",
-        value: new Date(detail.liquidation_date).toLocaleDateString(),
+        value: formatDate(detail.liquidation_date),
       });
       fields.push({
         icon: FileText,
         iconColor: "bg-violet-500/10 text-violet-500",
         label: "Type",
-        value: detail.liquidation_type.charAt(0).toUpperCase() + detail.liquidation_type.slice(1),
+        value:
+          detail.liquidation_type.charAt(0).toUpperCase() +
+          detail.liquidation_type.slice(1),
       });
       fields.push({
         icon: Package,
@@ -482,7 +488,12 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           iconColor: "bg-cyan-500/10 text-cyan-500",
           label: "External link",
           value: (
-            <a href={detail.external_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            <a
+              href={detail.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
               View link
             </a>
           ),
@@ -606,7 +617,11 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "from_location", label: "From Location" },
           { key: "quantity", label: "Qty", align: "center" as const },
           { key: "unit_value", label: "Unit Value", align: "center" as const },
-          { key: "remaining_value", label: "Remaining Value", align: "center" as const },
+          {
+            key: "remaining_value",
+            label: "Remaining Value",
+            align: "center" as const,
+          },
         ],
         rows: detail.details.map((item, index) => ({
           id: item.id,
@@ -793,7 +808,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                             </Badge>
                           )}
                           {typeof field.value === "string" ||
-                            typeof field.value === "number" ? (
+                          typeof field.value === "number" ? (
                             <span className="text-sm font-bold text-foreground">
                               {field.value}
                             </span>
@@ -931,10 +946,10 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                     <span className="text-sm font-semibold text-foreground">
                       {detail.created_at
                         ? new Date(detail.created_at).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        })
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          })
                         : "N/A"}
                     </span>
                     <span className="text-sm font-medium text-muted-foreground">

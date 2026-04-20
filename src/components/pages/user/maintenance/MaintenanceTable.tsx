@@ -1,28 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IMaintenance } from "@/types/maintenance";
-import {
-  FileText,
-  Search,
-  X,
-  RotateCcw,
-  Calendar,
-  Wrench,
-  Package,
-} from "lucide-react";
+
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Calendar,
+  FileText,
+  Package,
+  RotateCcw,
+  Search,
+  Wrench,
+  X,
+} from "lucide-react";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -31,11 +28,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IMaintenance } from "@/types/maintenance";
+import { formatDate } from "@/utils/date";
+
 import MaintenanceFormModal from "./MaintenanceFormModal";
 
 export default function MaintenanceTable() {
@@ -150,7 +155,9 @@ export default function MaintenanceTable() {
               <TableHead className="font-semibold h-10 px-4">
                 Asset Details
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Service Provider</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Service Provider
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">Qty</TableHead>
               <TableHead className="font-semibold h-10 px-4">Status</TableHead>
               <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
@@ -198,8 +205,11 @@ export default function MaintenanceTable() {
                           size={12}
                           className="text-muted-foreground/60"
                         />
-                        <span className="text-[11px] font-medium text-muted-foreground uppercase">Out:</span>
-                        <span>{item.outing_date?.split("T")[0] || "N/A"}</span>
+                        <span className="text-[11px] font-medium text-muted-foreground uppercase">
+                          Out:
+                        </span>
+
+                        <span>{formatDate(item.outing_date)}</span>
                       </div>
                       {item.return_date && (
                         <div className="flex items-center gap-1.5">
@@ -207,8 +217,10 @@ export default function MaintenanceTable() {
                             size={12}
                             className="text-muted-foreground/60"
                           />
-                          <span className="text-[11px] font-medium text-muted-foreground uppercase">In:</span>
-                          <span>{item.return_date?.split("T")[0] || "N/A"}</span>
+                          <span className="text-[11px] font-medium text-muted-foreground uppercase">
+                            In:
+                          </span>
+                          <span>{formatDate(item.return_date)}</span>
                         </div>
                       )}
                     </div>
@@ -216,7 +228,10 @@ export default function MaintenanceTable() {
                   <TableCell className="px-4 py-3">
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
-                        <Package size={14} className="text-muted-foreground/60" />
+                        <Package
+                          size={14}
+                          className="text-muted-foreground/60"
+                        />
                         <span className="font-semibold text-sm">
                           {item.asset_name}
                         </span>

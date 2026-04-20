@@ -1,33 +1,37 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
+import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClipboardList, Wrench, Package, UserCheck } from "lucide-react";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
+import { ILocation } from "@/types/location";
+import { IMaintenance } from "@/types/maintenance";
+import { IPhysicalAsset } from "@/types/physical-asset";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { useGet } from "@/hooks/useGet";
-import { ILocation } from "@/types/location";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { IUser } from "@/types/auth";
-import { ITemplate } from "@/types/template";
+import { getTodayISO } from "@/utils/date";
+
+import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
+import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { GeneralInfoSection } from "./components/GeneralInfoSection";
 import { ServiceInfoSection } from "./components/ServiceInfoSection";
-import { AssetSelectionSection } from "./components/AssetSelectionSection";
-import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
-import { IMaintenance } from "@/types/maintenance";
 
 const MaintenanceSchema = z.object({
   record_number: z.string().min(1, "Required"),
@@ -98,7 +102,7 @@ export default function MaintenanceFormModal({
         expected_cost: 0,
         actual_cost: 0,
         external_link: null,
-        outing_date: new Date().toISOString().split("T")[0],
+        outing_date: getTodayISO(),
         items: [
           {
             asset_id: 0,
@@ -167,7 +171,7 @@ export default function MaintenanceFormModal({
           expected_cost: 0,
           actual_cost: 0,
           external_link: null,
-          outing_date: new Date().toISOString().split("T")[0],
+          outing_date: getTodayISO(),
           items: [
             {
               asset_id: 0,

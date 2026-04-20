@@ -1,31 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { useGet } from "@/hooks/useGet";
-import { endpoints } from "@/config/endpoints";
-import { IAllAuditsResponse } from "@/types/audit";
-import AuditFormModal from "./AuditFormModal";
+
+import { useRouter } from "next/navigation";
+
 import {
-  Search,
-  X,
-  RotateCcw,
+  Building2,
   Calendar,
   ClipboardList,
-  User,
-  Building2,
-  MapPin,
   Filter,
+  MapPin,
   Plus,
+  RotateCcw,
+  Search,
+  User,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -41,13 +39,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
-import { useRouter } from "next/navigation";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IAllAuditsResponse } from "@/types/audit";
+import { formatDate } from "@/utils/date";
+
+import AuditFormModal from "./AuditFormModal";
 
 export default function AllAuditsTable() {
   const router = useRouter();
@@ -223,8 +228,7 @@ export default function AllAuditsTable() {
                         {audit.title}
                       </span>
                       <span className="text-[10px] text-muted-foreground">
-                        Created{" "}
-                        {new Date(audit.created_at).toLocaleDateString("vi-VN")}
+                        Created {formatDate(audit.created_at)}
                       </span>
                     </div>
                   </TableCell>
@@ -278,7 +282,7 @@ export default function AllAuditsTable() {
                         className="text-muted-foreground/60"
                       />
                       <span className="text-xs">
-                        {audit.due_date?.split("T")[0] || "N/A"}
+                        {formatDate(audit.due_date)}
                       </span>
                     </div>
                   </TableCell>

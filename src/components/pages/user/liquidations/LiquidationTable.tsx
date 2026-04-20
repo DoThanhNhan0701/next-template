@@ -1,28 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { ILiquidation } from "@/types/liquidation";
-import {
-  FileText,
-  Search,
-  X,
-  RotateCcw,
-  Calendar,
-  Package,
-  Trash2,
-} from "lucide-react";
+
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Calendar,
+  FileText,
+  Package,
+  RotateCcw,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -31,11 +28,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { ILiquidation } from "@/types/liquidation";
+import { formatDate } from "@/utils/date";
+
 import LiquidationFormModal from "./LiquidationFormModal";
 
 export default function LiquidationTable() {
@@ -192,14 +197,17 @@ export default function LiquidationTable() {
                           size={12}
                           className="text-muted-foreground/60"
                         />
-                        <span>{item.liquidation_date?.split("T")[0] || "N/A"}</span>
+                        <span>{formatDate(item.liquidation_date)}</span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3">
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
-                        <Package size={14} className="text-muted-foreground/60" />
+                        <Package
+                          size={14}
+                          className="text-muted-foreground/60"
+                        />
                         <span className="font-semibold text-sm">
                           {item.asset_name}
                         </span>

@@ -1,34 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  useForm,
-  Controller,
-  useFieldArray,
-  useWatch,
-  type Control,
-  type UseFormSetValue,
-} from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon, Trash } from "lucide-react";
+import {
+  type Control,
+  Controller,
+  type UseFormSetValue,
+  useFieldArray,
+  useForm,
+  useWatch,
+} from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
+
 import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -36,20 +38,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation } from "@/hooks/useMutation";
-import { useGet } from "@/hooks/useGet";
+import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { IOrgUnit } from "@/types/org";
-import { IStaff } from "@/types/staff";
-import { IUser } from "@/types/auth";
-import { ILocation } from "@/types/location";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { ITemplate, ITemplateStep } from "@/types/template";
-import { PlusIcon, Trash } from "lucide-react";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { AppDispatch, RootState } from "@/redux";
 import { closeAllocation } from "@/redux/slices/allocation";
+import { IUser } from "@/types/auth";
+import { ILocation } from "@/types/location";
+import { IOrgUnit } from "@/types/org";
+import { IPhysicalAsset } from "@/types/physical-asset";
+import { IStaff } from "@/types/staff";
+import { ITemplate, ITemplateStep } from "@/types/template";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { getTodayISO } from "@/utils/date";
 
 /* ── ApproverSelect: fetch users by role if step has default_assignee_role_id ── */
 function ApproverSelect({
@@ -65,7 +68,9 @@ function ApproverSelect({
 }) {
   const hasRole = !!step.default_assignee_role_id;
   const options = hasRole
-    ? allUsers.filter((u) => u.is_active && u.role_id === step.default_assignee_role_id)
+    ? allUsers.filter(
+        (u) => u.is_active && u.role_id === step.default_assignee_role_id,
+      )
     : allUsers.filter((u) => u.is_active);
 
   return (
@@ -74,7 +79,9 @@ function ApproverSelect({
         <SelectValue placeholder="Select approver" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="none" className="text-muted-foreground italic">(None)</SelectItem>
+        <SelectItem value="none" className="text-muted-foreground italic">
+          (None)
+        </SelectItem>
         {options.map((u) => (
           <SelectItem key={u.id} value={u.id.toString()}>
             {u.full_name} ({u.username})
@@ -107,14 +114,18 @@ function AllocationItemRow({
   prefillLocationId,
   prefillAssetId,
 }: AllocationItemRowProps) {
-  const [warehouseId, setWarehouseId] = useState<number>(prefillLocationId ?? 0);
+  const [warehouseId, setWarehouseId] = useState<number>(
+    prefillLocationId ?? 0,
+  );
 
   const { response: assetRes, pending: assetsPending } = useGet<{
     items: IPhysicalAsset[];
   }>(
     {
       url: endpoints.PHYSICAL_ASSETS,
-      config: { params: { location_id: warehouseId, limit: 200, status_code: "READY" } },
+      config: {
+        params: { location_id: warehouseId, limit: 200, status_code: "READY" },
+      },
     },
     { disabled: !warehouseId, deps: [warehouseId] },
   );
@@ -287,7 +298,7 @@ export default function AllocationVoucherModal({
       allocated_to_type: "user",
       unit_id: 0,
       staff_id: null,
-      allocation_date: new Date().toISOString().split("T")[0],
+      allocation_date: getTodayISO(),
       location_id: null,
       reason: "",
       external_link: "",
@@ -317,7 +328,7 @@ export default function AllocationVoucherModal({
         allocated_to_type: "user",
         unit_id: prefill?.unit_id ?? 0,
         staff_id: null,
-        allocation_date: new Date().toISOString().split("T")[0],
+        allocation_date: getTodayISO(),
         location_id: null,
         reason: prefill?.reason ?? "",
         external_link: "",
@@ -332,7 +343,14 @@ export default function AllocationVoucherModal({
         approver_step_2_id: null,
       });
     }
-  }, [isOpen, form, prefill?.asset_id, prefill?.location_id, prefill?.reason, prefill?.unit_id]);
+  }, [
+    isOpen,
+    form,
+    prefill?.asset_id,
+    prefill?.location_id,
+    prefill?.reason,
+    prefill?.unit_id,
+  ]);
 
   const onSubmit = async (data: AllocationFormValues) => {
     // Transform data for backend
@@ -476,8 +494,8 @@ export default function AllocationVoucherModal({
                             </SelectItem>
                             {(watchedUnitId && Number(watchedUnitId) !== 0
                               ? staffs.filter(
-                                (s) => s.unit_id === Number(watchedUnitId),
-                              )
+                                  (s) => s.unit_id === Number(watchedUnitId),
+                                )
                               : []
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
@@ -578,50 +596,65 @@ export default function AllocationVoucherModal({
                       setValue={form.setValue}
                       locations={locations}
                       onRemove={() => remove(index)}
-                      prefillLocationId={index === 0 ? prefill?.location_id : undefined}
-                      prefillAssetId={index === 0 ? prefill?.asset_id : undefined}
+                      prefillLocationId={
+                        index === 0 ? prefill?.location_id : undefined
+                      }
+                      prefillAssetId={
+                        index === 0 ? prefill?.asset_id : undefined
+                      }
                     />
                   ))}
                 </div>
               </div>
 
               {/* Approval Process */}
-              {activeAllocationTemplate && (activeAllocationTemplate.steps || []).length > 0 && (
-                <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                    Approval Process
-                  </h3>
-                  <FieldGroup className="grid grid-cols-2 gap-3">
-                    {(activeAllocationTemplate?.steps || []).map(
-                      (step: ITemplateStep, idx) => {
-                        const name =
-                          idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
-                        return (
-                          <Controller
-                            key={step.id}
-                            name={name as keyof AllocationFormValues}
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                              <Field className="gap-1">
-                                <FieldLabel>{step.name}</FieldLabel>
-                                <ApproverSelect
-                                  step={step}
-                                  allUsers={users}
-                                  value={field.value != null ? field.value.toString() : ""}
-                                  onChange={(val) => field.onChange(val === "none" ? null : val)}
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        );
-                      },
-                    )}
-                  </FieldGroup>
-                </div>
-              )}
+              {activeAllocationTemplate &&
+                (activeAllocationTemplate.steps || []).length > 0 && (
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-sm font-semibold text-primary border-b pb-1">
+                      Approval Process
+                    </h3>
+                    <FieldGroup className="grid grid-cols-2 gap-3">
+                      {(activeAllocationTemplate?.steps || []).map(
+                        (step: ITemplateStep, idx) => {
+                          const name =
+                            idx === 0
+                              ? "approver_step_1_id"
+                              : "approver_step_2_id";
+                          return (
+                            <Controller
+                              key={step.id}
+                              name={name as keyof AllocationFormValues}
+                              control={form.control}
+                              render={({ field, fieldState }) => (
+                                <Field className="gap-1">
+                                  <FieldLabel>{step.name}</FieldLabel>
+                                  <ApproverSelect
+                                    step={step}
+                                    allUsers={users}
+                                    value={
+                                      field.value != null
+                                        ? field.value.toString()
+                                        : ""
+                                    }
+                                    onChange={(val) =>
+                                      field.onChange(
+                                        val === "none" ? null : val,
+                                      )
+                                    }
+                                  />
+                                  {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                  )}
+                                </Field>
+                              )}
+                            />
+                          );
+                        },
+                      )}
+                    </FieldGroup>
+                  </div>
+                )}
             </div>
           </div>
 

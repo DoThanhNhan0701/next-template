@@ -1,15 +1,17 @@
 "use client";
 
-import { UseFormReturn, Controller } from "react-hook-form";
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
+import { Controller, UseFormReturn } from "react-hook-form";
+
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+
+import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface GeneralInfoSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;

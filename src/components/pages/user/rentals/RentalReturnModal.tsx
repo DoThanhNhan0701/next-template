@@ -1,20 +1,22 @@
-import { Calendar, Package, AlertCircle, UserCircle2 } from "lucide-react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useEffect } from "react";
+
+import { AlertCircle, Calendar, Package, UserCircle2 } from "lucide-react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+
+import { ApproverSelect } from "@/components/common/ApproverSelect";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { IRentalFull } from "@/types/rental";
 import {
   Select,
   SelectContent,
@@ -22,13 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGet } from "@/hooks/useGet";
+import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
-import { ILocation } from "@/types/location";
+import { useGet } from "@/hooks/useGet";
 import { IUser } from "@/types/auth";
+import { ILocation } from "@/types/location";
+import { IRentalFull } from "@/types/rental";
 import { ITemplate } from "@/types/template";
-import { ApproverSelect } from "@/components/common/ApproverSelect";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { getTodayISO } from "@/utils/date";
 
 interface RentalReturnModalProps {
   isOpen: boolean;
@@ -64,7 +67,7 @@ export default function RentalReturnModal({
 }: RentalReturnModalProps) {
   const form = useForm<RentalReturnFormValues>({
     defaultValues: {
-      return_date: new Date().toISOString().split("T")[0],
+      return_date: getTodayISO(),
       notes: "",
       to_location_id: "",
       approver_step_1_id: null,

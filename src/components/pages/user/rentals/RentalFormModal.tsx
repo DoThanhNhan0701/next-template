@@ -1,33 +1,36 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  useForm,
-  Controller,
-  useFieldArray,
-  useWatch,
-  type Control,
-  type UseFormSetValue,
-} from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon, Trash } from "lucide-react";
+import {
+  type Control,
+  Controller,
+  type UseFormSetValue,
+  useFieldArray,
+  useForm,
+  useWatch,
+} from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
+
 import { RentalCreateSchema } from "@/components/schemas/user/rental.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -35,19 +38,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation } from "@/hooks/useMutation";
+import { Textarea } from "@/components/ui/textarea";
+import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { useDispatch, useSelector } from "react-redux";
+import { useMutation } from "@/hooks/useMutation";
 import { AppDispatch, RootState } from "@/redux";
 import { closeRental } from "@/redux/slices/rental";
-import { endpoints } from "@/config/endpoints";
+import { ICustomer } from "@/types/customer";
+import { ILocation } from "@/types/location";
+import { IOrgUnit } from "@/types/org";
+import { IPhysicalAsset } from "@/types/physical-asset";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { IOrgUnit } from "@/types/org";
-import { ICustomer } from "@/types/customer";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { ILocation } from "@/types/location";
-import { PlusIcon, Trash } from "lucide-react";
+import { getTodayISO } from "@/utils/date";
 
 type RentalFormValues = z.input<typeof RentalCreateSchema>;
 
@@ -82,8 +85,6 @@ function RentalItemRow({
   );
 
   const assets = assetRes?.items || [];
-
-
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 flex flex-col gap-2">
@@ -237,7 +238,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
       record_number: "",
       unit_id: 0,
       customer_id: 0,
-      lease_date: new Date().toISOString().split("T")[0],
+      lease_date: getTodayISO(),
       duration_days: 1,
       reason: "",
       total_revenue: 0,
@@ -260,7 +261,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
         record_number: "",
         unit_id: prefill?.unit_id ?? 0,
         customer_id: 0,
-        lease_date: new Date().toISOString().split("T")[0],
+        lease_date: getTodayISO(),
         duration_days: 1,
         reason: prefill?.reason ?? "",
         total_revenue: 0,

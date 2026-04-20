@@ -1,28 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IAllocationSummary } from "@/types/allocation";
+
 import {
-  Search,
   Building2,
-  Filter,
-  X,
-  RotateCcw,
   Calendar,
   ClipboardList,
+  Filter,
+  RotateCcw,
+  Search,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -38,17 +35,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { IStatus } from "@/types/status";
-import { IOrgUnit } from "@/types/org";
-
-import { Badge } from "@/components/ui/badge";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
-import AllocationVoucherModal from "./AllocationVoucherModal";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
 import { RootState } from "@/redux";
+import { IAllocationSummary } from "@/types/allocation";
+import { IOrgUnit } from "@/types/org";
+import { IStatus } from "@/types/status";
+import { formatDate } from "@/utils/date";
+
+import AllocationVoucherModal from "./AllocationVoucherModal";
 
 export default function AllocationSummaryTable() {
   const [skip, setSkip] = useState(0);
@@ -60,7 +63,9 @@ export default function AllocationSummaryTable() {
   const [statusCode, setStatusCode] = useState<string>("all");
 
   const [isManualOpen, setIsManualOpen] = useState(false);
-  const { isOpen: isReduxOpen } = useSelector((state: RootState) => state.allocation);
+  const { isOpen: isReduxOpen } = useSelector(
+    (state: RootState) => state.allocation,
+  );
   const isModalOpen = isManualOpen || isReduxOpen;
 
   const [appliedFilters, setAppliedFilters] = useState({
@@ -299,7 +304,7 @@ export default function AllocationSummaryTable() {
                           className="text-muted-foreground/60"
                         />
                         <span className="text-xs">
-                          {alloc.allocation_date?.split("T")[0] || "N/A"}
+                          {formatDate(alloc.allocation_date)}
                         </span>
                       </div>
                     </TableCell>

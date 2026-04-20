@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   Box,
@@ -34,6 +35,7 @@ import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { cn } from "@/lib/utils";
 import { IPhysicalAssetDetail } from "@/types/physical-asset";
+import { formatDate } from "@/utils/date";
 
 interface IAssetHolder {
   name: string;
@@ -308,14 +310,12 @@ export default function OverviewTab({
                   <InfoRow
                     icon="📅"
                     label="Purchase date"
-                    value={asset.purchase_date?.split("T")[0] || "N/A"}
+                    value={formatDate(asset.purchase_date)}
                   />
                   <InfoRow
                     icon="🗓️"
                     label="Declaration date"
-                    value={
-                      asset.system_declaration_date?.split("T")[0] || "N/A"
-                    }
+                    value={formatDate(asset.system_declaration_date)}
                   />
                   <InfoRow
                     icon="💵"
@@ -342,34 +342,20 @@ export default function OverviewTab({
                   <InfoRow
                     icon="✅"
                     label="Warranty expiration"
-                    value={asset.warranty_expiration?.split("T")[0] || "N/A"}
+                    value={formatDate(asset.warranty_expiration)}
                   />
                   <InfoRow
                     icon="🏢"
                     label="Supplier"
                     value={asset.supplier?.name || "-"}
                   />
-                  {asset.purchase_ticket && (
-                    <div className="flex flex-col gap-0.5">
-                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <span className="text-base opacity-70">🔗</span>
-                        Purchase ticket
-                      </div>
-                      <div className="pl-6">
-                        <a
-                          href={asset.purchase_ticket}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-primary hover:underline flex items-center gap-1 truncate max-w-[200px]"
-                        >
-                          <ExternalLink className="w-3 h-3 shrink-0" />
-                          <span className="truncate">
-                            {asset.purchase_ticket}
-                          </span>
-                        </a>
-                      </div>
-                    </div>
-                  )}
+
+                  <InfoRow
+                    icon="🔗"
+                    label="Purchase ticket"
+                    type="link"
+                    value={asset.purchase_ticket || "-"}
+                  />
                 </CardContent>
               </Card>
             </div>
@@ -520,12 +506,14 @@ function InfoRow({
   value,
   highlight = false,
   bold = false,
+  type = "text",
 }: Readonly<{
   icon: string;
   label: string;
   value: string;
   highlight?: boolean;
   bold?: boolean;
+  type?: "text" | "link";
 }>) {
   return (
     <div className="grid grid-cols-[160px_1fr] items-center gap-2 py-0.5">
@@ -536,18 +524,30 @@ function InfoRow({
         <span className="truncate">{label}</span>
       </div>
       <div className="min-w-0">
-        <span
-          className={cn(
-            "text-sm leading-tight wrap-break-word",
-            highlight
-              ? "font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded"
-              : bold
-                ? "font-semibold text-primary"
-                : "text-foreground/90",
-          )}
-        >
-          {value}
-        </span>
+        {type === "link" ? (
+          <Link
+            href={value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-primary hover:underline flex items-center gap-1 truncate max-w-[400px]"
+          >
+            <ExternalLink className="w-3 h-3 shrink-0" />
+            <span className="truncate">{value}</span>
+          </Link>
+        ) : (
+          <span
+            className={cn(
+              "text-sm leading-tight wrap-break-word",
+              highlight
+                ? "font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded"
+                : bold
+                  ? "font-semibold text-primary"
+                  : "text-foreground/90",
+            )}
+          >
+            {value}
+          </span>
+        )}
       </div>
     </div>
   );

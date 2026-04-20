@@ -1,43 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux";
-import { updateCount, actionFetchPendingCount } from "@/redux/slices/task";
-import { useGet } from "@/hooks/useGet";
-import { useMutation } from "@/hooks/useMutation";
-import { ITask, TaskStatus } from "@/types/task";
-import { IAuditSession } from "@/types/audit";
-import {
-  Search,
-  Filter,
-  X,
-  RotateCcw,
-  Check,
-  CheckCircle2,
-  XCircle,
-  X as CloseIcon,
-  Clock,
-  FileText,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useEffect, useState } from "react";
+
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Check,
+  CheckCircle2,
+  Clock,
+  X as CloseIcon,
+  FileText,
+  Filter,
+  RotateCcw,
+  Search,
+  X,
+  XCircle,
+} from "lucide-react";
+import { useDispatch } from "react-redux";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -46,22 +33,39 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { cn } from "@/lib/utils";
+import { AppDispatch } from "@/redux";
+import { actionFetchPendingCount, updateCount } from "@/redux/slices/task";
+import { IAuditSession } from "@/types/audit";
+import { ITask, TaskStatus } from "@/types/task";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { formatDate } from "@/utils/date";
+
+import { ApproveAuditModal } from "./ApproveAuditModal";
 import { ApproveTaskModal } from "./ApproveTaskModal";
-import { RejectTaskModal } from "./RejectTaskModal";
 import { CompleteAuditModal } from "./CompleteAuditModal";
 import { RejectAuditModal } from "./RejectAuditModal";
-import { ApproveAuditModal } from "./ApproveAuditModal";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { getApiErrorMessage } from "@/utils/api-error";
+import { RejectTaskModal } from "./RejectTaskModal";
 
 export default function MyTasksTable() {
   const router = useRouter();
@@ -134,7 +138,10 @@ export default function MyTasksTable() {
 
   const allTasks = [...tasks, ...mappedAudits]
     .filter((task) => {
-      if (selectedProcessType !== "all" && task.document_type !== selectedProcessType) {
+      if (
+        selectedProcessType !== "all" &&
+        task.document_type !== selectedProcessType
+      ) {
         return false;
       }
       if (!appliedQ) return true;
@@ -169,7 +176,7 @@ export default function MyTasksTable() {
     }
   }, [response, filteredAudits, activeTab, dispatch]);
 
-  // If we are on a non-pending tab, we still need to fetch the pending count 
+  // If we are on a non-pending tab, we still need to fetch the pending count
   // because layout no longer fetches it when on /my-tasks
   useEffect(() => {
     if (activeTab !== "PENDING") {
@@ -422,7 +429,10 @@ export default function MyTasksTable() {
           >
             <SelectTrigger className="h-10 px-4 bg-background/50 border-border/50 text-xs font-semibold hover:bg-background/80 transition-all w-[150px]">
               <div className="flex items-center gap-2">
-                <Filter size={14} className="text-muted-foreground/70 shrink-0" />
+                <Filter
+                  size={14}
+                  className="text-muted-foreground/70 shrink-0"
+                />
                 <SelectValue placeholder="All Processes" />
               </div>
             </SelectTrigger>
@@ -552,15 +562,10 @@ export default function MyTasksTable() {
                     <div className="flex flex-col gap-0.5 text-xs">
                       <div className="flex items-center gap-1.5 text-muted-foreground">
                         <Clock size={12} className="opacity-60" />
-                        <span>
-                          {new Date(task.created_at).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
+                        <span>{formatDate(task.created_at, "HH:mm")}</span>
                       </div>
                       <span className="text-[10px] text-muted-foreground/80 ml-4 font-mono font-medium">
-                        {new Date(task.created_at).toLocaleDateString()}
+                        {formatDate(task.created_at)}
                       </span>
                     </div>
                   </TableCell>
@@ -593,19 +598,19 @@ export default function MyTasksTable() {
                           </Button>
                           {(task.document_type !== "audit" ||
                             task.status === "COMPLETED") && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleReject(task);
-                                }}
-                                className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
-                                title="Reject"
-                              >
-                                <CloseIcon size={16} />
-                              </Button>
-                            )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReject(task);
+                              }}
+                              className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
+                              title="Reject"
+                            >
+                              <CloseIcon size={16} />
+                            </Button>
+                          )}
                         </>
                       )}
                     </div>

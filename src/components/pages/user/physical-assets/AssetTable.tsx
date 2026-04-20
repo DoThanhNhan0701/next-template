@@ -56,6 +56,7 @@ import { IOrgUnit } from "@/types/org";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStatus } from "@/types/status";
 import { IUsageMode } from "@/types/usage-mode";
+import { formatDate } from "@/utils/date";
 
 import AssetFormModal from "./AssetFormModal";
 
@@ -399,7 +400,7 @@ export default function AssetTable() {
                             className="text-muted-foreground/60"
                           />
                           <span className="text-xs">
-                            {asset.purchase_date?.split("T")[0] || "N/A"}
+                            {formatDate(asset.purchase_date)}
                           </span>
                         </div>
                         <span className="font-bold text-sm text-foreground/90">

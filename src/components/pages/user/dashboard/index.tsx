@@ -1,5 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+import {
+  Activity,
+  ArrowDownRight,
+  ArrowRightLeft,
+  ArrowUpRight,
+  CheckCircle2,
+  DollarSign,
+  Laptop,
+  ListTodo,
+  MapPin,
+  Trash2,
+  TrendingUp,
+  UserCheck,
+  Users,
+  Wrench,
+} from "lucide-react";
+import { useSelector } from "react-redux";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,24 +39,7 @@ import {
   DashboardStatusChart,
   DashboardSummaryResponse,
 } from "@/types/dashboard";
-import {
-  Activity,
-  ArrowDownRight,
-  ArrowRightLeft,
-  ArrowUpRight,
-  CheckCircle2,
-  DollarSign,
-  Laptop,
-  ListTodo,
-  MapPin,
-  Trash2,
-  TrendingUp,
-  UserCheck,
-  Users,
-  Wrench,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { formatDate } from "@/utils/date";
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
@@ -73,20 +76,20 @@ export default function DashboardPage() {
   const statusChartData = statusChartRes?.data || [];
   const maxStatusCount = Math.max(...statusChartData.map((d) => d.count), 1);
 
-  const formatTime = (dateString: string) => {
-    try {
-      const d = new Date(dateString);
-      return new Intl.DateTimeFormat("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }).format(d);
-    } catch {
-      return dateString;
-    }
-  };
+  // const formatTime = (dateString: string) => {
+  //   try {
+  //     const d = new Date(dateString);
+  //     return new Intl.DateTimeFormat("vi-VN", {
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //       day: "2-digit",
+  //       month: "2-digit",
+  //       year: "numeric",
+  //     }).format(d);
+  //   } catch {
+  //     return dateString;
+  //   }
+  // };
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
@@ -319,7 +322,8 @@ export default function DashboardPage() {
                         className="text-[10px] font-semibold text-muted-foreground/50 mt-0.5"
                         suppressHydrationWarning
                       >
-                        {formatTime(activity.performed_at)}
+                        {formatDate(activity.performed_at, "HH:mm")}{" "}
+                        {formatDate(activity.performed_at)}
                       </span>
                     </div>
                   </div>

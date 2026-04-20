@@ -146,8 +146,8 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   className="font-medium text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                 >
                   {asset.management_type === "bulk"
-                    ? "Bulk management"
-                    : "Unique management"}
+                    ? "Theo số lượng (Lô)"
+                    : "Theo mã (Duy nhất)"}
                 </Badge>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

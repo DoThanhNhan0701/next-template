@@ -1,21 +1,29 @@
 "use client";
 
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon, Trash } from "lucide-react";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
+
+import { ApproverSelect } from "@/components/common/ApproverSelect";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -23,19 +31,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation } from "@/hooks/useMutation";
-import { useGet } from "@/hooks/useGet";
+import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { AppDispatch, RootState } from "@/redux";
+import { closeStockAdjustment } from "@/redux/slices/stockAdjustment";
+import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { ITemplate, ITemplateStep } from "@/types/template";
-import { IUser } from "@/types/auth";
-import { AppDispatch, RootState } from "@/redux";
-import { closeStockAdjustment } from "@/redux/slices/stockAdjustment";
-import { ApproverSelect } from "@/components/common/ApproverSelect";
-import { PlusIcon, Trash } from "lucide-react";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { getTodayISO } from "@/utils/date";
+
 const DetailSchema = z.object({
   asset_id: z.number().min(1, "Please select an asset"),
   location_id: z.number().min(1, "Please select a location"),
@@ -75,12 +84,19 @@ function DetailRow({
   locations: ILocation[];
   onRemove: () => void;
 }) {
-  const locationId = useWatch({ control, name: `details.${index}.location_id` });
+  const locationId = useWatch({
+    control,
+    name: `details.${index}.location_id`,
+  });
 
-  const { response: assetRes, pending: assetsPending } = useGet<{ items: IPhysicalAsset[] }>(
+  const { response: assetRes, pending: assetsPending } = useGet<{
+    items: IPhysicalAsset[];
+  }>(
     {
       url: endpoints.PHYSICAL_ASSETS,
-      config: { params: { location_id: locationId, limit: 200, status_code: "READY" } },
+      config: {
+        params: { location_id: locationId, limit: 200, status_code: "READY" },
+      },
     },
     { disabled: !locationId || locationId === 0, deps: [locationId] },
   );
@@ -121,7 +137,9 @@ function DetailRow({
               </SelectTrigger>
               <SelectContent>
                 {locations.map((l) => (
-                  <SelectItem key={l.id} value={l.id.toString()}>{l.name}</SelectItem>
+                  <SelectItem key={l.id} value={l.id.toString()}>
+                    {l.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -225,7 +243,12 @@ function DetailRow({
             <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
               Notes
             </FieldLabel>
-            <Input className="h-9 text-xs" {...field} value={field.value ?? ""} placeholder="Optional" />
+            <Input
+              className="h-9 text-xs"
+              {...field}
+              value={field.value ?? ""}
+              placeholder="Optional"
+            />
           </Field>
         )}
       />
@@ -233,7 +256,11 @@ function DetailRow({
   );
 }
 
-export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Props) {
+export default function StockAdjustmentModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: Props) {
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.stockAdjustment);
@@ -262,7 +289,7 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
   const form = useForm<FormValues>({
     resolver: zodResolver(StockAdjustmentSchema),
     defaultValues: {
-      adjustment_date: new Date().toISOString().split("T")[0],
+      adjustment_date: getTodayISO(),
       reason: "",
       external_link: "",
       approver_step_1_id: null,
@@ -271,23 +298,28 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
     },
   });
 
-  const { fields, append, remove } = useFieldArray({ control: form.control, name: "details" });
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "details",
+  });
 
   useEffect(() => {
     if (isOpen) {
       form.reset({
-        adjustment_date: new Date().toISOString().split("T")[0],
+        adjustment_date: getTodayISO(),
         reason: "",
         external_link: "",
         approver_step_1_id: null,
         approver_step_2_id: null,
-        details: [{
-          asset_id: prefill?.asset_id ?? 0,
-          location_id: prefill?.location_id ?? 0,
-          adjustment_type: prefill?.adjustment_type ?? "INCREASE",
-          quantity_diff: 1,
-          notes: "",
-        }],
+        details: [
+          {
+            asset_id: prefill?.asset_id ?? 0,
+            location_id: prefill?.location_id ?? 0,
+            adjustment_type: prefill?.adjustment_type ?? "INCREASE",
+            quantity_diff: 1,
+            notes: "",
+          },
+        ],
       });
     }
   }, [isOpen, prefill, form]);
@@ -296,21 +328,38 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
     const workflow_assignments: { step_id: number; user_id: number }[] = [];
     if (activeTemplate?.steps?.length) {
       if (data.approver_step_1_id) {
-        workflow_assignments.push({ step_id: activeTemplate.steps[0].id, user_id: data.approver_step_1_id });
+        workflow_assignments.push({
+          step_id: activeTemplate.steps[0].id,
+          user_id: data.approver_step_1_id,
+        });
       }
       if (activeTemplate.steps.length > 1 && data.approver_step_2_id) {
-        workflow_assignments.push({ step_id: activeTemplate.steps[1].id, user_id: data.approver_step_2_id });
+        workflow_assignments.push({
+          step_id: activeTemplate.steps[1].id,
+          user_id: data.approver_step_2_id,
+        });
       }
     }
 
     const { approver_step_1_id, approver_step_2_id, ...rest } = data;
-    void approver_step_1_id; void approver_step_2_id;
+    void approver_step_1_id;
+    void approver_step_2_id;
 
     await mutate(
-      { url: "/api/v1/stock-adjustments", method: "post", body: { ...rest, attachments: [], workflow_assignments } },
       {
-        onSuccess: (res) => { getApiSuccessMessage(res); onSuccess(); handleClose(); },
-        onError: (err) => { getApiErrorMessage(err); },
+        url: "/api/v1/stock-adjustments",
+        method: "post",
+        body: { ...rest, attachments: [], workflow_assignments },
+      },
+      {
+        onSuccess: (res) => {
+          getApiSuccessMessage(res);
+          onSuccess();
+          handleClose();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
       },
     );
   };
@@ -325,13 +374,17 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 flex flex-col overflow-hidden">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
           <div className="flex-1 p-6 overflow-y-auto">
             <div className="flex flex-col gap-6 pb-4">
-
               {/* General Info */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">General Information</h3>
+                <h3 className="text-sm font-semibold text-primary border-b pb-1">
+                  General Information
+                </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
                     name="adjustment_date"
@@ -339,8 +392,14 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Adjustment Date *</FieldLabel>
-                        <Input type="date" {...field} value={field.value ?? ""} />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -351,7 +410,11 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
                     render={({ field }) => (
                       <Field className="gap-1">
                         <FieldLabel>External Link</FieldLabel>
-                        <Input {...field} value={field.value ?? ""} placeholder="e.g. Jira/Helpdesk link" />
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. Jira/Helpdesk link"
+                        />
                       </Field>
                     )}
                   />
@@ -362,8 +425,15 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
                         <FieldLabel>Reason *</FieldLabel>
-                        <Textarea {...field} value={field.value ?? ""} placeholder="Reason for adjustment" className="min-h-[80px]" />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        <Textarea
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="Reason for adjustment"
+                          className="min-h-[80px]"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -373,13 +443,23 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
               {/* Items */}
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between border-b pb-1">
-                  <h3 className="text-sm font-semibold text-primary">Adjustment Items</h3>
+                  <h3 className="text-sm font-semibold text-primary">
+                    Adjustment Items
+                  </h3>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     className="h-7 text-xs"
-                    onClick={() => append({ asset_id: 0, location_id: 0, adjustment_type: "INCREASE", quantity_diff: 1, notes: "" })}
+                    onClick={() =>
+                      append({
+                        asset_id: 0,
+                        location_id: 0,
+                        adjustment_type: "INCREASE",
+                        quantity_diff: 1,
+                        notes: "",
+                      })
+                    }
                   >
                     <PlusIcon size={12} className="mr-1" /> Add Item
                   </Button>
@@ -408,39 +488,62 @@ export default function StockAdjustmentModal({ isOpen, onClose, onSuccess }: Pro
               {/* Approval Process */}
               {activeTemplate && (activeTemplate.steps || []).length > 0 && (
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-semibold text-primary border-b pb-1">Approval Process</h3>
+                  <h3 className="text-sm font-semibold text-primary border-b pb-1">
+                    Approval Process
+                  </h3>
                   <FieldGroup className="grid grid-cols-2 gap-3">
-                    {(activeTemplate.steps || []).map((step: ITemplateStep, idx) => {
-                      const name = idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
-                      return (
-                        <Controller
-                          key={step.id}
-                          name={name as keyof FormValues}
-                          control={form.control}
-                          render={({ field, fieldState }) => (
-                            <Field className="gap-1">
-                              <FieldLabel>{step.name}</FieldLabel>
-                              <ApproverSelect
-                                step={step}
-                                allUsers={users}
-                                value={field.value != null ? field.value.toString() : ""}
-                                onChange={(val) => field.onChange(val === "none" ? null : Number(val))}
-                              />
-                              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                            </Field>
-                          )}
-                        />
-                      );
-                    })}
+                    {(activeTemplate.steps || []).map(
+                      (step: ITemplateStep, idx) => {
+                        const name =
+                          idx === 0
+                            ? "approver_step_1_id"
+                            : "approver_step_2_id";
+                        return (
+                          <Controller
+                            key={step.id}
+                            name={name as keyof FormValues}
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                              <Field className="gap-1">
+                                <FieldLabel>{step.name}</FieldLabel>
+                                <ApproverSelect
+                                  step={step}
+                                  allUsers={users}
+                                  value={
+                                    field.value != null
+                                      ? field.value.toString()
+                                      : ""
+                                  }
+                                  onChange={(val) =>
+                                    field.onChange(
+                                      val === "none" ? null : Number(val),
+                                    )
+                                  }
+                                />
+                                {fieldState.invalid && (
+                                  <FieldError errors={[fieldState.error]} />
+                                )}
+                              </Field>
+                            )}
+                          />
+                        );
+                      },
+                    )}
                   </FieldGroup>
                 </div>
               )}
-
             </div>
           </div>
 
           <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
-            <Button type="button" variant="outline" onClick={handleClose} className="w-24">Cancel</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="w-24"
+            >
+              Cancel
+            </Button>
             <Button type="submit" disabled={pending} className="w-24">
               {pending ? "Saving..." : "Create"}
             </Button>

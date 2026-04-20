@@ -1,32 +1,36 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, useWatch, useFieldArray } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
-import { useMutation } from "@/hooks/useMutation";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { ITransfer } from "@/types/transfer";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
-import { IUser } from "@/types/auth";
-import { ITemplate } from "@/types/template";
-import { SourceInfoSection } from "./components/SourceInfoSection";
-import { AssetSelectionSection } from "./components/AssetSelectionSection";
-import { TargetDestinationSection } from "./components/TargetDestinationSection";
-import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
 import { IStaff } from "@/types/staff";
+import { ITemplate } from "@/types/template";
+import { ITransfer } from "@/types/transfer";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { getTodayISO } from "@/utils/date";
+
+import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
+import { AssetSelectionSection } from "./components/AssetSelectionSection";
+import { SourceInfoSection } from "./components/SourceInfoSection";
+import { TargetDestinationSection } from "./components/TargetDestinationSection";
 
 const TransferSchema = z.object({
   source_type: z.enum(["holder", "location"]),
@@ -98,7 +102,7 @@ export default function TransferFormModal({
       location_id: null,
       approver_step_1_id: null,
       approver_step_2_id: null,
-      transfer_date: new Date().toISOString().split("T")[0],
+      transfer_date: getTodayISO(),
       external_link: "",
       reason: "",
       details: [{ asset_id: 0, quantity: 1 }],
@@ -178,7 +182,7 @@ export default function TransferFormModal({
           location_id: null,
           approver_step_1_id: null,
           approver_step_2_id: null,
-          transfer_date: new Date().toISOString().split("T")[0],
+          transfer_date: getTodayISO(),
           external_link: "",
           reason: "",
           details: [{ asset_id: 0, quantity: 1 }],

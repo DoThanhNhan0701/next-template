@@ -1,25 +1,40 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Building2,
+  Check,
+  ChevronsUpDown,
+  MapPin,
+  Search,
+  X,
+} from "lucide-react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -27,28 +42,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { endpoints } from "@/config/endpoints";
-import { useMutation } from "@/hooks/useMutation";
 import { useGet } from "@/hooks/useGet";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
+import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
-import { IUser } from "@/types/auth";
-import {
-  Building2,
-  MapPin,
-  ChevronsUpDown,
-  X,
-  Search,
-  Check,
-} from "lucide-react";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+import { getTodayISO } from "@/utils/date";
 
 const AuditSchema = z
   .object({
@@ -122,7 +125,7 @@ export default function AuditFormModal({
       unit_ids: [],
       location_ids: [],
       assignee_id: null,
-      due_date: "",
+      due_date: getTodayISO(),
     },
   });
 
@@ -140,7 +143,7 @@ export default function AuditFormModal({
         unit_ids: [],
         location_ids: [],
         assignee_id: null,
-        due_date: "",
+        due_date: getTodayISO(),
       });
     }
   }, [isOpen, form]);
@@ -362,8 +365,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
-                        | { message?: string }
-                        | undefined,
+                          | { message?: string }
+                          | undefined,
                       ]}
                     />
                   </Field>
@@ -449,9 +452,10 @@ export default function AuditFormModal({
                                 className={`
                                   flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
                                   hover:bg-accent hover:text-accent-foreground
-                                  ${selectedLocationIds.includes(l.id)
-                                    ? "bg-accent/50"
-                                    : ""
+                                  ${
+                                    selectedLocationIds.includes(l.id)
+                                      ? "bg-accent/50"
+                                      : ""
                                   }
                                 `}
                                 onClick={() => toggleLocation(l.id)}
@@ -477,8 +481,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
-                        | { message?: string }
-                        | undefined,
+                          | { message?: string }
+                          | undefined,
                       ]}
                     />
                   </Field>

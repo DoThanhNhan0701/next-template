@@ -1,29 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { ITransfer } from "@/types/transfer";
-import { IOrgUnit } from "@/types/org";
-import {
-  FileText,
-  Search,
-  Building2,
-  X,
-  RotateCcw,
-  Calendar,
-  ArrowRight,
-} from "lucide-react";
+
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ArrowRight,
+  Building2,
+  Calendar,
+  FileText,
+  RotateCcw,
+  Search,
+  X,
+} from "lucide-react";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -39,11 +35,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IOrgUnit } from "@/types/org";
+import { ITransfer } from "@/types/transfer";
+import { formatDate } from "@/utils/date";
+
 import TransferFormModal from "./TransferFormModal";
 
 export default function TransfersTable() {
@@ -232,7 +237,7 @@ export default function TransfersTable() {
                         <span className="font-semibold text-sm">
                           {item.record_number}
                         </span>
-                        <span className="text-[10px] text-muted-foreground uppercase font-medium">
+                        <span className="text-[10px] text-muted-foreground font-medium">
                           Type: {item.transfer_type}
                         </span>
                       </div>
@@ -244,7 +249,7 @@ export default function TransfersTable() {
                         size={12}
                         className="text-muted-foreground/60"
                       />
-                      <span>{item.transfer_date?.split("T")[0] || "N/A"}</span>
+                      <span>{formatDate(item.transfer_date)}</span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3">
@@ -288,7 +293,7 @@ export default function TransfersTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3">
                     <span
-                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
                     >
                       {item.status}

@@ -1,32 +1,36 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ClipboardList, Package, Trash2, UserCheck } from "lucide-react";
+import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClipboardList, Trash2, Package, UserCheck } from "lucide-react";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { IUser } from "@/types/auth";
+import { ILiquidation } from "@/types/liquidation";
+import { ILocation } from "@/types/location";
+import { IStaff } from "@/types/staff";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { ILocation } from "@/types/location";
-import { IUser } from "@/types/auth";
-import { ITemplate } from "@/types/template";
+import { getTodayISO } from "@/utils/date";
+
 import { GeneralLiquidationSection } from "./components/GeneralLiquidationSection";
-import { LiquidationAssetSelectionSection } from "./components/LiquidationAssetSelectionSection";
 import { LiquidationApprovalSection } from "./components/LiquidationApprovalSection";
-import { ILiquidation } from "@/types/liquidation";
-import { LiquidationSchema, LiquidationFormValues } from "./schema";
-import { IStaff } from "@/types/staff";
+import { LiquidationAssetSelectionSection } from "./components/LiquidationAssetSelectionSection";
+import { LiquidationFormValues, LiquidationSchema } from "./schema";
 
 interface LiquidationFormModalProps {
   isOpen: boolean;
@@ -51,7 +55,7 @@ export default function LiquidationFormModal({
         record_number: "",
         reason: "",
         notes: null,
-        liquidation_date: new Date().toISOString().split("T")[0],
+        liquidation_date: getTodayISO(),
         liquidation_type: "sell",
         committee: [],
         total_value: 0,
@@ -122,7 +126,7 @@ export default function LiquidationFormModal({
         record_number: "",
         reason: "",
         notes: null,
-        liquidation_date: new Date().toISOString().split("T")[0],
+        liquidation_date: getTodayISO(),
         liquidation_type: "sell",
         committee: [],
         total_value: 0,

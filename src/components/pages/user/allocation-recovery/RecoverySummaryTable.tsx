@@ -1,29 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IRecoverySummary } from "@/types/recovery";
+
 import {
-  Search,
   Building2,
-  Filter,
-  X,
-  RotateCcw,
   Calendar,
   ClipboardList,
+  Filter,
+  RotateCcw,
+  Search,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -39,15 +35,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { IStatus } from "@/types/status";
-import { IOrgUnit } from "@/types/org";
-
-import { Badge } from "@/components/ui/badge";
 import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { RootState } from "@/redux";
+import { IOrgUnit } from "@/types/org";
+import { IRecoverySummary } from "@/types/recovery";
+import { IStatus } from "@/types/status";
+import { formatDate } from "@/utils/date";
+
 import RecoveryVoucherModal from "./RecoveryVoucherModal";
 
 export default function RecoverySummaryTable() {
@@ -59,7 +62,9 @@ export default function RecoverySummaryTable() {
   const [unitId, setUnitId] = useState<string>("all");
   const [statusCode, setStatusCode] = useState<string>("all");
   const [isManualOpen, setIsManualOpen] = useState(false);
-  const { isOpen: isReduxOpen } = useSelector((state: RootState) => state.recovery);
+  const { isOpen: isReduxOpen } = useSelector(
+    (state: RootState) => state.recovery,
+  );
   const isModalOpen = isManualOpen || isReduxOpen;
 
   const [appliedFilters, setAppliedFilters] = useState({
@@ -304,7 +309,7 @@ export default function RecoverySummaryTable() {
                           className="text-muted-foreground/60"
                         />
                         <span className="text-xs">
-                          {recovery.recovery_date?.split("T")[0] || "N/A"}
+                          {formatDate(recovery.recovery_date)}
                         </span>
                       </div>
                     </TableCell>
