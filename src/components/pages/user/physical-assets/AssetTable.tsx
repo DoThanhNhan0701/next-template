@@ -1,30 +1,29 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IPhysicalAsset } from "@/types/physical-asset";
+
 import {
-  EditIcon,
-  Calendar,
-  MapPin,
-  Search,
   Building2,
-  Tag,
+  Calendar,
+  EditIcon,
   Filter,
-  X,
+  MapPin,
   RotateCcw,
+  Search,
+  Tag,
+  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Laptop } from "lucide-react";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -40,22 +39,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import AssetFormModal from "./AssetFormModal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { usePermissions } from "@/hooks/usePermissions";
+import { cn } from "@/lib/utils";
 import { ICatalogType } from "@/types/catalog-type";
+import { IOrgUnit } from "@/types/org";
+import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStatus } from "@/types/status";
 import { IUsageMode } from "@/types/usage-mode";
-import { IOrgUnit } from "@/types/org";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import {
-  TableLoadingRows,
-  TableEmptyRow,
-} from "@/components/common/TableStateDisplay";
-import { Laptop } from "lucide-react";
+
+import AssetFormModal from "./AssetFormModal";
 
 export default function AssetTable() {
   const router = useRouter();
+  const { hasPermission } = usePermissions();
+  const canEdit = hasPermission("asset:edit");
+  const canCreate = hasPermission("asset:create");
+
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -268,14 +277,14 @@ export default function AssetTable() {
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
 
-          <div className="hidden sm:block w-px h-6 bg-border/60 mx-1 shrink-0" />
-
-          <Button
-            onClick={() => setIsCreating(true)}
-            className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            Create
-          </Button>
+          {canCreate && (
+            <Button
+              onClick={() => setIsCreating(true)}
+              className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+            >
+              Create
+            </Button>
+          )}
         </div>
       </div>
 
@@ -302,17 +311,19 @@ export default function AssetTable() {
               <TableHead className="font-semibold h-10 px-4 text-center">
                 Status
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right">
-                Actions
-              </TableHead>
+              {canEdit && (
+                <TableHead className="font-semibold h-10 px-4 text-right">
+                  Actions
+                </TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={canEdit ? 8 : 7} rows={6} />
             ) : assets.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={canEdit ? 8 : 7}
                 icon={Laptop}
                 message="No assets declared yet"
                 description="Declare your first asset using the button above to get started."
@@ -332,7 +343,6 @@ export default function AssetTable() {
                       {skip + index + 1}
                     </TableCell>
                     <TableCell className="px-4 py-1.5 relative overflow-hidden">
-
                       <div className="flex items-center gap-2">
                         <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10">
                           <Laptop size={16} />
@@ -363,7 +373,6 @@ export default function AssetTable() {
                             {getOrgUnitLabel(asset.unit_id) || "None"}
                           </span>
                         </div>
-
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
@@ -411,12 +420,17 @@ export default function AssetTable() {
                             : "bg-blue-500/10 text-blue-600 border-blue-500/20",
                         )}
                       >
-                        {asset.management_type === "bulk" ? "Theo SL" : "Theo Mã"}
+                        {asset.management_type === "bulk"
+                          ? "Theo SL"
+                          : "Theo Mã"}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center">
                       <div className="flex flex-col items-center gap-1.5">
-                        {((asset.in_stock_quantity ?? 0) > 0 || (asset.allocated_quantity ?? 0) > 0 || (asset.rented_quantity ?? 0) > 0) && asset.management_type === "bulk" ? (
+                        {((asset.in_stock_quantity ?? 0) > 0 ||
+                          (asset.allocated_quantity ?? 0) > 0 ||
+                          (asset.rented_quantity ?? 0) > 0) &&
+                        asset.management_type === "bulk" ? (
                           <div className="flex items-center gap-1 flex-wrap justify-center">
                             {(asset.in_stock_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
@@ -440,15 +454,16 @@ export default function AssetTable() {
                             style={
                               status?.color
                                 ? {
-                                  backgroundColor: `${status.color}20`,
-                                  color: status.color,
-                                  borderColor: `${status.color}40`,
-                                }
+                                    backgroundColor: `${status.color}20`,
+                                    color: status.color,
+                                    borderColor: `${status.color}40`,
+                                  }
                                 : {}
                             }
                             className={cn(
                               "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
-                              !status?.color && "bg-primary/10 text-primary border-primary/20",
+                              !status?.color &&
+                                "bg-primary/10 text-primary border-primary/20",
                             )}
                           >
                             {status?.name || `Status ${asset.status_id}`}
@@ -456,22 +471,24 @@ export default function AssetTable() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full hover:bg-amber-50 text-amber-600 transition-all active:scale-90"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setAssetToEdit(asset);
-                          }}
-                          title="Edit Asset"
-                        >
-                          <EditIcon size={14} />
-                        </Button>
-                      </div>
-                    </TableCell>
+                    {canEdit && (
+                      <TableCell className="px-4 py-1.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full hover:bg-amber-50 text-amber-600 transition-all active:scale-90"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setAssetToEdit(asset);
+                            }}
+                            title="Edit Asset"
+                          >
+                            <EditIcon size={14} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })
