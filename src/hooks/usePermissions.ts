@@ -7,14 +7,10 @@ export const usePermissions = () => {
   const permissions = user?.permissions || [];
   const userRole = user?.role || "";
 
-  // Consider user as admin if they have the "admin:manage" permission
-  const isAdmin = permissions.includes("admin:manage");
-
   /**
    * Check if user has a specific permission
    */
   const hasPermission = (permission: string): boolean => {
-    if (isAdmin) return true;
     return permissions.includes(permission);
   };
 
@@ -22,7 +18,6 @@ export const usePermissions = () => {
    * Check if user has any of the listed permissions
    */
   const hasAnyPermission = (requiredPermissions: string[]): boolean => {
-    if (isAdmin) return true;
     return requiredPermissions.some((perm) => permissions.includes(perm));
   };
 
@@ -30,7 +25,6 @@ export const usePermissions = () => {
    * Check if user has all of the listed permissions
    */
   const hasAllPermissions = (requiredPermissions: string[]): boolean => {
-    if (isAdmin) return true;
     return requiredPermissions.every((perm) => permissions.includes(perm));
   };
 
@@ -41,6 +35,6 @@ export const usePermissions = () => {
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
-    isSuperAdmin: isAdmin,
+    isSuperAdmin: permissions.includes("admin:manage"),
   };
 };

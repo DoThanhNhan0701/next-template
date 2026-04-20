@@ -20,6 +20,7 @@ export interface SidebarItem {
   url: string;
   icon: LucideIcon | React.ElementType;
   badge?: number;
+  permission?: string;
 }
 
 export const defaultItems: SidebarItem[] = [
