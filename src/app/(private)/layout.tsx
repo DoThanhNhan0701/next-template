@@ -27,6 +27,7 @@ import AuthLoadingOverlay from "@/components/common/AuthLoadingOverlay";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch, RootState } from "@/redux";
 import { actionFetchPendingCount } from "@/redux/slices/task";
+import AppBootstrap from "@/components/libs/app-bootstrap";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -117,7 +118,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     : allItems.filter((item) => !item.permission || hasPermission(item.permission));
 
   return (
-    <>
+    <AppBootstrap>
       <AuthLoadingOverlay />
       <div className="h-screen flex flex-col overflow-hidden">
         <Header user={user} items={sidebarItems} />
@@ -130,6 +131,6 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
-    </>
+    </AppBootstrap>
   );
 }

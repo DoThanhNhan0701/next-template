@@ -5,6 +5,7 @@ import Sidebar from "@/components/layouts/sidebar";
 import { RootState } from "@/redux";
 import { ReactNode } from "react";
 import { useSelector } from "react-redux";
+import AppBootstrap from "@/components/libs/app-bootstrap";
 
 import {
   Users,
@@ -43,16 +44,18 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      <Header user={user} items={adminSidebarItems} />
-      <div className="flex flex-1 overflow-hidden">
-        <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
-          <Sidebar items={adminSidebarItems} />
-          <section className="relative flex-1 p-2 overflow-auto">
-            {children}
-          </section>
-        </main>
+    <AppBootstrap>
+      <div className="h-screen flex flex-col overflow-hidden">
+        <Header user={user} items={adminSidebarItems} />
+        <div className="flex flex-1 overflow-hidden">
+          <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
+            <Sidebar items={adminSidebarItems} />
+            <section className="relative flex-1 p-2 overflow-auto">
+              {children}
+            </section>
+          </main>
+        </div>
       </div>
-    </div>
+    </AppBootstrap>
   );
 }

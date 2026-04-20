@@ -1,4 +1,4 @@
-import DashboardPage from "@/components/pages/user/dashboard";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Dashboard | Asset Management System",
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <DashboardPage />;
+  redirect("/dashboard");
 }
