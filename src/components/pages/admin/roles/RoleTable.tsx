@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux";
+import { actionSetUser } from "@/redux/slices/auth";
 import { useGet } from "@/hooks/useGet";
 import { IRole } from "@/types/rbac";
+import { IRoleObj } from "@/types/auth";
 import { EditIcon, Trash2Icon, PlusIcon, Shield } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -35,6 +42,8 @@ import RoleFormModal from "./RoleFormModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 export default function RoleTable() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActiveFilter, setIsActiveFilter] = useState("all");
@@ -67,6 +76,19 @@ export default function RoleTable() {
         | IRole
         | undefined;
       if (updatedItem?.id) {
+        const isEditingCurrentUserRole =
+          user && roleToEdit && roleToEdit.name === user.role;
+
+        if (isEditingCurrentUserRole) {
+          dispatch(
+            actionSetUser({
+              ...user,
+              role: updatedItem.name,
+              permissions: updatedItem.permissions?.map((p) => p.code) || [],
+              role_obj: updatedItem as unknown as IRoleObj,
+            }),
+          );
+        }
         setResponse((prev: IRole[] | null) =>
           prev
             ? prev.map((r: IRole) =>

@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { endpoints } from "@/config/endpoints";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux";
+import { actionSetUser } from "@/redux/slices/auth";
 import { useGet } from "@/hooks/useGet";
 import { IUser } from "@/types/auth";
 import { EditIcon, Key, Trash2Icon, PlusIcon, UserCog } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+import {
+  TableLoadingRows,
+  TableEmptyRow,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -36,6 +42,11 @@ import ChangePasswordModal from "./ChangePasswordModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 export default function UserTable() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  console.log(user);
+
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -68,11 +79,19 @@ export default function UserTable() {
         | IUser
         | undefined;
       if (updatedItem?.id) {
+        if (user && updatedItem.id === user.id) {
+          dispatch(
+            actionSetUser({
+              ...user,
+              ...updatedItem,
+            }),
+          );
+        }
         setResponse((prev: IUser[] | null) =>
           prev
             ? prev.map((u: IUser) =>
-              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-            )
+                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+              )
             : null,
         );
         return;
