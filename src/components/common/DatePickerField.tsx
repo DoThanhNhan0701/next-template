@@ -64,7 +64,7 @@ export function DatePickerField<T extends FieldValues>({
               const parsed = parse(value, "dd/MM/yyyy", new Date());
 
               if (isValid(parsed) && value.length === 10) {
-                field.onChange(parsed);
+                field.onChange(format(parsed, "yyyy-MM-dd"));
               }
             }}
             onBlur={() => {
@@ -93,7 +93,7 @@ export function DatePickerField<T extends FieldValues>({
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={(d: Date | undefined) => field.onChange(d)}
+                onSelect={(d: Date | undefined) => field.onChange(d ? format(d, "yyyy-MM-dd") : "")}
                 initialFocus
               />
             </PopoverContent>

@@ -52,6 +52,7 @@ import { IOrgUnit } from "@/types/org";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
+import { DatePickerField } from "@/components/common/DatePickerField";
 
 const AuditSchema = z
   .object({
@@ -365,8 +366,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
-                          | { message?: string }
-                          | undefined,
+                        | { message?: string }
+                        | undefined,
                       ]}
                     />
                   </Field>
@@ -452,10 +453,9 @@ export default function AuditFormModal({
                                 className={`
                                   flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
                                   hover:bg-accent hover:text-accent-foreground
-                                  ${
-                                    selectedLocationIds.includes(l.id)
-                                      ? "bg-accent/50"
-                                      : ""
+                                  ${selectedLocationIds.includes(l.id)
+                                    ? "bg-accent/50"
+                                    : ""
                                   }
                                 `}
                                 onClick={() => toggleLocation(l.id)}
@@ -481,8 +481,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
-                          | { message?: string }
-                          | undefined,
+                        | { message?: string }
+                        | undefined,
                       ]}
                     />
                   </Field>
@@ -492,7 +492,7 @@ export default function AuditFormModal({
 
             {/* Section 2: Assignment & Deadline */}
             <div className="flex flex-col gap-1">
-              <FieldGroup className="grid grid-cols-2 gap-6">
+              <FieldGroup className="grid grid-cols-2 gap-6 items-end">
                 {/* Assignee */}
                 <Controller
                   name="assignee_id"
@@ -528,23 +528,19 @@ export default function AuditFormModal({
                     </Field>
                   )}
                 />
-
-                {/* Due Date */}
-                <Field className="gap-1">
-                  <div className="flex flex-col gap-1 mb-1">
-                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
-                      Due date *
-                    </FieldLabel>
-                    <div className="h-[10px]" />{" "}
-                    {/* Spacer to align with Assignee label + hint */}
-                  </div>
-                  <Input
-                    type="date"
-                    {...form.register("due_date")}
-                    className="bg-background rounded-md border-muted-foreground/20 shadow-sm"
-                  />
-                  <FieldError errors={[form.formState.errors.due_date]} />
-                </Field>
+                <Controller
+                  control={form.control}
+                  name="due_date"
+                  render={({ fieldState }) => (
+                    <Field className="gap-1">
+                      <FieldLabel className="text-xs font-semibold text-muted-foreground">
+                        Due date *
+                      </FieldLabel>
+                      <DatePickerField form={form} name="due_date" />
+                      <FieldError errors={[fieldState.error]} />
+                    </Field>
+                  )}
+                />
               </FieldGroup>
             </div>
           </div>

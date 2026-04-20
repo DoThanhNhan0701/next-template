@@ -129,9 +129,6 @@ export default function MaintenanceTable() {
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
-
-          <div className="hidden sm:block w-px h-6 bg-border/60 mx-1 shrink-0" />
-
           <Button
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
@@ -149,17 +146,17 @@ export default function MaintenanceTable() {
                 No
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Maintenance Info
+                Maintenance info
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">Date</TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Asset Details
+                Asset details
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Service Provider
+                Service provider
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Qty</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Status</TableHead>
+              <TableHead className="font-semibold h-10 px-4">Quantity</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center">Status</TableHead>
               <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
             </TableRow>
           </TableHeader>
@@ -192,7 +189,7 @@ export default function MaintenanceTable() {
                         <span className="font-semibold text-sm">
                           {item.record_number}
                         </span>
-                        <span className="text-[10px] text-muted-foreground uppercase font-medium">
+                        <span className="text-[10px] text-muted-foreground font-medium">
                           Ticket: {item.ticket_number}
                         </span>
                       </div>
@@ -205,7 +202,7 @@ export default function MaintenanceTable() {
                           size={12}
                           className="text-muted-foreground/60"
                         />
-                        <span className="text-[11px] font-medium text-muted-foreground uppercase">
+                        <span className="text-[11px] font-medium text-muted-foreground">
                           Out:
                         </span>
 
@@ -217,7 +214,7 @@ export default function MaintenanceTable() {
                             size={12}
                             className="text-muted-foreground/60"
                           />
-                          <span className="text-[11px] font-medium text-muted-foreground uppercase">
+                          <span className="text-[11px] font-medium text-muted-foreground">
                             In:
                           </span>
                           <span>{formatDate(item.return_date)}</span>
@@ -244,12 +241,12 @@ export default function MaintenanceTable() {
                   <TableCell className="px-4 py-3 text-sm">
                     {item.service_provider_name || "N/A"}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-medium">
+                  <TableCell className="px-4 py-3 text-sm font-medium text-center">
                     {item.total_assets}
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-3 text-center">
                     <span
-                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
                     >
                       {item.status}

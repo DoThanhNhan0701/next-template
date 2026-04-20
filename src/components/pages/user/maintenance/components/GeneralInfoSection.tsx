@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { MaintenanceFormValues } from "../MaintenanceFormModal";
+import { DatePickerField } from "@/components/common/DatePickerField";
 
 interface GeneralInfoSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
@@ -63,12 +64,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         <Controller
           control={form.control}
           name="outing_date"
-          render={({ field, fieldState }) => (
+          render={({ fieldState }) => (
             <Field className="gap-1">
               <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Outing Date *
               </FieldLabel>
-              <Input {...field} type="date" className="bg-white" />
+              <DatePickerField form={form} name="outing_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}
