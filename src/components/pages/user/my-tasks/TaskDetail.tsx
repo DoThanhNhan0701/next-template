@@ -41,6 +41,7 @@ import {
   isRecoveryDocument,
   isRentalReturnDocument,
   isTransferDocument,
+  isLiquidationDocument,
   getDocumentTitle,
 } from "@/types/task";
 import { endpoints } from "@/config/endpoints";
@@ -415,6 +416,80 @@ export default function TaskDetail({ id }: TaskDetailProps) {
       });
     }
 
+    // Liquidation specific fields
+    if (isLiquidationDocument(detail)) {
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Liquidation date",
+        value: new Date(detail.liquidation_date).toLocaleDateString(),
+      });
+      fields.push({
+        icon: FileText,
+        iconColor: "bg-violet-500/10 text-violet-500",
+        label: "Type",
+        value: detail.liquidation_type.charAt(0).toUpperCase() + detail.liquidation_type.slice(1),
+      });
+      fields.push({
+        icon: Package,
+        iconColor: "bg-amber-500/10 text-amber-500",
+        label: "Total value",
+        value: `${detail.total_value.toLocaleString("vi-VN")} VND`,
+      });
+      if (detail.buyer_name) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-blue-500/10 text-blue-500",
+          label: "Buyer",
+          value: detail.buyer_name,
+        });
+      }
+      if (detail.committee) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-indigo-500/10 text-indigo-500",
+          label: "Committee",
+          value: detail.committee,
+        });
+      }
+      if (detail.reason) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-orange-500/10 text-orange-500",
+          label: "Reason",
+          value: (
+            <span className="text-sm font-medium text-muted-foreground italic">
+              {detail.reason}
+            </span>
+          ),
+        });
+      }
+      if (detail.notes) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-slate-500/10 text-slate-500",
+          label: "Notes",
+          value: (
+            <span className="text-sm font-medium text-muted-foreground italic">
+              {detail.notes}
+            </span>
+          ),
+        });
+      }
+      if (detail.external_link) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-cyan-500/10 text-cyan-500",
+          label: "External link",
+          value: (
+            <a href={detail.external_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              View link
+            </a>
+          ),
+        });
+      }
+    }
+
     // Detail items (table data)
     let detailItems = null;
 
@@ -518,6 +593,30 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           asset_code: item.asset_code,
           from_location_name: item.from_location_name,
           quantity: item.quantity,
+        })),
+      };
+    } else if (isLiquidationDocument(detail) && detail.details.length > 0) {
+      detailItems = {
+        title: "Disposal items",
+        icon: Package,
+        columns: [
+          { key: "no", label: "No", align: "center" as const },
+          { key: "asset", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "from_location", label: "From Location" },
+          { key: "quantity", label: "Qty", align: "center" as const },
+          { key: "unit_value", label: "Unit Value", align: "center" as const },
+          { key: "remaining_value", label: "Remaining Value", align: "center" as const },
+        ],
+        rows: detail.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          from_location: item.from_location?.name || "-",
+          quantity: item.quantity,
+          unit_value: item.unit_value.toLocaleString("vi-VN"),
+          remaining_value: item.remaining_value.toLocaleString("vi-VN"),
         })),
       };
     }

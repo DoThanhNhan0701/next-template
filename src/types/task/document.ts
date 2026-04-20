@@ -3,6 +3,7 @@ import { StockAdjustmentDocument } from "./stock-adjustment";
 import { RecoveryDocument } from "./recovery";
 import { RentalReturnDocument } from "./rental-return";
 import { TransferDocument } from "./transfer";
+import { LiquidationDocument } from "./liquidation";
 
 // ============================================
 // UNIFIED DOCUMENT DETAIL TYPE
@@ -17,7 +18,8 @@ export type DocumentDetail =
     | StockAdjustmentDocument
     | RecoveryDocument
     | RentalReturnDocument
-    | TransferDocument;
+    | TransferDocument
+    | LiquidationDocument;
 
 // ============================================
 // TYPE GUARDS
@@ -83,6 +85,19 @@ export const isTransferDocument = (
         "transfer_date" in doc &&
         "from_name" in doc &&
         "to_name" in doc
+    );
+};
+
+/**
+ * Type guard to check if document is a Liquidation
+ */
+export const isLiquidationDocument = (
+    doc: DocumentDetail,
+): doc is LiquidationDocument => {
+    return (
+        "liquidation_date" in doc &&
+        "liquidation_type" in doc &&
+        "total_value" in doc
     );
 };
 

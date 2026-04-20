@@ -34,12 +34,14 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     dispatch(actionFetchUser());
-    if (!pathname.startsWith("/my-tasks")) {
+
+    if (pathname !== "/my-tasks") {
       dispatch(actionFetchPendingCount());
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
+
 
   const sidebarItems = [
     { title: t("dashboard"), url: "/dashboard", icon: LayoutDashboard },
