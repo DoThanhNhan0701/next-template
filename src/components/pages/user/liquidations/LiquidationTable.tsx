@@ -144,13 +144,13 @@ export default function LiquidationTable() {
                 No
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Liquidation Info
+                Liquidation info
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">Date</TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Asset Details
+                Asset details
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Qty</TableHead>
+              <TableHead className="font-semibold h-10 px-4">Quantity</TableHead>
               <TableHead className="font-semibold h-10 px-4">Status</TableHead>
               <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
             </TableRow>
