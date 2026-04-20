@@ -38,7 +38,8 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { cleanFormData } from "@/utils/form";
 import { IPhysicalAsset } from "@/types/physical-asset";
-import { ILocation } from "@/types/location"; import { ISupplier } from "@/types/supplier";
+import { ILocation } from "@/types/location";
+import { ISupplier } from "@/types/supplier";
 import { ICatalogType } from "@/types/catalog-type";
 import { IUsageMode } from "@/types/usage-mode";
 import { IOrgUnit } from "@/types/org";
@@ -62,13 +63,13 @@ export default function AssetFormModal({
   const { mutate, pending } = useMutation();
 
   // Fetch metadata
-  const { response: importanceRes } = useGet<{ id: number; code: string; name: string; color: string }[]>(
-    { url: endpoints.IMPORTANCES },
-    { disabled: !isOpen },
-  );
-  const { response: locationRes } = useGet<ILocation[]>({
-    url: endpoints.LOCATIONS,
-  },
+  const { response: importanceRes } = useGet<
+    { id: number; code: string; name: string; color: string }[]
+  >({ url: endpoints.IMPORTANCES }, { disabled: !isOpen });
+  const { response: locationRes } = useGet<ILocation[]>(
+    {
+      url: endpoints.LOCATIONS,
+    },
     { disabled: !isOpen },
   );
   const { response: supplierRes } = useGet<ISupplier[]>(
@@ -313,7 +314,7 @@ export default function AssetFormModal({
                               </span>
                             </TabsTrigger>
                             <TabsTrigger
-                              value="batch"
+                              value="bulk"
                               className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
                             >
                               <Package className="w-4 h-4" />
@@ -326,12 +327,24 @@ export default function AssetFormModal({
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
-                        <div className={`mt-3 flex items-start gap-2 text-xs px-3 py-2 rounded-md border ${field.value === "unique" ? "bg-blue-50 border-blue-200 text-blue-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}>
+                        <div
+                          className={`mt-3 flex items-start gap-2 text-xs px-3 py-2 rounded-md border ${field.value === "unique" ? "bg-blue-50 border-blue-200 text-blue-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}
+                        >
                           <CircleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                           {field.value === "unique" ? (
-                            <span>Mỗi tài sản được định danh bằng <strong>mã riêng biệt</strong> (serial number). Số lượng luôn là 1. Phù hợp với thiết bị có giá trị cao cần theo dõi từng cái.</span>
+                            <span>
+                              Mỗi tài sản được định danh bằng{" "}
+                              <strong>mã riêng biệt</strong> (serial number). Số
+                              lượng luôn là 1. Phù hợp với thiết bị có giá trị
+                              cao cần theo dõi từng cái.
+                            </span>
                           ) : (
-                            <span>Tài sản được quản lý theo <strong>số lượng tổng</strong>, không phân biệt từng cái. Phù hợp với vật tư, phụ kiện hoặc hàng hóa nhập/xuất kho theo lô.</span>
+                            <span>
+                              Tài sản được quản lý theo{" "}
+                              <strong>số lượng tổng</strong>, không phân biệt
+                              từng cái. Phù hợp với vật tư, phụ kiện hoặc hàng
+                              hóa nhập/xuất kho theo lô.
+                            </span>
                           )}
                         </div>
                       </Field>
@@ -422,7 +435,7 @@ export default function AssetFormModal({
                           {...field}
                           value={field.value ?? ""}
                           placeholder="e.g. SN12345678"
-                          disabled={watchedManagementMethod === "batch"}
+                          disabled={watchedManagementMethod === "bulk"}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -549,7 +562,10 @@ export default function AssetFormModal({
                               (None)
                             </SelectItem>
                             {importances.map((imp) => (
-                              <SelectItem key={imp.id} value={imp.id.toString()}>
+                              <SelectItem
+                                key={imp.id}
+                                value={imp.id.toString()}
+                              >
                                 <div className="flex items-center gap-1.5">
                                   <div
                                     className="w-2 h-2 rounded-full"
@@ -628,8 +644,8 @@ export default function AssetFormModal({
                             </SelectItem>
                             {(watchedUnitId
                               ? staffs.filter(
-                                (s) => s.unit_id === Number(watchedUnitId),
-                              )
+                                  (s) => s.unit_id === Number(watchedUnitId),
+                                )
                               : staffs
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>

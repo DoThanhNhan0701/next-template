@@ -34,7 +34,7 @@ export const PhysicalAssetSchema = z.object({
   location: z.string().nullable().optional(),
   specifications: z.string().optional(),
   notes: z.string().optional(),
-  management_type: z.enum(["unique", "batch"]).optional(),
+  management_type: z.enum(["unique", "bulk"]).optional(),
   attachments: z.array(z.string()).optional(),
 }).refine(
   (data) => {

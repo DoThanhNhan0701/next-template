@@ -19,6 +19,10 @@ export const endpoints = getEndPoint("api/v1", {
   REFRESH: "auth/refresh",
   ROLE: "role",
   USERS: "users",
+  DASHBOARD_SUMMARY: "dashboard/summary",
+  DASHBOARD_RECENT_ACTIVITIES: "dashboard/recent-activities",
+  DASHBOARD_MODULE_STATS: "dashboard/module-stats",
+  DASHBOARD_STATUS_CHART: "dashboard/status-chart",
 
   LOCATIONS: "locations",
   RBAC_ROLES: "rbac/roles",
