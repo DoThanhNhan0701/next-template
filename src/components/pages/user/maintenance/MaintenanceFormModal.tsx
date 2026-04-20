@@ -59,7 +59,7 @@ const MaintenanceSchema = z.object({
   workflow_assignments: z.array(
     z.object({
       step_id: z.number(),
-      user_id: z.number(),
+      user_id: z.number().min(1, "Required"),
     }),
   ),
 });
@@ -186,7 +186,6 @@ export default function MaintenanceFormModal({
   }, [isOpen, maintenanceToEdit, form]);
 
   const onSubmit = async (data: MaintenanceFormValues) => {
-    console.log(data);
     const url = isEditing
       ? dynamicEndpoints.MAINTENANCE_DETAIL(maintenanceToEdit.id)
       : endpoints.MAINTENANCES;
@@ -228,9 +227,31 @@ export default function MaintenanceFormModal({
     );
   };
 
+  const errors = form.formState.errors;
+
+  const hasAssetsErrors = !!errors.items;
+  const hasGeneralErrors = !!(
+    errors.record_number ||
+    errors.ticket_number ||
+    errors.reason ||
+    errors.outing_date ||
+    errors.handover_person ||
+    errors.notes ||
+    errors.external_link
+  );
+  const hasServiceErrors = !!(
+    errors.taker_person_name ||
+    errors.taker_phone ||
+    errors.service_provider_name ||
+    errors.service_provider_address ||
+    errors.expected_cost ||
+    errors.actual_cost
+  );
+  const hasApprovalErrors = !!errors.workflow_assignments;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[850px] h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+      <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="p-8 pb-6 shrink-0 border-b">
           <div className="flex items-center gap-3 mb-1">
             <div className="p-2 bg-primary/10 rounded-lg">
@@ -250,40 +271,50 @@ export default function MaintenanceFormModal({
         </DialogHeader>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit, (err) =>
-            console.error("Validation Errors:", err),
-          )}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
           <Tabs
-            defaultValue="general"
+            defaultValue="assets"
             className="flex-1 flex flex-col overflow-hidden"
           >
             <div className="px-4 pb-4">
               <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/30 z-10">
                 <TabsTrigger
+                  value="assets"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
+                >
+                  <Package size={16} /> Lựa chọn tài sản
+                  {hasAssetsErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
+                </TabsTrigger>
+                <TabsTrigger
                   value="general"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
                   <ClipboardList size={16} /> Thông tin chung
+                  {hasGeneralErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
                 </TabsTrigger>
                 <TabsTrigger
                   value="service"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
                   <Wrench size={16} /> Dịch vụ sửa chữa
-                </TabsTrigger>
-                <TabsTrigger
-                  value="assets"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
-                >
-                  <Package size={16} /> Lựa chọn tài sản
+                  {hasServiceErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
                 </TabsTrigger>
                 <TabsTrigger
                   value="approval"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium"
+                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
                   <UserCheck size={16} /> Quy trình phê duyệt
+                  {hasApprovalErrors && (
+                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  )}
                 </TabsTrigger>
               </TabsList>
             </div>

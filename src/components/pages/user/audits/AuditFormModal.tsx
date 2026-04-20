@@ -362,8 +362,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
-                          | { message?: string }
-                          | undefined,
+                        | { message?: string }
+                        | undefined,
                       ]}
                     />
                   </Field>
@@ -449,10 +449,9 @@ export default function AuditFormModal({
                                 className={`
                                   flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
                                   hover:bg-accent hover:text-accent-foreground
-                                  ${
-                                    selectedLocationIds.includes(l.id)
-                                      ? "bg-accent/50"
-                                      : ""
+                                  ${selectedLocationIds.includes(l.id)
+                                    ? "bg-accent/50"
+                                    : ""
                                   }
                                 `}
                                 onClick={() => toggleLocation(l.id)}
@@ -478,8 +477,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
-                          | { message?: string }
-                          | undefined,
+                        | { message?: string }
+                        | undefined,
                       ]}
                     />
                   </Field>
@@ -516,7 +515,7 @@ export default function AuditFormModal({
                         <SelectContent>
                           {users.map((u) => (
                             <SelectItem key={u.id} value={u.id.toString()}>
-                              {u.full_name}
+                              {u.full_name} ({u.username})
                             </SelectItem>
                           ))}
                         </SelectContent>

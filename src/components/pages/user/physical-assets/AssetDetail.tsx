@@ -330,7 +330,6 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           isOpen={isPrintModalOpen}
           onClose={() => setIsPrintModalOpen(false)}
           assetCode={asset.asset_code}
-          assetName={asset.name}
           assetId={asset.id}
           owner={asset.owner}
           importanceLevel={asset.importance_obj}

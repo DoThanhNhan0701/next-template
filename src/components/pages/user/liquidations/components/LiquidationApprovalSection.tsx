@@ -68,7 +68,7 @@ export function LiquidationApprovalSection({
                     <SelectContent>
                       {users.map((user) => (
                         <SelectItem key={user.id} value={user.id.toString()}>
-                          {user.full_name || user.username}
+                          {user.full_name} ({user.username})
                         </SelectItem>
                       ))}
                     </SelectContent>

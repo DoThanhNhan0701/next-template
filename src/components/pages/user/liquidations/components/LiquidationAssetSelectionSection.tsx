@@ -118,12 +118,7 @@ function AssetListItem({
                 <SelectContent className="max-h-[300px]">
                   {assets.map((a) => (
                     <SelectItem key={a.id} value={a.id.toString()}>
-                      <div className="flex flex-col items-start py-0.5">
-                        <span className="font-semibold text-sm">{a.name}</span>
-                        <span className="text-muted-foreground text-[10px] opacity-80">
-                          {a.asset_code}
-                        </span>
-                      </div>
+                      {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -71,8 +71,8 @@ export default function UserTable() {
         setResponse((prev: IUser[] | null) =>
           prev
             ? prev.map((u: IUser) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            )
             : null,
         );
         return;
