@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface SidebarItem {
   title: string;
@@ -33,9 +34,13 @@ export const defaultItems: SidebarItem[] = [
 
 interface SidebarProps {
   items?: SidebarItem[];
+  loading?: boolean;
 }
 
-export default function Sidebar({ items = defaultItems }: SidebarProps) {
+export default function Sidebar({
+  items = defaultItems,
+  loading = false,
+}: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -55,48 +60,57 @@ export default function Sidebar({ items = defaultItems }: SidebarProps) {
       <SidebarProvider className="border-t border-(--surface-border-color) p-3">
         <SidebarGroupContent>
           <SidebarMenu>
-            {items.map((item) => {
-              const matches =
-                item.url === "/"
-                  ? pathname === "/"
-                  : pathname === item.url ||
-                    pathname.startsWith(item.url + "/");
+            {loading
+              ? Array.from({ length: 8 }).map((_, index) => (
+                  <SidebarMenuItem key={index}>
+                    <div className="flex items-center gap-2 px-2 py-2">
+                      <Skeleton className="size-5 shrink-0" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                  </SidebarMenuItem>
+                ))
+              : items.map((item) => {
+                  const matches =
+                    item.url === "/"
+                      ? pathname === "/"
+                      : pathname === item.url ||
+                        pathname.startsWith(item.url + "/");
 
-              // Only active if no other item has a longer (more specific) matching URL
-              const isActive =
-                matches &&
-                !items.some(
-                  (other) =>
-                    other.url !== item.url &&
-                    other.url.length > item.url.length &&
-                    (pathname === other.url ||
-                      pathname.startsWith(other.url + "/")),
-                );
+                  // Only active if no other item has a longer (more specific) matching URL
+                  const isActive =
+                    matches &&
+                    !items.some(
+                      (other) =>
+                        other.url !== item.url &&
+                        other.url.length > item.url.length &&
+                        (pathname === other.url ||
+                          pathname.startsWith(other.url + "/")),
+                    );
 
-              return (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    className={isActive ? "bg-sidebar-accent" : ""}
-                  >
-                    <Link
-                      href={item.url}
-                      className="flex items-center justify-between w-full"
-                    >
-                      <div className="flex items-center gap-2">
-                        <item.icon size={18} />
-                        <span>{item.title}</span>
-                      </div>
-                      {item.badge && item.badge > 0 ? (
-                        <div className="bg-red-500 text-white text-[10px] font-bold rounded-full size-5 flex items-center justify-center shrink-0">
-                          {item.badge}
-                        </div>
-                      ) : null}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        className={isActive ? "bg-sidebar-accent" : ""}
+                      >
+                        <Link
+                          href={item.url}
+                          className="flex items-center justify-between w-full"
+                        >
+                          <div className="flex items-center gap-2">
+                            <item.icon size={18} />
+                            <span>{item.title}</span>
+                          </div>
+                          {item.badge && item.badge > 0 ? (
+                            <div className="bg-red-500 text-white text-[10px] font-bold rounded-full size-5 flex items-center justify-center shrink-0">
+                              {item.badge}
+                            </div>
+                          ) : null}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarProvider>
