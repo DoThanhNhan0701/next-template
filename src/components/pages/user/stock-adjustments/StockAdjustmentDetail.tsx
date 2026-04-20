@@ -114,10 +114,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {new Date(detail.adjustment_date).toLocaleDateString(
-                    "vi-VN",
-                    { day: "2-digit", month: "2-digit", year: "numeric" },
-                  )}
+                  {formatDate(detail.adjustment_date)}
                 </span>
               </div>
             </div>

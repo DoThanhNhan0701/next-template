@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { UseFormReturn, Controller, useWatch } from "react-hook-form";
-import { LiquidationFormValues } from "../schema";
+
 import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+  Check,
+  ChevronsUpDown,
+  Search,
+  User as UserIcon,
+  X,
+} from "lucide-react";
+import { Controller, UseFormReturn, useWatch } from "react-hook-form";
+
+import { DatePickerField } from "@/components/common/DatePickerField";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -16,20 +17,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Search,
-  Check,
-  ChevronsUpDown,
-  X,
-  User as UserIcon,
-} from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { IStaff } from "@/types/staff";
+
+import { LiquidationFormValues } from "../schema";
 
 interface GeneralLiquidationSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
@@ -89,17 +93,12 @@ export function GeneralLiquidationSection({
         <Controller
           control={form.control}
           name="liquidation_date"
-          render={({ field, fieldState }) => (
+          render={({ fieldState }) => (
             <Field className="gap-1">
               <FieldLabel className="text-xs font-semibold text-muted-foreground">
                 Ngày thanh lý *
               </FieldLabel>
-              <Input
-                {...field}
-                type="date"
-                value={field.value ?? ""}
-                className="bg-white"
-              />
+              <DatePickerField form={form} name="liquidation_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}

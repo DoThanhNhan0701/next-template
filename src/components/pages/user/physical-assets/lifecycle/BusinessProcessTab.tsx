@@ -1,4 +1,8 @@
-import { ILifecycleLog } from "@/types/physical-asset";
+import Link from "next/link";
+
+import { ArrowRight, ExternalLink } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -7,9 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { ILifecycleLog } from "@/types/physical-asset";
+import { formatDateTime } from "@/utils/date";
 
 export default function BusinessProcessTab({
   history,
@@ -24,30 +27,11 @@ export default function BusinessProcessTab({
     );
   }
 
-  const formatVietnameseDate = (isoString: string) => {
-    try {
-      const date = new Date(isoString);
-      return date
-        .toLocaleString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })
-        .replace(",", "");
-    } catch {
-      return isoString;
-    }
-  };
-
   return (
     <div className="border border-(--surface-border-color) rounded-lg w-full flex flex-col flex-1 min-h-0 overflow-x-auto [&_div[data-slot=table-container]]:flex-1 [&_div[data-slot=table-container]]:min-h-0 [&_div[data-slot=table-container]]:overflow-y-auto">
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm outline outline-border/20">
           <TableRow>
-
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
               STT
             </TableHead>
@@ -75,12 +59,11 @@ export default function BusinessProcessTab({
               key={log.ref_id + `${i}`}
               className="group hover:bg-primary/3 transition-colors relative"
             >
-
               <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">
                 {i + 1}
               </TableCell>
               <TableCell className="px-4 py-1.5 text-sm text-foreground/80 font-medium">
-                {formatVietnameseDate(log.date)}
+                {formatDateTime(log.date)}
               </TableCell>
               <TableCell className="px-4 py-1.5">
                 <Badge
@@ -136,7 +119,9 @@ export default function BusinessProcessTab({
                     {log.doc_status}
                   </Badge>
                 ) : (
-                  <span className="text-muted-foreground text-xs italic">-</span>
+                  <span className="text-muted-foreground text-xs italic">
+                    -
+                  </span>
                 )}
               </TableCell>
             </TableRow>

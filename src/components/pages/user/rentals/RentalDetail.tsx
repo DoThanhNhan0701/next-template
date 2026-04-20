@@ -41,7 +41,7 @@ import { IRentalFull } from "@/types/rental";
 import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { formatDate } from "@/utils/date";
+import { formatDate, formatDateTime } from "@/utils/date";
 
 import RentalReturnModal from "./RentalReturnModal";
 
@@ -500,7 +500,7 @@ export default function RentalDetail({ id }: Props) {
                       {hist.comment || "—"}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-xs text-muted-foreground">
-                      {new Date(hist.action_date).toLocaleString("vi-VN")}
+                      {formatDateTime(hist.action_date)}
                     </TableCell>
                   </TableRow>
                 ))}

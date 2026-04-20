@@ -48,7 +48,7 @@ import {
 } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { formatDate } from "@/utils/date";
+import { formatDate, formatDateTime } from "@/utils/date";
 
 const getStatusInfo = (statusName: string | undefined) => {
   const name = (statusName || "").toLowerCase();
@@ -944,18 +944,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                   </div>
                   <div className="flex flex-col items-end">
                     <span className="text-sm font-semibold text-foreground">
-                      {detail.created_at
-                        ? new Date(detail.created_at).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                          })
-                        : "N/A"}
-                    </span>
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {detail.created_at
-                        ? new Date(detail.created_at).toLocaleDateString()
-                        : "N/A"}
+                      {formatDateTime(detail.created_at)}
                     </span>
                   </div>
                 </div>
@@ -1056,7 +1045,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                         {hist.step_name}
                       </span>
                       <span className="text-xs font-medium text-muted-foreground">
-                        {new Date(hist.action_date).toLocaleString()}
+                        {formatDateTime(hist.action_date)}
                       </span>
                     </div>
                     <div className="text-sm text-muted-foreground">

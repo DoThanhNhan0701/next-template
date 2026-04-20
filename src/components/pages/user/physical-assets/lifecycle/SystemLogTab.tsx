@@ -1,4 +1,8 @@
-import { ILifecycleLog } from "@/types/physical-asset";
+import Link from "next/link";
+
+import { ExternalLink } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -7,10 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ILifecycleLog } from "@/types/physical-asset";
+import { formatDateTime } from "@/utils/date";
 
 export default function SystemLogTab({
   logs,
@@ -23,38 +26,11 @@ export default function SystemLogTab({
     );
   }
 
-  const formatTime = (isoString: string) => {
-    try {
-      const date = new Date(isoString);
-      return date.toLocaleString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-    } catch {
-      return "";
-    }
-  };
-
-  const formatDate = (isoString: string) => {
-    try {
-      const date = new Date(isoString);
-      return date.toLocaleString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      });
-    } catch {
-      return isoString;
-    }
-  };
-
   return (
     <div className="border border-(--surface-border-color) rounded-lg w-full flex flex-col flex-1 min-h-0 overflow-x-auto [&_div[data-slot=table-container]]:flex-1 [&_div[data-slot=table-container]]:min-h-0 [&_div[data-slot=table-container]]:overflow-y-auto">
       <Table className="whitespace-nowrap">
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
           <TableRow>
-
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
               STT
             </TableHead>
@@ -87,17 +63,13 @@ export default function SystemLogTab({
               key={log.ref_id + `${i}`}
               className="group hover:bg-primary/3 transition-colors relative"
             >
-
               <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">
                 {i + 1}
               </TableCell>
               <TableCell className="px-4 py-1.5 text-sm">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-foreground/80 font-medium tracking-wide">
-                    {formatTime(log.date)}
-                  </span>
-                  <span className="text-muted-foreground text-xs">
-                    {formatDate(log.date)}
+                    {formatDateTime(log.date)}
                   </span>
                 </div>
               </TableCell>
@@ -153,7 +125,9 @@ export default function SystemLogTab({
                     {log.doc_status}
                   </Badge>
                 ) : (
-                  <span className="text-muted-foreground text-xs italic">-</span>
+                  <span className="text-muted-foreground text-xs italic">
+                    -
+                  </span>
                 )}
               </TableCell>
             </TableRow>

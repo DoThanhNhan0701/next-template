@@ -76,21 +76,6 @@ export default function DashboardPage() {
   const statusChartData = statusChartRes?.data || [];
   const maxStatusCount = Math.max(...statusChartData.map((d) => d.count), 1);
 
-  // const formatTime = (dateString: string) => {
-  //   try {
-  //     const d = new Date(dateString);
-  //     return new Intl.DateTimeFormat("vi-VN", {
-  //       hour: "2-digit",
-  //       minute: "2-digit",
-  //       day: "2-digit",
-  //       month: "2-digit",
-  //       year: "numeric",
-  //     }).format(d);
-  //   } catch {
-  //     return dateString;
-  //   }
-  // };
-
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
