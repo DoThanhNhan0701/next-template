@@ -1,6 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
+import Logo from "@public/icons/logo.png";
 import { Home, type LucideIcon } from "lucide-react";
 
 import {
@@ -10,9 +14,6 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { usePathname, useRouter } from "next/navigation";
-import Logo from "@public/icons/logo.png";
-import Image from "next/image";
 
 export interface SidebarItem {
   title: string;
@@ -57,7 +58,8 @@ export default function Sidebar({ items = defaultItems }: SidebarProps) {
               const matches =
                 item.url === "/"
                   ? pathname === "/"
-                  : pathname === item.url || pathname.startsWith(item.url + "/");
+                  : pathname === item.url ||
+                    pathname.startsWith(item.url + "/");
 
               // Only active if no other item has a longer (more specific) matching URL
               const isActive =
@@ -76,7 +78,10 @@ export default function Sidebar({ items = defaultItems }: SidebarProps) {
                     asChild
                     className={isActive ? "bg-sidebar-accent" : ""}
                   >
-                    <Link href={item.url} className="flex items-center justify-between w-full">
+                    <Link
+                      href={item.url}
+                      className="flex items-center justify-between w-full"
+                    >
                       <div className="flex items-center gap-2">
                         <item.icon size={18} />
                         <span>{item.title}</span>

@@ -12,10 +12,11 @@ export const UserSchema = z.object({
 
 export const UserChangePasswordSchema = z
   .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    old_password: z.string().min(1, "Old password is required"),
+    new_password: z.string().min(6, "Password must be at least 6 characters"),
     confirm_password: z.string().min(6, "Confirm password is required"),
   })
-  .refine((data) => data.password === data.confirm_password, {
+  .refine((data) => data.new_password === data.confirm_password, {
     message: "Passwords don't match",
     path: ["confirm_password"],
   });

@@ -1,23 +1,30 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
 import { UserChangePasswordSchema } from "@/components/schemas/admin/user.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
-import { useMutation } from "@/hooks/useMutation";
 import { dynamicEndpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
@@ -27,13 +34,18 @@ interface Props {
   onClose: () => void;
 }
 
-export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) {
+export default function ChangePasswordModal({
+  userId,
+  isOpen,
+  onClose,
+}: Props) {
   const { mutate, pending } = useMutation();
 
   const form = useForm({
     resolver: zodResolver(UserChangePasswordSchema),
     defaultValues: {
-      password: "",
+      old_password: "",
+      new_password: "",
       confirm_password: "",
     },
   });
@@ -49,7 +61,10 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
       {
         url: dynamicEndpoints.USER_CHANGE_PASSWORD(userId),
         method: "post",
-        body: { password: data.password },
+        body: {
+          old_password: data.old_password,
+          new_password: data.new_password,
+        },
       },
       {
         onSuccess: (res) => {
@@ -59,7 +74,7 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
         onError: (err) => {
           getApiErrorMessage(err);
         },
-      }
+      },
     );
   };
 
@@ -73,16 +88,35 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
           <FieldGroup>
             <Controller
-              name="password"
+              name="old_password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-1">
+                  <FieldLabel>Old Password</FieldLabel>
+                  <Input {...field} type="password" placeholder="••••••••" />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="new_password"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel>New Password</FieldLabel>
-                  <Input {...field} type="password" />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <Input {...field} type="password" placeholder="••••••••" />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -93,16 +127,27 @@ export default function ChangePasswordModal({ userId, isOpen, onClose }: Props) 
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
                   <FieldLabel>Confirm Password</FieldLabel>
-                  <Input {...field} type="password" />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <Input {...field} type="password" placeholder="••••••••" />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
           </FieldGroup>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={pending}>Cancel</Button>
-            <Button type="submit" disabled={pending}>{pending ? "Changing..." : "Change Password"}</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? "Changing..." : "Change Password"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

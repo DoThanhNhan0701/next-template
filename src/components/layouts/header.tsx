@@ -1,35 +1,33 @@
 "use client";
 
 import React from "react";
+
 import { useTheme } from "next-themes";
-import {
-  LucideIcon,
-  MoonIcon,
-  SettingsIcon,
-  SunIcon,
-  LogOut,
-  User,
-} from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
+import { LogOut, LucideIcon, MoonIcon, SunIcon, User } from "lucide-react";
+import { useDispatch } from "react-redux";
+
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import { IUser } from "@/types/auth";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch } from "@/redux";
 import { actionLogout } from "@/redux/slices/auth";
-import { type SidebarItem, defaultItems } from "./sidebar";
+import { IUser } from "@/types/auth";
+
 import LanguageSwitcher from "../common/LanguageSwitcher";
+import { type SidebarItem, defaultItems } from "./sidebar";
 
 interface MenuToolbar {
   name: string;
@@ -46,7 +44,6 @@ export default function Header({ user, items = defaultItems }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
-  const searchParams = useSearchParams();
 
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -55,37 +52,11 @@ export default function Header({ user, items = defaultItems }: Props) {
     setMounted(true);
   }, []);
 
-  const onSettingsClick = (
-    value: "REFRESH" | "SETTINGS" | "HELP" | "NOTIFICATIONS",
-  ) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (value === "REFRESH") {
-      router.refresh();
-      return;
-    }
-
-    const nextTabMap = {
-      HELP: "help",
-      SETTINGS: "settings",
-      NOTIFICATIONS: "notifications",
-    } as const;
-
-    const nextTab = nextTabMap[value];
-    params.set("layout-tab", nextTab);
-    router.push(`?${params.toString()}`);
-  };
-
   const menuToolbar: MenuToolbar[] = [
     {
       name: mounted ? (theme === "dark" ? "Light" : "Dark") : "",
       icon: mounted ? (theme === "dark" ? SunIcon : MoonIcon) : null,
       onClick: () => setTheme(theme === "dark" ? "light" : "dark"),
-    },
-    {
-      name: "Settings",
-      icon: SettingsIcon,
-      onClick: () => onSettingsClick("SETTINGS"),
     },
     {
       name: "Logout",
@@ -105,6 +76,8 @@ export default function Header({ user, items = defaultItems }: Props) {
           : pathname === item.url || pathname.startsWith(item.url + "/"),
       )
       .sort((a, b) => b.url.length - a.url.length)[0] || items[0];
+
+  const { hasPermission } = usePermissions();
 
   return (
     <header className="flex items-center px-4 min-h-10">
@@ -141,14 +114,19 @@ export default function Header({ user, items = defaultItems }: Props) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <User className="rounded-full cursor-pointer hover:bg-accent p-1 box-content" size={20} />
+            <User
+              className="rounded-full cursor-pointer hover:bg-accent p-1 box-content"
+              size={20}
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href="/admin" className="cursor-pointer">
-                Admin
-              </Link>
-            </DropdownMenuItem>
+            {hasPermission("admin:manage") && (
+              <DropdownMenuItem asChild>
+                <Link href="/admin" className="cursor-pointer">
+                  Admin
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild>
               <Link href="/change-password" className="cursor-pointer">
                 Change password
