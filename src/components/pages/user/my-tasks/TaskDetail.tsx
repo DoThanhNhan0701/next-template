@@ -12,11 +12,11 @@ import {
   History,
   MessageSquare,
   Package,
-  Plus,
   User,
   XCircle,
 } from "lucide-react";
 
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -907,7 +907,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
 
         {/* Right Column: Sidebar info */}
         <div className="flex flex-col gap-4">
-          <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group">
+          <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group h-full">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <History className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
               <CardTitle className="text-sm font-semibold text-primary">
@@ -961,43 +961,42 @@ export default function TaskDetail({ id }: TaskDetailProps) {
               </div>
             </CardContent>
           </Card>
-
-          <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-              <Package className="w-4 h-4 text-emerald-500" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                Attachments
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-3 bg-primary rounded-full" />
-                  <span className="text-sm font-bold text-foreground">
-                    Vouchers & documents
-                  </span>
-                </div>
-                <Button
-                  size="icon-sm"
-                  variant="outline"
-                  className="h-7 px-3 gap-2 w-auto border-border/50 text-primary hover:bg-primary/10 transition-all active:scale-95"
-                >
-                  <Plus className="w-3 h-3" />
-                  <span className="text-sm font-bold">Upload record</span>
-                </Button>
-              </div>
-              <div className="min-h-[140px] rounded-xl border-2 border-dashed border-border/30 flex flex-col items-center justify-center gap-3 bg-muted/20 group hover:bg-muted/40 hover:border-primary/30 transition-all cursor-pointer">
-                <div className="w-10 h-10 rounded-full bg-background shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <FileText className="w-5 h-5 text-muted-foreground/50" />
-                </div>
-                <span className="text-sm font-bold text-muted-foreground/60 tracking-wider">
-                  No attachments yet
-                </span>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
+
+      <RecordAttachmentsCard
+        title="Vouchers & documents"
+        className="mt-4"
+        initialAttachments={
+          (detail.attachments || []).map(
+            (a: string | { url?: string; file_path?: string }) =>
+              typeof a === "string" ? a : a?.url || a?.file_path || String(a),
+          ) as string[]
+        }
+        isPending={mutatePending}
+        onSave={async (newAttachments) => {
+          const url = dynamicEndpoints.DOCUMENT_DETAIL(
+            documentType,
+            Number(id),
+          );
+          await mutate(
+            {
+              url,
+              method: "patch",
+              body: { attachments: newAttachments },
+            },
+            {
+              onSuccess: (res) => {
+                getApiSuccessMessage(res);
+                reFetchDetail();
+              },
+              onError: (error) => {
+                getApiErrorMessage(error);
+              },
+            },
+          );
+        }}
+      />
 
       {/* Approval History section (Footer) */}
       <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md mt-4">
