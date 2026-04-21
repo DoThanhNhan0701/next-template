@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/table";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useHasHydrated } from "@/hooks/useHasHydrated";
 import { usePermissions } from "@/hooks/usePermissions";
 import { cn } from "@/lib/utils";
 import { ICatalogType } from "@/types/catalog-type";
@@ -63,8 +64,9 @@ import AssetFormModal from "./AssetFormModal";
 export default function AssetTable() {
   const router = useRouter();
   const { hasPermission } = usePermissions();
-  const canEdit = hasPermission("asset:edit");
-  const canCreate = hasPermission("asset:create");
+  const hasHydrated = useHasHydrated();
+  const canEdit = hasPermission("asset:edit") && hasHydrated;
+  const canCreate = hasPermission("asset:create") && hasHydrated;
 
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);

@@ -8,7 +8,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
-import MultiAttachmentUpload from "@/components/common/MultiAttachmentUpload";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { PhysicalAssetSchema } from "@/components/schemas/user/physical-asset.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -855,21 +855,10 @@ export default function AssetFormModal({
               </div>
 
               {/* Section: Attachments */}
-              <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  5. Attachments
-                </h3>
-                <Controller
-                  name="attachments"
-                  control={form.control}
-                  render={({ field }) => (
-                    <MultiAttachmentUpload
-                      value={field.value || []}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
+              <FormAttachmentsSection
+                control={form.control}
+                sectionNumber="5. "
+              />
             </div>
           </div>
 
