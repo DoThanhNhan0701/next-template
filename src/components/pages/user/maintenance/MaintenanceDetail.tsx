@@ -406,9 +406,12 @@ export default function MaintenanceDetail({ id }: Props) {
         onSave={async (newAttachments) => {
           await updateMaintenance(
             {
-              url: dynamicEndpoints.MAINTENANCE_DETAIL(Number(id)),
+              url: dynamicEndpoints.UPLOAD_ATTACHMENTS(
+                "maintenance",
+                Number(id),
+              ),
               method: "patch",
-              body: { attachments: newAttachments },
+              body: newAttachments,
             },
             {
               onSuccess: (res) => {

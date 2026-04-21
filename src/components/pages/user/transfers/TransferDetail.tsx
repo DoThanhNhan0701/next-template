@@ -352,9 +352,9 @@ export default function TransferDetail({ id }: Props) {
         onSave={async (newAttachments) => {
           await updateTransfer(
             {
-              url: dynamicEndpoints.TRANSFER_DETAIL(Number(id)),
+              url: dynamicEndpoints.UPLOAD_ATTACHMENTS("transfers", Number(id)),
               method: "patch",
-              body: { attachments: newAttachments },
+              body: newAttachments,
             },
             {
               onSuccess: (res) => {

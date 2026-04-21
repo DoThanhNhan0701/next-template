@@ -377,9 +377,12 @@ export default function LiquidationDetail({ id }: Props) {
         onSave={async (newAttachments) => {
           await updateLiquidation(
             {
-              url: dynamicEndpoints.LIQUIDATION_DETAIL(Number(id)),
+              url: dynamicEndpoints.UPLOAD_ATTACHMENTS(
+                "liquidations",
+                Number(id),
+              ),
               method: "patch",
-              body: { attachments: newAttachments },
+              body: newAttachments,
             },
             {
               onSuccess: (res) => {

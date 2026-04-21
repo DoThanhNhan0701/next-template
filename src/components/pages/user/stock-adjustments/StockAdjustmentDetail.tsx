@@ -337,9 +337,12 @@ export default function StockAdjustmentDetail({ id }: Props) {
         onSave={async (newAttachments) => {
           await updateAdjustment(
             {
-              url: dynamicEndpoints.STOCK_ADJUSTMENT_DETAIL(Number(id)),
+              url: dynamicEndpoints.UPLOAD_ATTACHMENTS(
+                "stock_adjustments",
+                Number(id),
+              ),
               method: "patch",
-              body: { attachments: newAttachments },
+              body: newAttachments,
             },
             {
               onSuccess: (res) => {

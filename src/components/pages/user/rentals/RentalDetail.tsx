@@ -430,9 +430,9 @@ export default function RentalDetail({ id }: Props) {
         onSave={async (newAttachments) => {
           await updateRental(
             {
-              url: dynamicEndpoints.RENTAL_DETAIL(Number(id)),
+              url: dynamicEndpoints.UPLOAD_ATTACHMENTS("rentals", Number(id)),
               method: "patch",
-              body: { attachments: newAttachments },
+              body: newAttachments,
             },
             {
               onSuccess: (res) => {

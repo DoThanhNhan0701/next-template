@@ -975,15 +975,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         }
         isPending={mutatePending}
         onSave={async (newAttachments) => {
-          const url = dynamicEndpoints.DOCUMENT_DETAIL(
-            documentType,
+          const url = dynamicEndpoints.UPLOAD_ATTACHMENTS(
+            documentType + "s",
             Number(id),
           );
           await mutate(
             {
               url,
               method: "patch",
-              body: { attachments: newAttachments },
+              body: newAttachments,
             },
             {
               onSuccess: (res) => {
