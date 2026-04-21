@@ -121,7 +121,7 @@ function StepAssigneeFields({
   return (
     <div className="grid grid-cols-2 gap-3 col-span-2">
       <Field className="gap-1">
-        <FieldLabel>Default Assignee Type</FieldLabel>
+        <FieldLabel>Default assignee type</FieldLabel>
         <Select
           value={assigneeType}
           onValueChange={(v) => handleTypeChange(v as AssigneeType)}
@@ -335,7 +335,7 @@ export default function WorkflowTemplateFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Workflow Name</FieldLabel>
+                    <FieldLabel>Workflow name</FieldLabel>
                     <Input
                       {...field}
                       placeholder="e.g. Default Transfer Workflow"
@@ -352,7 +352,7 @@ export default function WorkflowTemplateFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Document Type</FieldLabel>
+                    <FieldLabel>Document type</FieldLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -476,7 +476,7 @@ export default function WorkflowTemplateFormModal({
                               data-invalid={fieldState.invalid}
                               className="gap-1 col-span-2"
                             >
-                              <FieldLabel>Step Name</FieldLabel>
+                              <FieldLabel>Step name</FieldLabel>
                               <Input
                                 {...f}
                                 placeholder="e.g. Manager Approval"

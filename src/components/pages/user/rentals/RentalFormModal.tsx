@@ -104,7 +104,7 @@ function RentalItemRow({
       {/* Row 1: Location + Asset */}
       <div className="grid grid-cols-2 gap-2 pr-6">
         <Field className="gap-1">
-          <FieldLabel>Location *</FieldLabel>
+          <FieldLabel>Location</FieldLabel>
           <Select
             onValueChange={(val) => {
               setValue(`items.${index}.from_location_id`, Number(val));
@@ -130,7 +130,7 @@ function RentalItemRow({
           control={control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Asset *</FieldLabel>
+              <FieldLabel>Asset</FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
                 value={field.value ? field.value.toString() : ""}
@@ -169,7 +169,7 @@ function RentalItemRow({
           control={control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Quantity *</FieldLabel>
+              <FieldLabel>Quantity</FieldLabel>
               <Input
                 type="number"
                 className="h-8 text-xs"
@@ -185,7 +185,7 @@ function RentalItemRow({
           control={control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Item Revenue</FieldLabel>
+              <FieldLabel>Item revenue</FieldLabel>
               <Input
                 type="number"
                 className="h-8 text-xs"
@@ -331,7 +331,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                         data-invalid={fieldState.invalid}
                         className="gap-1"
                       >
-                        <FieldLabel>Record Number *</FieldLabel>
+                        <FieldLabel>Record number</FieldLabel>
                         <Input {...field} placeholder="e.g. CT20240001" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -344,7 +344,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Contract Number</FieldLabel>
+                        <FieldLabel>Contract number</FieldLabel>
                         <Input {...field} placeholder="e.g. HD/123" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -357,7 +357,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Organization *</FieldLabel>
+                        <FieldLabel>Organization</FieldLabel>
                         <Select
                           onValueChange={(val) => field.onChange(Number(val))}
                           value={field.value ? field.value.toString() : ""}
@@ -384,7 +384,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Customer *</FieldLabel>
+                        <FieldLabel>Customer</FieldLabel>
                         <Select
                           onValueChange={(val) => field.onChange(Number(val))}
                           value={field.value ? field.value.toString() : ""}
@@ -411,7 +411,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Lease Date *</FieldLabel>
+                        <FieldLabel>Lease date</FieldLabel>
                         <DatePickerField form={form} name="lease_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -424,7 +424,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Duration (Days) *</FieldLabel>
+                        <FieldLabel>Duration (days)</FieldLabel>
                         <Input
                           type="number"
                           {...field}
@@ -443,7 +443,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Total Revenue</FieldLabel>
+                        <FieldLabel>Total revenue</FieldLabel>
                         <Input
                           type="number"
                           {...field}

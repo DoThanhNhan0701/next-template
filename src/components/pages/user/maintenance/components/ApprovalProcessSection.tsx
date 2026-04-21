@@ -66,7 +66,7 @@ export function ApprovalProcessSection({
             rules={{ required: "Approver is required" }}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel className="text-xs font-semibold text-muted-foreground block">
+                <FieldLabel>
                   Step {index + 1}: {step.name}
                 </FieldLabel>
                 <Select

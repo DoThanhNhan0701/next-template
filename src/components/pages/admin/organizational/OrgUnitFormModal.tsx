@@ -225,7 +225,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Unit Name</FieldLabel>
+                    <FieldLabel>Unit name</FieldLabel>
                     <Input {...field} placeholder="e.g. Finance Department" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -239,7 +239,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <FieldLabel>Unit Code</FieldLabel>
+                    <FieldLabel>Unit code</FieldLabel>
                     <Input {...field} placeholder="e.g. FIN-01" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -253,7 +253,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <FieldLabel>Unit Type</FieldLabel>
+                    <FieldLabel>Unit type</FieldLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -276,7 +276,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Parent Unit</FieldLabel>
+                    <FieldLabel>Parent unit</FieldLabel>
                     <Select
                       onValueChange={(val) =>
                         field.onChange(val === "none" ? null : Number(val))

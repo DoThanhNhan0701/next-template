@@ -46,8 +46,8 @@ export function SourceInfoSection({
           control={form.control}
           render={({ field }) => (
             <Field className="col-span-2 gap-1 mb-3">
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-                Transfer Type
+              <FieldLabel>
+                Transfer type
               </FieldLabel>
               <Tabs
                 value={field.value}
@@ -86,10 +86,10 @@ export function SourceInfoSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-2 gap-1">
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
+              <FieldLabel>
                 {watchedType === "holder"
-                  ? "Select Source Personnel *"
-                  : "Select Source Location *"}
+                  ? "Select source personnel"
+                  : "Select source location"}
               </FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}

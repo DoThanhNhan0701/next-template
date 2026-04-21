@@ -359,7 +359,7 @@ export default function AssetFormModal({
                         data-invalid={fieldState.invalid}
                         className="gap-1 col-span-2"
                       >
-                        <FieldLabel>Asset Name</FieldLabel>
+                        <FieldLabel>Asset name</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
@@ -414,7 +414,7 @@ export default function AssetFormModal({
                         data-invalid={fieldState.invalid}
                         className="gap-1 col-span-1"
                       >
-                        <FieldLabel>Old Code</FieldLabel>
+                        <FieldLabel>Old code</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
@@ -431,7 +431,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Serial Number</FieldLabel>
+                        <FieldLabel>Serial number</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
@@ -510,7 +510,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Usage Mode</FieldLabel>
+                        <FieldLabel>Usage mode</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -625,7 +625,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
-                        <FieldLabel>Holder (Staff List)</FieldLabel>
+                        <FieldLabel>Holder (staff list)</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -712,7 +712,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Purchase Date</FieldLabel>
+                        <FieldLabel>Purchase date</FieldLabel>
                         <DatePickerField form={form} name="purchase_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -725,7 +725,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Warranty Expiration</FieldLabel>
+                        <FieldLabel>Warranty expiration</FieldLabel>
                         <DatePickerField
                           form={form}
                           name="warranty_expiration"
@@ -741,7 +741,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>System Declaration Date</FieldLabel>
+                        <FieldLabel>System declaration date</FieldLabel>
                         <DatePickerField
                           form={form}
                           name="system_declaration_date"
@@ -757,7 +757,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Purchase Ticket</FieldLabel>
+                        <FieldLabel>Purchase ticket</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}

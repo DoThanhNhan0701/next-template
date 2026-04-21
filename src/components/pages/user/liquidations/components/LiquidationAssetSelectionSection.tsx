@@ -71,8 +71,8 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Locations *
+              <FieldLabel>
+                Locations
               </FieldLabel>
               <Select
                 onValueChange={(val) => {
@@ -102,8 +102,8 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Chọn tài sản *
+              <FieldLabel>
+                Chọn tài sản
               </FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
@@ -137,8 +137,8 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Số lượng *
+              <FieldLabel>
+                Số lượng
               </FieldLabel>
               <Input
                 type="number"
@@ -156,7 +156,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
+              <FieldLabel>
                 Đơn giá (VND)
               </FieldLabel>
               <Input
@@ -175,7 +175,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
+              <FieldLabel>
                 Giá trị còn lại
               </FieldLabel>
               <Input
@@ -196,7 +196,7 @@ function AssetListItem({
         control={form.control}
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel className="text-xs font-semibold text-muted-foreground">
+            <FieldLabel>
               Ghi chú item
             </FieldLabel>
             <Input

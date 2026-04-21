@@ -37,7 +37,7 @@ export function ApprovalProcessSection({ form, users, activeTransferTemplate }: 
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="gap-2.5">
-                    <FieldLabel className="text-[10px] font-black text-muted-foreground/80 tracking-[0.15em] mb-1">
+                    <FieldLabel>
                       {step.name}
                     </FieldLabel>
                     <ApproverSelect

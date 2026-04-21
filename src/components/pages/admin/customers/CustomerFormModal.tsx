@@ -149,7 +149,7 @@ export default function CustomerFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Customer Name</FieldLabel>
+                    <FieldLabel>Customer name</FieldLabel>
                     <Input {...field} placeholder="e.g. Nguyen Van A" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -163,7 +163,7 @@ export default function CustomerFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Customer Type</FieldLabel>
+                    <FieldLabel>Customer type</FieldLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -191,7 +191,7 @@ export default function CustomerFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Identifier (Tax Code/ID)</FieldLabel>
+                    <FieldLabel>Identifier (tax code/ID)</FieldLabel>
                     <Input {...field} placeholder="e.g. 0123456789 or TAX001" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />

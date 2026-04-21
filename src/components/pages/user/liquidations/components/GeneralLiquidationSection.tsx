@@ -77,8 +77,8 @@ export function GeneralLiquidationSection({
           name="record_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Số biên bản *
+              <FieldLabel>
+                Số biên bản
               </FieldLabel>
               <Input
                 {...field}
@@ -95,8 +95,8 @@ export function GeneralLiquidationSection({
           name="liquidation_date"
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Ngày thanh lý *
+              <FieldLabel>
+                Ngày thanh lý
               </FieldLabel>
               <DatePickerField form={form} name="liquidation_date" />
               <FieldError errors={[fieldState.error]} />
@@ -111,8 +111,8 @@ export function GeneralLiquidationSection({
           name="liquidation_type"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Hình thức thanh lý *
+              <FieldLabel>
+                Hình thức thanh lý
               </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger className="bg-white shadow-sm">
@@ -134,7 +134,7 @@ export function GeneralLiquidationSection({
           name="total_value"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
+              <FieldLabel>
                 Tổng giá trị (VND)
               </FieldLabel>
               <Input
@@ -155,7 +155,7 @@ export function GeneralLiquidationSection({
       </FieldGroup>
 
       <Field className="gap-1">
-        <FieldLabel className="text-xs font-semibold text-muted-foreground">
+        <FieldLabel>
           Hội đồng thanh lý
         </FieldLabel>
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
@@ -258,8 +258,8 @@ export function GeneralLiquidationSection({
           name="buyer_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Người/Đơn vị mua
+              <FieldLabel>
+                Người/đơn vị mua
               </FieldLabel>
               <Input
                 {...field}
@@ -276,7 +276,7 @@ export function GeneralLiquidationSection({
           name="external_link"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
+              <FieldLabel>
                 Đường dẫn tài liệu
               </FieldLabel>
               <Input
@@ -296,8 +296,8 @@ export function GeneralLiquidationSection({
         name="reason"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-              LÝ DO *
+            <FieldLabel>
+              Lý do
             </FieldLabel>
             <Textarea
               {...field}
@@ -315,8 +315,8 @@ export function GeneralLiquidationSection({
         name="notes"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-              GHI CHÚ
+            <FieldLabel>
+              Ghi chú
             </FieldLabel>
             <Textarea
               {...field}

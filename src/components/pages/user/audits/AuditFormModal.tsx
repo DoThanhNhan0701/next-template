@@ -213,8 +213,8 @@ export default function AuditFormModal({
             <div className="flex flex-col gap-1 mb-3">
               <FieldGroup className="grid grid-cols-2 gap-3">
                 <Field className="col-span-2 gap-1">
-                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
-                    Title *
+                  <FieldLabel>
+                    Title
                   </FieldLabel>
                   <Input
                     placeholder="Enter audit batch title..."
@@ -229,8 +229,8 @@ export default function AuditFormModal({
                   control={form.control}
                   render={({ field }) => (
                     <Field className="col-span-2 gap-1 mb-3">
-                      <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
-                        Audit type *
+                      <FieldLabel>
+                        Audit type
                       </FieldLabel>
                       <Tabs
                         value={field.value}
@@ -267,8 +267,8 @@ export default function AuditFormModal({
                 {/* Multi-select: Unit */}
                 {auditType === "unit" && (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
-                      Select unit *
+                    <FieldLabel>
+                      Select unit
                     </FieldLabel>
                     <DropdownMenu
                       open={unitDropdownOpen}
@@ -377,8 +377,8 @@ export default function AuditFormModal({
                 {/* Multi-select: Location */}
                 {auditType === "location" && (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
-                      Select location *
+                    <FieldLabel>
+                      Select location
                     </FieldLabel>
                     <DropdownMenu
                       open={locationDropdownOpen}
@@ -502,7 +502,7 @@ export default function AuditFormModal({
                   render={({ field, fieldState }) => (
                     <Field className="gap-1">
                       <div className="flex flex-col gap-1 mb-1">
-                        <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
+                        <FieldLabel>
                           Assignee
                         </FieldLabel>
                         <span className="text-[10px] text-muted-foreground/60 leading-none">
@@ -535,8 +535,8 @@ export default function AuditFormModal({
                   name="due_date"
                   render={({ fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                        Due date *
+                      <FieldLabel>
+                        Due date
                       </FieldLabel>
                       <DatePickerField form={form} name="due_date" />
                       <FieldError errors={[fieldState.error]} />

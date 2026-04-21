@@ -76,7 +76,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
       <div className="space-y-3">
         <label className="text-xs font-semibold text-primary flex items-center gap-2">
           <CheckCircle2 size={12} className="text-primary" />
-          Nguồn lấy tài sản *
+          Nguồn lấy tài sản
         </label>
 
         {/* Source Pills Container */}
@@ -188,11 +188,10 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
         <Field className="gap-1.5 pt-2">
           <FieldLabel
             className={cn(
-              "text-xs font-semibold",
               sourceType === "stock" ? "text-emerald-700" : "text-blue-700",
             )}
           >
-            {sourceType === "stock" ? "Chọn kho xuất" : "Chọn người giữ xuất"} *
+            {sourceType === "stock" ? "Chọn kho xuất" : "Chọn người giữ xuất"}
           </FieldLabel>
           <Controller
             name={
@@ -357,8 +356,8 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: detailField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                        Chọn tài sản *
+                      <FieldLabel>
+                        Chọn tài sản
                       </FieldLabel>
                       <Select
                         onValueChange={(val) => {
@@ -485,8 +484,8 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: qtyField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                        Số lượng *
+                      <FieldLabel>
+                        Số lượng
                       </FieldLabel>
                       <Input
                         type="number"
@@ -509,7 +508,7 @@ export function AssetSelectionSection({
                 control={form.control}
                 render={({ field: locField, fieldState }) => (
                   <Field className="gap-1">
-                    <FieldLabel className="text-xs font-semibold text-muted-foreground">
+                    <FieldLabel>
                       Vị trí trả về
                     </FieldLabel>
                     <p className="text-[10px] text-muted-foreground/70 italic -mt-0.5 mb-1">
@@ -553,7 +552,7 @@ export function AssetSelectionSection({
                 control={form.control}
                 render={({ field: notesField, fieldState }) => (
                   <Field className="gap-1 justify-end">
-                    <FieldLabel className="text-xs font-semibold text-muted-foreground">
+                    <FieldLabel>
                       Ghi chú item
                     </FieldLabel>
                     <Input

@@ -162,8 +162,8 @@ function AllocationItemRow({
 
       {/* Issuing Warehouse */}
       <Field className="gap-1 flex-1">
-        <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-          Locations *
+        <FieldLabel>
+          Locations
         </FieldLabel>
         <Select
           onValueChange={(val) => {
@@ -192,8 +192,8 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Asset *
+            <FieldLabel>
+              Asset
             </FieldLabel>
             <Select
               onValueChange={(val) => field.onChange(Number(val))}
@@ -230,8 +230,8 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-24">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Qty *
+            <FieldLabel>
+              Qty
             </FieldLabel>
             <Input
               type="number"
@@ -440,7 +440,7 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Organization *</FieldLabel>
+                        <FieldLabel>Organization</FieldLabel>
                         <Select
                           onValueChange={(val) => field.onChange(Number(val))}
                           value={field.value ? field.value.toString() : ""}
@@ -468,7 +468,7 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Recipient (Staff)</FieldLabel>
+                        <FieldLabel>Recipient (staff)</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -522,7 +522,7 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Allocation Date *</FieldLabel>
+                        <FieldLabel>Allocation date</FieldLabel>
                         <DatePickerField form={form} name="allocation_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -536,7 +536,7 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>External Ticket Link</FieldLabel>
+                        <FieldLabel>External ticket link</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
@@ -554,7 +554,7 @@ export default function AllocationVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Allocation Reason *</FieldLabel>
+                        <FieldLabel>Allocation reason</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}

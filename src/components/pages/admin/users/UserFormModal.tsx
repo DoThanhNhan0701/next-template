@@ -159,7 +159,7 @@ export default function UserFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Full Name</FieldLabel>
+                    <FieldLabel>Full name</FieldLabel>
                     <Input {...field} placeholder="e.g. John Doe" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />

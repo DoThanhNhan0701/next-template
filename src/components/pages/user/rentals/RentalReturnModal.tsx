@@ -352,9 +352,9 @@ export default function RentalReturnModal({
                         control={form.control}
                         render={({ field, fieldState }) => (
                           <Field className="gap-2.5">
-                            <FieldLabel className="text-[10px] font-black text-muted-foreground/80 tracking-[0.15em] mb-1">
-                              {step.name}
-                            </FieldLabel>
+                          <FieldLabel>
+                            {step.name}
+                          </FieldLabel>
                             <ApproverSelect
                               step={step}
                               allUsers={users}

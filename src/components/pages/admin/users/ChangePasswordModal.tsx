@@ -98,7 +98,7 @@ export default function ChangePasswordModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Old Password</FieldLabel>
+                  <FieldLabel>Old password</FieldLabel>
                   <Input {...field} type="password" placeholder="••••••••" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -112,7 +112,7 @@ export default function ChangePasswordModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>New Password</FieldLabel>
+                  <FieldLabel>New password</FieldLabel>
                   <Input {...field} type="password" placeholder="••••••••" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -126,7 +126,7 @@ export default function ChangePasswordModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Confirm Password</FieldLabel>
+                  <FieldLabel>Confirm password</FieldLabel>
                   <Input {...field} type="password" placeholder="••••••••" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

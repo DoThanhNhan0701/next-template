@@ -181,7 +181,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
 
             {/* Audit Result */}
             <Field className="gap-3">
-              <FieldLabel className="text-[10px] font-extrabold text-primary uppercase tracking-widest flex items-center gap-2">
+              <FieldLabel>
                 <span className="h-1 w-4 bg-primary rounded-full" />
                 Kết quả kiểm kê
               </FieldLabel>
@@ -250,7 +250,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
 
             {/* Proposed Action */}
             <Field className="gap-3">
-              <FieldLabel className="text-[10px] font-extrabold text-primary uppercase tracking-widest flex items-center gap-2">
+              <FieldLabel>
                 <span className="h-1 w-4 bg-primary rounded-full" />
                 Đề xuất hành động
               </FieldLabel>
@@ -352,7 +352,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
 
             {/* Notes */}
             <Field className="gap-2">
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
+              <FieldLabel>
                 Ghi chú tình trạng
               </FieldLabel>
               <div className="p-3 rounded-xl border border-border bg-muted/5 min-h-[100px] text-sm text-foreground/80 leading-relaxed italic whitespace-pre-wrap">

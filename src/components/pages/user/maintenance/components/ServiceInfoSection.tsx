@@ -25,8 +25,8 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-                Service Provider Name *
+              <FieldLabel>
+                Service provider name
               </FieldLabel>
               <Input
                 {...field}
@@ -43,8 +43,8 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_address"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Service Provider Address
+              <FieldLabel>
+                Service provider address
               </FieldLabel>
               <Input
                 {...field}
@@ -64,8 +64,8 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_person_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Taker Name *
+              <FieldLabel>
+                Taker name
               </FieldLabel>
               <Input
                 {...field}
@@ -82,8 +82,8 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_phone"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Taker Phone
+              <FieldLabel>
+                Taker phone
               </FieldLabel>
               <Input
                 {...field}
@@ -103,8 +103,8 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="expected_cost"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Expected Cost
+              <FieldLabel>
+                Expected cost
               </FieldLabel>
               <Input
                 {...field}
@@ -122,8 +122,8 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="actual_cost"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Actual Cost
+              <FieldLabel>
+                Actual cost
               </FieldLabel>
               <Input
                 {...field}

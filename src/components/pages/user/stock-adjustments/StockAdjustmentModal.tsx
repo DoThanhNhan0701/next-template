@@ -125,8 +125,8 @@ function DetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Location *
+            <FieldLabel>
+              Location
             </FieldLabel>
             <Select
               onValueChange={(v) => {
@@ -158,8 +158,8 @@ function DetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1 min-w-[160px]">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Asset *
+            <FieldLabel>
+              Asset
             </FieldLabel>
             <Select
               onValueChange={(v) => field.onChange(Number(v))}
@@ -197,8 +197,8 @@ function DetailRow({
         control={control}
         render={({ field }) => (
           <Field className="gap-1 w-[130px]">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Type *
+            <FieldLabel>
+              Type
             </FieldLabel>
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger className="h-9 text-xs">
@@ -223,8 +223,8 @@ function DetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-20">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
-              Qty *
+            <FieldLabel>
+              Qty
             </FieldLabel>
             <Input
               type="number"
@@ -244,7 +244,7 @@ function DetailRow({
         control={control}
         render={({ field }) => (
           <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel className="text-[11px] font-semibold text-muted-foreground tracking-wider">
+            <FieldLabel>
               Notes
             </FieldLabel>
             <Input
@@ -401,7 +401,7 @@ export default function StockAdjustmentModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Adjustment Date *</FieldLabel>
+                        <FieldLabel>Adjustment date</FieldLabel>
                         <DatePickerField form={form} name="adjustment_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -415,7 +415,7 @@ export default function StockAdjustmentModal({
                     control={form.control}
                     render={({ field }) => (
                       <Field className="gap-1">
-                        <FieldLabel>External Link</FieldLabel>
+                        <FieldLabel>External link</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
@@ -430,7 +430,7 @@ export default function StockAdjustmentModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Reason *</FieldLabel>
+                        <FieldLabel>Reason</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}

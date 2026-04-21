@@ -27,8 +27,8 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="record_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Record Number *
+              <FieldLabel>
+                Record number
               </FieldLabel>
               <Input
                 {...field}
@@ -45,8 +45,8 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="ticket_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Ticket Number *
+              <FieldLabel>
+                Ticket number
               </FieldLabel>
               <Input
                 {...field}
@@ -66,8 +66,8 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="outing_date"
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Outing Date *
+              <FieldLabel>
+                Outing date
               </FieldLabel>
               <DatePickerField form={form} name="outing_date" />
               <FieldError errors={[fieldState.error]} />
@@ -79,8 +79,8 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="handover_person"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Handover Person *
+              <FieldLabel>
+                Handover person
               </FieldLabel>
               <Input
                 {...field}
@@ -99,8 +99,8 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         name="reason"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
-              Reason *
+            <FieldLabel>
+              Reason
             </FieldLabel>
             <Textarea
               {...field}
@@ -119,8 +119,8 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="external_link"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                External Link
+              <FieldLabel>
+                External link
               </FieldLabel>
               <Input
                 {...field}
@@ -139,7 +139,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         name="notes"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
+            <FieldLabel>
               Notes
             </FieldLabel>
             <Textarea

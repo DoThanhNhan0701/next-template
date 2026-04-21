@@ -48,7 +48,7 @@ export function TargetDestinationSection({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
+                  <FieldLabel>
                     Select specific personnel
                   </FieldLabel>
                   <Select
@@ -83,7 +83,7 @@ export function TargetDestinationSection({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
+                  <FieldLabel>
                     Select new target location / warehouse
                   </FieldLabel>
                   <Select
@@ -121,7 +121,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel className="text-[11px] font-bold text-primary tracking-wider">
+              <FieldLabel>
                 New geographical location (optional)
               </FieldLabel>
               <Select
@@ -159,8 +159,8 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel className="text-[10px] font-bold text-muted-foreground">
-                Transfer Date
+              <FieldLabel>
+                Transfer date
               </FieldLabel>
               <DatePickerField form={form} name="transfer_date" />
               <FieldError errors={[fieldState.error]} />
@@ -173,8 +173,8 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-2 gap-1">
-              <FieldLabel className="text-[10px] font-bold text-muted-foreground">
-                External Link (Jira/Helpdesk)
+              <FieldLabel>
+                External link (Jira/Helpdesk)
               </FieldLabel>
               <Input
                 placeholder="https://..."
@@ -192,8 +192,8 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-3 gap-1">
-              <FieldLabel className="text-[10px] font-bold text-muted-foreground">
-                Reason & Internal Notes
+              <FieldLabel>
+                Reason & internal notes
               </FieldLabel>
               <Textarea
                 placeholder="Enter detailed transfer reason..."

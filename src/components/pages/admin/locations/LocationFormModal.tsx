@@ -139,7 +139,7 @@ export default function LocationFormModal({
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Location Code *</FieldLabel>
+                    <FieldLabel>Location code</FieldLabel>
                     <Input {...field} placeholder="Ex: ST_TOTAL" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -153,7 +153,7 @@ export default function LocationFormModal({
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Location Name *</FieldLabel>
+                    <FieldLabel>Location name</FieldLabel>
                     <Input {...field} placeholder="Ex: Kho tổng" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -167,7 +167,7 @@ export default function LocationFormModal({
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Description (Optional)</FieldLabel>
+                    <FieldLabel>Description (optional)</FieldLabel>
                     <Input
                       {...field}
                       value={field.value || ""}
