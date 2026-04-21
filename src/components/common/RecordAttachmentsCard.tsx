@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import Image from "next/image";
 
@@ -9,10 +9,11 @@ import {
   FileSpreadsheet,
   FileText,
   Image as ImageIcon,
+  Loader2,
   Paperclip,
+  Trash2,
 } from "lucide-react";
 
-import MultiAttachmentUpload from "@/components/common/MultiAttachmentUpload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -22,7 +23,27 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { endpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { getApiErrorMessage } from "@/utils/api-error";
 import { cleanUrl } from "@/utils/url";
+import { toast } from "sonner";
+
+const ALLOWED_EXTENSIONS = [
+  "xls",
+  "xlsx",
+  "png",
+  "rar",
+  "docx",
+  "jpeg",
+  "csv",
+  "jpg",
+  "pdf",
+  "doc",
+  "zip",
+  "txt",
+];
+
 
 interface RecordAttachmentsCardProps {
   title?: string;
@@ -41,9 +62,11 @@ export function RecordAttachmentsCard({
   emptyMessage = "No attached documents. Click to upload.",
   className = "border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg border-dashed",
 }: RecordAttachmentsCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [attachments, setAttachments] = useState<string[]>(initialAttachments);
+  
+  const { mutate: uploadFile, pending: uploadPending } = useMutation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync state if initialAttachments changes from outside
   useEffect(() => {
@@ -87,14 +110,58 @@ export function RecordAttachmentsCard({
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (newAttachments: string[]) => {
     try {
-      const cleaned = attachments.map(cleanUrl);
+      const cleaned = newAttachments.map(cleanUrl);
       await onSave(cleaned);
-      setIsEditing(false);
     } catch (error) {
       // Error is expected to be handled by the parent or the mutation hook
       console.error("Failed to save attachments:", error);
+      // Revert attachments on error
+      setAttachments(initialAttachments);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    if (!extension || !ALLOWED_EXTENSIONS.includes(extension)) {
+      toast.error(
+        "Định dạng tập tin không được hỗ trợ. Chỉ chấp nhận các định dạng: xls, xlsx, png, rar, docx, jpeg, csv, jpg, pdf, doc, zip, txt",
+      );
+      e.target.value = "";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    await uploadFile(
+      {
+        url: endpoints.UPLOAD_ATTACHMENTS,
+        method: "post",
+        body: formData,
+        config: { headers: { "Content-Type": "multipart/form-data" } },
+      },
+      {
+        onSuccess: (res: unknown) => {
+          const typedRes = res as { url?: string } | undefined;
+          if (!typedRes?.url) return;
+          const newArr = [...attachments, typedRes.url];
+          setAttachments(newArr);
+          handleSave(newArr);
+          toast.success("File uploaded successfully");
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
+      },
+    );
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -105,53 +172,35 @@ export function RecordAttachmentsCard({
           <div className="w-1.5 h-1.5 rounded-full bg-primary" />
           {title}
         </CardTitle>
+        <input
+          type="file"
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleFileUpload}
+          accept={ALLOWED_EXTENSIONS.map((ext) => `.${ext}`).join(",")}
+        />
         <Button
           variant="outline"
           size="sm"
-          onClick={() => {
-            if (isEditing) {
-              setAttachments(initialAttachments);
-            }
-            setIsEditing(!isEditing);
-          }}
+          onClick={() => fileInputRef.current?.click()}
           className="h-7 gap-1.5 border-primary/20 text-primary hover:bg-primary/10 px-2 text-xs"
-          disabled={isPending}
+          disabled={isPending || uploadPending}
         >
-          {isEditing ? "Cancel" : "Upload / Manage"}
+          {uploadPending ? (
+            <Loader2 className="animate-spin w-3 h-3" />
+          ) : null}
+          Upload
         </Button>
       </CardHeader>
       <CardContent className="p-4">
-        {isEditing ? (
-          <div className="space-y-4">
-            <MultiAttachmentUpload
-              value={attachments}
-              onChange={(val) => setAttachments(val)}
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setAttachments(initialAttachments);
-                  setIsEditing(false);
-                }}
-                disabled={isPending}
-              >
-                Reset
-              </Button>
-              <Button size="sm" onClick={handleSave} disabled={isPending}>
-                {isPending ? "Saving..." : "Save"}
-              </Button>
-            </div>
-          </div>
-        ) : attachments.length > 0 ? (
+        {attachments.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {attachments.map((url, i) => {
               const full = formatUrl(url);
               return (
                 <div
                   key={i}
-                  className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-md border border-border/50 text-xs"
+                  className="group flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-md border border-border/50 text-xs"
                 >
                   {getFileIcon(url)}
                   <a
@@ -169,6 +218,20 @@ export function RecordAttachmentsCard({
                   >
                     {cleanUrl(url).split("/").pop()}
                   </a>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const newArr = attachments.filter((_, idx) => idx !== i);
+                      setAttachments(newArr);
+                      handleSave(newArr);
+                    }}
+                    className="text-destructive opacity-0 group-hover:opacity-100 transition-all hover:text-destructive/80 shrink-0 ml-1"
+                    title="Remove attachment"
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               );
             })}
@@ -176,7 +239,7 @@ export function RecordAttachmentsCard({
         ) : (
           <div
             className="rounded-lg border border-dashed border-border/50 bg-muted/10 min-h-30 flex flex-col items-center justify-center gap-2 hover:bg-muted/20 transition-colors cursor-pointer group"
-            onClick={() => setIsEditing(true)}
+            onClick={() => fileInputRef.current?.click()}
           >
             <div className="w-8 h-8 rounded-full bg-background/60 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <ImageIcon className="w-3.5 h-3.5 text-muted-foreground/60" />

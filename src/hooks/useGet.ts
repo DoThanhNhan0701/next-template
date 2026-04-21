@@ -15,7 +15,7 @@ export const useGet = <T = unknown>(
   const queryClient = useQueryClient();
   const key: QueryKey = options?.queryKey ?? [url, ...(options?.deps ?? [])];
 
-  const { data: response, isFetching, error, refetch } = useQuery<T>({
+  const { data: response, isPending, error, refetch } = useQuery<T>({
     queryKey: key,
     queryFn: async ({ signal }) => {
       const res = await axiosInstance.get<T>(url, { ...config, signal });
@@ -25,7 +25,7 @@ export const useGet = <T = unknown>(
     staleTime: options?.staleTime,
   });
 
-  const pending = isFetching;
+  const pending = isPending;
 
   const reFetch = () => {
     if (options?.disabled) return;
