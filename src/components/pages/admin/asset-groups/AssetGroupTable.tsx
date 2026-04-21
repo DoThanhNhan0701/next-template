@@ -1,27 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IAssetGroup } from "@/types/asset-group";
-import { EditIcon, Trash2Icon, PlusIcon, Layers } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+
+import { EditIcon, Layers, PlusIcon, Trash2Icon } from "lucide-react";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -31,6 +18,25 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IAssetGroup } from "@/types/asset-group";
+
 import AssetGroupFormModal from "./AssetGroupFormModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
@@ -193,7 +199,7 @@ export default function AssetGroupTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setAssetGroupToEdit(group)}
                       >
                         <EditIcon size={14} />
@@ -202,7 +208,7 @@ export default function AssetGroupTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                          className="text-red-500 hover:bg-red-500/10"
                           onClick={() => setAssetGroupToDelete(group)}
                         >
                           <Trash2Icon size={14} />

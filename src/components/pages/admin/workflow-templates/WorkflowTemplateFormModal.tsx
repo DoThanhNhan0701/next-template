@@ -501,7 +501,7 @@ export default function WorkflowTemplateFormModal({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 text-muted-foreground"
+                            className="text-muted-foreground"
                             onClick={() => move(index, index - 1)}
                             title="Move up"
                           >
@@ -513,7 +513,7 @@ export default function WorkflowTemplateFormModal({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 text-muted-foreground"
+                            className="text-muted-foreground"
                             onClick={() => move(index, index + 1)}
                             title="Move down"
                           >
@@ -524,7 +524,7 @@ export default function WorkflowTemplateFormModal({
                           type="button"
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-red-500 hover:bg-red-500/10"
+                          className="text-red-500 hover:bg-red-500/10"
                           onClick={() => remove(index)}
                         >
                           <Trash2Icon size={13} />

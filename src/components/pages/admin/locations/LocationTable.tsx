@@ -1,20 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { ILocation } from "@/types/location";
-import { EditIcon, Trash2Icon, PlusIcon, MapPin } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
-import { Button } from "@/components/ui/button";
+
+import { EditIcon, MapPin, PlusIcon, Trash2Icon } from "lucide-react";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -31,8 +25,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import LocationFormModal from "./LocationFormModal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { ILocation } from "@/types/location";
+
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import LocationFormModal from "./LocationFormModal";
 
 export default function LocationTable() {
   const [skip, setSkip] = useState(0);
@@ -197,7 +203,7 @@ export default function LocationTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setLocationToEdit(loc)}
                       >
                         <EditIcon size={14} />
@@ -206,7 +212,7 @@ export default function LocationTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                        className="text-red-500 hover:bg-red-500/10"
                         onClick={() => setLocationToDelete(loc)}
                       >
                         <Trash2Icon size={14} />

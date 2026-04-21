@@ -197,7 +197,6 @@ export default function MultiAttachmentUpload({ value = [], onChange }: Props) {
           size="sm"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploadPending}
-          className="h-9"
         >
           {uploadPending ? (
             <Loader2 className="animate-spin mr-1" size={14} />

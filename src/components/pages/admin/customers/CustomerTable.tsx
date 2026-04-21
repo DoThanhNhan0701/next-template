@@ -1,27 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { ICustomer } from "@/types/customer";
-import { EditIcon, Trash2Icon, PlusIcon, Mail, Phone, User, Building2, Users } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+
+import {
+  Building2,
+  EditIcon,
+  Mail,
+  Phone,
+  PlusIcon,
+  Trash2Icon,
+  User,
+  Users,
+} from "lucide-react";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -31,8 +27,27 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import CustomerFormModal from "./CustomerFormModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { ICustomer } from "@/types/customer";
+
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import CustomerFormModal from "./CustomerFormModal";
 
 export default function CustomerTable() {
   const [skip, setSkip] = useState(0);
@@ -52,7 +67,7 @@ export default function CustomerTable() {
   }>({
     url: `${endpoints.CUSTOMERS}?${queryParams.toString()}`,
   });
-  
+
   // Note: The image shows response wrapped in { data: [...] }
   const customers = response?.data || [];
 
@@ -61,7 +76,9 @@ export default function CustomerTable() {
 
   const [isCreating, setIsCreating] = useState(false);
   const [customerToEdit, setCustomerToEdit] = useState<ICustomer | null>(null);
-  const [customerToDelete, setCustomerToDelete] = useState<ICustomer | null>(null);
+  const [customerToDelete, setCustomerToDelete] = useState<ICustomer | null>(
+    null,
+  );
 
   const handleSuccess = (responseData?: unknown, method?: string) => {
     if (responseData && (method === "patch" || method === "post")) {
@@ -72,7 +89,9 @@ export default function CustomerTable() {
         if (!prev) return null;
         return {
           ...prev,
-          data: prev.data.filter((s: ICustomer) => s.id !== customerToDelete.id),
+          data: prev.data.filter(
+            (s: ICustomer) => s.id !== customerToDelete.id,
+          ),
         };
       });
       return;
@@ -204,7 +223,7 @@ export default function CustomerTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setCustomerToEdit(item)}
                       >
                         <EditIcon size={14} />
@@ -212,7 +231,7 @@ export default function CustomerTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                        className="text-red-500 hover:bg-red-500/10"
                         onClick={() => setCustomerToDelete(item)}
                       >
                         <Trash2Icon size={14} />
@@ -236,7 +255,9 @@ export default function CustomerTable() {
                   e.preventDefault();
                   if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
                 }}
-                className={skip === 0 || pending ? "pointer-events-none opacity-50" : ""}
+                className={
+                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
 
@@ -307,7 +328,9 @@ export default function CustomerTable() {
                   e.preventDefault();
                   if (hasMore && !pending) setSkip(skip + limit);
                 }}
-                className={!hasMore || pending ? "pointer-events-none opacity-50" : ""}
+                className={
+                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>

@@ -108,7 +108,6 @@ export default function AllocationSummaryTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 z-10 w-full transition-all">
-        {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -116,7 +115,7 @@ export default function AllocationSummaryTable() {
           />
           <Input
             placeholder="Search allocations..."
-            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -191,7 +190,7 @@ export default function AllocationSummaryTable() {
                 status_code: statusCode,
               });
             }}
-            className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             {pending ? "Searching..." : "Search"}
           </Button>
@@ -210,7 +209,7 @@ export default function AllocationSummaryTable() {
               });
               setSkip(0);
             }}
-            className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
@@ -218,7 +217,7 @@ export default function AllocationSummaryTable() {
 
           <Button
             onClick={() => setIsManualOpen(true)}
-            className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             Create
           </Button>

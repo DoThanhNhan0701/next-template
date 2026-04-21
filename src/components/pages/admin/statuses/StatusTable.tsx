@@ -1,20 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IStatus } from "@/types/status";
-import { EditIcon, Trash2Icon, PlusIcon, CircleDot } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
-import { Button } from "@/components/ui/button";
+
+import { CircleDot, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -24,8 +18,20 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import StatusFormModal from "./StatusFormModal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IStatus } from "@/types/status";
+
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import StatusFormModal from "./StatusFormModal";
 
 export default function StatusTable() {
   const [skip, setSkip] = useState(0);
@@ -145,7 +151,7 @@ export default function StatusTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setStatusToEdit(item)}
                       >
                         <EditIcon size={14} />
@@ -154,7 +160,7 @@ export default function StatusTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                          className="text-red-500 hover:bg-red-500/10"
                           onClick={() => setStatusToDelete(item)}
                         >
                           <Trash2Icon size={14} />

@@ -1,27 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
+
+import { EditIcon, PlusIcon, Shield, Trash2Icon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux";
-import { actionSetUser } from "@/redux/slices/auth";
-import { useGet } from "@/hooks/useGet";
-import { IRole } from "@/types/rbac";
-import { IRoleObj } from "@/types/auth";
-import { EditIcon, Trash2Icon, PlusIcon, Shield } from "lucide-react";
+
 import {
-  TableLoadingRows,
   TableEmptyRow,
+  TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -38,8 +26,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import RoleFormModal from "./RoleFormModal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { AppDispatch, RootState } from "@/redux";
+import { actionSetUser } from "@/redux/slices/auth";
+import { IRoleObj } from "@/types/auth";
+import { IRole } from "@/types/rbac";
+
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import RoleFormModal from "./RoleFormModal";
 
 export default function RoleTable() {
   const dispatch = useDispatch<AppDispatch>();
@@ -198,7 +201,7 @@ export default function RoleTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setRoleToEdit(role)}
                       >
                         <EditIcon size={14} />
@@ -207,7 +210,7 @@ export default function RoleTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                        className="text-red-500 hover:bg-red-500/10"
                         onClick={() => setRoleToDelete(role)}
                       >
                         <Trash2Icon size={14} />

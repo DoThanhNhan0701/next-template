@@ -94,7 +94,7 @@ export default function StockAdjustmentTable({
           />
           <Input
             placeholder="Search by asset, record number..."
-            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 w-full"
+            className="pl-9 pr-10 bg-background/50 border-border/50 w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -119,14 +119,12 @@ export default function StockAdjustmentTable({
               setSkip(0);
               setAppliedFilters({ q });
             }}
-            className="h-10 px-6"
           >
             {pending ? "Searching..." : "Search"}
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="h-10 w-10"
             onClick={() => {
               setQ("");
               setAppliedFilters({ q: "" });
@@ -138,7 +136,7 @@ export default function StockAdjustmentTable({
           </Button>
           <Button
             onClick={() => setIsManualOpen(true)}
-            className="h-10 bg-primary/95 hover:bg-primary"
+            className="bg-primary/95 hover:bg-primary"
           >
             Create
           </Button>

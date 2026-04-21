@@ -1,33 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
+
+import { EditIcon, Key, PlusIcon, Trash2Icon, UserCog } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux";
-import { actionSetUser } from "@/redux/slices/auth";
-import { useGet } from "@/hooks/useGet";
-import { IUser } from "@/types/auth";
-import { EditIcon, Key, Trash2Icon, PlusIcon, UserCog } from "lucide-react";
+
 import {
-  TableLoadingRows,
   TableEmptyRow,
+  TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -37,9 +19,30 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import UserFormModal from "./UserFormModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { AppDispatch, RootState } from "@/redux";
+import { actionSetUser } from "@/redux/slices/auth";
+import { IUser } from "@/types/auth";
+
 import ChangePasswordModal from "./ChangePasswordModal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import UserFormModal from "./UserFormModal";
 
 export default function UserTable() {
   const dispatch = useDispatch<AppDispatch>();
@@ -206,7 +209,7 @@ export default function UserTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setUserToPwChange(user)}
                       >
                         <Key size={14} />
@@ -214,7 +217,7 @@ export default function UserTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setUserToEdit(user)}
                       >
                         <EditIcon size={14} />
@@ -223,7 +226,7 @@ export default function UserTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                          className="text-red-500 hover:bg-red-500/10"
                           onClick={() => setUserToDelete(user)}
                         >
                           <Trash2Icon size={14} />

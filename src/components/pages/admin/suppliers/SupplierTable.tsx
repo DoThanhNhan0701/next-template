@@ -1,27 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { ISupplier } from "@/types/supplier";
-import { EditIcon, Trash2Icon, PlusIcon, Mail, Phone, User, Truck } from "lucide-react";
-import { TableLoadingRows, TableEmptyRow } from "@/components/common/TableStateDisplay";
+
+import {
+  EditIcon,
+  Mail,
+  Phone,
+  PlusIcon,
+  Trash2Icon,
+  Truck,
+  User,
+} from "lucide-react";
+
+import {
+  TableEmptyRow,
+  TableLoadingRows,
+} from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -31,8 +26,27 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import SupplierFormModal from "./SupplierFormModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { ISupplier } from "@/types/supplier";
+
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import SupplierFormModal from "./SupplierFormModal";
 
 export default function SupplierTable() {
   const [skip, setSkip] = useState(0);
@@ -57,7 +71,9 @@ export default function SupplierTable() {
 
   const [isCreating, setIsCreating] = useState(false);
   const [supplierToEdit, setSupplierToEdit] = useState<ISupplier | null>(null);
-  const [supplierToDelete, setSupplierToDelete] = useState<ISupplier | null>(null);
+  const [supplierToDelete, setSupplierToDelete] = useState<ISupplier | null>(
+    null,
+  );
 
   const handleSuccess = (responseData?: unknown, method?: string) => {
     if (responseData && (method === "patch" || method === "post")) {
@@ -65,7 +81,9 @@ export default function SupplierTable() {
       return;
     } else if (method === "delete" && supplierToDelete) {
       setResponse((prev: ISupplier[] | null) =>
-        prev ? prev.filter((s: ISupplier) => s.id !== supplierToDelete.id) : null,
+        prev
+          ? prev.filter((s: ISupplier) => s.id !== supplierToDelete.id)
+          : null,
       );
       return;
     }
@@ -173,7 +191,9 @@ export default function SupplierTable() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">{item.tax_code || "-"}</TableCell>
+                  <TableCell className="px-4 py-3">
+                    {item.tax_code || "-"}
+                  </TableCell>
                   <TableCell className="px-4 py-3 max-w-[200px] truncate underline decoration-muted-foreground/30 underline-offset-2">
                     {item.address || "-"}
                   </TableCell>
@@ -193,7 +213,7 @@ export default function SupplierTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setSupplierToEdit(item)}
                       >
                         <EditIcon size={14} />
@@ -201,7 +221,7 @@ export default function SupplierTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                        className="text-red-500 hover:bg-red-500/10"
                         onClick={() => setSupplierToDelete(item)}
                       >
                         <Trash2Icon size={14} />
@@ -225,7 +245,9 @@ export default function SupplierTable() {
                   e.preventDefault();
                   if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
                 }}
-                className={skip === 0 || pending ? "pointer-events-none opacity-50" : ""}
+                className={
+                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
 
@@ -296,7 +318,9 @@ export default function SupplierTable() {
                   e.preventDefault();
                   if (hasMore && !pending) setSkip(skip + limit);
                 }}
-                className={!hasMore || pending ? "pointer-events-none opacity-50" : ""}
+                className={
+                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>

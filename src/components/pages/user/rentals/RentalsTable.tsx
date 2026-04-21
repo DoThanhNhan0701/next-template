@@ -123,7 +123,7 @@ export default function RentalsTable() {
           />
           <Input
             placeholder="Record Number, Contract..."
-            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -198,7 +198,7 @@ export default function RentalsTable() {
                 customer_id: customerId,
               });
             }}
-            className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             {pending ? "Searching..." : "Search"}
           </Button>
@@ -217,14 +217,14 @@ export default function RentalsTable() {
               });
               setSkip(0);
             }}
-            className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
           <Button
             onClick={() => setIsCreating(true)}
-            className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             Create
           </Button>

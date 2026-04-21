@@ -141,7 +141,7 @@ export default function RentalDetail({ id }: Props) {
       {/* Summary */}
       <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">
         <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/80 rounded-r" />
-        <CardContent className="p-5 pl-7">
+        <CardContent className="p-3 pl-5">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             {/* Left: record info */}
             <div className="flex items-center gap-3">

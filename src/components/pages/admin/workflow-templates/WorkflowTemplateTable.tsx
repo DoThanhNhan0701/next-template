@@ -1,20 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IWorkflowTemplate } from "@/types/workflow-template";
+
 import {
   EditIcon,
-  Trash2Icon,
-  PlusIcon,
   GitBranch,
   Lock,
+  PlusIcon,
+  Trash2Icon,
   Unlock,
 } from "lucide-react";
+
 import {
-  TableLoadingRows,
   TableEmptyRow,
+  TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +24,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import WorkflowTemplateFormModal from "./WorkflowTemplateFormModal";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { IWorkflowTemplate } from "@/types/workflow-template";
+
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import WorkflowTemplateFormModal from "./WorkflowTemplateFormModal";
 
 export default function WorkflowTemplateTable() {
   const { response, pending, setResponse } = useGet<IWorkflowTemplate[]>({
@@ -165,7 +168,7 @@ export default function WorkflowTemplateTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setTemplateToEdit(item)}
                       >
                         <EditIcon size={14} />
@@ -173,7 +176,7 @@ export default function WorkflowTemplateTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-500 hover:bg-red-500/10"
+                        className="text-red-500 hover:bg-red-500/10"
                         onClick={() => setTemplateToDelete(item)}
                         disabled={item.is_locked}
                       >

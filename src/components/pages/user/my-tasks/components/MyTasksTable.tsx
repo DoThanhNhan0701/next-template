@@ -394,7 +394,7 @@ export default function MyTasksTable() {
           />
           <Input
             placeholder="Search record number, requester..."
-            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => {
@@ -459,7 +459,7 @@ export default function MyTasksTable() {
               setLocalCurrentPage(1);
               setSelectedProcessType("all");
             }}
-            className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+            className="order-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
@@ -591,7 +591,7 @@ export default function MyTasksTable() {
                               e.stopPropagation();
                               handleApprove(task);
                             }}
-                            className="h-8 w-8 rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
+                            className="rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
                             title="Approve"
                           >
                             <Check size={16} />
@@ -605,7 +605,7 @@ export default function MyTasksTable() {
                                 e.stopPropagation();
                                 handleReject(task);
                               }}
-                              className="h-8 w-8 rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
+                              className="rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
                               title="Reject"
                             >
                               <CloseIcon size={16} />

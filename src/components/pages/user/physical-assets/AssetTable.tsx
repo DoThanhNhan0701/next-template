@@ -158,7 +158,7 @@ export default function AssetTable() {
           />
           <Input
             placeholder="Asset Code, Serial..."
-            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -253,7 +253,7 @@ export default function AssetTable() {
                 status_code: statusCode,
               });
             }}
-            className="flex-1 lg:flex-none h-10 px-6 shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             {pending ? "Searching..." : "Search"}
           </Button>
@@ -274,7 +274,7 @@ export default function AssetTable() {
               });
               setSkip(0);
             }}
-            className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
@@ -283,7 +283,7 @@ export default function AssetTable() {
           {canCreate && (
             <Button
               onClick={() => setIsCreating(true)}
-              className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+              className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
             >
               Create
             </Button>
@@ -480,7 +480,7 @@ export default function AssetTable() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full hover:bg-amber-50 text-amber-600 transition-all active:scale-90"
+                            className="rounded-full hover:bg-amber-50 text-amber-600 transition-all active:scale-90"
                             onClick={(e) => {
                               e.stopPropagation();
                               setAssetToEdit(asset);

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { Plus, RefreshCcw, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -270,7 +270,6 @@ export default function OrganizationalStructurePage() {
 
   return (
     <div className="flex flex-col gap-2 overflow-hidden h-full">
-      {/* Header Section */}
       <div className="flex items-center justify-end gap-2">
         <Button
           variant="outline"
@@ -279,20 +278,14 @@ export default function OrganizationalStructurePage() {
           disabled={loading}
           className="shadow-sm"
         >
-          <RefreshCcw
-            className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
-          />
           Refresh
         </Button>
         <Button size="sm" onClick={handleCreateRoot} className="shadow-sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Create Root Unit
+          Create
         </Button>
       </div>
 
-      {/* Main Content: Master-Detail Layout */}
       <div className="flex-1 flex gap-2 min-h-0">
-        {/* Left Side: Tree Explorer */}
         <div className="w-full md:basis-[40%] flex flex-col gap-3 border rounded-xl shadow-sm overflow-hidden p-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

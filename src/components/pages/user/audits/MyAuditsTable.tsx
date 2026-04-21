@@ -102,7 +102,7 @@ export default function MyAuditsTable() {
           />
           <Input
             placeholder="Search audits..."
-            className="pl-9 pr-10 h-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => {
@@ -146,9 +146,8 @@ export default function MyAuditsTable() {
           <Button
             variant="default"
             onClick={handleSearch}
-            className="h-10 px-4 transition-all active:scale-95 shrink-0"
+            className="transition-all active:scale-95 shrink-0"
           >
-            <Search size={16} className="mr-2" />
             Search
           </Button>
           <Button
@@ -161,7 +160,7 @@ export default function MyAuditsTable() {
               setAuditType("all");
               setSkip(0);
             }}
-            className="h-10 w-10 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
             title="Clear all filters"
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
@@ -169,7 +168,7 @@ export default function MyAuditsTable() {
           <Button
             variant="default"
             onClick={() => setIsCreateModalOpen(true)}
-            className="h-10 px-4 transition-all active:scale-95 shrink-0"
+            className="transition-all active:scale-95 shrink-0"
           >
             Create
           </Button>

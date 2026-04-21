@@ -182,7 +182,7 @@ export function RecordAttachmentsCard({
           variant="outline"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
-          className="h-7 gap-1.5 border-primary/20 text-primary hover:bg-primary/10 px-2 text-xs"
+          className="gap-1.5 border-primary/20 text-primary hover:bg-primary/10 px-2 text-xs"
           disabled={isPending || uploadPending}
         >
           {uploadPending ? <Loader2 className="animate-spin w-3 h-3" /> : null}
