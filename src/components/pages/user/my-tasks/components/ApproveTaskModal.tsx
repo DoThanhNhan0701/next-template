@@ -39,7 +39,7 @@ export function ApproveTaskModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b bg-background">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             <DialogTitle className="text-xl font-semibold">

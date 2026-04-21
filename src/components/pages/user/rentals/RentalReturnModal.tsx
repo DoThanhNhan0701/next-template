@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { AlertCircle, Calendar, Package, UserCircle2 } from "lucide-react";
+import { AlertCircle, Calendar } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
@@ -159,20 +159,16 @@ export default function RentalReturnModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-175 max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-lg">
-            <Package className="w-5 h-5 text-primary" />
-            Hoàn trả tài sản thuê
-          </DialogTitle>
+      <DialogContent className="sm:max-w-[700px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-3 shrink-0 border-b">
+          <DialogTitle>Hoàn trả tài sản thuê</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Lập biên bản nhận lại tài sản từ khách hàng cho phiếu{" "}
             {rentalDetail.record_number}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Warning Alert */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-3 mx-6">
           <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-amber-900">
@@ -187,7 +183,7 @@ export default function RentalReturnModal({
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 px-6 pb-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-4">
               {/* Return Date */}
@@ -339,11 +335,10 @@ export default function RentalReturnModal({
 
           {/* Approval Workflow */}
           {activeTemplate?.steps && activeTemplate.steps.length > 0 && (
-            <div className="flex flex-col gap-3 pt-4 border-t px-1">
-              <h3 className="text-sm font-semibold text-primary pb-2 flex items-center gap-2 tracking-tight">
-                <UserCircle2 className="w-5 h-5 text-primary" />
-                <span>Người duyệt quy trình</span>
-              </h3>
+            <div className="flex flex-col gap-1 pt-3 border-t px-1">
+              <span className="text-sm font-semibold text-primary flex items-center tracking-tight">
+                Approval Process
+              </span>
 
               <div className="bg-muted/20 border rounded-md p-6 space-y-6">
                 <div className="grid grid-cols-2 gap-8">
@@ -383,7 +378,7 @@ export default function RentalReturnModal({
           )}
         </div>
 
-        <DialogFooter className="p-3 shrink-0 border-t2">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Hủy bỏ
           </Button>

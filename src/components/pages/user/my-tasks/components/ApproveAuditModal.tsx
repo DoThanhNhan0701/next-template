@@ -39,7 +39,7 @@ export function ApproveAuditModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[480px] flex flex-col p-0 overflow-hidden border-emerald-500/20 shadow-2xl transition-all">
-        <DialogHeader className="p-5 pb-3 shrink-0 border-b bg-emerald-500/5">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             <DialogTitle className="text-lg font-bold tracking-tight text-emerald-500/90">

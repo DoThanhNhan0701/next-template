@@ -181,7 +181,7 @@ export default function PrintQRModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>In QR Code</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Chọn tên người nhận để in kèm theo QR Code.

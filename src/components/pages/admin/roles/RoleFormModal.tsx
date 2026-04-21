@@ -134,10 +134,8 @@ export default function RoleFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col gap-0 p-0">
-        <DialogHeader className="p-6 pb-4 border-b">
-          <DialogTitle>
-            {isEditing ? "Edit Role" : "Create New Role"}
-          </DialogTitle>
+        <DialogHeader className="p-3 shrink-0 border-b">
+          <DialogTitle>{isEditing ? "Edit role" : "Create role"}</DialogTitle>
           <DialogDescription>
             {isEditing
               ? "Modify the role name and its permissions."
@@ -193,7 +191,7 @@ export default function RoleFormModal({
               </Label>
             </div>
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3">
               <Label>Permissions Distribution</Label>
               <div className="grid grid-cols-1 gap-2 border rounded-md p-3 bg-muted/20 pb-4 max-h-[300px] overflow-y-auto">
                 {allPermissions.length === 0 ? (
@@ -248,8 +246,8 @@ export default function RoleFormModal({
                 ? "Updating..."
                 : "Creating..."
               : isEditing
-                ? "Update Role"
-                : "Create Role"}
+                ? "Update"
+                : "Create"}
           </Button>
         </DialogFooter>
       </DialogContent>

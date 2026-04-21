@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -312,9 +313,9 @@ export default function WorkflowTemplateFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] h-[90vh] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Workflow" : "Create Approval Workflow"}
+            {isEditing ? "Edit workflow" : "Create approval workflow"}
           </DialogTitle>
           <DialogDescription>
             {isEditing
@@ -536,8 +537,7 @@ export default function WorkflowTemplateFormModal({
               )}
             </div>
           </div>
-
-          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"
@@ -546,10 +546,10 @@ export default function WorkflowTemplateFormModal({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={pending} className="min-w-[120px]">
-              {pending ? "Saving..." : isEditing ? "Save Changes" : "Create"}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Saving..." : "Save"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

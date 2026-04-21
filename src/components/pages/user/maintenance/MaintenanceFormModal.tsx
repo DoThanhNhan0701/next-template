@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -261,7 +262,7 @@ export default function MaintenanceFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing
               ? "Edit maintenance record"
@@ -370,7 +371,7 @@ export default function MaintenanceFormModal({
             </div>
           </Tabs>
 
-          <div className="p-6 border-t flex justify-end gap-3 shrink-0">
+          <DialogFooter className="p-6 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
@@ -386,7 +387,7 @@ export default function MaintenanceFormModal({
                 "Confirm"
               )}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

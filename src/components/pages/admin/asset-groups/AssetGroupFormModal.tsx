@@ -106,10 +106,10 @@ export default function AssetGroupFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Asset Group" : "Add Asset Group"}
+            {isEditing ? "Edit asset group" : "Create asset group"}
           </DialogTitle>
           <DialogDescription>
             {isEditing
@@ -122,86 +122,91 @@ export default function AssetGroupFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-3"
         >
-          <FieldGroup>
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Name</FieldLabel>
-                  <Input {...field} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+          <div className="px-6">
+            <FieldGroup className="gap-3">
+              <Controller
+                name="name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Name</FieldLabel>
+                    <Input {...field} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="code"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Code</FieldLabel>
-                  <Input {...field} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="code"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Code</FieldLabel>
+                    <Input {...field} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="color"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Color</FieldLabel>
-                  <div className="flex gap-2">
-                    <Input {...field} type="color" className="w-12 h-10 p-1" />
-                    <Input {...field} placeholder="#000000" />
-                  </div>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="color"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Color</FieldLabel>
+                    <div className="flex gap-2">
+                      <Input
+                        {...field}
+                        type="color"
+                        className="w-12 h-10 p-1"
+                      />
+                      <Input {...field} placeholder="#000000" />
+                    </div>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="description"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Description</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="description"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Description</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="is_active"
-              control={form.control}
-              render={({ field }) => (
-                <Field className="gap-1 flex justify-start items-center">
-                  <label className="flex items-center gap-2 text-sm text-foreground">
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={field.onChange}
-                      className="w-4 h-4 rounded border-(--surface-border-color)"
-                    />
-                    Active
-                  </label>
-                </Field>
-              )}
-            />
-          </FieldGroup>
-
-          <DialogFooter>
+              <Controller
+                name="is_active"
+                control={form.control}
+                render={({ field }) => (
+                  <Field className="gap-1 flex justify-start items-center">
+                    <label className="flex items-center gap-2 text-sm text-foreground">
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="w-4 h-4 rounded border-(--surface-border-color)"
+                      />
+                      Active
+                    </label>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </div>
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"

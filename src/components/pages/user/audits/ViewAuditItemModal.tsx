@@ -19,6 +19,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -103,7 +104,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[560px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>Kiểm kê Tài sản</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {item.asset.asset_code} — {item.asset.name}
@@ -361,16 +362,11 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
           </FieldGroup>
         </div>
 
-        <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="w-24"
-          >
+        <DialogFooter className="p-3 shrink-0 border-t">
+          <Button type="button" variant="outline" onClick={onClose}>
             Đóng
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

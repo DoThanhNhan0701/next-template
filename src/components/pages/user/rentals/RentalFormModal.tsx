@@ -23,6 +23,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -303,7 +304,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>Create Rental Record</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Fill in details to create a new rental record.
@@ -528,7 +529,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
             </div>
           </div>
 
-          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"
@@ -540,7 +541,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
             <Button type="submit" disabled={pending} className="w-24">
               {pending ? "Saving..." : "Save"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -39,7 +39,7 @@ export function RejectAuditModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[480px] flex flex-col p-0 overflow-hidden border-destructive/20 shadow-2xl">
-        <DialogHeader className="p-5 pb-3 shrink-0 border-b bg-destructive/5">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <div className="flex items-center gap-2">
             <XCircle className="w-5 h-5 text-destructive" />
             <DialogTitle className="text-lg font-bold tracking-tight text-destructive/90">

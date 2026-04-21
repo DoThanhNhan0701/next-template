@@ -16,6 +16,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -376,7 +377,7 @@ export default function StockAdjustmentModal({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>Create Stock In/Out</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Create a new stock increase or decrease record.
@@ -546,7 +547,7 @@ export default function StockAdjustmentModal({
             </div>
           </div>
 
-          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"
@@ -558,7 +559,7 @@ export default function StockAdjustmentModal({
             <Button type="submit" disabled={pending} className="w-24">
               {pending ? "Saving..." : "Create"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

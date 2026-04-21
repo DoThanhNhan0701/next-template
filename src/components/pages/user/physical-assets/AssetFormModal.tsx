@@ -264,10 +264,8 @@ export default function AssetFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
-          <DialogTitle>
-            {isEditing ? "Edit Asset" : "Declare New Asset"}
-          </DialogTitle>
+        <DialogHeader className="p-3 shrink-0 border-b">
+          <DialogTitle>{isEditing ? "Edit asset" : "Create asset"}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
               ? "Modify the information of the selected asset."

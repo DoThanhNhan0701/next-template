@@ -21,6 +21,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -197,7 +198,7 @@ export default function AuditFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[560px] flex flex-col p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>Create audit batch</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             Create a new asset audit batch by unit or location.
@@ -546,14 +547,14 @@ export default function AuditFormModal({
             </div>
           </div>
 
-          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={pending} className="min-w-[120px]">
-              {pending ? "Creating..." : "Create audit batch"}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Creating..." : "Create"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
