@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -60,6 +61,7 @@ const StockAdjustmentSchema = z.object({
   external_link: z.string().optional(),
   approver_step_1_id: z.number().nullable().optional(),
   approver_step_2_id: z.number().nullable().optional(),
+  attachments: z.array(z.string()).optional(),
   details: z.array(DetailSchema).min(1, "At least one item is required"),
 });
 
@@ -295,6 +297,7 @@ export default function StockAdjustmentModal({
       external_link: "",
       approver_step_1_id: null,
       approver_step_2_id: null,
+      attachments: [],
       details: [],
     },
   });
@@ -312,6 +315,7 @@ export default function StockAdjustmentModal({
         external_link: "",
         approver_step_1_id: null,
         approver_step_2_id: null,
+        attachments: [],
         details: [
           {
             asset_id: prefill?.asset_id ?? 0,
@@ -350,7 +354,7 @@ export default function StockAdjustmentModal({
       {
         url: "/api/v1/stock-adjustments",
         method: "post",
-        body: { ...rest, attachments: [], workflow_assignments },
+        body: { ...rest, attachments: data.attachments || [], workflow_assignments },
       },
       {
         onSuccess: (res) => {
@@ -380,7 +384,7 @@ export default function StockAdjustmentModal({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 p-6 overflow-y-auto">
-            <div className="flex flex-col gap-6 pb-4">
+            <div className="flex flex-col gap-6">
               {/* General Info */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
@@ -529,6 +533,12 @@ export default function StockAdjustmentModal({
                   </FieldGroup>
                 </div>
               )}
+
+              {/* Attachments */}
+              <FormAttachmentsSection
+                control={form.control}
+                title="Attachments"
+              />
             </div>
           </div>
 

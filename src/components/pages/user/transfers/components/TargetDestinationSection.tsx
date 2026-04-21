@@ -4,6 +4,7 @@ import { ArrowRightCircle, MapPin } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -205,6 +206,10 @@ export function TargetDestinationSection({
           )}
         />
       </div>
+      <FormAttachmentsSection
+        className="[&>h3]:text-[10px] [&>h3]:font-bold [&>h3]:tracking-wider [&>h3]:text-muted-foreground"
+        control={form.control}
+      />
     </div>
   );
 }

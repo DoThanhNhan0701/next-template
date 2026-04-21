@@ -10,7 +10,7 @@ export const LiquidationSchema = z.object({
   total_value: z.number(),
   buyer_name: z.string().nullable(),
   external_link: z.string().nullable(),
-  attachments: z.array(z.string()),
+  attachments: z.array(z.string()).optional(),
   items: z
     .array(
       z.object({

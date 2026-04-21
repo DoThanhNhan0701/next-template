@@ -17,6 +17,7 @@ import { z } from "zod";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -274,6 +275,7 @@ export default function RecoveryVoucherModal({
       reason: "",
       external_link: "",
       items: [],
+      attachments: [],
     },
   });
 
@@ -315,6 +317,7 @@ export default function RecoveryVoucherModal({
             quantity: 1,
           },
         ],
+        attachments: [],
       });
     }
   }, [isOpen, prefill, form]);
@@ -347,7 +350,7 @@ export default function RecoveryVoucherModal({
       {
         url: endpoints.RECOVERIES,
         method: "post",
-        body: { ...rest, workflow_assignments },
+        body: { ...rest, attachments: data.attachments || [], workflow_assignments },
       },
       {
         onSuccess: (res) => {
@@ -377,7 +380,7 @@ export default function RecoveryVoucherModal({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 p-6 overflow-y-auto">
-            <div className="flex flex-col gap-6 pb-4">
+            <div className="flex flex-col gap-6">
               {/* General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
@@ -604,6 +607,12 @@ export default function RecoveryVoucherModal({
                   </FieldGroup>
                 </div>
               )}
+
+              {/* Attachments */}
+              <FormAttachmentsSection
+                control={form.control}
+                title="Attachments"
+              />
             </div>
           </div>
 

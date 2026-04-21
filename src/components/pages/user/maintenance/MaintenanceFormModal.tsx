@@ -7,6 +7,7 @@ import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
 import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -60,6 +61,7 @@ const MaintenanceSchema = z.object({
       }),
     )
     .min(1, "At least one item is required"),
+  attachments: z.array(z.string()).optional(),
   workflow_assignments: z.array(
     z.object({
       step_id: z.number(),
@@ -114,6 +116,7 @@ export default function MaintenanceFormModal({
             return_to_location_id: null,
           },
         ],
+        attachments: [],
         workflow_assignments: [],
       },
     });
@@ -183,6 +186,7 @@ export default function MaintenanceFormModal({
               return_to_location_id: null,
             },
           ],
+          attachments: [],
           workflow_assignments: [],
         });
       }
@@ -198,6 +202,7 @@ export default function MaintenanceFormModal({
     // Transform data for backend if needed
     const payload = {
       ...data,
+      attachments: data.attachments || [],
       outing_date: new Date(data.outing_date).toISOString(),
       items: data.items.map((item) => {
         const assetObj = assets.find((a) => a.id === item.asset_id);
@@ -256,18 +261,13 @@ export default function MaintenanceFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
-        <DialogHeader className="p-8 pb-6 shrink-0 border-b">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Wrench className="text-primary" size={20} />
-            </div>
-            <DialogTitle className="text-2xl font-bold text-primary tracking-tight">
-              {isEditing
-                ? "Edit maintenance record"
-                : "Create maintenance record"}
-            </DialogTitle>
-          </div>
-          <DialogDescription className="text-sm text-muted-foreground ml-11">
+        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+          <DialogTitle>
+            {isEditing
+              ? "Edit maintenance record"
+              : "Create maintenance record"}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
               ? "Update the maintenance details and asset allocations."
               : "Register a new maintenance record with detailed tracking and approval workflow."}
@@ -326,9 +326,13 @@ export default function MaintenanceFormModal({
             <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
               <TabsContent
                 value="general"
-                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
+                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300 space-y-4"
               >
                 <GeneralInfoSection form={form} />
+                <FormAttachmentsSection
+                  control={form.control}
+                  title="Attachments"
+                />
               </TabsContent>
               <TabsContent
                 value="service"

@@ -1,12 +1,14 @@
 import { PlusIcon, Trash } from "lucide-react";
 import {
-  UseFormReturn,
   Controller,
   FieldArrayWithId,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
+  UseFormReturn,
 } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -15,12 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LiquidationFormValues } from "../schema";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
+import { IPhysicalAsset } from "@/types/physical-asset";
+
+import { LiquidationFormValues } from "../schema";
 
 interface AssetListItemProps {
   index: number;
@@ -63,14 +65,14 @@ function AssetListItem({
         <Trash size={14} />
       </Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
         <Controller
           name={`items.${index}.from_location_id`}
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel className="text-xs font-semibold text-muted-foreground">
-                Chọn kho *
+                Locations *
               </FieldLabel>
               <Select
                 onValueChange={(val) => {
@@ -80,7 +82,7 @@ function AssetListItem({
                 value={field.value ? field.value.toString() : ""}
               >
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Chọn kho chứa" />
+                  <SelectValue placeholder="Select location" />
                 </SelectTrigger>
                 <SelectContent>
                   {locations.map((loc) => (
@@ -129,7 +131,7 @@ function AssetListItem({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
         <Controller
           name={`items.${index}.quantity`}
           control={form.control}
@@ -237,7 +239,7 @@ export function LiquidationAssetSelectionSection({
             type="button"
             variant="outline"
             size="sm"
-            className="h-8 text-xs font-semibold"
+            className="h-7 text-xs"
             onClick={() =>
               append({
                 asset_id: 0,
@@ -251,7 +253,7 @@ export function LiquidationAssetSelectionSection({
               })
             }
           >
-            <PlusIcon size={12} className="mr-1" /> Thêm dòng
+            <PlusIcon size={12} className="mr-1" /> Add asset
           </Button>
         </div>
       </div>

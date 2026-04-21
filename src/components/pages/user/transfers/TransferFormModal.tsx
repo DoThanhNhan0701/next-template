@@ -43,6 +43,7 @@ const TransferSchema = z.object({
   transfer_date: z.string().min(1, "Transfer date is required"),
   external_link: z.string().optional().nullable(),
   reason: z.string().optional().nullable(),
+  attachments: z.array(z.string()).optional(),
   details: z
     .array(
       z.object({
@@ -60,6 +61,7 @@ interface ITransferPayload {
   transfer_date: string;
   reason: string;
   external_link: string;
+  attachments?: string[];
   items: Array<{
     asset_id: number;
     quantity: number;
@@ -105,6 +107,7 @@ export default function TransferFormModal({
       transfer_date: getTodayISO(),
       external_link: "",
       reason: "",
+      attachments: [],
       details: [{ asset_id: 0, quantity: 1 }],
     },
   });
@@ -185,6 +188,7 @@ export default function TransferFormModal({
           transfer_date: getTodayISO(),
           external_link: "",
           reason: "",
+          attachments: [],
           details: [{ asset_id: 0, quantity: 1 }],
         });
       }
@@ -206,6 +210,7 @@ export default function TransferFormModal({
       transfer_date: data.transfer_date,
       reason: data.reason || "",
       external_link: data.external_link || "",
+      attachments: data.attachments || [],
       items: data.details.map((item) => {
         const assetObj = assets.find((a) => a.id === item.asset_id);
         const from_location_id =

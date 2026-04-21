@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { RentalCreateSchema } from "@/components/schemas/user/rental.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -314,7 +315,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 p-6 overflow-y-auto">
-            <div className="flex flex-col gap-6 pb-4">
+            <div className="flex flex-col gap-6">
               {/* General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
@@ -518,6 +519,12 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                   )}
                 </div>
               </div>
+
+              {/* Attachments */}
+              <FormAttachmentsSection
+                control={form.control}
+                title="Attachments"
+              />
             </div>
           </div>
 

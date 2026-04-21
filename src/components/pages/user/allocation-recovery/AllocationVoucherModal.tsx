@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -304,6 +305,7 @@ export default function AllocationVoucherModal({
       reason: "",
       external_link: "",
       items: [],
+      attachments: [],
       approver_step_1_id: null,
       approver_step_2_id: null,
     },
@@ -340,6 +342,7 @@ export default function AllocationVoucherModal({
             quantity: 1,
           },
         ],
+        attachments: [],
         approver_step_1_id: null,
         approver_step_2_id: null,
       });
@@ -386,6 +389,7 @@ export default function AllocationVoucherModal({
       external_link: data.external_link,
       location_id: data.location_id,
       items: data.items,
+      attachments: data.attachments || [],
       workflow_assignments,
     };
 
@@ -423,7 +427,7 @@ export default function AllocationVoucherModal({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 p-6 overflow-y-auto">
-            <div className="flex flex-col gap-6 pb-4">
+            <div className="flex flex-col gap-6">
               {/* General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
@@ -652,6 +656,12 @@ export default function AllocationVoucherModal({
                     </FieldGroup>
                   </div>
                 )}
+
+              {/* Attachments */}
+              <FormAttachmentsSection
+                control={form.control}
+                title="Attachments"
+              />
             </div>
           </div>
 

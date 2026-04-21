@@ -19,4 +19,5 @@ export const RecoveryCreateSchema = z.object({
   items: z
     .array(RecoveryCreateItemSchema)
     .min(1, "At least one asset is required"),
+  attachments: z.array(z.string()).optional(),
 });

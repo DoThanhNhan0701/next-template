@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ClipboardList, Package, Trash2, UserCheck } from "lucide-react";
+import { ClipboardList, Package, UserCheck } from "lucide-react";
 import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
 
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -180,6 +181,7 @@ export default function LiquidationFormModal({
       buyer_name: data.buyer_name,
       notes: data.notes,
       external_link: data.external_link,
+      attachments: data.attachments || [],
       items: cleanedItems,
       committee: committeeNames,
       workflow_assignments: data.workflow_assignments,
@@ -222,18 +224,13 @@ export default function LiquidationFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
-        <DialogHeader className="p-8 pb-6 shrink-0 border-b">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Trash2 className="text-primary" size={20} />
-            </div>
-            <DialogTitle className="text-2xl font-bold text-primary tracking-tight">
-              {isEditing
-                ? "Edit liquidation record"
-                : "Create liquidation record"}
-            </DialogTitle>
-          </div>
-          <DialogDescription className="text-sm text-muted-foreground ml-11">
+        <DialogHeader className="p-6 pb-4 shrink-0 border-b">
+          <DialogTitle>
+            {isEditing
+              ? "Edit liquidation record"
+              : "Create liquidation record"}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
               ? "Update the liquidation details and asset disposals."
               : "Register a new liquidation record with disposal details and approval workflow."}
@@ -285,9 +282,13 @@ export default function LiquidationFormModal({
             <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
               <TabsContent
                 value="general"
-                className="px-6 py-6 focus-visible:outline-none"
+                className="focus-visible:outline-none flex flex-col gap-6"
               >
                 <GeneralLiquidationSection form={form} users={staffs} />
+                <FormAttachmentsSection
+                  control={form.control}
+                  title="Attachments"
+                />
               </TabsContent>
               <TabsContent value="assets" className="mt-0 outline-none">
                 <LiquidationAssetSelectionSection

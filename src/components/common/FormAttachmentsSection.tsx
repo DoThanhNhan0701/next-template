@@ -17,7 +17,7 @@ export function FormAttachmentsSection<T extends FieldValues>({
   name = "attachments" as Path<T>,
   title = "Attachments",
   sectionNumber,
-  className = "flex flex-col gap-3",
+  className = "flex flex-col",
 }: FormAttachmentsSectionProps<T>) {
   return (
     <div className={className}>
