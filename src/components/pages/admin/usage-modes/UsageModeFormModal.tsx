@@ -129,7 +129,7 @@ export default function UsageModeFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Code</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. SHARED" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -143,7 +143,7 @@ export default function UsageModeFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Name</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. Shared Use" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -182,7 +182,7 @@ export default function UsageModeFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="Brief description of this usage mode" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

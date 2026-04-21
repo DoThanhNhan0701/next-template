@@ -141,7 +141,7 @@ export default function SupplierFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>Supplier Name</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. ABC Technology Co." />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -155,7 +155,7 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Tax Code</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. 0123456789" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -169,7 +169,7 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Contact Name</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. Nguyen Van B" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -183,7 +183,7 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Phone</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. 0987 654 321" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -197,7 +197,7 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Email</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. supplier@email.com" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -214,7 +214,7 @@ export default function SupplierFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>Address</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. 456 Le Loi, District 3" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -231,7 +231,7 @@ export default function SupplierFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="Optional notes about this supplier" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

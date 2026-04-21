@@ -150,7 +150,7 @@ export default function CustomerFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>Customer Name</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. Nguyen Van A" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -192,7 +192,7 @@ export default function CustomerFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Identifier (Tax Code/ID)</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. 0123456789 or TAX001" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -206,7 +206,7 @@ export default function CustomerFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Phone</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. 0123 456 789" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -220,7 +220,7 @@ export default function CustomerFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Email</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. contact@company.com" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -237,7 +237,7 @@ export default function CustomerFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>Address</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="e.g. 123 Nguyen Hue, District 1" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -254,7 +254,7 @@ export default function CustomerFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="Optional notes about this customer" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

@@ -136,7 +136,7 @@ export default function CatalogTypeFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Name</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. Laptop" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -150,7 +150,7 @@ export default function CatalogTypeFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Code</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. LAPTOP" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -164,7 +164,7 @@ export default function CatalogTypeFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} />
+                    <Input {...field} value={field.value || ""} placeholder="Brief description of this catalog type" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

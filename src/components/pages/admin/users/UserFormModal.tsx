@@ -146,7 +146,7 @@ export default function UserFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Username</FieldLabel>
-                    <Input {...field} disabled={isEditing} />
+                    <Input {...field} disabled={isEditing} placeholder="e.g. john.doe" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -160,7 +160,7 @@ export default function UserFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Full Name</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. John Doe" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -174,7 +174,7 @@ export default function UserFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Email</FieldLabel>
-                    <Input {...field} type="email" />
+                    <Input {...field} type="email" placeholder="e.g. john.doe@example.com" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

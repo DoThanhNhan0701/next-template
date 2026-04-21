@@ -127,7 +127,7 @@ export default function StatusFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Code</FieldLabel>
-                    <Input {...field} disabled={isSystem} />
+                    <Input {...field} disabled={isSystem} placeholder="e.g. IN_USE" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -141,7 +141,7 @@ export default function StatusFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>Name</FieldLabel>
-                    <Input {...field} />
+                    <Input {...field} placeholder="e.g. In Use" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
