@@ -207,9 +207,9 @@ export default function AuditFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col overflow-hidden"
+          className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="px-6 pb-6 space-y-6 overflow-y-auto">
+          <div className="flex-1 px-6 pb-6 space-y-6 overflow-y-auto">
             <div className="flex flex-col gap-1 mb-3">
               <FieldGroup className="grid grid-cols-2 gap-3">
                 <Field className="col-span-2 gap-1">

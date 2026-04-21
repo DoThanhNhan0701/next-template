@@ -114,8 +114,8 @@ export default function SupplierFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing ? "Edit Supplier" : "Add Supplier"}
           </DialogTitle>
@@ -128,136 +128,138 @@ export default function SupplierFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3"
+          className="flex-1 flex flex-col overflow-hidden"
         >
-          <FieldGroup className="grid grid-cols-2 gap-x-4 gap-y-3">
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="gap-1 col-span-2"
-                >
-                  <FieldLabel>Supplier Name</FieldLabel>
-                  <Input {...field} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+          <div className="flex-1 px-6 pb-6 overflow-y-auto">
+            <FieldGroup className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <Controller
+                name="name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    className="gap-1 col-span-2"
+                  >
+                    <FieldLabel>Supplier Name</FieldLabel>
+                    <Input {...field} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="tax_code"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Tax Code</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="tax_code"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Tax Code</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="contact_name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Contact Name</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="contact_name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Contact Name</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="phone"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Phone</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="phone"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Phone</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Email</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="email"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Email</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="address"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="gap-1 col-span-2"
-                >
-                  <FieldLabel>Address</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="address"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    className="gap-1 col-span-2"
+                  >
+                    <FieldLabel>Address</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="description"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="gap-1 col-span-2"
-                >
-                  <FieldLabel>Description</FieldLabel>
-                  <Input {...field} value={field.value || ""} />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="description"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    className="gap-1 col-span-2"
+                  >
+                    <FieldLabel>Description</FieldLabel>
+                    <Input {...field} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="is_active"
-              control={form.control}
-              render={({ field }) => (
-                <Field className="gap-1 flex justify-start items-center col-span-2 mt-2">
-                  <label className="flex items-center gap-2 text-sm text-foreground">
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={field.onChange}
-                      className="w-4 h-4 rounded border-(--surface-border-color)"
-                    />
-                    Active
-                  </label>
-                </Field>
-              )}
-            />
-          </FieldGroup>
+              <Controller
+                name="is_active"
+                control={form.control}
+                render={({ field }) => (
+                  <Field className="gap-1 flex justify-start items-center col-span-2 mt-2">
+                    <label className="flex items-center gap-2 text-sm text-foreground">
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="w-4 h-4 rounded border-(--surface-border-color)"
+                      />
+                      Active
+                    </label>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </div>
 
-          <DialogFooter>
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"

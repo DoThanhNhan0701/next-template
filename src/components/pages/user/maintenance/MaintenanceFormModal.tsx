@@ -371,21 +371,16 @@ export default function MaintenanceFormModal({
             </div>
           </Tabs>
 
-          <DialogFooter className="p-6 border-t">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Processing...
-                </div>
-              ) : isEditing ? (
-                "Save changes"
-              ) : (
-                "Confirm"
-              )}
+              {pending
+                ? "Processing..."
+                : isEditing
+                  ? "Save changes"
+                  : "Confirm"}
             </Button>
           </DialogFooter>
         </form>

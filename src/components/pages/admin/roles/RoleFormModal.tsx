@@ -133,7 +133,7 @@ export default function RoleFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] flex flex-col gap-0 p-0">
+      <DialogContent className="sm:max-w-[500px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>{isEditing ? "Edit role" : "Create role"}</DialogTitle>
           <DialogDescription>
@@ -143,7 +143,7 @@ export default function RoleFormModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="px-6 overflow-y-auto flex-1">
           <form
             id="role-form"
             onSubmit={handleSubmit(onSubmit)}
@@ -178,7 +178,7 @@ export default function RoleFormModal({
               )}
             </div>
 
-            <div className="flex items-center gap-2 py-2">
+            <div className="flex items-center gap-2 my-3">
               <Checkbox
                 id="is_active"
                 checked={isActive}
@@ -241,13 +241,7 @@ export default function RoleFormModal({
             Cancel
           </Button>
           <Button type="submit" form="role-form" disabled={pending}>
-            {pending
-              ? isEditing
-                ? "Updating..."
-                : "Creating..."
-              : isEditing
-                ? "Update"
-                : "Create"}
+            {pending ? "Saving..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

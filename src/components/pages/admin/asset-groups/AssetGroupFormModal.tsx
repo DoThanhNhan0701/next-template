@@ -120,9 +120,9 @@ export default function AssetGroupFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3"
+          className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="px-6">
+          <div className="flex-1 px-6 pb-6 overflow-y-auto">
             <FieldGroup className="gap-3">
               <Controller
                 name="name"

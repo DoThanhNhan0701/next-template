@@ -310,7 +310,7 @@ export default function LiquidationFormModal({
             </div>
           </Tabs>
 
-          <DialogFooter className="p-6 border-t">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>

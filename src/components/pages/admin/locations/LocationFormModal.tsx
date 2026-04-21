@@ -1,24 +1,30 @@
-import z from "zod";
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
-import { useMutation } from "@/hooks/useMutation";
-import { ILocation } from "@/types/location";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
+
 import { LocationSchema } from "@/components/schemas/admin/location.schema";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { ILocation } from "@/types/location";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
@@ -38,11 +44,10 @@ export default function LocationFormModal({
   const isEditing = !!locationToEdit;
 
   const {
-    register,
     handleSubmit,
     reset,
     control,
-    formState: { errors, isDirty },
+    formState: { isDirty },
   } = useForm<z.infer<typeof LocationSchema>>({
     resolver: zodResolver(LocationSchema),
     defaultValues: {
@@ -83,7 +88,7 @@ export default function LocationFormModal({
     }
 
     const payload = { ...data };
-    
+
     const url = isEditing
       ? dynamicEndpoints.LOCATION_DETAIL(locationToEdit.id)
       : endpoints.LOCATIONS;
@@ -110,8 +115,8 @@ export default function LocationFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[500px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing ? "Edit Location" : "Create New Location"}
           </DialogTitle>
@@ -125,89 +130,85 @@ export default function LocationFormModal({
         <form
           id="location-form"
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4"
+          className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="space-y-2">
-            <Label htmlFor="code">
-              Location Code <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="code"
-              placeholder="Ex: ST_TOTAL"
-              {...register("code")}
-              className={errors.code ? "border-red-500" : ""}
-            />
-            {errors.code && (
-              <p className="text-sm text-red-500">{errors.code.message}</p>
-            )}
+          <div className="flex-1 px-6 pb-6 overflow-y-auto">
+            <FieldGroup className="gap-3">
+              <Controller
+                name="code"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Location Code *</FieldLabel>
+                    <Input {...field} placeholder="Ex: ST_TOTAL" />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="name"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Location Name *</FieldLabel>
+                    <Input {...field} placeholder="Ex: Kho tổng" />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="description"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Description (Optional)</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder="Detailed description"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="is_active"
+                control={control}
+                render={({ field }) => (
+                  <Field className="gap-1 flex justify-start items-center">
+                    <label className="flex items-center gap-2 text-sm text-foreground">
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="w-4 h-4 rounded border-(--surface-border-color)"
+                      />
+                      Active Status
+                    </label>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="name">
-              Location Name <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              placeholder="Ex: Kho tổng"
-              {...register("name")}
-              className={errors.name ? "border-red-500" : ""}
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description (Optional)</Label>
-            <Input
-              id="description"
-              placeholder="Detailed description"
-              {...register("description")}
-            />
-            {errors.description && (
-              <p className="text-sm text-red-500">
-                {errors.description.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 pt-2 pb-4">
-            <Controller
-              name="is_active"
-              control={control}
-              render={({ field }) => (
-                <Checkbox
-                  id="is_active"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
-            <Label htmlFor="is_active" className="cursor-pointer font-normal">
-              Active Status
-            </Label>
-          </div>
+          <DialogFooter className="p-3 shrink-0 border-t">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" form="location-form" disabled={pending}>
+              {pending ? "Saving..." : "Save"}
+            </Button>
+          </DialogFooter>
         </form>
-
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            disabled={pending}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" form="location-form" disabled={pending}>
-            {pending
-              ? isEditing
-                ? "Updating..."
-                : "Creating..."
-              : isEditing
-                ? "Update"
-                : "Create"}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

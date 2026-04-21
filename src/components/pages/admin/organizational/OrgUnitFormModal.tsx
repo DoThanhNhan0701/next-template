@@ -198,8 +198,8 @@ export default function OrgUnitFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing
               ? "Edit Organization Unit"
@@ -214,199 +214,198 @@ export default function OrgUnitFormModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-          <FieldGroup className="grid grid-cols-2 gap-3">
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field className="col-span-2">
-                  <FieldLabel>Unit Name</FieldLabel>
-                  <Input {...field} placeholder="e.g. Finance Department" />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
+          <div className="flex-1 px-6 pb-6 overflow-y-auto">
+            <FieldGroup className="grid grid-cols-2 gap-3">
+              <Controller
+                name="name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel>Unit Name</FieldLabel>
+                    <Input {...field} placeholder="e.g. Finance Department" />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="code"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field>
-                  <FieldLabel>Unit Code</FieldLabel>
-                  <Input {...field} placeholder="e.g. FIN-01" />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="code"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field>
+                    <FieldLabel>Unit Code</FieldLabel>
+                    <Input {...field} placeholder="e.g. FIN-01" />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="unit_type"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field>
-                  <FieldLabel>Unit Type</FieldLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="company">Company</SelectItem>
-                      <SelectItem value="branch">Branch</SelectItem>
-                      <SelectItem value="department">Department</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="unit_type"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field>
+                    <FieldLabel>Unit Type</FieldLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="company">Company</SelectItem>
+                        <SelectItem value="branch">Branch</SelectItem>
+                        <SelectItem value="department">Department</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="parent_id"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field className="col-span-2">
-                  <FieldLabel>Parent Unit</FieldLabel>
-                  <Select
-                    onValueChange={(val) =>
-                      field.onChange(val === "none" ? null : Number(val))
-                    }
-                    value={field.value?.toString() || ""}
-                    disabled={isParentDisabled}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select parent unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">(None - Root Unit)</SelectItem>
-                      {availableParentUnits.map((unit) => (
-                        <SelectItem key={unit.id} value={unit.id.toString()}>
-                          {unit.displayName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="leader_id"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field className="col-span-2">
-                  <FieldLabel>Leader</FieldLabel>
-                  <Select
-                    onValueChange={(val) =>
-                      field.onChange(val === "none" ? null : Number(val))
-                    }
-                    value={field.value?.toString() || ""}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select leader" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">(None)</SelectItem>
-                      {users.map((u) => (
-                        <SelectItem key={u.id} value={u.id.toString()}>
-                          {u.full_name} ({u.username})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="address"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field className="col-span-2">
-                  <FieldLabel>Address</FieldLabel>
-                  <Input
-                    {...field}
-                    value={field.value ?? ""}
-                    placeholder="Physical address"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="description"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field className="col-span-2">
-                  <FieldLabel>Description</FieldLabel>
-                  <Textarea
-                    {...field}
-                    value={field.value ?? ""}
-                    placeholder="Brief description"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="is_active"
-              control={form.control}
-              render={({ field }) => (
-                <Field
-                  orientation="horizontal"
-                  className="flex items-center gap-2 rounded-md border p-3 space-y-0"
-                >
-                  <Checkbox
-                    id="is_active"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                  <div className="grid gap-1.5 leading-none">
-                    <FieldLabel
-                      htmlFor="is_active"
-                      className="text-sm font-medium cursor-pointer"
+              <Controller
+                name="parent_id"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel>Parent Unit</FieldLabel>
+                    <Select
+                      onValueChange={(val) =>
+                        field.onChange(val === "none" ? null : Number(val))
+                      }
+                      value={field.value?.toString() || ""}
+                      disabled={isParentDisabled}
                     >
-                      Active Status
-                    </FieldLabel>
-                    <p className="text-xs text-muted-foreground">
-                      Whether this unit is currently active.
-                    </p>
-                  </div>
-                </Field>
-              )}
-            />
-          </FieldGroup>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select parent unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">(None - Root Unit)</SelectItem>
+                        {availableParentUnits.map((unit) => (
+                          <SelectItem key={unit.id} value={unit.id.toString()}>
+                            {unit.displayName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-          <DialogFooter>
+              <Controller
+                name="leader_id"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel>Leader</FieldLabel>
+                    <Select
+                      onValueChange={(val) =>
+                        field.onChange(val === "none" ? null : Number(val))
+                      }
+                      value={field.value?.toString() || ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select leader" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">(None)</SelectItem>
+                        {users.map((u) => (
+                          <SelectItem key={u.id} value={u.id.toString()}>
+                            {u.full_name} ({u.username})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="address"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel>Address</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder="Physical address"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="description"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="col-span-2 gap-1">
+                    <FieldLabel>Description</FieldLabel>
+                    <Textarea
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder="Brief description"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="is_active"
+                control={form.control}
+                render={({ field }) => (
+                  <Field
+                    orientation="horizontal"
+                    className="flex items-center gap-2 rounded-md border p-3 space-y-0"
+                  >
+                    <Checkbox
+                      id="is_active"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <div className="grid gap-1.5 leading-none">
+                      <FieldLabel
+                        htmlFor="is_active"
+                        className="text-sm font-medium cursor-pointer"
+                      >
+                        Active Status
+                      </FieldLabel>
+                      <p className="text-xs text-muted-foreground">
+                        Whether this unit is currently active.
+                      </p>
+                    </div>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </div>
+
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending
-                ? isEditing
-                  ? "Saving..."
-                  : "Creating..."
-                : isEditing
-                  ? "Save Changes"
-                  : "Create Unit"}
+              {pending ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </form>

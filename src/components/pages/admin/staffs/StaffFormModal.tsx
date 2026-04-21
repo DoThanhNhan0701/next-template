@@ -120,8 +120,8 @@ export default function StaffFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[450px] flex flex-col p-0 overflow-hidden">
+        <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>{isEditing ? "Edit Staff" : "Add Staff"}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
@@ -132,20 +132,54 @@ export default function StaffFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3"
+          className="flex-1 flex flex-col overflow-hidden"
         >
-          <FieldGroup>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="flex-1 px-6 pb-6 overflow-y-auto">
+            <FieldGroup className="gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <Controller
+                  name="staff_code"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className="gap-1">
+                      <FieldLabel>Staff Code</FieldLabel>
+                      <Input
+                        {...field}
+                        disabled={isEditing}
+                        placeholder="ST001"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="full_name"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className="gap-1">
+                      <FieldLabel>Full Name</FieldLabel>
+                      <Input {...field} placeholder="John Doe" />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </div>
+
               <Controller
-                name="staff_code"
+                name="email"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Staff Code</FieldLabel>
+                    <FieldLabel>Email</FieldLabel>
                     <Input
                       {...field}
-                      disabled={isEditing}
-                      placeholder="ST001"
+                      type="email"
+                      placeholder="john.doe@example.com"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -155,106 +189,77 @@ export default function StaffFormModal({
               />
 
               <Controller
-                name="full_name"
+                name="phone"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Full Name</FieldLabel>
-                    <Input {...field} placeholder="John Doe" />
+                    <FieldLabel>Phone (Optional)</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder="0123456789"
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
                 )}
               />
-            </div>
 
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Email</FieldLabel>
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder="john.doe@example.com"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="unit_id"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>Organization</FieldLabel>
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={field.value?.toString() || ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select organization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {units
+                          ?.filter((unit) => unit.is_active)
+                          .map((unit) => (
+                            <SelectItem
+                              key={unit.id}
+                              value={unit.id.toString()}
+                            >
+                              {unit.name} ({unit.code})
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              name="phone"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Phone (Optional)</FieldLabel>
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    placeholder="0123456789"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+              <Controller
+                name="is_active"
+                control={form.control}
+                render={({ field }) => (
+                  <Field className="gap-1 flex items-center mt-2">
+                    <label className="flex items-center gap-2 text-sm font-medium text-foreground cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="w-4 h-4 rounded border-(--surface-border-color) text-primary focus:ring-primary"
+                      />
+                      Active
+                    </label>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </div>
 
-            <Controller
-              name="unit_id"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Organization</FieldLabel>
-                  <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={field.value?.toString() || ""}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select organization" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {units
-                        ?.filter((unit) => unit.is_active)
-                        .map((unit) => (
-                          <SelectItem key={unit.id} value={unit.id.toString()}>
-                            {unit.name} ({unit.code})
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="is_active"
-              control={form.control}
-              render={({ field }) => (
-                <Field className="gap-1 flex items-center mt-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-foreground cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={field.onChange}
-                      className="w-4 h-4 rounded border-(--surface-border-color) text-primary focus:ring-primary"
-                    />
-                    Active
-                  </label>
-                </Field>
-              )}
-            />
-          </FieldGroup>
-
-          <DialogFooter>
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"

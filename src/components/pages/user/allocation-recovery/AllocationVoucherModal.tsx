@@ -667,15 +667,10 @@ export default function AllocationVoucherModal({
           </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              className="w-24"
-            >
+            <Button type="button" variant="outline" onClick={handleClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={pending} className="w-24">
+            <Button type="submit" disabled={pending}>
               {pending ? "Saving..." : "Create"}
             </Button>
           </DialogFooter>
