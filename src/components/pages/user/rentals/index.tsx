@@ -30,13 +30,13 @@ export default function RentalsPage() {
         <TabsList className="w-fit bg-card/60 backdrop-blur-md p-1 rounded-md border border-border/50 shadow-sm h-auto">
           <TabsTrigger
             value="rentals"
-            className="px-6 py-2 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
+            className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
             Phiếu cho thuê
           </TabsTrigger>
           <TabsTrigger
             value="returns"
-            className="px-6 py-2 rounded-lg text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
+            className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
             Biên bản hoàn trả
           </TabsTrigger>
@@ -44,14 +44,14 @@ export default function RentalsPage() {
 
         <TabsContent
           value="rentals"
-          className="flex-1 mt-0 min-h-0 rounded-lg border border-border/50 shadow-sm overflow-hidden outline-none data-[state=active]:flex flex-col"
+          className="flex-1 mt-0 min-h-0 border border-border/50 shadow-sm overflow-hidden outline-none data-[state=active]:flex flex-col"
         >
           <RentalsTable />
         </TabsContent>
 
         <TabsContent
           value="returns"
-          className="flex-1 mt-0 min-h-0 rounded-lg border border-border/50 shadow-sm overflow-hidden outline-none data-[state=active]:flex flex-col"
+          className="flex-1 mt-0 min-h-0 border border-border/50 shadow-sm overflow-hidden outline-none data-[state=active]:flex flex-col"
         >
           <RentalReturnTable />
         </TabsContent>

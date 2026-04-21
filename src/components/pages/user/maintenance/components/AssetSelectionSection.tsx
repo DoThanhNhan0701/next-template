@@ -92,7 +92,6 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
             </div>
           ) : (
             <>
-              {/* Stock Pills */}
               {stocks.map((s, i) => (
                 <button
                   key={`stock-pill-${i}`}
@@ -119,7 +118,6 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 </button>
               ))}
 
-              {/* Holder Pills */}
               {holders.map((h, i) => {
                 const holderId = h.staff_id || h.unit_id || 0;
                 return (
@@ -469,7 +467,6 @@ export function AssetSelectionSection({
                       })()}
                       <FieldError errors={[fieldState.error]} />
 
-                      {/* Dynamic Stock Selection */}
                       {detailField.value > 0 && (
                         <AssetStockSelector
                           assetId={detailField.value}

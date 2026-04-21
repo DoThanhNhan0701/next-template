@@ -187,7 +187,6 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         });
       }
     } else if (isStockAdjustmentDocument(detail)) {
-      // Stock adjustment specific fields
       fields.push({
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",

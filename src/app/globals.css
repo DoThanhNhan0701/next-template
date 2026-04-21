@@ -136,5 +136,35 @@
   body {
     @apply bg-(--surface-navigation) text-foreground;
   }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.7 0.02 260 / 40%);
+    border-radius: 999px;
+    transition: background 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.8% 0.04 260 / 70%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: oklch(0.45 0.03 260 / 50%);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.55 0.05 260 / 80%);
+  }
 }
- 
