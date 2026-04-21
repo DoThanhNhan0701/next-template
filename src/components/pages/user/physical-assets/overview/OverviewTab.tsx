@@ -1,6 +1,3 @@
-import { useState } from "react";
-
-import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -8,105 +5,41 @@ import {
   Clock,
   DollarSign,
   ExternalLink,
-  FileArchive,
-  FileSpreadsheet,
-  FileText,
-  Image as ImageIcon,
   Info,
   MapPin,
-  Paperclip,
   ShieldCheck,
   Trash2,
-  UploadCloud,
   UserCheck,
   Wrench,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { dynamicEndpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { cn } from "@/lib/utils";
-import { IPhysicalAssetDetail } from "@/types/physical-asset";
+import {
+  IAssetHolder,
+  IAssetStock,
+  IPhysicalAssetDetail,
+} from "@/types/physical-asset";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
-
-interface IAssetHolder {
-  name: string;
-  type: string;
-  quantity: number;
-  staff_id: number | null;
-  unit_id: number | null;
-  customer_id: number | null;
-  source_type: string;
-  source_number: string;
-  acquired_at: string;
-}
-
-interface IAssetStock {
-  asset_id: number;
-  location_id: number;
-  quantity: number;
-  location_code: string;
-  location_name: string;
-}
-
-const formatUrl = (url: string) => {
-  if (!url) return "";
-  if (url.startsWith("http")) return url;
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-  return `${baseUrl.replace(/\/$/, "")}${url.startsWith("/") ? url : `/${url}`}`;
-};
-
-const isImage = (url: string) => /\.(png|jpg|jpeg|gif|webp)$/i.test(url);
-
-const getFileIcon = (url: string) => {
-  const ext = url.split(".").pop()?.toLowerCase();
-  switch (ext) {
-    case "png":
-    case "jpg":
-    case "jpeg":
-      return <ImageIcon size={14} className="text-blue-500" />;
-    case "xls":
-    case "xlsx":
-    case "csv":
-      return <FileSpreadsheet size={14} className="text-green-500" />;
-    case "doc":
-    case "docx":
-    case "txt":
-      return <FileText size={14} className="text-blue-600" />;
-    case "pdf":
-      return <FileText size={14} className="text-red-500" />;
-    case "zip":
-    case "rar":
-      return <FileArchive size={14} className="text-purple-500" />;
-    default:
-      return <Paperclip size={14} className="text-primary" />;
-  }
-};
 
 export default function OverviewTab({
   asset,
-}: Readonly<{ asset: IPhysicalAssetDetail }>) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  onUpdate,
+  holders,
+  stocks,
+}: Readonly<{
+  asset: IPhysicalAssetDetail;
+  onUpdate?: () => void;
+  holders: IAssetHolder[];
+  stocks: IAssetStock[];
+}>) {
+  const { mutate: updateAsset, pending: updatePending } = useMutation();
 
-  const { response: holdersRes } = useGet<IAssetHolder[]>(
-    { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(asset.id) },
-    { deps: [asset.id] },
-  );
-  const holders = holdersRes ?? [];
-
-  const { response: stockRes } = useGet<IAssetStock[]>(
-    { url: dynamicEndpoints.PHYSICAL_ASSET_STOCK(asset.id) },
-    { deps: [asset.id] },
-  );
-  const stocks = stockRes ?? [];
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -225,7 +158,7 @@ export default function OverviewTab({
                         <div className="flex flex-col gap-3 border-t border-border/30 pt-4">
                           {userHolders.length > 0 && (
                             <div className="flex flex-col gap-1.5">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <UserCheck className="w-3.5 h-3.5 text-blue-500" />
                                 Người đang dùng
                               </div>
@@ -248,7 +181,7 @@ export default function OverviewTab({
                           )}
                           {customerHolders.length > 0 && (
                             <div className="flex flex-col gap-1.5">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <Clock className="w-3.5 h-3.5 text-amber-500" />
                                 Đang cho thuê
                               </div>
@@ -271,7 +204,7 @@ export default function OverviewTab({
                           )}
                           {stocks.length > 0 && (
                             <div className="flex flex-col gap-1.5">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <MapPin className="w-3.5 h-3.5 text-emerald-500" />
                                 Vị trí hiện tại
                               </div>
@@ -377,95 +310,34 @@ export default function OverviewTab({
               </Card>
             )}
 
-            {/* Attachments */}
-            <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg border-dashed">
-              <CardHeader className="py-3 px-4 border-b border-border/40 bg-muted/5 flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-sm font-semibold text-primary">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  Asset documents & images
-                </CardTitle>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 gap-1.5 border-primary/20 text-primary hover:bg-primary/10 px-2 text-xs"
-                >
-                  <UploadCloud className="w-3.5 h-3.5" />
-                  Upload record
-                </Button>
-              </CardHeader>
-              <CardContent className="p-4">
-                {asset.attachments && asset.attachments.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {asset.attachments.map((url, i) => {
-                      const full = formatUrl(url);
-                      return (
-                        <div
-                          key={i}
-                          className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-md border border-border/50 text-xs"
-                        >
-                          {getFileIcon(url)}
-                          <a
-                            href={full}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => {
-                              if (isImage(url)) {
-                                e.preventDefault();
-                                setPreviewUrl(full);
-                              }
-                            }}
-                            className="truncate max-w-[200px] hover:underline hover:text-primary transition-colors cursor-pointer"
-                            title={
-                              isImage(url)
-                                ? "Click to preview"
-                                : "Click to view"
-                            }
-                          >
-                            {url.split("/").pop()}
-                          </a>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="rounded-lg border border-dashed border-border/50 bg-muted/10 min-h-30 flex flex-col items-center justify-center gap-2 hover:bg-muted/20 transition-colors cursor-pointer group">
-                    <div className="w-8 h-8 rounded-full bg-background/60 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
-                      <ImageIcon className="w-3.5 h-3.5 text-muted-foreground/60" />
-                    </div>
-                    <span className="text-sm font-medium text-muted-foreground/60">
-                      No attached documents
-                    </span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            {/* Attachments Section */}
+            <RecordAttachmentsCard
+              title="Asset documents & images"
+              initialAttachments={asset.attachments}
+              isPending={updatePending}
+              onSave={async (newAttachments) => {
+                await updateAsset(
+                  {
+                    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(asset.id),
+                    method: "patch",
+                    body: { attachments: newAttachments },
+                  },
+                  {
+                    onSuccess: (res) => {
+                      getApiSuccessMessage(res);
+                      onUpdate?.();
+                    },
+                    onError: (err) => {
+                      getApiErrorMessage(err);
+                      throw err;
+                    },
+                  },
+                );
+              }}
+            />
           </div>
         </div>
       </div>
-
-      <Dialog
-        open={!!previewUrl}
-        onOpenChange={(open) => !open && setPreviewUrl(null)}
-      >
-        <DialogContent className="max-w-4xl w-[90vw] h-[85vh] p-1 bg-transparent border-none shadow-none flex items-center justify-center">
-          <DialogHeader className="hidden">
-            <DialogTitle>Image Preview</DialogTitle>
-            <DialogDescription>Attachment image preview</DialogDescription>
-          </DialogHeader>
-          <div className="relative w-full h-full flex items-center justify-center">
-            {previewUrl && (
-              <Image
-                src={previewUrl}
-                alt="Preview"
-                fill
-                className="object-contain rounded-md"
-                sizes="(max-width: 768px) 100vw, 80vw"
-                unoptimized
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

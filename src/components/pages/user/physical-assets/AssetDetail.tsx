@@ -28,7 +28,11 @@ import { AppDispatch } from "@/redux";
 import { openAllocation } from "@/redux/slices/allocation";
 import { openRecovery } from "@/redux/slices/recovery";
 import { openRental } from "@/redux/slices/rental";
-import { IPhysicalAssetDetail } from "@/types/physical-asset";
+import {
+  IAssetHolder,
+  IAssetStock,
+  IPhysicalAssetDetail,
+} from "@/types/physical-asset";
 
 import AssetFormModal from "./AssetFormModal";
 import PrintQRModal from "./PrintQRModal";
@@ -89,13 +93,24 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
     params.set("tab", value);
     router.replace(`?${params.toString()}`, { scroll: false });
   };
+
   const {
     response: asset,
     pending,
     reFetch,
   } = useGet<IPhysicalAssetDetail>({
-    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)) + "/",
+    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
   });
+
+  const { response: holders } = useGet<IAssetHolder[]>(
+    { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(Number(id)) },
+    { deps: [Number(id)] },
+  );
+
+  const { response: stocks } = useGet<IAssetStock[]>(
+    { url: dynamicEndpoints.PHYSICAL_ASSET_STOCK(Number(id)) },
+    { deps: [Number(id)] },
+  );
 
   if (pending) {
     return (
@@ -222,7 +237,12 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             value="overview"
             className="mt-4 flex flex-col gap-4 outline-none focus-visible:ring-0"
           >
-            <OverviewTab asset={asset} />
+            <OverviewTab
+              holders={holders ?? []}
+              stocks={stocks ?? []}
+              asset={asset}
+              onUpdate={reFetch}
+            />
           </TabsContent>
           {/* Placeholder contents for other tabs */}
           <TabsContent

@@ -1,14 +1,32 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Paperclip, Trash2, Loader2, FileSpreadsheet, FileText, FileArchive, Image as ImageIcon } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 import Image from "next/image";
-import { useMutation } from "@/hooks/useMutation";
+
+import {
+  FileArchive,
+  FileSpreadsheet,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Paperclip,
+  Trash2,
+} from "lucide-react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { endpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
 import { getApiErrorMessage } from "@/utils/api-error";
+import { cleanUrl } from "@/utils/url";
 
 interface Props {
   value?: string[];
@@ -36,21 +54,24 @@ export default function MultiAttachmentUpload({ value = [], onChange }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const formatUrl = (url: string) => {
-    if (!url) return "";
-    if (url.startsWith("http")) return url;
+    const cleaned = cleanUrl(url);
+    if (!cleaned) return "";
+    if (cleaned.startsWith("http")) return cleaned;
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
     const cleanBase = baseUrl.replace(/\/$/, "");
-    const cleanUrl = url.startsWith("/") ? url : `/${url}`;
-    return `${cleanBase}${cleanUrl}`;
+    const finalPath = cleaned.startsWith("/") ? cleaned : `/${cleaned}`;
+    return `${cleanBase}${finalPath}`;
   };
 
   const isImage = (url: string) => {
-    const ext = url.split(".").pop()?.toLowerCase();
+    const cleaned = cleanUrl(url);
+    const ext = cleaned.split(".").pop()?.toLowerCase();
     return ["png", "jpg", "jpeg"].includes(ext || "");
   };
 
   const getFileIcon = (url: string) => {
-    const ext = url.split(".").pop()?.toLowerCase();
+    const cleaned = cleanUrl(url);
+    const ext = cleaned.split(".").pop()?.toLowerCase();
     switch (ext) {
       case "png":
       case "jpg":
@@ -74,10 +95,13 @@ export default function MultiAttachmentUpload({ value = [], onChange }: Props) {
     }
   };
 
-  const handlePreview = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+  const handlePreview = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
     if (isImage(url)) {
       e.preventDefault();
-      setPreviewUrl(url);
+      setPreviewUrl(formatUrl(url));
     }
   };
 
@@ -140,11 +164,13 @@ export default function MultiAttachmentUpload({ value = [], onChange }: Props) {
               href={formatUrl(url)}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => handlePreview(e, formatUrl(url))}
+              onClick={(e) => handlePreview(e, url)}
               className="truncate max-w-[200px] hover:underline hover:text-primary transition-colors cursor-pointer"
-              title={isImage(url) ? "Click to preview image" : "Click to view file"}
+              title={
+                isImage(url) ? "Click to preview image" : "Click to view file"
+              }
             >
-              {url.split("/").pop()}
+              {cleanUrl(url).split("/").pop()}
             </a>
             <button
               type="button"
@@ -174,14 +200,17 @@ export default function MultiAttachmentUpload({ value = [], onChange }: Props) {
           className="h-9"
         >
           {uploadPending ? (
-            <Loader2 className="animate-spin mr-2" size={14} />
+            <Loader2 className="animate-spin mr-1" size={14} />
           ) : (
-            <Paperclip size={14} className="mr-2" />
+            <Paperclip size={14} className="mr-1" />
           )}
-          Upload Attachment
+          Upload
         </Button>
       </div>
-      <Dialog open={!!previewUrl} onOpenChange={(open) => !open && setPreviewUrl(null)}>
+      <Dialog
+        open={!!previewUrl}
+        onOpenChange={(open) => !open && setPreviewUrl(null)}
+      >
         <DialogContent className="max-w-4xl w-[90vw] h-[85vh] p-1 bg-transparent border-none shadow-none flex items-center justify-center">
           <DialogHeader className="hidden">
             <DialogTitle>Image Preview</DialogTitle>
