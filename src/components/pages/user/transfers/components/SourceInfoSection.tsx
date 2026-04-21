@@ -1,14 +1,14 @@
 "use client";
 
-import { User, MapPin } from "lucide-react";
-import { UseFormReturn, Controller } from "react-hook-form";
+import { MapPin, User } from "lucide-react";
+import { Controller, UseFormReturn } from "react-hook-form";
+
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -16,9 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TransferFormValues } from "../TransferFormModal";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
+
+import { TransferFormValues } from "../TransferFormModal";
 
 interface SourceInfoSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -34,16 +36,16 @@ export function SourceInfoSection({
   watchedType,
 }: SourceInfoSectionProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 mb-3">
       <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
         1. Source Information
       </h3>
-      <FieldGroup className="grid grid-cols-2 gap-6">
+      <FieldGroup className="grid grid-cols-2 gap-3">
         <Controller
           name="source_type"
           control={form.control}
           render={({ field }) => (
-            <Field className="col-span-2">
+            <Field className="col-span-2 gap-1 mb-3">
               <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
                 Transfer Type
               </FieldLabel>
@@ -83,7 +85,7 @@ export function SourceInfoSection({
           name="source_id"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field className="col-span-2">
+            <Field className="col-span-2 gap-1">
               <FieldLabel className="text-[10px] font-extrabold text-muted-foreground tracking-widest">
                 {watchedType === "holder"
                   ? "Select Source Personnel *"

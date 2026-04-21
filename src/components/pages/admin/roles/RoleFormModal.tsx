@@ -233,7 +233,7 @@ export default function RoleFormModal({
           </form>
         </div>
 
-        <DialogFooter className="p-6 pt-4 border-t">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button
             type="button"
             variant="outline"

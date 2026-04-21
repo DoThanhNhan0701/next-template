@@ -74,7 +74,7 @@ export default function OrgUnitDeleteDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="flex-row gap-2 sm:justify-center mt-4">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
@@ -84,7 +84,7 @@ export default function OrgUnitDeleteDialog({
             onClick={handleDelete}
             disabled={pending}
           >
-            {pending ? "Deleting..." : "Delete Unit"}
+            {pending ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

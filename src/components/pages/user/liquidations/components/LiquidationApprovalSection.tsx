@@ -1,6 +1,13 @@
 "use client";
 
-import { UseFormReturn, Controller } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
+
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -8,15 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LiquidationFormValues } from "../schema";
 import { IUser } from "@/types/auth";
 import { ITemplate } from "@/types/template";
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+
+import { LiquidationFormValues } from "../schema";
 
 interface LiquidationApprovalSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
@@ -38,8 +40,8 @@ export function LiquidationApprovalSection({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+    <div className="flex flex-col gap-3">
+      <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
         {activeTemplate.steps.map((step, index) => (
           <div key={step.id}>
             <Controller

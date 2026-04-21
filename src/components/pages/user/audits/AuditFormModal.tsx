@@ -209,8 +209,8 @@ export default function AuditFormModal({
           className="flex flex-col overflow-hidden"
         >
           <div className="px-6 pb-6 space-y-6 overflow-y-auto">
-            <div className="flex flex-col gap-1">
-              <FieldGroup className="grid grid-cols-2 gap-6">
+            <div className="flex flex-col gap-1 mb-3">
+              <FieldGroup className="grid grid-cols-2 gap-3">
                 <Field className="col-span-2 gap-1">
                   <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
                     Title *
@@ -227,7 +227,7 @@ export default function AuditFormModal({
                   name="audit_type"
                   control={form.control}
                   render={({ field }) => (
-                    <Field className="col-span-2 gap-1">
+                    <Field className="col-span-2 gap-1 mb-3">
                       <FieldLabel className="text-[10px] font-extrabold text-muted-foreground">
                         Audit type *
                       </FieldLabel>
@@ -493,7 +493,7 @@ export default function AuditFormModal({
 
             {/* Section 2: Assignment & Deadline */}
             <div className="flex flex-col gap-1">
-              <FieldGroup className="grid grid-cols-2 gap-6 items-end">
+              <FieldGroup className="grid grid-cols-2 gap-3 items-end">
                 {/* Assignee */}
                 <Controller
                   name="assignee_id"

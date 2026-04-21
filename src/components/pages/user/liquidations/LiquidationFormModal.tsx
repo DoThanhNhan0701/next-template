@@ -282,7 +282,7 @@ export default function LiquidationFormModal({
             <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
               <TabsContent
                 value="general"
-                className="focus-visible:outline-none flex flex-col gap-6"
+                className="focus-visible:outline-none flex flex-col gap-3"
               >
                 <GeneralLiquidationSection form={form} users={staffs} />
                 <FormAttachmentsSection

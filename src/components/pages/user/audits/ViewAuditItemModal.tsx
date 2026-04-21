@@ -121,7 +121,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             </div>
           </div>
 
-          <FieldGroup className="gap-6">
+          <FieldGroup className="gap-3">
             {/* Current Info */}
             <div className="p-5 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-5">
               <h3 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest flex items-center gap-2">

@@ -383,7 +383,7 @@ export default function RentalReturnModal({
           )}
         </div>
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="p-3 shrink-0 border-t2">
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Hủy bỏ
           </Button>
@@ -391,7 +391,7 @@ export default function RentalReturnModal({
             onClick={() => form.handleSubmit(onSubmit)()}
             disabled={pending}
           >
-            {pending ? "Đang xử lý..." : "Xác nhận hoàn trả"}
+            {pending ? "Processing..." : "Confirm"}
           </Button>
         </DialogFooter>
       </DialogContent>

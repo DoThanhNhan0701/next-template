@@ -1,6 +1,15 @@
 "use client";
 
-import { UseFormReturn, Controller } from "react-hook-form";
+import { useEffect } from "react";
+
+import { Controller, UseFormReturn } from "react-hook-form";
+
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -8,16 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
 import { IUser } from "@/types/auth";
 import { ITemplate } from "@/types/template";
-import { useEffect } from "react";
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+
+import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface ApprovalProcessSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
@@ -53,8 +56,8 @@ export function ApprovalProcessSection({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+    <div className="flex flex-col gap-3">
+      <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
         {activeTemplate.steps.map((step, index) => (
           <Controller
             key={step.id}

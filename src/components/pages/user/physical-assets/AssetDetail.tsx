@@ -331,7 +331,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             value="docs"
             className="mt-4 outline-none focus-visible:ring-0"
           >
-            <div className="flex flex-col items-center gap-6 py-8">
+            <div className="flex flex-col items-center gap-3 py-8">
               <div className="flex flex-col items-center gap-2">
                 <h3 className="text-sm font-semibold text-foreground">
                   Asset QR Code
@@ -345,7 +345,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               </div>
               <div
                 id="qr-print-area"
-                className="flex gap-6 items-center p-6 bg-white rounded-xl border border-border/60 shadow-sm max-w-lg"
+                className="flex gap-3 items-center p-6 bg-white rounded-xl border border-border/60 shadow-sm max-w-lg"
               >
                 {/* QR Code */}
                 <div className="shrink-0">

@@ -327,7 +327,7 @@ export default function WorkflowTemplateFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto px-6 pb-6">
             <FieldGroup>
               <Controller
                 name="name"

@@ -87,13 +87,12 @@ export function ApproveAuditModal({
           </div>
         </div>
 
-        <DialogFooter className="p-5 pt-3 shrink-0 border-t bg-muted/5">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button
             type="button"
             variant="ghost"
             onClick={onClose}
             disabled={isSubmitting}
-            className="h-9 px-4 font-bold uppercase text-[9px] tracking-widest hover:bg-muted/20"
           >
             Cancel
           </Button>
@@ -101,9 +100,8 @@ export function ApproveAuditModal({
             type="button"
             onClick={() => onConfirm(comment)}
             disabled={isSubmitting}
-            className="h-9 bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase text-[9px] tracking-widest px-6 shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            {isSubmitting ? "Approving..." : "Confirm & Approve"}
+            {isSubmitting ? "Approving..." : "Approve"}
           </Button>
         </DialogFooter>
       </DialogContent>

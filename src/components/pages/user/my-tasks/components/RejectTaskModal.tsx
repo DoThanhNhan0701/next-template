@@ -86,7 +86,7 @@ export function RejectTaskModal({
           </div>
         </div>
 
-        <DialogFooter className="p-6 pt-4 shrink-0 border-t bg-background">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button
             type="button"
             variant="outline"
@@ -101,7 +101,7 @@ export function RejectTaskModal({
             onClick={() => onConfirm(comment)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : "Confirm rejection"}
+            {isSubmitting ? "Processing..." : "Confirm"}
           </Button>
         </DialogFooter>
       </DialogContent>

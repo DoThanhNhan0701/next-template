@@ -103,7 +103,7 @@ export default function LoginPage() {
 
       <form
         autoComplete="off"
-        className="flex flex-col gap-6 p-6 border border-(--surface-border-color) rounded-lg w-full"
+        className="flex flex-col gap-3 p-6 border border-(--surface-border-color) rounded-lg w-full"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FieldGroup>

@@ -1,17 +1,17 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { dynamicEndpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
+import { ILocation } from "@/types/location";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { ILocation } from "@/types/location";
-import { dynamicEndpoints } from "@/config/endpoints";
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean;
@@ -61,7 +61,7 @@ export default function ConfirmDeleteModal({
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="mt-4">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Cancel
           </Button>

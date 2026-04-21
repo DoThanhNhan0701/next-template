@@ -83,7 +83,7 @@ export function CompleteAuditModal({
           </div>
         </div>
 
-        <DialogFooter className="p-5 pt-3 shrink-0 border-t bg-muted/10">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button
             type="button"
             variant="outline"

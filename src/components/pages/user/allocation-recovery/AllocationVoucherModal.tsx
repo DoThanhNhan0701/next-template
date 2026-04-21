@@ -426,8 +426,8 @@ export default function AllocationVoucherModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="flex-1 p-6 overflow-y-auto">
-            <div className="flex flex-col gap-6">
+          <div className="flex-1 px-6 pb-6 overflow-y-auto">
+            <div className="flex flex-col gap-3">
               {/* General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">

@@ -279,8 +279,8 @@ export default function AssetFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="flex flex-col gap-8 pb-4">
+          <div className="flex-1 overflow-y-auto px-6 pb-6">
+            <div className="flex flex-col gap-3">
               {/* Section: General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
@@ -862,7 +862,7 @@ export default function AssetFormModal({
             </div>
           </div>
 
-          <DialogFooter className="p-6 pt-4 shrink-0 border-t bg-background">
+          <DialogFooter className="p-3 shrink-0 border-t">
             <Button
               type="button"
               variant="outline"
@@ -872,7 +872,7 @@ export default function AssetFormModal({
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save Asset"}
+              {pending ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>
         </form>

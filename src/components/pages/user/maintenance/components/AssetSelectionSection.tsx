@@ -352,7 +352,7 @@ export function AssetSelectionSection({
               <Trash size={14} />
             </Button>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="md:col-span-3">
                 <Controller
                   name={`items.${index}.asset_id`}
@@ -506,7 +506,7 @@ export function AssetSelectionSection({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-dashed border-border/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-dashed border-border/60">
               <Controller
                 name={`items.${index}.return_to_location_id`}
                 control={form.control}

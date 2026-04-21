@@ -99,8 +99,8 @@ export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-0">
+      <CardContent className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-0">
           <DetailItem
             icon={<Hash className="h-4 w-4" />}
             label="Unit Code"

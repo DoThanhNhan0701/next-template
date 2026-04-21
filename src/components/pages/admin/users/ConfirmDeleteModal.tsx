@@ -1,19 +1,19 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useMutation } from "@/hooks/useMutation";
 import { dynamicEndpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { IUser } from "@/types/auth";
 
 interface Props {
   user: IUser | null;
@@ -22,7 +22,12 @@ interface Props {
   onSuccess: () => void;
 }
 
-export default function ConfirmDeleteModal({ user, isOpen, onClose, onSuccess }: Props) {
+export default function ConfirmDeleteModal({
+  user,
+  isOpen,
+  onClose,
+  onSuccess,
+}: Props) {
   const { mutate, pending } = useMutation();
 
   const handleConfirm = async () => {
@@ -42,7 +47,7 @@ export default function ConfirmDeleteModal({ user, isOpen, onClose, onSuccess }:
         onError: (err) => {
           getApiErrorMessage(err);
         },
-      }
+      },
     );
   };
 
@@ -58,9 +63,21 @@ export default function ConfirmDeleteModal({ user, isOpen, onClose, onSuccess }:
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="mt-4">
-          <Button type="button" variant="outline" onClick={onClose} disabled={pending}>Cancel</Button>
-          <Button type="button" variant="destructive" onClick={handleConfirm} disabled={pending}>
+        <DialogFooter className="p-3 shrink-0 border-t">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={pending}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleConfirm}
+            disabled={pending}
+          >
             {pending ? "Processing..." : "Confirm"}
           </Button>
         </DialogFooter>

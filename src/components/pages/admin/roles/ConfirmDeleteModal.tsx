@@ -1,6 +1,3 @@
-import { useMutation } from "@/hooks/useMutation";
-import { endpoints } from "@/config/endpoints";
-import { IRole } from "@/types/rbac";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,6 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { endpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { IRole } from "@/types/rbac";
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean;
@@ -31,12 +31,15 @@ export default function ConfirmDeleteModal({
 
   const handleDelete = async () => {
     if (!role) return;
-    await mutate({}, {
-      onSuccess: () => {
-        onSuccess();
-        onClose();
-      }
-    });
+    await mutate(
+      {},
+      {
+        onSuccess: () => {
+          onSuccess();
+          onClose();
+        },
+      },
+    );
   };
 
   return (
@@ -46,16 +49,17 @@ export default function ConfirmDeleteModal({
           <DialogTitle>Deactivate Role</DialogTitle>
           <DialogDescription>
             Are you sure you want to deactivate or delete the role{" "}
-            <strong>{role?.name}</strong>? This action may affect users assigned to this role.
+            <strong>{role?.name}</strong>? This action may affect users assigned
+            to this role.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="mt-4">
+        <DialogFooter className="p-3 shrink-0 border-t">
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Cancel
           </Button>
-          <Button 
-            variant="destructive" 
-            onClick={handleDelete} 
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
             disabled={pending}
           >
             {pending ? "Deleting..." : "Delete"}
