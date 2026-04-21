@@ -8,7 +8,6 @@ import {
   ClipboardList,
   Filter,
   MapPin,
-  Plus,
   RotateCcw,
   Search,
   User,
@@ -172,8 +171,7 @@ export default function MyAuditsTable() {
             onClick={() => setIsCreateModalOpen(true)}
             className="h-10 px-4 transition-all active:scale-95 shrink-0"
           >
-            <Plus size={16} className="mr-2" />
-            Tạo mới
+            Create
           </Button>
         </div>
       </div>

@@ -1,28 +1,31 @@
 "use client";
 
 import { useEffect } from "react";
-import { CircleAlert, Package } from "lucide-react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleAlert, Package } from "lucide-react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+
+import { DatePickerField } from "@/components/common/DatePickerField";
+import MultiAttachmentUpload from "@/components/common/MultiAttachmentUpload";
 import { PhysicalAssetSchema } from "@/components/schemas/user/physical-asset.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -31,20 +34,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMutation } from "@/hooks/useMutation";
+import { Textarea } from "@/components/ui/textarea";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { useMutation } from "@/hooks/useMutation";
+import { ICatalogType } from "@/types/catalog-type";
+import { ILocation } from "@/types/location";
+import { IOrgUnit } from "@/types/org";
+import { IPhysicalAsset } from "@/types/physical-asset";
+import { IStaff } from "@/types/staff";
+import { ISupplier } from "@/types/supplier";
+import { IUsageMode } from "@/types/usage-mode";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { cleanFormData } from "@/utils/form";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { ILocation } from "@/types/location";
-import { ISupplier } from "@/types/supplier";
-import { ICatalogType } from "@/types/catalog-type";
-import { IUsageMode } from "@/types/usage-mode";
-import { IOrgUnit } from "@/types/org";
-import { IStaff } from "@/types/staff";
-import MultiAttachmentUpload from "@/components/common/MultiAttachmentUpload";
 
 interface Props {
   assetToEdit?: IPhysicalAsset | null;
@@ -709,14 +712,10 @@ export default function AssetFormModal({
                   <Controller
                     name="purchase_date"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Purchase Date</FieldLabel>
-                        <Input
-                          type="date"
-                          {...field}
-                          value={field.value ?? ""}
-                        />
+                        <DatePickerField form={form} name="purchase_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -726,13 +725,12 @@ export default function AssetFormModal({
                   <Controller
                     name="warranty_expiration"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Warranty Expiration</FieldLabel>
-                        <Input
-                          type="date"
-                          {...field}
-                          value={field.value ?? ""}
+                        <DatePickerField
+                          form={form}
+                          name="warranty_expiration"
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -743,13 +741,12 @@ export default function AssetFormModal({
                   <Controller
                     name="system_declaration_date"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>System Declaration Date</FieldLabel>
-                        <Input
-                          type="date"
-                          {...field}
-                          value={field.value ?? ""}
+                        <DatePickerField
+                          form={form}
+                          name="system_declaration_date"
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />

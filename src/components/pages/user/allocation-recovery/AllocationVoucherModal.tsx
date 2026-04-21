@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
+import { DatePickerField } from "@/components/common/DatePickerField";
 import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -514,14 +515,10 @@ export default function AllocationVoucherModal({
                   <Controller
                     name="allocation_date"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Allocation Date *</FieldLabel>
-                        <Input
-                          type="date"
-                          {...field}
-                          value={field.value ?? ""}
-                        />
+                        <DatePickerField form={form} name="allocation_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
+import { DatePickerField } from "@/components/common/DatePickerField";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -389,14 +390,10 @@ export default function StockAdjustmentModal({
                   <Controller
                     name="adjustment_date"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Adjustment Date *</FieldLabel>
-                        <Input
-                          type="date"
-                          {...field}
-                          value={field.value ?? ""}
-                        />
+                        <DatePickerField form={form} name="adjustment_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

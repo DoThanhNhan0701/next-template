@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
+import { DatePickerField } from "@/components/common/DatePickerField";
 import { RentalCreateSchema } from "@/components/schemas/user/rental.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -406,10 +407,10 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                   <Controller
                     name="lease_date"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Lease Date *</FieldLabel>
-                        <Input type="date" {...field} />
+                        <DatePickerField form={form} name="lease_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

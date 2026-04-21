@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
+import { DatePickerField } from "@/components/common/DatePickerField";
 import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -468,14 +469,10 @@ export default function RecoveryVoucherModal({
                   <Controller
                     name="recovery_date"
                     control={form.control}
-                    render={({ field, fieldState }) => (
+                    render={({ fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Recovery Date *</FieldLabel>
-                        <Input
-                          type="date"
-                          {...field}
-                          value={field.value ?? ""}
-                        />
+                        <DatePickerField form={form} name="recovery_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

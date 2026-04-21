@@ -222,9 +222,6 @@ export default function RentalsTable() {
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
-
-          <div className="hidden sm:block w-px h-6 bg-border/60 mx-1 shrink-0" />
-
           <Button
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none h-10 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"

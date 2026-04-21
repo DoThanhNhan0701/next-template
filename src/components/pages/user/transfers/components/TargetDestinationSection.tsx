@@ -1,8 +1,11 @@
 "use client";
 
 import { ArrowRightCircle, MapPin } from "lucide-react";
-import { UseFormReturn, Controller } from "react-hook-form";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { Controller, UseFormReturn } from "react-hook-form";
+
+import { DatePickerField } from "@/components/common/DatePickerField";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -10,11 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TransferFormValues } from "../TransferFormModal";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
+
+import { TransferFormValues } from "../TransferFormModal";
 
 interface TargetDestinationSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -153,16 +156,12 @@ export function TargetDestinationSection({
         <Controller
           name="transfer_date"
           control={form.control}
-          render={({ field, fieldState }) => (
-            <Field>
+          render={({ fieldState }) => (
+            <Field className="gap-1">
               <FieldLabel className="text-[10px] font-bold text-muted-foreground">
                 Transfer Date
               </FieldLabel>
-              <Input
-                type="date"
-                {...field}
-                className="bg-white rounded-md border-muted-foreground/20"
-              />
+              <DatePickerField form={form} name="transfer_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}
@@ -172,7 +171,7 @@ export function TargetDestinationSection({
           name="external_link"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field className="col-span-2">
+            <Field className="col-span-2 gap-1">
               <FieldLabel className="text-[10px] font-bold text-muted-foreground">
                 External Link (Jira/Helpdesk)
               </FieldLabel>
@@ -191,7 +190,7 @@ export function TargetDestinationSection({
           name="reason"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field className="col-span-3">
+            <Field className="col-span-3 gap-1">
               <FieldLabel className="text-[10px] font-bold text-muted-foreground">
                 Reason & Internal Notes
               </FieldLabel>
