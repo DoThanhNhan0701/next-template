@@ -1,15 +1,16 @@
 "use client";
 
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { CheckCircle2, AlertCircle } from "lucide-react";
 import { ITask } from "@/types/task";
 
 interface CompleteAuditModalProps {
@@ -45,8 +46,8 @@ export function CompleteAuditModal({
         </DialogHeader>
 
         <div className="flex-1 px-5 py-5">
-          <div className="bg-background/40 backdrop-blur-sm rounded-lg p-4 border border-border/40 shadow-inner">
-            <div className="grid grid-cols-1 gap-4">
+          <div className="bg-background/40 backdrop-blur-sm rounded-lg p-3 border border-border/40 shadow-inner">
+            <div className="grid grid-cols-1 gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70">
                   Audit Title

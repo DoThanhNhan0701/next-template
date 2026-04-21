@@ -687,16 +687,37 @@ export default function TaskDetail({ id }: TaskDetailProps) {
   return (
     <div className="flex flex-col px-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 text-muted-foreground hover:text-foreground"
+          className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
           onClick={() => router.back()}
         >
           <ChevronLeft className="w-4 h-4" />
           Back
         </Button>
+      </div> */}
+
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <div className="flex flex-col gap-0.5">
+            <h1 className="text-lg font-semibold text-foreground">
+              Task Detail
+            </h1>
+            <span className="text-xs text-muted-foreground">
+              Task Management
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Main Action Card */}
@@ -705,7 +726,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border/60">
             {/* Action Info */}
-            <div className="flex-1 p-4 flex flex-col gap-3">
+            <div className="flex-1 p-3 flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                   <CheckCircle2 className="w-6 h-6" />
@@ -727,7 +748,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
 
             {/* Action Controls */}
             {activeTask?.status === "PENDING" && (
-              <div className="md:w-[400px] p-4 bg-muted/30 flex flex-col gap-3">
+              <div className="md:w-[400px] p-3 bg-muted/30 flex flex-col gap-3">
                 <div className="relative group">
                   <MessageSquare className="absolute top-3 left-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Textarea
@@ -762,9 +783,9 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-4">
         {/* Left Column: Document Info */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
+        <div className="lg:col-span-2 flex flex-col gap-3">
           <Card className="shadow-sm border-border/50 h-full bg-card/60 backdrop-blur-md">
             <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 py-3 px-4">
               <div className="flex items-center gap-2">
@@ -779,7 +800,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                 {getStatusInfo(detail.status_obj?.name).label}
               </Badge>
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               <div className="text-2xl font-bold text-foreground mb-4 tracking-tight">
                 {detail.record_number}
               </div>
@@ -788,7 +809,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                 {formattedData?.fields.map((field, index) => {
                   const IconComponent = field.icon;
                   return (
-                    <div key={index} className="flex items-start gap-4">
+                    <div key={index} className="flex items-start gap-3">
                       <div
                         className={`w-10 h-10 rounded-full ${field.iconColor} flex items-center justify-center shrink-0`}
                       >
@@ -906,7 +927,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         </div>
 
         {/* Right Column: Sidebar info */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group h-full">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <History className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
@@ -914,8 +935,8 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                 Additional information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="flex flex-col gap-4">
+            <CardContent className="p-3">
+              <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between pb-3 border-b border-border/50">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
@@ -1023,11 +1044,11 @@ export default function TaskDetail({ id }: TaskDetailProps) {
               </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-4 w-full">
+            <div className="flex flex-col gap-3 w-full">
               {historyList.map((hist) => (
                 <div
                   key={hist.id}
-                  className="flex items-start gap-4 p-4 rounded-xl bg-background border border-border/50 shadow-sm"
+                  className="flex items-start gap-3 p-3 rounded-xl bg-background border border-border/50 shadow-sm"
                 >
                   <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     {hist.status === "APPROVED" ? (

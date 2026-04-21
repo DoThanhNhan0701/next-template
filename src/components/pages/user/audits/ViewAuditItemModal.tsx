@@ -1,33 +1,30 @@
 "use client";
 
 import {
+  AlertTriangle,
+  ArrowRightLeft,
+  Building2,
+  CheckCircle2,
+  HelpCircle,
+  Info,
+  Package,
+  RotateCcw,
+  User,
+  XCircle,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Field,
-  FieldLabel,
-  FieldGroup,
-} from "@/components/ui/field";
-import {
-  Info,
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  HelpCircle,
-  Building2,
-  User,
-  Package,
-  ArrowRightLeft,
-  RotateCcw,
-} from "lucide-react";
-import { IAuditDetailItem } from "@/types/audit";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
+import { IAuditDetailItem } from "@/types/audit";
 
 interface Props {
   item: IAuditDetailItem | null;
@@ -191,16 +188,16 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 {auditResults.map((res) => {
                   const itemCode = item.status_obj?.code?.toUpperCase() || "";
                   const itemName = item.status_obj?.name?.toUpperCase() || "";
-                  const isSelected = 
-                    itemCode === res.code || 
+                  const isSelected =
+                    itemCode === res.code ||
                     res.aliasCodes?.includes(itemCode) ||
                     itemName === res.label.toUpperCase();
-                    
+
                   return (
                     <div
                       key={res.code}
                       className={cn(
-                        "p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-1 transition-all duration-300",
+                        "p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1 transition-all duration-300",
                         isSelected
                           ? cn(
                               res.border,
@@ -227,15 +224,21 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                       <span
                         className={cn(
                           "text-[14px] font-bold",
-                          isSelected ? cn(res.color, "opacity-90") : "text-muted-foreground/60",
+                          isSelected
+                            ? cn(res.color, "opacity-90")
+                            : "text-muted-foreground/60",
                         )}
                       >
                         {res.label}
                       </span>
-                      <span className={cn(
-                        "text-[10px] italic text-center",
-                        isSelected ? "text-foreground/60" : "text-muted-foreground/50",
-                      )}>
+                      <span
+                        className={cn(
+                          "text-[10px] italic text-center",
+                          isSelected
+                            ? "text-foreground/60"
+                            : "text-muted-foreground/50",
+                        )}
+                      >
                         {res.sub}
                       </span>
                     </div>
@@ -253,11 +256,11 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
               <div className="grid grid-cols-3 gap-3">
                 {proposedActions.map((action) => {
                   const actionValue = item.proposed_action?.toUpperCase() || "";
-                  const isSelected = 
+                  const isSelected =
                     (item.proposed_action === null && action.key === null) ||
-                    (actionValue === action.key) ||
-                    (action.aliasKeys?.includes(actionValue)) ||
-                    (actionValue === action.label.toUpperCase());
+                    actionValue === action.key ||
+                    action.aliasKeys?.includes(actionValue) ||
+                    actionValue === action.label.toUpperCase();
                   return (
                     <div
                       key={action.label}
@@ -268,10 +271,12 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                           : "border-border/40 bg-muted/20 opacity-35 grayscale",
                       )}
                     >
-                      <div className={cn(
-                        "p-1.5 rounded-full mb-0.5",
-                        isSelected ? "bg-primary/20" : "bg-muted",
-                      )}>
+                      <div
+                        className={cn(
+                          "p-1.5 rounded-full mb-0.5",
+                          isSelected ? "bg-primary/20" : "bg-muted",
+                        )}
+                      >
                         <action.icon
                           size={16}
                           className={cn(
@@ -284,15 +289,21 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                       <span
                         className={cn(
                           "text-[12px] font-bold text-center",
-                          isSelected ? "text-primary" : "text-muted-foreground/60",
+                          isSelected
+                            ? "text-primary"
+                            : "text-muted-foreground/60",
                         )}
                       >
                         {action.label}
                       </span>
-                      <span className={cn(
-                        "text-[9px] truncate italic",
-                        isSelected ? "text-foreground/60" : "text-muted-foreground/50",
-                      )}>
+                      <span
+                        className={cn(
+                          "text-[9px] truncate italic",
+                          isSelected
+                            ? "text-foreground/60"
+                            : "text-muted-foreground/50",
+                        )}
+                      >
                         {action.sub}
                       </span>
                     </div>
@@ -303,7 +314,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
 
             {/* Action Detail (Conditional) */}
             {item.proposed_action && (
-              <Field className="p-4 rounded-xl bg-muted/20 border border-border/50 flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-200">
+              <Field className="p-3 rounded-xl bg-muted/20 border border-border/50 flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-200">
                 <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
                   {item.proposed_action === "RECALL"
                     ? "Thông tin thu hồi"
@@ -343,15 +354,20 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
               <FieldLabel className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
                 Ghi chú tình trạng
               </FieldLabel>
-              <div className="p-4 rounded-xl border border-border bg-muted/5 min-h-[100px] text-sm text-foreground/80 leading-relaxed italic whitespace-pre-wrap">
+              <div className="p-3 rounded-xl border border-border bg-muted/5 min-h-[100px] text-sm text-foreground/80 leading-relaxed italic whitespace-pre-wrap">
                 {item.notes || "Không có ghi chú nào cho kết quả kiểm kê này."}
               </div>
             </Field>
           </FieldGroup>
         </div>
 
-        <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
-          <Button type="button" variant="outline" onClick={onClose} className="w-24">
+        <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="w-24"
+          >
             Đóng
           </Button>
         </div>

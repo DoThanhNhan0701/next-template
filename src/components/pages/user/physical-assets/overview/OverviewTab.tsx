@@ -42,7 +42,7 @@ export default function OverviewTab({
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {/* Stats Bar */}
         <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg overflow-hidden">
           <div className="grid grid-cols-2 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
@@ -82,9 +82,9 @@ export default function OverviewTab({
         </Card>
 
         {/* Main Grid Layout */}
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Management Info */}
               <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg">
                 <CardHeader className="py-3 px-4 border-b border-border/40 bg-muted/10">
@@ -93,7 +93,7 @@ export default function OverviewTab({
                     Management info
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4 flex flex-col gap-3">
+                <CardContent className="p-3 flex flex-col gap-3">
                   <InfoRow
                     icon="📦"
                     label="Asset category"
@@ -239,7 +239,7 @@ export default function OverviewTab({
                     Finance & warranty
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4 flex flex-col gap-3">
+                <CardContent className="p-3 flex flex-col gap-3">
                   <InfoRow
                     icon="📅"
                     label="Purchase date"
@@ -302,7 +302,7 @@ export default function OverviewTab({
                     Notes
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-4">
+                <CardContent className="p-3">
                   <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">
                     {asset.notes}
                   </p>

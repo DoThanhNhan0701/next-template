@@ -1,25 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { endpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
-import { IStock } from "@/types/stock";
-import { ILocation } from "@/types/location";
-import { Search, X, RotateCcw, MapPin, Package, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
+
+import { useRouter } from "next/navigation";
+
 import {
-  TableLoadingRows,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  MapPin,
+  Package,
+  RotateCcw,
+  Search,
+  X,
+} from "lucide-react";
+import { useDispatch } from "react-redux";
+
+import {
   TableEmptyRow,
+  TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -35,11 +37,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
 import { AppDispatch } from "@/redux";
 import { openStockAdjustment } from "@/redux/slices/stockAdjustment";
-import { useRouter } from "next/navigation";
+import { ILocation } from "@/types/location";
+import { IStock } from "@/types/stock";
 
 export default function InventoryTable() {
   const [skip, setSkip] = useState(0);
@@ -86,17 +97,19 @@ export default function InventoryTable() {
   const hasMore = stocks.length === limit;
 
   const handleStockAction = (stock: IStock, type: "INCREASE" | "DECREASE") => {
-    dispatch(openStockAdjustment({
-      asset_id: stock.asset_id,
-      location_id: stock.location_id,
-      adjustment_type: type,
-    }));
+    dispatch(
+      openStockAdjustment({
+        asset_id: stock.asset_id,
+        location_id: stock.location_id,
+        adjustment_type: type,
+      }),
+    );
     router.push("/stock-in-out");
   };
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
@@ -123,7 +136,7 @@ export default function InventoryTable() {
         </div>
 
         {/* Filters Group */}
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           <Select value={locationId} onValueChange={setLocationId}>
             <SelectTrigger className="min-w-[140px] max-w-[240px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
@@ -282,10 +295,11 @@ export default function InventoryTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
-                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                        : "bg-red-500/10 text-red-600 border border-red-500/20"
-                        }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
+                        stock.quantity > 0
+                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                          : "bg-red-500/10 text-red-600 border border-red-500/20"
+                      }`}
                     >
                       {stock.quantity}
                     </div>

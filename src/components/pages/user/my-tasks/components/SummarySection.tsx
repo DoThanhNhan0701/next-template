@@ -1,7 +1,9 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Clock, CheckCircle2, XCircle } from "lucide-react";
+
+import { CheckCircle2, Clock, XCircle } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface SummaryCardProps {
@@ -106,7 +108,7 @@ export function SummarySection({
   const isClient = useSyncExternalStore(
     emptySubscribe,
     () => true,
-    () => false
+    () => false,
   );
 
   const displayPending = isClient ? pendingCount : 0;
@@ -114,8 +116,8 @@ export function SummarySection({
   const displayRejected = isClient ? rejectedCount : 0;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <SummaryCard
           label="Pending"
           value={displayPending}

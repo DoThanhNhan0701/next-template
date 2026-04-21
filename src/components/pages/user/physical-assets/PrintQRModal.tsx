@@ -1,19 +1,21 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import { useEffect, useMemo, useState } from "react";
+
 import { Printer } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { useGet } from "@/hooks/useGet";
 import { dynamicEndpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
 
 interface IHolder {
   name: string;
@@ -28,10 +30,17 @@ interface Props {
   assetCode: string;
   assetId: number;
   owner?: string | null;
-  importanceLevel?: { code: string; name: string; color: string; } | null;
+  importanceLevel?: { code: string; name: string; color: string } | null;
 }
 
-export default function PrintQRModal({ isOpen, onClose, assetCode, assetId, owner, importanceLevel }: Props) {
+export default function PrintQRModal({
+  isOpen,
+  onClose,
+  assetCode,
+  assetId,
+  owner,
+  importanceLevel,
+}: Props) {
   const [selectedName, setSelectedName] = useState("");
 
   const { response: holdersRes } = useGet<IHolder[]>(
@@ -50,7 +59,9 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetId, owne
   }, [holders]);
 
   const doPrint = () => {
-    const svg = document.getElementById("print-qr-svg")?.querySelector("svg")?.outerHTML ?? "";
+    const svg =
+      document.getElementById("print-qr-svg")?.querySelector("svg")
+        ?.outerHTML ?? "";
     const win = window.open("", "_blank", "width=600,height=400");
     if (!win) return;
     win.document.write(`
@@ -177,9 +188,12 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetId, owne
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-4 py-2">
+        <div className="flex flex-col items-center gap-3 py-2">
           {/* QR Preview */}
-          <div id="print-qr-svg" className="flex gap-5 items-center p-5 bg-white rounded-xl border border-border/60 shadow-sm w-full">
+          <div
+            id="print-qr-svg"
+            className="flex gap-5 items-center p-5 bg-white rounded-xl border border-border/60 shadow-sm w-full"
+          >
             {/* QR Code */}
             <div className="shrink-0">
               <QRCodeSVG value={assetCode} size={130} level="H" />
@@ -188,15 +202,25 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetId, owne
             {/* Info */}
             <div className="flex flex-col gap-3 flex-1 min-w-0">
               <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">Code</span>
-                <span className="font-mono text-sm font-bold text-gray-900 tracking-wider">{assetCode}</span>
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
+                  Code
+                </span>
+                <span className="font-mono text-sm font-bold text-gray-900 tracking-wider">
+                  {assetCode}
+                </span>
               </div>
               <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">Owner</span>
-                <span className="text-sm font-semibold text-gray-800">{owner || "—"}</span>
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
+                  Owner
+                </span>
+                <span className="text-sm font-semibold text-gray-800">
+                  {owner || "—"}
+                </span>
               </div>
               <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">Importance Level</span>
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
+                  Importance Level
+                </span>
                 {importanceLevel ? (
                   <span
                     className="text-sm font-bold w-fit"
@@ -223,11 +247,14 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetId, owne
                   <button
                     key={i}
                     type="button"
-                    onClick={() => setSelectedName(selectedName === h.name ? "" : h.name)}
-                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${selectedName === h.name
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                      }`}
+                    onClick={() =>
+                      setSelectedName(selectedName === h.name ? "" : h.name)
+                    }
+                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
+                      selectedName === h.name
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                   >
                     {h.name}
                   </button>
@@ -238,7 +265,9 @@ export default function PrintQRModal({ isOpen, onClose, assetCode, assetId, owne
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Hủy</Button>
+          <Button variant="outline" onClick={onClose}>
+            Hủy
+          </Button>
           <Button onClick={doPrint} className="gap-2">
             <Printer className="w-4 h-4" />
             In ngay

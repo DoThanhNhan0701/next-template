@@ -1,26 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
 import { CustomerSchema } from "@/components/schemas/admin/customer.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -28,11 +30,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { ICustomer } from "@/types/customer";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { ICustomer } from "@/types/customer";
 
 interface Props {
   customerToEdit?: ICustomer | null;
@@ -69,7 +71,9 @@ export default function CustomerFormModal({
       if (customerToEdit) {
         form.reset({
           name: customerToEdit.name,
-          customer_type: customerToEdit.customer_type as "Individual" | "Organization",
+          customer_type: customerToEdit.customer_type as
+            | "Individual"
+            | "Organization",
           identifier: customerToEdit.identifier,
           phone: customerToEdit.phone || "",
           email: customerToEdit.email || "",
@@ -133,7 +137,7 @@ export default function CustomerFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-3"
         >
           <FieldGroup className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Controller

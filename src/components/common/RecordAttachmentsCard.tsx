@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 
@@ -13,6 +13,7 @@ import {
   Paperclip,
   Trash2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,7 +28,6 @@ import { endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { cleanUrl } from "@/utils/url";
-import { toast } from "sonner";
 
 const ALLOWED_EXTENSIONS = [
   "xls",
@@ -43,7 +43,6 @@ const ALLOWED_EXTENSIONS = [
   "zip",
   "txt",
 ];
-
 
 interface RecordAttachmentsCardProps {
   title?: string;
@@ -64,7 +63,7 @@ export function RecordAttachmentsCard({
 }: RecordAttachmentsCardProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [attachments, setAttachments] = useState<string[]>(initialAttachments);
-  
+
   const { mutate: uploadFile, pending: uploadPending } = useMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -186,13 +185,11 @@ export function RecordAttachmentsCard({
           className="h-7 gap-1.5 border-primary/20 text-primary hover:bg-primary/10 px-2 text-xs"
           disabled={isPending || uploadPending}
         >
-          {uploadPending ? (
-            <Loader2 className="animate-spin w-3 h-3" />
-          ) : null}
+          {uploadPending ? <Loader2 className="animate-spin w-3 h-3" /> : null}
           Upload
         </Button>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="p-3">
         {attachments.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {attachments.map((url, i) => {

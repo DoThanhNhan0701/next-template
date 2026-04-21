@@ -62,7 +62,7 @@ export default function AuditDetail({ id }: Props) {
 
   if (sessionPending && !session) {
     return (
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-6 flex flex-col gap-3">
         <Skeleton className="h-9 w-28" />
         <Skeleton className="h-40 w-full" />
         <Skeleton className="h-64 w-full" />
@@ -77,7 +77,7 @@ export default function AuditDetail({ id }: Props) {
   );
 
   return (
-    <div className="flex flex-col px-4 pb-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Back & Header */}
       <div className="flex items-center gap-3">
         <Button
@@ -104,7 +104,7 @@ export default function AuditDetail({ id }: Props) {
         <CardContent className="p-5 pl-7">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             {/* Left: record info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <ClipboardList className="w-6 h-6 text-primary" />
               </div>
@@ -149,7 +149,7 @@ export default function AuditDetail({ id }: Props) {
       </Card>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
         {/* Items table */}
         <div className="lg:col-span-2">
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col min-h-[400px]">
@@ -190,7 +190,7 @@ export default function AuditDetail({ id }: Props) {
                   {itemsPending ? (
                     Array.from({ length: 5 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell colSpan={6} className="p-4">
+                        <TableCell colSpan={6} className="p-3">
                           <Skeleton className="h-10 w-full" />
                         </TableCell>
                       </TableRow>
@@ -349,7 +349,7 @@ export default function AuditDetail({ id }: Props) {
         </div>
 
         {/* Sidebar Info */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Info className="w-4 h-4 text-primary" />
@@ -357,7 +357,7 @@ export default function AuditDetail({ id }: Props) {
                 Audit Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 flex flex-col gap-4">
+            <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User size={15} className="shrink-0" />
@@ -409,7 +409,7 @@ export default function AuditDetail({ id }: Props) {
             </CardContent>
           </Card>
 
-          <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
+          <div className="p-3 rounded-xl bg-muted/30 border border-border/50">
             <div className="flex items-start gap-3">
               {isCompleted ? (
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />

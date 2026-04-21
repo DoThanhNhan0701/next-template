@@ -2,6 +2,7 @@
 
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { DatePickerField } from "@/components/common/DatePickerField";
 import {
   Field,
   FieldError,
@@ -12,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { MaintenanceFormValues } from "../MaintenanceFormModal";
-import { DatePickerField } from "@/components/common/DatePickerField";
 
 interface GeneralInfoSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
@@ -20,8 +20,8 @@ interface GeneralInfoSectionProps {
 
 export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex flex-col gap-3">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Controller
           control={form.control}
           name="record_number"
@@ -60,7 +60,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Controller
           control={form.control}
           name="outing_date"
@@ -113,7 +113,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         )}
       />
 
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Controller
           control={form.control}
           name="external_link"

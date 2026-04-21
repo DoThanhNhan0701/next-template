@@ -1,14 +1,16 @@
 "use client";
 
-import { UseFormReturn, Controller } from "react-hook-form";
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
+import { Controller, UseFormReturn } from "react-hook-form";
+
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+
+import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface ServiceInfoSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
@@ -16,8 +18,8 @@ interface ServiceInfoSectionProps {
 
 export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex flex-col gap-3">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Controller
           control={form.control}
           name="service_provider_name"
@@ -56,7 +58,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Controller
           control={form.control}
           name="taker_person_name"
@@ -95,7 +97,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
         />
       </FieldGroup>
 
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <Controller
           control={form.control}
           name="expected_cost"

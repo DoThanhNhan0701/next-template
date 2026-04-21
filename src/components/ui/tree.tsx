@@ -1,26 +1,27 @@
 "use client";
 
 import * as React from "react";
+
+import * as Collapsible from "@radix-ui/react-collapsible";
 import {
+  Building2,
   ChevronRight,
+  Edit2,
   Folder,
   FolderOpen,
-  Plus,
-  Building2,
-  Network,
-  Users,
   MoreVertical,
-  Edit2,
+  Network,
+  Plus,
   Trash2,
+  Users,
 } from "lucide-react";
-import * as Collapsible from "@radix-ui/react-collapsible";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { cn } from "@/lib/utils";
 
 export interface TreeNode {
@@ -153,8 +154,15 @@ function TreeItem({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={cn("relative rounded-md transition-all duration-200", isDragOver && "bg-primary/5 z-50")}
-      style={isDragOver ? { boxShadow: "0 0 0 2px hsl(var(--primary) / 0.7)" } : undefined}
+      className={cn(
+        "relative rounded-md transition-all duration-200",
+        isDragOver && "bg-primary/5 z-50",
+      )}
+      style={
+        isDragOver
+          ? { boxShadow: "0 0 0 2px hsl(var(--primary) / 0.7)" }
+          : undefined
+      }
     >
       <div
         draggable
@@ -344,10 +352,16 @@ export function Tree({
           }
         }}
         className={cn(
-          "mt-4 p-4 rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
-          isRootDragOver ? "bg-primary/5 text-primary" : "border-2 border-dashed border-muted",
+          "mt-4 p-3 rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
+          isRootDragOver
+            ? "bg-primary/5 text-primary"
+            : "border-2 border-dashed border-muted",
         )}
-        style={isRootDragOver ? { boxShadow: "0 0 0 2px hsl(var(--primary) / 0.7)" } : undefined}
+        style={
+          isRootDragOver
+            ? { boxShadow: "0 0 0 2px hsl(var(--primary) / 0.7)" }
+            : undefined
+        }
       >
         <Plus className="w-4 h-4 mr-2" />
         Drop here to make Root Unit

@@ -1,15 +1,16 @@
 "use client";
 
-import { Box, RefreshCcw, PlusIcon, Trash } from "lucide-react";
+import { Box, PlusIcon, RefreshCcw, Trash } from "lucide-react";
 import {
-  UseFormReturn,
   Controller,
+  FieldArrayWithId,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
-  FieldArrayWithId,
+  UseFormReturn,
 } from "react-hook-form";
-import { FieldError } from "@/components/ui/field";
+
 import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -18,8 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TransferFormValues } from "../TransferFormModal";
 import { IPhysicalAsset } from "@/types/physical-asset";
+
+import { TransferFormValues } from "../TransferFormModal";
 
 interface AssetSelectionSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -80,7 +82,7 @@ export function AssetSelectionSection({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-4"
+            className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-3"
           >
             <Button
               type="button"

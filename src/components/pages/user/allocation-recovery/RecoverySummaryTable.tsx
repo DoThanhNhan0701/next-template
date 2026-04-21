@@ -105,8 +105,8 @@ export default function RecoverySummaryTable() {
   const hasMore = recoveries.length === limit;
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 p-4 gap-4">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 z-10 w-full transition-all">
+    <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 z-10 w-full transition-all">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search

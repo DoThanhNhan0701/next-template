@@ -1,11 +1,14 @@
 "use client";
 
-import { useSelector } from "react-redux";
 import { useRouter, useSearchParams } from "next/navigation";
-import AllocationSummaryTable from "./AllocationSummaryTable";
-import RecoverySummaryTable from "./RecoverySummaryTable";
+
+import { useSelector } from "react-redux";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RootState } from "@/redux";
+
+import AllocationSummaryTable from "./AllocationSummaryTable";
+import RecoverySummaryTable from "./RecoverySummaryTable";
 
 export default function AllocationRecoveryPage() {
   const searchParams = useSearchParams();
@@ -25,7 +28,7 @@ export default function AllocationRecoveryPage() {
   };
 
   return (
-    <div className="h-full flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-3">
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}

@@ -1,24 +1,26 @@
-import z from "zod";
 import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { dynamicEndpoints, endpoints } from "@/config/endpoints";
-import { useMutation } from "@/hooks/useMutation";
-import { useGet } from "@/hooks/useGet";
-import { IRole, IPermission } from "@/types/rbac";
+import { useForm, useWatch } from "react-hook-form";
+import z from "zod";
+
 import { RoleSchema } from "@/components/schemas/admin/role.schema";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { IPermission, IRole } from "@/types/rbac";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
@@ -193,7 +195,7 @@ export default function RoleFormModal({
 
             <div className="space-y-3 pt-2">
               <Label>Permissions Distribution</Label>
-              <div className="grid grid-cols-1 gap-2 border rounded-md p-4 bg-muted/20 pb-4 max-h-[300px] overflow-y-auto">
+              <div className="grid grid-cols-1 gap-2 border rounded-md p-3 bg-muted/20 pb-4 max-h-[300px] overflow-y-auto">
                 {allPermissions.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
                     No permissions available.

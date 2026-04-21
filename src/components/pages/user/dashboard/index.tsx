@@ -140,7 +140,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-4 p-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-3 px-3 pb-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         {stats.map((stat, i) => (
           <Card
             key={i}
@@ -170,7 +170,7 @@ export default function DashboardPage() {
                 stat.color.replace("text-", "bg-"),
               )}
             />
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               <div className="flex items-center justify-between mb-3">
                 <div
                   className={cn("p-2 rounded-xl ring-1 ring-border/5", stat.bg)}
@@ -208,7 +208,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Left Column: Visual Analytics Mockup */}
         <Card className="lg:col-span-2 border-none shadow-sm ring-1 ring-border/50 bg-card/60 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between py-3 px-4 border-b border-border/40">
@@ -222,7 +222,7 @@ export default function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent className="h-[calc(100%-61px)] flex flex-col justify-end gap-6 pb-6 pt-10 px-4 overflow-hidden">
-            <div className="flex items-end justify-between h-full gap-2 md:gap-4 lg:gap-6 px-2">
+            <div className="flex items-end justify-between h-full gap-2 md:gap-3 lg:gap-6 px-2">
               {statusChartData.map((item) => {
                 const heightPercentage = (item.count / maxStatusCount) * 100;
                 return (
@@ -277,7 +277,7 @@ export default function DashboardPage() {
               Latest updates across your portfolio.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4">
+          <CardContent className="p-3">
             <div className="space-y-4 max-h-[300px] overflow-y-auto">
               {(activities?.data || []).map((activity) => {
                 const Icon =
@@ -326,7 +326,7 @@ export default function DashboardPage() {
       </div>
 
       {/* My Tasks Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
         <div className="lg:col-span-3 p-5 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/10 flex flex-col md:flex-row items-center gap-6 group overflow-hidden relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
           <div className="p-3.5 rounded-xl bg-white/10 shrink-0 group-hover:rotate-6 transition-transform duration-500 relative z-10">
@@ -446,7 +446,7 @@ export default function DashboardPage() {
               </div>
             )}
             {totalPendingStats === 0 && (
-              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground/70">
+              <div className="flex items-center justify-center p-3 text-sm text-muted-foreground/70">
                 Không có việc cần xử lý.
               </div>
             )}

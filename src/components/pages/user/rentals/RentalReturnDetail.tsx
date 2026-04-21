@@ -57,7 +57,7 @@ export default function RentalReturnDetail({ id }: Props) {
 
   if (pending && !detail) {
     return (
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-6 flex flex-col gap-3">
         <Skeleton className="h-9 w-28" />
         <Skeleton className="h-40 w-full" />
         <Skeleton className="h-64 w-full" />
@@ -73,7 +73,7 @@ export default function RentalReturnDetail({ id }: Props) {
   );
 
   return (
-    <div className="flex flex-col px-4 pb-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Back */}
       <div className="flex items-center gap-3">
         <Button
@@ -100,7 +100,7 @@ export default function RentalReturnDetail({ id }: Props) {
         <CardContent className="p-5 pl-7">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             {/* Left: record info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <FileText className="w-6 h-6 text-primary" />
               </div>
@@ -152,7 +152,7 @@ export default function RentalReturnDetail({ id }: Props) {
       </Card>
 
       {/* Main grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
         {/* Items table */}
         <div className="lg:col-span-2">
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col">
@@ -219,7 +219,7 @@ export default function RentalReturnDetail({ id }: Props) {
         </div>
 
         {/* Sidebar */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {/* Customer Info */}
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
@@ -228,7 +228,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 Customer Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 flex flex-col gap-3">
+            <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Name
@@ -268,7 +268,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 Return Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 flex flex-col gap-4">
+            <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
@@ -414,7 +414,7 @@ export default function RentalReturnDetail({ id }: Props) {
         </CardHeader>
         <CardContent className="p-0">
           {historyPending ? (
-            <div className="flex flex-col gap-2 p-4">
+            <div className="flex flex-col gap-2 p-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="h-10 w-full" />
               ))}

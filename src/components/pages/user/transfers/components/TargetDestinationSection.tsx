@@ -153,7 +153,7 @@ export function TargetDestinationSection({
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         <Controller
           name="transfer_date"
           control={form.control}

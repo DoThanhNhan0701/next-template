@@ -2,20 +2,21 @@
 
 import {
   Building2,
-  Network,
-  Users,
-  MapPin,
-  Info,
-  User,
   Hash,
+  Info,
+  MapPin,
+  Network,
+  User,
+  Users,
 } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import { OrgUnit } from "@/components/ui/tree";
+import { cn } from "@/lib/utils";
 
 interface Props {
   unit: OrgUnit | null;
@@ -52,7 +53,7 @@ export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
   return (
     <Card className="h-full flex flex-col shadow-sm border-muted/60 overflow-hidden bg-transparent">
       <CardHeader className="bg-muted/30 border-b py-2 pr-2">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-background shadow-sm ring-1 ring-border/50">
               {getUnitIcon(unit.unit_type)}
@@ -136,7 +137,7 @@ export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
           />
         </div>
 
-        <div className="flex items-center justify-between p-4 rounded-xl border border-muted/60 bg-muted/10">
+        <div className="flex items-center justify-between p-3 rounded-xl border border-muted/60 bg-muted/10">
           <div className="flex flex-col gap-0.5">
             <span className="text-xs font-semibold text-muted-foreground tracking-widest">
               Status

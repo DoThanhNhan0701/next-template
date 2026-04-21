@@ -84,9 +84,9 @@ export default function StockAdjustmentTable({
   const hasMore = items.length === limit;
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 p-4 gap-4">
+    <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
       {/* Toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 z-10 w-full">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 z-10 w-full">
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"

@@ -1,21 +1,24 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import { Tree, convertToTreeNodes, TreeNode } from "@/components/ui/tree";
-import { useGet } from "@/hooks/useGet";
-import { endpoints } from "@/config/endpoints";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import { Plus, RefreshCcw, Search } from "lucide-react";
 import { toast } from "sonner";
-import { useMutation } from "@/hooks/useMutation";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { getApiErrorMessage } from "@/utils/api-error";
-import OrgUnitFormModal from "./OrgUnitFormModal";
-import OrgUnitDetailView from "./OrgUnitDetailView";
-import OrgUnitDeleteDialog from "./OrgUnitDeleteDialog";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tree, TreeNode, convertToTreeNodes } from "@/components/ui/tree";
 import { OrgUnit } from "@/components/ui/tree";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { IOrgUnit } from "@/types/org";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
+
+import OrgUnitDeleteDialog from "./OrgUnitDeleteDialog";
+import OrgUnitDetailView from "./OrgUnitDetailView";
+import OrgUnitFormModal from "./OrgUnitFormModal";
 
 const flattenOrgUnits = (units: OrgUnit[]): OrgUnit[] => {
   return units.reduce((acc: OrgUnit[], unit) => {
@@ -56,20 +59,27 @@ export default function OrganizationalStructurePage() {
 
   // --- Local state updaters (no refetch needed) ---
   const insertUnit = (units: OrgUnit[], newUnit: OrgUnit): OrgUnit[] => {
-    if (newUnit.parent_id === null) return [...units, { ...newUnit, children: [] }];
+    if (newUnit.parent_id === null)
+      return [...units, { ...newUnit, children: [] }];
     return units.map((u) => {
       if (u.id === newUnit.parent_id) {
-        return { ...u, children: [...(u.children || []), { ...newUnit, children: [] }] };
+        return {
+          ...u,
+          children: [...(u.children || []), { ...newUnit, children: [] }],
+        };
       }
-      if (u.children?.length) return { ...u, children: insertUnit(u.children, newUnit) };
+      if (u.children?.length)
+        return { ...u, children: insertUnit(u.children, newUnit) };
       return u;
     });
   };
 
   const updateUnit = (units: OrgUnit[], updated: OrgUnit): OrgUnit[] => {
     return units.map((u) => {
-      if (u.id === updated.id) return { ...updated, children: u.children || [] };
-      if (u.children?.length) return { ...u, children: updateUnit(u.children, updated) };
+      if (u.id === updated.id)
+        return { ...updated, children: u.children || [] };
+      if (u.children?.length)
+        return { ...u, children: updateUnit(u.children, updated) };
       return u;
     });
   };
@@ -110,13 +120,17 @@ export default function OrganizationalStructurePage() {
       // Same position: just update in place
       return updateUnit(prev, unitWithChildren);
     });
-    setSelectedUnit((prev) => ({
-      ...(prev || {}),
-      ...savedUnit,
-      address: savedUnit.address ?? null,
-      description: savedUnit.description ?? null,
-      children: flatUnits.find((u) => u.id === savedUnit.id)?.children || [],
-    } as OrgUnit));
+    setSelectedUnit(
+      (prev) =>
+        ({
+          ...(prev || {}),
+          ...savedUnit,
+          address: savedUnit.address ?? null,
+          description: savedUnit.description ?? null,
+          children:
+            flatUnits.find((u) => u.id === savedUnit.id)?.children || [],
+        }) as OrgUnit,
+    );
   };
 
   const handleDeleteSuccess = (deletedId: number) => {
@@ -244,7 +258,7 @@ export default function OrganizationalStructurePage() {
   if (loading && !data) {
     return (
       <div className="flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-3">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           <p className="text-muted-foreground font-medium">
             Building organizational hierarchy...
@@ -279,7 +293,7 @@ export default function OrganizationalStructurePage() {
       {/* Main Content: Master-Detail Layout */}
       <div className="flex-1 flex gap-2 min-h-0">
         {/* Left Side: Tree Explorer */}
-        <div className="w-full md:basis-[40%] flex flex-col gap-4 border rounded-xl shadow-sm overflow-hidden p-4">
+        <div className="w-full md:basis-[40%] flex flex-col gap-3 border rounded-xl shadow-sm overflow-hidden p-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -302,7 +316,7 @@ export default function OrganizationalStructurePage() {
                 selectedId={selectedUnit?.id.toString()}
               />
             ) : (
-              <div className="h-40 flex flex-col items-center justify-center text-center p-4">
+              <div className="h-40 flex flex-col items-center justify-center text-center p-3">
                 <Search className="h-8 w-8 text-muted-foreground/30 mb-2" />
                 <p className="text-sm text-muted-foreground">
                   No units found matching &quot;{searchQuery}&quot;

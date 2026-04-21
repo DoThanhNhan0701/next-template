@@ -114,7 +114,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
   if (pending) {
     return (
-      <div className="p-4 flex flex-col gap-4">
+      <div className="p-3 flex flex-col gap-3">
         <Skeleton className="h-16 w-full" />
         <Skeleton className="h-32 w-full" />
         <Skeleton className="h-100 w-full" />
@@ -126,9 +126,9 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
   return (
     <>
-      <div className="w-full h-full flex flex-col gap-4 p-3 animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-auto">
+      <div className="w-full h-full flex flex-col gap-3 px-3 pb-3 animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
@@ -235,7 +235,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
           <TabsContent
             value="overview"
-            className="mt-4 flex flex-col gap-4 outline-none focus-visible:ring-0"
+            className="mt-4 flex flex-col gap-3 outline-none focus-visible:ring-0"
           >
             <OverviewTab
               holders={holders ?? []}
@@ -255,7 +255,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             value="specs"
             className="mt-4 outline-none focus-visible:ring-0"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
               <div className="lg:col-span-2">
                 {asset.specifications ? (
                   <div className="rounded-xl border border-border/50 overflow-hidden h-full">
@@ -284,11 +284,11 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                       Model image
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4 flex-1 flex flex-col">
+                  <CardContent className="p-3 flex-1 flex flex-col">
                     <div className="aspect-square bg-muted/20 rounded-lg flex items-center justify-center border border-border/20 mb-6 max-h-62.5">
                       <Box className="w-12 h-12 text-muted-foreground/30" />
                     </div>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
                         <span className="text-sm text-muted-foreground">
                           Asset model

@@ -1,29 +1,31 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+
 import {
-  OrgUnitSchema,
   IOrgUnitFormValues,
+  OrgUnitSchema,
 } from "@/components/schemas/admin/org-unit.schema";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -31,15 +33,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useMutation } from "@/hooks/useMutation";
-import { useGet } from "@/hooks/useGet";
+import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
+import { IOrgUnit } from "@/types/org";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { cleanFormData } from "@/utils/form";
-import { IOrgUnit } from "@/types/org";
-import { IUser } from "@/types/auth";
 
 interface Props {
   unitToEdit?: IOrgUnit | null;
@@ -213,7 +215,7 @@ export default function OrgUnitFormModal({
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-          <FieldGroup className="grid grid-cols-2 gap-4">
+          <FieldGroup className="grid grid-cols-2 gap-3">
             <Controller
               name="name"
               control={form.control}
@@ -370,7 +372,7 @@ export default function OrgUnitFormModal({
               render={({ field }) => (
                 <Field
                   orientation="horizontal"
-                  className="flex items-center gap-2 rounded-md border p-4 space-y-0"
+                  className="flex items-center gap-2 rounded-md border p-3 space-y-0"
                 >
                   <Checkbox
                     id="is_active"

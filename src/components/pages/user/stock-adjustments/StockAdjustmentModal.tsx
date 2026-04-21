@@ -354,7 +354,11 @@ export default function StockAdjustmentModal({
       {
         url: "/api/v1/stock-adjustments",
         method: "post",
-        body: { ...rest, attachments: data.attachments || [], workflow_assignments },
+        body: {
+          ...rest,
+          attachments: data.attachments || [],
+          workflow_assignments,
+        },
       },
       {
         onSuccess: (res) => {
@@ -542,7 +546,7 @@ export default function StockAdjustmentModal({
             </div>
           </div>
 
-          <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
             <Button
               type="button"
               variant="outline"

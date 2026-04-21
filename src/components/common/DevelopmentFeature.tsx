@@ -1,14 +1,16 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { Hammer } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function DevelopmentFeature() {
   const t = useTranslations("Common");
 
   return (
-    <div className="flex h-full items-center justify-center p-4">
+    <div className="flex h-full items-center justify-center p-3">
       <Card className="max-w-md w-full border-none shadow-none bg-transparent">
         <CardContent className="flex flex-col items-center text-center space-y-6 pt-6">
           <div className="relative">
@@ -17,7 +19,7 @@ export default function DevelopmentFeature() {
               <Hammer size={48} className="text-primary animate-bounce" />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <h1 className="text-2xl font-bold tracking-tight">
               {t("feature_under_development")}

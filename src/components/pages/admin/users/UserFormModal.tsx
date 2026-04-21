@@ -1,33 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
 import { UserSchema } from "@/components/schemas/admin/user.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
-import { useMutation } from "@/hooks/useMutation";
-import { useGet } from "@/hooks/useGet";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { IUser } from "@/types/auth";
-import { IRole } from "@/types/rbac";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -35,6 +30,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
+import { IRole } from "@/types/rbac";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 
 interface Props {
   userToEdit?: IUser | null;
@@ -134,7 +136,7 @@ export default function UserFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-3"
         >
           <FieldGroup>
             <Controller
@@ -179,7 +181,7 @@ export default function UserFormModal({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <Controller
                 name="role_id"
                 control={form.control}

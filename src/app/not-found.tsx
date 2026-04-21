@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { Home } from "lucide-react";
 
 import BackButton from "@/components/common/BackButton";
@@ -38,12 +39,13 @@ export default function NotFound() {
             Page Not Found
           </h2>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            Sorry, the page you are looking for doesn&apos;t exist or has been moved.
+            Sorry, the page you are looking for doesn&apos;t exist or has been
+            moved.
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
           <Button asChild size="lg" className="gap-2">
             <Link href="/dashboard">
               <Home className="w-5 h-5" />

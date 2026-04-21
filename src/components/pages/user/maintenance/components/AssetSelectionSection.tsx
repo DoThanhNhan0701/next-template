@@ -1,14 +1,19 @@
 "use client";
 
-import { RefreshCcw, PlusIcon, Trash } from "lucide-react";
+import { useState } from "react";
+
+import { PlusIcon, RefreshCcw, Trash } from "lucide-react";
+import { CheckCircle2, User, Warehouse } from "lucide-react";
 import {
-  UseFormReturn,
   Controller,
+  FieldArrayWithId,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
-  FieldArrayWithId,
+  UseFormReturn,
 } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -17,16 +22,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { ILocation } from "@/types/location";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { dynamicEndpoints } from "@/config/endpoints";
-import { IAssetStock, IAssetHolder } from "@/types/physical-asset";
-import { Warehouse, User, CheckCircle2 } from "lucide-react";
 import { useGet } from "@/hooks/useGet";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { ILocation } from "@/types/location";
+import { IPhysicalAsset } from "@/types/physical-asset";
+import { IAssetHolder, IAssetStock } from "@/types/physical-asset";
+
+import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface AssetStockSelectorProps {
   assetId: number;
@@ -69,7 +72,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
   if (!assetId) return null;
 
   return (
-    <div className="mt-4 p-4 bg-muted/30 rounded-xl border border-border/40 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+    <div className="mt-4 p-3 bg-muted/30 rounded-xl border border-border/40 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
       <div className="space-y-3">
         <label className="text-xs font-semibold text-primary flex items-center gap-2">
           <CheckCircle2 size={12} className="text-primary" />
@@ -290,7 +293,7 @@ export function AssetSelectionSection({
   locations,
 }: AssetSelectionSectionProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between border-b border-dashed pb-3">
         <label className="text-xs font-semibold text-primary">
           Asset selection & inventory

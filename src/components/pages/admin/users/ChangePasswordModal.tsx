@@ -90,7 +90,7 @@ export default function ChangePasswordModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-3"
         >
           <FieldGroup>
             <Controller

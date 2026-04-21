@@ -74,7 +74,7 @@ export default function MaintenanceTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-card/60 backdrop-blur-md p-4 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
@@ -155,8 +155,12 @@ export default function MaintenanceTable() {
               <TableHead className="font-semibold h-10 px-4">
                 Service provider
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Quantity</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">Status</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                Quantity
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center">
+                Status
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
             </TableRow>
           </TableHeader>

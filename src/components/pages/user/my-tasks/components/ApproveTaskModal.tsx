@@ -1,19 +1,21 @@
 "use client";
 
 import { useState } from "react";
+
+import { CheckCircle2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle2 } from "lucide-react";
-import { ITask } from "@/types/task";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { ITask } from "@/types/task";
 
 interface ApproveTaskModalProps {
   task: ITask | null;
@@ -51,7 +53,7 @@ export function ApproveTaskModal({
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto px-6">
-          <div className="grid grid-cols-1 gap-4 mb-1">
+          <div className="grid grid-cols-1 gap-3 mb-1">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-muted-foreground">
                 Record number

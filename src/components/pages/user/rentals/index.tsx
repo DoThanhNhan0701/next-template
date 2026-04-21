@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import RentalsTable from "./RentalsTable";
-import RentalReturnTable from "./RentalReturnTable";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import RentalReturnTable from "./RentalReturnTable";
+import RentalsTable from "./RentalsTable";
 
 export default function RentalsPage() {
   const searchParams = useSearchParams();
@@ -19,7 +21,7 @@ export default function RentalsPage() {
   };
 
   return (
-    <div className="h-full flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-3">
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}

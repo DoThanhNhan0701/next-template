@@ -1,32 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
 import { StaffSchema } from "@/components/schemas/admin/staff.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
-import { useMutation } from "@/hooks/useMutation";
-import { useGet } from "@/hooks/useGet";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
-import { IStaff, IUnit } from "@/types/staff";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -34,6 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
+import { IStaff, IUnit } from "@/types/staff";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 
 interface Props {
   staffToEdit?: IStaff | null;
@@ -130,10 +132,10 @@ export default function StaffFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-3"
         >
           <FieldGroup>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <Controller
                 name="staff_code"
                 control={form.control}

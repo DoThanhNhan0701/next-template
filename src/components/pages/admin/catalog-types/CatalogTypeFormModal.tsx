@@ -1,31 +1,33 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
 import { CatalogTypeSchema } from "@/components/schemas/admin/catalog-type.schema";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Field,
-  FieldLabel,
   FieldError,
   FieldGroup,
+  FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
-import { endpoints, dynamicEndpoints } from "@/config/endpoints";
+import { ICatalogType } from "@/types/catalog-type";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { ICatalogType } from "@/types/catalog-type";
 
 interface Props {
   catalogTypeToEdit?: ICatalogType | null;
@@ -124,7 +126,7 @@ export default function CatalogTypeFormModal({
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-3"
         >
           <FieldGroup>
             <Controller

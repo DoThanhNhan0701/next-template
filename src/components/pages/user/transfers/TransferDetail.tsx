@@ -64,7 +64,7 @@ export default function TransferDetail({ id }: Props) {
 
   if (pending && !detail) {
     return (
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-6 flex flex-col gap-3">
         <div className="flex items-center gap-3">
           <Skeleton className="h-8 w-8 rounded" />
           <div className="flex flex-col gap-1">
@@ -73,9 +73,9 @@ export default function TransferDetail({ id }: Props) {
           </div>
         </div>
         <Skeleton className="h-32 w-full rounded-xl" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <Skeleton className="lg:col-span-2 h-96 rounded-xl" />
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <Skeleton className="h-48 rounded-xl" />
             <Skeleton className="h-48 rounded-xl" />
           </div>
@@ -89,7 +89,7 @@ export default function TransferDetail({ id }: Props) {
   const totalAssets = detail.total_assets;
 
   return (
-    <div className="flex flex-col px-4 pb-6 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Back */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -118,7 +118,7 @@ export default function TransferDetail({ id }: Props) {
         <CardContent className="p-5 pl-7">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             {/* Left: record info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <ArrowRightLeft className="w-6 h-6 text-primary" />
               </div>
@@ -164,7 +164,7 @@ export default function TransferDetail({ id }: Props) {
       </Card>
 
       {/* Main grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
         {/* Items table */}
         <div className="lg:col-span-2">
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col">
@@ -247,7 +247,7 @@ export default function TransferDetail({ id }: Props) {
         </div>
 
         {/* Sidebar */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {/* Transfer Info */}
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
@@ -256,7 +256,7 @@ export default function TransferDetail({ id }: Props) {
                 Transfer Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 flex flex-col gap-4">
+            <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
@@ -316,7 +316,7 @@ export default function TransferDetail({ id }: Props) {
                 Route Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 flex flex-col gap-4">
+            <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                   From
@@ -380,7 +380,7 @@ export default function TransferDetail({ id }: Props) {
         </CardHeader>
         <CardContent className="p-0">
           {historyPending ? (
-            <div className="flex flex-col gap-2 p-4">
+            <div className="flex flex-col gap-2 p-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="h-10 w-full" />
               ))}

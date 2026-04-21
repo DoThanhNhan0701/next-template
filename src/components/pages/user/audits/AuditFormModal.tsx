@@ -14,6 +14,7 @@ import {
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
+import { DatePickerField } from "@/components/common/DatePickerField";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +53,6 @@ import { IOrgUnit } from "@/types/org";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
-import { DatePickerField } from "@/components/common/DatePickerField";
 
 const AuditSchema = z
   .object({
@@ -366,8 +366,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
-                        | { message?: string }
-                        | undefined,
+                          | { message?: string }
+                          | undefined,
                       ]}
                     />
                   </Field>
@@ -453,9 +453,10 @@ export default function AuditFormModal({
                                 className={`
                                   flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
                                   hover:bg-accent hover:text-accent-foreground
-                                  ${selectedLocationIds.includes(l.id)
-                                    ? "bg-accent/50"
-                                    : ""
+                                  ${
+                                    selectedLocationIds.includes(l.id)
+                                      ? "bg-accent/50"
+                                      : ""
                                   }
                                 `}
                                 onClick={() => toggleLocation(l.id)}
@@ -481,8 +482,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
-                        | { message?: string }
-                        | undefined,
+                          | { message?: string }
+                          | undefined,
                       ]}
                     />
                   </Field>
@@ -545,7 +546,7 @@ export default function AuditFormModal({
             </div>
           </div>
 
-          <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>

@@ -104,7 +104,7 @@ function RecoveryItemRow({
   }, [prefillAssetId, assetsPending, assetRes, index, setValue]);
 
   return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-4">
+    <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-3">
       <Button
         type="button"
         variant="ghost"
@@ -350,7 +350,11 @@ export default function RecoveryVoucherModal({
       {
         url: endpoints.RECOVERIES,
         method: "post",
-        body: { ...rest, attachments: data.attachments || [], workflow_assignments },
+        body: {
+          ...rest,
+          attachments: data.attachments || [],
+          workflow_assignments,
+        },
       },
       {
         onSuccess: (res) => {
@@ -616,7 +620,7 @@ export default function RecoveryVoucherModal({
             </div>
           </div>
 
-          <div className="p-4 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
+          <div className="p-3 border-t flex justify-end gap-3 shrink-0 bg-muted/10">
             <Button
               type="button"
               variant="outline"
