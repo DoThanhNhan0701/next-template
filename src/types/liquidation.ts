@@ -26,7 +26,7 @@ export interface ILiquidationFull {
   buyer_name: string;
   notes: string;
   external_link: string;
-  attachments: unknown[];
+  attachments: string[];
   creator_id: number;
   creator: IUser;
   status_id: number;

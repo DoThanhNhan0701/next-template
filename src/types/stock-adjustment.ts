@@ -54,7 +54,7 @@ export interface IStockAdjustmentFull {
   reason: string;
   total_quantity: number;
   external_link: string | null;
-  attachments: unknown[];
+  attachments: string[];
   details: IStockAdjustmentDetail[];
   status_obj: {
     id: number;

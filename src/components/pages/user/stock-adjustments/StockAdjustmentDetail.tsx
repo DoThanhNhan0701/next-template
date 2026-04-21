@@ -17,6 +17,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,8 +32,11 @@ import {
 } from "@/components/ui/table";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { IStockAdjustmentFull } from "@/types/stock-adjustment";
 import { ApprovalHistory } from "@/types/task";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
 
 interface Props {
@@ -42,9 +46,15 @@ interface Props {
 export default function StockAdjustmentDetail({ id }: Props) {
   const router = useRouter();
 
-  const { response: detail, pending } = useGet<IStockAdjustmentFull>({
+  const {
+    response: detail,
+    pending,
+    reFetch,
+  } = useGet<IStockAdjustmentFull>({
     url: dynamicEndpoints.STOCK_ADJUSTMENT_DETAIL(Number(id)),
   });
+
+  const { mutate: updateAdjustment, pending: updatePending } = useMutation();
 
   const adjustmentType = detail?.details?.[0]?.adjustment_type;
 
@@ -319,6 +329,31 @@ export default function StockAdjustmentDetail({ id }: Props) {
           </div>
         </div>
       </div>
+
+      <RecordAttachmentsCard
+        title="Adjustment Documents"
+        initialAttachments={detail.attachments}
+        isPending={updatePending}
+        onSave={async (newAttachments) => {
+          await updateAdjustment(
+            {
+              url: dynamicEndpoints.STOCK_ADJUSTMENT_DETAIL(Number(id)),
+              method: "patch",
+              body: { attachments: newAttachments },
+            },
+            {
+              onSuccess: (res) => {
+                getApiSuccessMessage(res);
+                reFetch();
+              },
+              onError: (err) => {
+                getApiErrorMessage(err);
+                throw err;
+              },
+            },
+          );
+        }}
+      />
 
       {/* Workflow History */}
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">

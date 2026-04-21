@@ -21,6 +21,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,8 +37,11 @@ import {
 } from "@/components/ui/table";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { IMaintenanceFull } from "@/types/maintenance";
 import { ApprovalHistory } from "@/types/task";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
 
 interface Props {
@@ -47,9 +51,15 @@ interface Props {
 export default function MaintenanceDetail({ id }: Props) {
   const router = useRouter();
 
-  const { response: detail, pending } = useGet<IMaintenanceFull>({
+  const {
+    response: detail,
+    pending,
+    reFetch,
+  } = useGet<IMaintenanceFull>({
     url: dynamicEndpoints.MAINTENANCE_DETAIL(Number(id)),
   });
+
+  const { mutate: updateMaintenance, pending: updatePending } = useMutation();
 
   const { response: historyList, pending: historyPending } = useGet<
     ApprovalHistory[]
@@ -388,6 +398,31 @@ export default function MaintenanceDetail({ id }: Props) {
           </div>
         </div>
       </div>
+
+      <RecordAttachmentsCard
+        title="Maintenance Documents"
+        initialAttachments={detail.attachments || []}
+        isPending={updatePending}
+        onSave={async (newAttachments) => {
+          await updateMaintenance(
+            {
+              url: dynamicEndpoints.MAINTENANCE_DETAIL(Number(id)),
+              method: "patch",
+              body: { attachments: newAttachments },
+            },
+            {
+              onSuccess: (res) => {
+                getApiSuccessMessage(res);
+                reFetch();
+              },
+              onError: (err) => {
+                getApiErrorMessage(err);
+                throw err;
+              },
+            },
+          );
+        }}
+      />
 
       {/* Workflow History */}
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">

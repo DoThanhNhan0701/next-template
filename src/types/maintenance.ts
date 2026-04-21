@@ -40,7 +40,7 @@ export interface IMaintenanceFull {
   expected_cost: number;
   actual_cost: number;
   external_link: string;
-  attachments: unknown[];
+  attachments: string[];
   create_date: string;
   outing_date: string;
   return_date: string;

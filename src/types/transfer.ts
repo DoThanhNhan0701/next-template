@@ -35,7 +35,7 @@ export interface ITransfer {
 
 export interface ITransferFull extends ITransfer {
   details: ITransferDetail[];
-  attachments: unknown[];
+  attachments: string[];
 }
 
 

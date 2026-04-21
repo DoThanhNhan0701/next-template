@@ -24,12 +24,14 @@ import Header from "@/components/layouts/header";
 import Sidebar from "@/components/layouts/sidebar";
 import { SidebarItem } from "@/components/layouts/sidebar";
 import AppBootstrap from "@/components/libs/app-bootstrap";
+import { useHasHydrated } from "@/hooks/useHasHydrated";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch, RootState } from "@/redux";
 import { actionFetchPendingCount } from "@/redux/slices/task";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const hasHydrated = useHasHydrated();
 
   const dispatch = useDispatch<AppDispatch>();
   const { user, loading: authLoading } = useSelector(
@@ -135,11 +137,12 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
 
   // Before mount or while auth loads: show skeleton (user manually enters URL)
   // After mount + auth done: filter by permission.
-  const sidebarItems = authLoading
-    ? []
-    : allItems.filter(
-        (item) => !item.permission || hasPermission(item.permission),
-      );
+  const sidebarItems =
+    authLoading || !hasHydrated
+      ? []
+      : allItems.filter(
+          (item) => !item.permission || hasPermission(item.permission),
+        );
 
   return (
     <AppBootstrap>

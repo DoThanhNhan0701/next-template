@@ -22,6 +22,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,7 +67,7 @@ export default function RentalDetail({ id }: Props) {
   >({
     url: dynamicEndpoints.WORKFLOW_HISTORY("rental", Number(id)),
   });
-
+  const { mutate: updateRental, pending: updatePending } = useMutation();
   const { mutate: mutateReturn, pending: returnPending } = useMutation();
 
   const handleReturnAction = async (data: Record<string, unknown>) => {
@@ -422,6 +423,30 @@ export default function RentalDetail({ id }: Props) {
           </div>
         </div>
       </div>
+      <RecordAttachmentsCard
+        title="Rental Documents"
+        initialAttachments={detail.attachments}
+        isPending={updatePending}
+        onSave={async (newAttachments) => {
+          await updateRental(
+            {
+              url: dynamicEndpoints.RENTAL_DETAIL(Number(id)),
+              method: "patch",
+              body: { attachments: newAttachments },
+            },
+            {
+              onSuccess: (res) => {
+                getApiSuccessMessage(res);
+                reFetch();
+              },
+              onError: (err) => {
+                getApiErrorMessage(err);
+                throw err;
+              },
+            },
+          );
+        }}
+      />
 
       {/* Workflow History */}
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">

@@ -20,6 +20,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,8 +36,11 @@ import {
 } from "@/components/ui/table";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { ILiquidationFull } from "@/types/liquidation";
 import { ApprovalHistory } from "@/types/task";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
 
 interface Props {
@@ -46,9 +50,15 @@ interface Props {
 export default function LiquidationDetail({ id }: Props) {
   const router = useRouter();
 
-  const { response: detail, pending } = useGet<ILiquidationFull>({
+  const {
+    response: detail,
+    pending,
+    reFetch,
+  } = useGet<ILiquidationFull>({
     url: dynamicEndpoints.LIQUIDATION_DETAIL(Number(id)),
   });
+
+  const { mutate: updateLiquidation, pending: updatePending } = useMutation();
 
   const { response: historyList, pending: historyPending } = useGet<
     ApprovalHistory[]
@@ -359,6 +369,31 @@ export default function LiquidationDetail({ id }: Props) {
           </div>
         </div>
       </div>
+
+      <RecordAttachmentsCard
+        title="Disposal Documents"
+        initialAttachments={detail.attachments || []}
+        isPending={updatePending}
+        onSave={async (newAttachments) => {
+          await updateLiquidation(
+            {
+              url: dynamicEndpoints.LIQUIDATION_DETAIL(Number(id)),
+              method: "patch",
+              body: { attachments: newAttachments },
+            },
+            {
+              onSuccess: (res) => {
+                getApiSuccessMessage(res);
+                reFetch();
+              },
+              onError: (err) => {
+                getApiErrorMessage(err);
+                throw err;
+              },
+            },
+          );
+        }}
+      />
 
       {/* Workflow History */}
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
