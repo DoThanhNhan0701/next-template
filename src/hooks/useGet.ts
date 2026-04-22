@@ -22,7 +22,7 @@ export const useGet = <T = unknown>(
       return res.data;
     },
     enabled: !options?.disabled,
-    staleTime: options?.staleTime,
+    ...(options?.staleTime !== undefined ? { staleTime: options.staleTime } : {}),
   });
 
   const pending = isPending;
