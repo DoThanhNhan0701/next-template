@@ -1,12 +1,12 @@
-import React from "react";
-import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/libs/theme-provider";
-import StoreProvider from "@/components/libs/store-provider";
 import QueryProvider from "@/components/libs/query-provider";
-import "./globals.css";
+import StoreProvider from "@/components/libs/store-provider";
+import { ThemeProvider } from "@/components/libs/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import React from "react";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Asset Management",
@@ -23,16 +23,16 @@ export default async function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body className="text-[14px]">
-        <StoreProvider>
-          <QueryProvider>
-            <ThemeProvider>
-              <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages}>
+          <StoreProvider>
+            <QueryProvider>
+              <ThemeProvider>
                 <Toaster position="top-center" />
                 {children}
-              </NextIntlClientProvider>
-            </ThemeProvider>
-          </QueryProvider>
-        </StoreProvider>
+              </ThemeProvider>
+            </QueryProvider>
+          </StoreProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

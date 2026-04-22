@@ -156,7 +156,11 @@ const taskSlice = createSlice({
       })
       .addCase(actionFetchPendingCount.rejected, (state) => {
         state.loading = false;
-      });
+      })
+      .addMatcher(
+        (action) => action.type === 'auth/actionLogout',
+        () => initialState
+      );
   },
 });
 

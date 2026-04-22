@@ -31,7 +31,7 @@ interface Auth {
 
 const initialState: Auth = {
   user: null,
-  loading: true,
+  loading: false,
   loggingOut: false,
 };
 

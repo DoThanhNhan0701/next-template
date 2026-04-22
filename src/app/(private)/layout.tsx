@@ -43,7 +43,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const t = useTranslations("Menu");
   const pendingCountFetched = useRef(false);
 
-  useFaviconBadge(counts.PENDING);
+  useFaviconBadge(counts.PENDING, pathname);
 
   useEffect(() => {
     if (pendingCountFetched.current) return;

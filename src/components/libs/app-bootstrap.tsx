@@ -2,13 +2,13 @@
 
 import { useEffect } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { AppDispatch } from "@/redux";
+import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser } from "@/redux/slices/auth";
 
-// Module-level flag: persists across React Strict Mode remounts
-let initialized = false;
+import { REFRESH_TOKEN } from "@/config/constants";
+import { getClientCookie } from "@/utils/cookiesStore";
 
 export default function AppBootstrap({
   children,
@@ -16,14 +16,16 @@ export default function AppBootstrap({
   children: React.ReactNode;
 }) {
   const dispatch = useDispatch<AppDispatch>();
+  const { user, loading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (!initialized) {
-      initialized = true;
+    // Only attempt to fetch if we have a refresh token (prevents infinite loop after logout)
+    const hasRefreshToken = !!getClientCookie(REFRESH_TOKEN);
+
+    if (!user && !loading && hasRefreshToken) {
       dispatch(actionFetchUser());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, loading, dispatch]);
 
   return <>{children}</>;
 }
