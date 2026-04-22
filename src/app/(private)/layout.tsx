@@ -27,6 +27,7 @@ import AppBootstrap from "@/components/libs/app-bootstrap";
 import { useHasHydrated } from "@/hooks/useHasHydrated";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch, RootState } from "@/redux";
+import { useFaviconBadge } from "@/hooks/useFaviconBadge";
 import { actionFetchPendingCount } from "@/redux/slices/task";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
@@ -41,6 +42,8 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const { hasPermission } = usePermissions();
   const t = useTranslations("Menu");
   const pendingCountFetched = useRef(false);
+
+  useFaviconBadge(counts.PENDING);
 
   useEffect(() => {
     if (pendingCountFetched.current) return;
