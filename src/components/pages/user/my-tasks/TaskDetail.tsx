@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 import {
   CheckCircle2,
@@ -41,6 +42,7 @@ import {
   getDocumentTitle,
   isAllocationDocument,
   isLiquidationDocument,
+  isMaintenanceDocument,
   isRecoveryDocument,
   isRentalReturnDocument,
   isStockAdjustmentDocument,
@@ -49,6 +51,7 @@ import {
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
+import { decrementPendingCount } from "@/redux/slices/task";
 
 const getStatusInfo = (statusName: string | undefined) => {
   const name = (statusName || "").toLowerCase();
@@ -94,6 +97,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
   const status = searchParams.get("status");
   const documentType = searchParams.get("document_type") ?? "allocation";
   const router = useRouter();
+  const dispatch = useDispatch();
   const [comment, setComment] = useState("");
   const { mutate, pending: mutatePending } = useMutation();
 
@@ -135,11 +139,9 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     (t) => t.document_id === Number(id) && t.document_type === documentType,
   );
 
-  // Format data động dựa trên API response
   const formattedData = useMemo(() => {
     if (!detail) return null;
 
-    // Document fields
     const fields: Array<{
       icon: React.ComponentType<{ className?: string }>;
       iconColor: string;
@@ -148,9 +150,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
       badge?: { label: string; variant?: string };
     }> = [];
 
-    // Check document type and format accordingly
     if (isAllocationDocument(detail)) {
-      // Allocation specific fields
       fields.push({
         icon: User,
         iconColor: "bg-primary/10 text-primary",
@@ -398,13 +398,110 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
+    } else if (isMaintenanceDocument(detail)) {
+      // Maintenance specific fields
+      fields.push({
+        icon: FileText,
+        iconColor: "bg-blue-500/10 text-blue-500",
+        label: "Ticket number",
+        value: detail.ticket_number,
+      });
+
+      fields.push({
+        icon: User,
+        iconColor: "bg-indigo-500/10 text-indigo-500",
+        label: "Service provider",
+        value: detail.service_provider_name,
+      });
+
+      fields.push({
+        icon: History,
+        iconColor: "bg-emerald-500/10 text-emerald-500",
+        label: "Outing date",
+        value: formatDate(detail.outing_date),
+      });
+
+      if (detail.return_date) {
+        fields.push({
+          icon: History,
+          iconColor: "bg-amber-500/10 text-amber-500",
+          label: "Return date",
+          value: formatDate(detail.return_date),
+        });
+      }
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-purple-500/10 text-purple-500",
+        label: "Expected cost",
+        value: `${(detail.expected_cost || 0).toLocaleString("vi-VN")} VND`,
+      });
+
+      if (detail.actual_cost) {
+        fields.push({
+          icon: Package,
+          iconColor: "bg-emerald-500/10 text-emerald-500",
+          label: "Actual cost",
+          value: `${detail.actual_cost.toLocaleString("vi-VN")} VND`,
+        });
+      }
+
+      if (detail.handover_person) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-blue-500/10 text-blue-500",
+          label: "Handover person",
+          value: detail.handover_person,
+        });
+      }
+
+      if (detail.taker_person_name) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-orange-500/10 text-orange-500",
+          label: "Taker person",
+          value: detail.taker_person_name,
+        });
+      }
+
+      if (detail.external_link) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-cyan-500/10 text-cyan-500",
+          label: "External link",
+          value: (
+            <a
+              href={detail.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              View link
+            </a>
+          ),
+        });
+      }
+
+      if (detail.notes) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-orange-500/10 text-orange-500",
+          label: "Notes",
+          value: (
+            <span className="text-sm font-medium text-muted-foreground italic">
+              {detail.notes}
+            </span>
+          ),
+        });
+      }
     }
 
     // Reason (common field for Allocation, Stock, and Transfer)
     if (
       (isAllocationDocument(detail) ||
         isStockAdjustmentDocument(detail) ||
-        isTransferDocument(detail)) &&
+        isTransferDocument(detail) ||
+        isMaintenanceDocument(detail)) &&
       detail.reason
     ) {
       fields.push({
@@ -605,6 +702,26 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           quantity: item.quantity,
         })),
       };
+    } else if (isMaintenanceDocument(detail) && detail.details.length > 0) {
+      detailItems = {
+        title: "Maintenance asset list",
+        icon: Package,
+        columns: [
+          { key: "no", label: "No", align: "center" as const },
+          { key: "asset", label: "Asset" },
+          { key: "asset_code", label: "Asset Code" },
+          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "notes", label: "Notes" },
+        ],
+        rows: detail.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          quantity: item.quantity,
+          notes: item.notes || "-",
+        })),
+      };
     } else if (isLiquidationDocument(detail) && detail.details.length > 0) {
       detailItems = {
         title: "Disposal items",
@@ -660,6 +777,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+          dispatch(decrementPendingCount());
           reFetchDetail();
           reFetchHistory();
           reFetchMyTasks();
@@ -685,19 +803,6 @@ export default function TaskDetail({ id }: TaskDetailProps) {
 
   return (
     <div className="flex flex-col px-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header */}
-      {/* <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
-          onClick={() => router.back()}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Back
-        </Button>
-      </div> */}
-
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button

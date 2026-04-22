@@ -127,6 +127,11 @@ const taskSlice = createSlice({
         state.counts[status] = count;
       }
     },
+    decrementPendingCount: (state) => {
+      if (state.counts.PENDING > 0) {
+        state.counts.PENDING -= 1;
+      }
+    },
   },
   extraReducers(builder) {
     builder
@@ -155,6 +160,6 @@ const taskSlice = createSlice({
   },
 });
 
-export const { updateCount } = taskSlice.actions;
+export const { updateCount, decrementPendingCount } = taskSlice.actions;
 
 export default taskSlice.reducer;

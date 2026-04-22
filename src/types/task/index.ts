@@ -12,6 +12,7 @@ export * from "./recovery";
 export * from "./rental-return";
 export * from "./transfer";
 export * from "./liquidation";
+export * from "./maintenance";
 
 // Workflow types
 export * from "./workflow";

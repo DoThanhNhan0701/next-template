@@ -98,6 +98,7 @@ export const dynamicEndpoints = {
       recovery: `/api/v1/recoveries/${id}`,
       rental: `/api/v1/rentals/${id}`,
       liquidation: `/api/v1/liquidations/${id}`,
+      maintenance: `/api/v1/maintenances/${id}`,
     };
     return map[documentType] ?? `/api/v1/allocations/${id}`;
   },

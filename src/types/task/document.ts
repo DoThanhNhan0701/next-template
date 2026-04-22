@@ -4,6 +4,7 @@ import { RecoveryDocument } from "./recovery";
 import { RentalReturnDocument } from "./rental-return";
 import { TransferDocument } from "./transfer";
 import { LiquidationDocument } from "./liquidation";
+import { MaintenanceDocument } from "./maintenance";
 
 // ============================================
 // UNIFIED DOCUMENT DETAIL TYPE
@@ -19,7 +20,8 @@ export type DocumentDetail =
     | RecoveryDocument
     | RentalReturnDocument
     | TransferDocument
-    | LiquidationDocument;
+    | LiquidationDocument
+    | MaintenanceDocument;
 
 // ============================================
 // TYPE GUARDS
@@ -98,6 +100,19 @@ export const isLiquidationDocument = (
         "liquidation_date" in doc &&
         "liquidation_type" in doc &&
         "total_value" in doc
+    );
+};
+
+/**
+ * Type guard to check if document is a Maintenance
+ */
+export const isMaintenanceDocument = (
+    doc: DocumentDetail,
+): doc is MaintenanceDocument => {
+    return (
+        "ticket_number" in doc &&
+        "outing_date" in doc &&
+        "service_provider_name" in doc
     );
 };
 
