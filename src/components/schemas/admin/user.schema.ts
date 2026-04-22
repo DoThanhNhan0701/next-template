@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const UserSchema = z.object({
-  username: z.string().min(1, "Username is required").max(50),
-  email: z.string().email("Invalid email").min(1, "Email is required"),
-  full_name: z.string().min(1, "Full name is required").max(100),
-  role_id: z.coerce.number().min(1, "Role is required"),
+  username: z.string().min(1, "Field is required!").max(50),
+  email: z.string().email("Invalid email").min(1, "Field is required!"),
+  full_name: z.string().min(1, "Field is required!").max(100),
+  role_id: z.coerce.number().min(1, "Field is required!"),
   unit_id: z.coerce.number().optional().nullable(),
   team_leader_id: z.coerce.number().optional().nullable(),
   is_active: z.boolean(),
@@ -12,7 +12,7 @@ export const UserSchema = z.object({
 
 export const UserChangePasswordSchema = z
   .object({
-    old_password: z.string().min(1, "Old password is required"),
+    old_password: z.string().min(1, "Field is required!"),
     new_password: z.string().min(6, "Password must be at least 6 characters"),
     confirm_password: z.string().min(6, "Confirm password is required"),
   })

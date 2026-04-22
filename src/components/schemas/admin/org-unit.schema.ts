@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const OrgUnitSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  code: z.string().min(1, "Code is required"),
+  name: z.string().min(1, "Field is required!"),
+  code: z.string().min(1, "Field is required!"),
   unit_type: z.enum(["company", "department", "branch"]),
   parent_id: z.number().nullable().optional(),
   leader_id: z.number().nullable().optional(),

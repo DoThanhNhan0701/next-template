@@ -9,6 +9,7 @@ import {
   UseFormReturn,
 } from "react-hook-form";
 
+import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -20,8 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { IPhysicalAsset } from "@/types/physical-asset";
-
-import { TransferFormValues } from "../TransferFormModal";
 
 interface AssetSelectionSectionProps {
   form: UseFormReturn<TransferFormValues>;

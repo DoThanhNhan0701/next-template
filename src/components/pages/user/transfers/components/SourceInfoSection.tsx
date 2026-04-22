@@ -3,6 +3,7 @@
 import { MapPin, User } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import {
   Field,
   FieldError,
@@ -19,8 +20,6 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
-
-import { TransferFormValues } from "../TransferFormModal";
 
 interface SourceInfoSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -46,9 +45,7 @@ export function SourceInfoSection({
           control={form.control}
           render={({ field }) => (
             <Field className="col-span-2 gap-1 mb-3">
-              <FieldLabel>
-                Transfer type
-              </FieldLabel>
+              <FieldLabel>Transfer type</FieldLabel>
               <Tabs
                 value={field.value}
                 onValueChange={(val) => {

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripVertical, PlusIcon, Shield, Trash2Icon, User } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,28 +36,13 @@ import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { IUser } from "@/types/auth";
 import { IRole } from "@/types/rbac";
-import { IWorkflowTemplate } from "@/types/workflow-template";
+import { IWorkflowStep, IWorkflowTemplate } from "@/types/workflow-template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
-const StepSchema = z.object({
-  id: z.number().optional(),
-  step_order: z.number().min(1),
-  name: z.string().min(1, "Step name is required"),
-  default_assignee_role_id: z.number().nullable().optional(),
-  default_assignee_user_id: z.number().nullable().optional(),
-});
+import { TemplateSchema, type TemplateFormValues } from "@/components/schemas/admin/workflow-template.schema";
 
-const TemplateSchema = z.object({
-  name: z.string().min(1, "Workflow name is required"),
-  document_type: z.string().min(1, "Document type is required"),
-  description: z.string().optional(),
-  is_active: z.boolean(),
-  is_locked: z.boolean(),
-  steps: z.array(StepSchema),
-});
-
-type FormValues = z.infer<typeof TemplateSchema>;
+type FormValues = TemplateFormValues;
 type AssigneeType = "none" | "role" | "user";
 
 const DOCUMENT_TYPES = [
@@ -265,7 +249,7 @@ export default function WorkflowTemplateFormModal({
         description: templateToEdit.description || "",
         is_active: templateToEdit.is_active,
         is_locked: templateToEdit.is_locked,
-        steps: templateToEdit.steps.map((s) => ({
+        steps: templateToEdit.steps.map((s: IWorkflowStep) => ({
           id: s.id,
           step_order: s.step_order,
           name: s.name,

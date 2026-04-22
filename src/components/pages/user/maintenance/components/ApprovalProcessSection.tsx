@@ -2,6 +2,7 @@
 
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import {
   Field,
   FieldError,
@@ -17,8 +18,6 @@ import {
 } from "@/components/ui/select";
 import { IUser } from "@/types/auth";
 import { ITemplate } from "@/types/template";
-
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface ApprovalProcessSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;

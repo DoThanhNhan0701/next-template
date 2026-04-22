@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { z } from "zod";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { DatePickerField } from "@/components/common/DatePickerField";
@@ -48,25 +47,9 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-const DetailSchema = z.object({
-  asset_id: z.number().min(1, "Please select an asset"),
-  location_id: z.number().min(1, "Please select a location"),
-  adjustment_type: z.enum(["INCREASE", "DECREASE"]),
-  quantity_diff: z.number().min(1, "Quantity must be at least 1"),
-  notes: z.string().optional(),
-});
+import { StockAdjustmentSchema, type StockAdjustmentFormValues } from "@/components/schemas/user/stock-adjustment.schema";
 
-const StockAdjustmentSchema = z.object({
-  adjustment_date: z.string().min(1, "Date is required"),
-  reason: z.string().min(1, "Reason is required"),
-  external_link: z.string().optional(),
-  approver_step_1_id: z.number().nullable().optional(),
-  approver_step_2_id: z.number().nullable().optional(),
-  attachments: z.array(z.string()).optional(),
-  details: z.array(DetailSchema).min(1, "At least one item is required"),
-});
-
-type FormValues = z.infer<typeof StockAdjustmentSchema>;
+type FormValues = StockAdjustmentFormValues;
 
 interface Props {
   isOpen: boolean;

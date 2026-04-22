@@ -22,7 +22,7 @@ import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 
-import { LiquidationFormValues } from "../schema";
+import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 
 interface AssetListItemProps {
   index: number;

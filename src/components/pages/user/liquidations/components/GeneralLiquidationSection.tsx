@@ -33,7 +33,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { IStaff } from "@/types/staff";
 
-import { LiquidationFormValues } from "../schema";
+import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 
 interface GeneralLiquidationSectionProps {
   form: UseFormReturn<LiquidationFormValues>;

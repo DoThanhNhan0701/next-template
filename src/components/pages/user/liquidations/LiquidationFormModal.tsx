@@ -32,7 +32,7 @@ import { getTodayISO } from "@/utils/date";
 import { GeneralLiquidationSection } from "./components/GeneralLiquidationSection";
 import { LiquidationApprovalSection } from "./components/LiquidationApprovalSection";
 import { LiquidationAssetSelectionSection } from "./components/LiquidationAssetSelectionSection";
-import { LiquidationFormValues, LiquidationSchema } from "./schema";
+import { LiquidationFormValues, LiquidationSchema } from "@/components/schemas/user/liquidation.schema";
 
 interface LiquidationFormModalProps {
   isOpen: boolean;

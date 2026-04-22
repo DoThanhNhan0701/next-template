@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const SupplierSchema = z.object({
-  name: z.string().min(1, "Supplier name is required"),
+  name: z.string().min(1, "Field is required!"),
   tax_code: z.string().nullable().optional(),
   contact_name: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),

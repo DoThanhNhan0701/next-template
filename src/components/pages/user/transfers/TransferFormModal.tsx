@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,29 +32,7 @@ import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { SourceInfoSection } from "./components/SourceInfoSection";
 import { TargetDestinationSection } from "./components/TargetDestinationSection";
 
-const TransferSchema = z.object({
-  source_type: z.enum(["holder", "location"]),
-  source_id: z.number().min(1, "Source is required"),
-  target_unit_id: z.number().optional().nullable(),
-  target_id: z.number().optional().nullable(),
-  location_id: z.number().optional().nullable(),
-  approver_step_1_id: z.number().optional().nullable(),
-  approver_step_2_id: z.number().optional().nullable(),
-  transfer_date: z.string().min(1, "Transfer date is required"),
-  external_link: z.string().optional().nullable(),
-  reason: z.string().optional().nullable(),
-  attachments: z.array(z.string()).optional(),
-  details: z
-    .array(
-      z.object({
-        asset_id: z.number().min(1, "Required"),
-        quantity: z.number().min(1, "Required"),
-      }),
-    )
-    .min(1, "At least one asset is required"),
-});
-
-export type TransferFormValues = z.infer<typeof TransferSchema>;
+import { TransferSchema, type TransferFormValues } from "@/components/schemas/user/transfer.schema";
 
 interface ITransferPayload {
   transfer_type: "holder" | "location";

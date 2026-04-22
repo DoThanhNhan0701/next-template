@@ -12,6 +12,7 @@ import {
   UseFormReturn,
 } from "react-hook-form";
 
+import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -28,8 +29,6 @@ import { cn } from "@/lib/utils";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { IAssetHolder, IAssetStock } from "@/types/physical-asset";
-
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface AssetStockSelectorProps {
   assetId: number;
@@ -191,7 +190,9 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
               sourceType === "stock" ? "text-emerald-700" : "text-blue-700",
             )}
           >
-            {sourceType === "stock" ? "Select source warehouse" : "Select source holder"}
+            {sourceType === "stock"
+              ? "Select source warehouse"
+              : "Select source holder"}
           </FieldLabel>
           <Controller
             name={
@@ -242,22 +243,22 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 <SelectContent>
                   {sourceType === "stock"
                     ? stocks.map((s, i) => (
-                      <SelectItem
-                        key={`s-opt-${i}`}
-                        value={s.location_id.toString()}
-                      >
-                        [{s.location_code}] {s.location_name} - Qty:{" "}
-                        {s.quantity}
-                      </SelectItem>
-                    ))
-                    : holders.map((h, i) => {
-                      const id = h.staff_id || h.unit_id || 0;
-                      return (
-                        <SelectItem key={`h-opt-${i}`} value={id.toString()}>
-                          {h.name} ({h.type}) - Qty: {h.quantity}
+                        <SelectItem
+                          key={`s-opt-${i}`}
+                          value={s.location_id.toString()}
+                        >
+                          [{s.location_code}] {s.location_name} - Qty:{" "}
+                          {s.quantity}
                         </SelectItem>
-                      );
-                    })}
+                      ))
+                    : holders.map((h, i) => {
+                        const id = h.staff_id || h.unit_id || 0;
+                        return (
+                          <SelectItem key={`h-opt-${i}`} value={id.toString()}>
+                            {h.name} ({h.type}) - Qty: {h.quantity}
+                          </SelectItem>
+                        );
+                      })}
                 </SelectContent>
               </Select>
             )}
@@ -356,9 +357,7 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: detailField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>
-                        Select asset
-                      </FieldLabel>
+                      <FieldLabel>Select asset</FieldLabel>
                       <Select
                         onValueChange={(val) => {
                           const assetId = Number(val);
@@ -484,9 +483,7 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: qtyField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>
-                        Quantity
-                      </FieldLabel>
+                      <FieldLabel>Quantity</FieldLabel>
                       <Input
                         type="number"
                         className="bg-white text-center font-semibold"
@@ -508,9 +505,7 @@ export function AssetSelectionSection({
                 control={form.control}
                 render={({ field: locField, fieldState }) => (
                   <Field className="gap-1">
-                    <FieldLabel>
-                      Return location
-                    </FieldLabel>
+                    <FieldLabel>Return location</FieldLabel>
                     <p className="text-[10px] text-muted-foreground/70 italic -mt-0.5 mb-1">
                       Leave empty to return to original source
                     </p>
@@ -552,9 +547,7 @@ export function AssetSelectionSection({
                 control={form.control}
                 render={({ field: notesField, fieldState }) => (
                   <Field className="gap-1 justify-end">
-                    <FieldLabel>
-                      Item notes
-                    </FieldLabel>
+                    <FieldLabel>Item notes</FieldLabel>
                     <Input
                       {...notesField}
                       placeholder="Maintenance detail for this asset..."

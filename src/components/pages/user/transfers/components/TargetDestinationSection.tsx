@@ -5,6 +5,7 @@ import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,8 +18,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
-
-import { TransferFormValues } from "../TransferFormModal";
 
 interface TargetDestinationSectionProps {
   form: UseFormReturn<TransferFormValues>;
@@ -48,9 +47,7 @@ export function TargetDestinationSection({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>
-                    Select specific personnel
-                  </FieldLabel>
+                  <FieldLabel>Select specific personnel</FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(Number(val))}
                     value={field.value ? field.value.toString() : ""}
@@ -121,9 +118,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel>
-                New geographical location (optional)
-              </FieldLabel>
+              <FieldLabel>New geographical location (optional)</FieldLabel>
               <Select
                 onValueChange={(val) =>
                   field.onChange(val === "none" ? null : Number(val))
@@ -159,9 +154,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Transfer date
-              </FieldLabel>
+              <FieldLabel>Transfer date</FieldLabel>
               <DatePickerField form={form} name="transfer_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -173,9 +166,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-2 gap-1">
-              <FieldLabel>
-                External link (Jira/Helpdesk)
-              </FieldLabel>
+              <FieldLabel>External link (Jira/Helpdesk)</FieldLabel>
               <Input
                 placeholder="https://..."
                 {...field}
@@ -192,9 +183,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-3 gap-1">
-              <FieldLabel>
-                Reason & internal notes
-              </FieldLabel>
+              <FieldLabel>Reason & internal notes</FieldLabel>
               <Textarea
                 placeholder="Enter detailed transfer reason..."
                 {...field}

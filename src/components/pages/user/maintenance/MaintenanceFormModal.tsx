@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
 import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { Button } from "@/components/ui/button";
@@ -35,43 +34,7 @@ import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { GeneralInfoSection } from "./components/GeneralInfoSection";
 import { ServiceInfoSection } from "./components/ServiceInfoSection";
 
-const MaintenanceSchema = z.object({
-  record_number: z.string().min(1, "Required"),
-  ticket_number: z.string().min(1, "Required"),
-  reason: z.string().min(1, "Required"),
-  handover_person: z.string().min(1, "Required"),
-  taker_person_name: z.string().min(1, "Required"),
-  taker_phone: z.string().nullable(),
-  service_provider_name: z.string().min(1, "Required"),
-  service_provider_address: z.string().nullable(),
-  notes: z.string().nullable(),
-  expected_cost: z.number(),
-  actual_cost: z.number(),
-  external_link: z.string().nullable(),
-  outing_date: z.string().min(1, "Required"),
-  items: z
-    .array(
-      z.object({
-        asset_id: z.number().min(1, "Required"),
-        quantity: z.number().min(1, "Required"),
-        notes: z.string().nullable(),
-        from_location_id: z.number(),
-        from_staff_id: z.number(),
-        from_unit_id: z.number(),
-        return_to_location_id: z.number().nullable(),
-      }),
-    )
-    .min(1, "At least one item is required"),
-  attachments: z.array(z.string()).optional(),
-  workflow_assignments: z.array(
-    z.object({
-      step_id: z.number(),
-      user_id: z.number().min(1, "Required"),
-    }),
-  ),
-});
-
-export type MaintenanceFormValues = z.infer<typeof MaintenanceSchema>;
+import { MaintenanceSchema, type MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 
 interface MaintenanceFormModalProps {
   isOpen: boolean;

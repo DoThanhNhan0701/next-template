@@ -3,6 +3,7 @@
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import {
   Field,
   FieldError,
@@ -11,8 +12,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface GeneralInfoSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
@@ -27,9 +26,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="record_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Record number
-              </FieldLabel>
+              <FieldLabel>Record number</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -45,9 +42,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="ticket_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Ticket number
-              </FieldLabel>
+              <FieldLabel>Ticket number</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -66,9 +61,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="outing_date"
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Outing date
-              </FieldLabel>
+              <FieldLabel>Outing date</FieldLabel>
               <DatePickerField form={form} name="outing_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -79,9 +72,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="handover_person"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Handover person
-              </FieldLabel>
+              <FieldLabel>Handover person</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -99,9 +90,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         name="reason"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>
-              Reason
-            </FieldLabel>
+            <FieldLabel>Reason</FieldLabel>
             <Textarea
               {...field}
               value={field.value ?? ""}
@@ -119,9 +108,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="external_link"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                External link
-              </FieldLabel>
+              <FieldLabel>External link</FieldLabel>
               <Input
                 {...field}
                 value={field.value || ""}
@@ -139,9 +126,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         name="notes"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>
-              Notes
-            </FieldLabel>
+            <FieldLabel>Notes</FieldLabel>
             <Textarea
               {...field}
               value={field.value || ""}

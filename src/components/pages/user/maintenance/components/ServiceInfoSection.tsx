@@ -2,6 +2,7 @@
 
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import {
   Field,
   FieldError,
@@ -9,8 +10,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-import { MaintenanceFormValues } from "../MaintenanceFormModal";
 
 interface ServiceInfoSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
@@ -25,9 +24,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Service provider name
-              </FieldLabel>
+              <FieldLabel>Service provider name</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -43,9 +40,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_address"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Service provider address
-              </FieldLabel>
+              <FieldLabel>Service provider address</FieldLabel>
               <Input
                 {...field}
                 value={field.value || ""}
@@ -64,9 +59,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_person_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Taker name
-              </FieldLabel>
+              <FieldLabel>Taker name</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -82,9 +75,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_phone"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Taker phone
-              </FieldLabel>
+              <FieldLabel>Taker phone</FieldLabel>
               <Input
                 {...field}
                 value={field.value || ""}
@@ -103,9 +94,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="expected_cost"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Expected cost
-              </FieldLabel>
+              <FieldLabel>Expected cost</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? 0}
@@ -122,9 +111,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="actual_cost"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Actual cost
-              </FieldLabel>
+              <FieldLabel>Actual cost</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? 0}

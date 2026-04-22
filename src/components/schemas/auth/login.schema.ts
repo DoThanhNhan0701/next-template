@@ -7,7 +7,7 @@ const USERNAME_REGEX = /^[a-zA-Z0-9_-]{3,30}$/;
 export const LoginSchema = z.object({
   username: z
     .string()
-    .min(1, "Username is required!")
+    .min(1, "Field is required!")
     .max(254, "Username is too long!")
     .trim()
     .toLowerCase()
@@ -20,6 +20,6 @@ export const LoginSchema = z.object({
 
   password: z
     .string()
-    .min(1, "Password is required!")
+    .min(1, "Field is required!")
     .max(256, "Password is too long!"),
 });

@@ -18,7 +18,7 @@ import {
 import { IUser } from "@/types/auth";
 import { ITemplate } from "@/types/template";
 
-import { LiquidationFormValues } from "../schema";
+import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 
 interface LiquidationApprovalSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
