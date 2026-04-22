@@ -23,14 +23,14 @@ export const PhysicalAssetSchema = z.object({
   holder_id: z.coerce.number().int().nullable().optional(),
   holder_name: z.string().nullable().optional(),
   staff_id: z.coerce.number().int().nullable().optional(),
-  category_id: z.coerce.number().int().nullable().optional(),
+  category_id: z.coerce.number().int().min(1, "Field is required!"),
   supplier_id: z.coerce.number().int().nullable().optional(),
   manager_id: z.coerce.number().int().nullable().optional(),
   status_id: z.coerce.number().int().min(1, "Field is required!"),
-  usage_mode_id: z.coerce.number().int().nullable().optional(),
+  usage_mode_id: z.coerce.number().int().min(1, "Field is required!"),
   location_id: z.coerce.number().int().nullable().optional(),
   asset_system_id: z.coerce.number().int().nullable().optional(),
-  unit_id: z.coerce.number().int().min(0).nullable().optional(),
+  unit_id: z.coerce.number().int().min(1, "Field is required!"),
   location: z.string().nullable().optional(),
   specifications: z.string().optional(),
   notes: z.string().optional(),
@@ -38,12 +38,24 @@ export const PhysicalAssetSchema = z.object({
   attachments: z.array(z.string()).optional(),
 }).refine(
   (data) => {
-    const hasLocation = !!data.location_id || !!data.location;
-    const hasHolder = !!data.holder_id || !!data.holder_name || !!data.staff_id;
-    return !(hasLocation && hasHolder);
+    if (data.management_type === "bulk") {
+      return data.quantity !== null && data.quantity !== undefined && data.quantity > 0;
+    }
+    return true;
   },
   {
-    message: "Cannot assign both a Location and a Holder",
-    path: ["location_id"], // Showing the error on Location field by default
+    message: "Field is required!",
+    path: ["quantity"],
+  }
+).refine(
+  (data) => {
+    if (data.management_type === "unique") {
+      return !!data.serial_number && data.serial_number.trim().length > 0;
+    }
+    return true;
   },
+  {
+    message: "Field is required!",
+    path: ["serial_number"],
+  }
 );

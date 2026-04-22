@@ -58,6 +58,7 @@ import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStatus } from "@/types/status";
 import { IUsageMode } from "@/types/usage-mode";
 import { formatDate } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 import AssetFormModal from "./AssetFormModal";
 
@@ -406,10 +407,7 @@ export default function AssetTable() {
                           </span>
                         </div>
                         <span className="font-bold text-sm text-foreground/90">
-                          {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(asset.cost)}
+                          {formatNumberWithCommas(asset.cost)}
                         </span>
                       </div>
                     </TableCell>
@@ -433,7 +431,7 @@ export default function AssetTable() {
                         {((asset.in_stock_quantity ?? 0) > 0 ||
                           (asset.allocated_quantity ?? 0) > 0 ||
                           (asset.rented_quantity ?? 0) > 0) &&
-                          asset.management_type === "bulk" ? (
+                        asset.management_type === "bulk" ? (
                           <div className="flex items-center gap-1 flex-wrap justify-center">
                             {(asset.in_stock_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
@@ -457,16 +455,16 @@ export default function AssetTable() {
                             style={
                               status?.color
                                 ? {
-                                  backgroundColor: `${status.color}20`,
-                                  color: status.color,
-                                  borderColor: `${status.color}40`,
-                                }
+                                    backgroundColor: `${status.color}20`,
+                                    color: status.color,
+                                    borderColor: `${status.color}40`,
+                                  }
                                 : {}
                             }
                             className={cn(
                               "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
                               !status?.color &&
-                              "bg-primary/10 text-primary border-primary/20",
+                                "bg-primary/10 text-primary border-primary/20",
                             )}
                           >
                             {status?.name || `Status ${asset.status_id}`}

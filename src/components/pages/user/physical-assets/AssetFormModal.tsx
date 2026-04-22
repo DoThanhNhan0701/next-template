@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { PhysicalAssetSchema } from "@/components/schemas/user/physical-asset.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -120,7 +121,7 @@ export default function AssetFormModal({
       serial_number: "",
       model: "",
       request_ticket: "",
-      importance_id: 2, // Standard
+      importance_id: 2,
       cost: 0,
       quantity: null as number | null,
       measure_unit_id: 1,
@@ -134,10 +135,10 @@ export default function AssetFormModal({
       holder_id: null,
       holder_name: "",
       category_id: null,
-      supplier_id: undefined,
-      location_id: undefined,
-      usage_mode_id: undefined,
-      manager_id: undefined,
+      supplier_id: null,
+      location_id: null,
+      usage_mode_id: null,
+      manager_id: null,
       staff_id: null,
       location: "",
       old_code: "",
@@ -181,7 +182,7 @@ export default function AssetFormModal({
           staff_id: assetToEdit.staff_id,
           management_type: assetToEdit.management_type || "unique",
           attachments: assetToEdit.attachments || [],
-        } as z.infer<typeof PhysicalAssetSchema>);
+        } as unknown as z.infer<typeof PhysicalAssetSchema>);
       } else {
         form.reset({
           asset_code: "",
@@ -200,13 +201,13 @@ export default function AssetFormModal({
           purchase_ticket: "",
           warranty_expiration: "",
           system_declaration_date: "",
-          supplier_id: undefined,
+          supplier_id: null,
           category_id: null,
-          location_id: undefined,
-          usage_mode_id: undefined,
+          location_id: null,
+          usage_mode_id: null,
           holder_id: null,
           holder_name: "",
-          manager_id: undefined,
+          manager_id: null,
           location: "",
           old_code: "",
           owner: "",
@@ -214,7 +215,7 @@ export default function AssetFormModal({
           staff_id: null,
           management_type: "unique",
           attachments: [],
-        } as z.infer<typeof PhysicalAssetSchema>);
+        } as unknown as z.infer<typeof PhysicalAssetSchema>);
       }
     }
   }, [isOpen, assetToEdit, form]);
@@ -307,7 +308,8 @@ export default function AssetFormModal({
                           <TabsList className="grid w-full grid-cols-2 h-16 p-1 bg-muted/30">
                             <TabsTrigger
                               value="unique"
-                              className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                              disabled={isEditing}
+                              className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm disabled:opacity-50"
                             >
                               <CircleAlert className="w-4 h-4" />
                               <span className="text-xs font-medium">
@@ -316,7 +318,8 @@ export default function AssetFormModal({
                             </TabsTrigger>
                             <TabsTrigger
                               value="bulk"
-                              className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                              disabled={isEditing}
+                              className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm disabled:opacity-50"
                             >
                               <Package className="w-4 h-4" />
                               <span className="text-xs font-medium">
@@ -596,7 +599,7 @@ export default function AssetFormModal({
                             field.onChange(val === "none" ? null : val)
                           }
                           value={field.value?.toString() || ""}
-                          disabled={hasHolderValue}
+                          disabled={hasHolderValue || isEditing}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select location" />
@@ -632,7 +635,7 @@ export default function AssetFormModal({
                             field.onChange(val === "none" ? null : val)
                           }
                           value={field.value?.toString() || ""}
-                          disabled={hasLocationValue}
+                          disabled={hasLocationValue || isEditing}
                         >
                           <SelectTrigger className="h-9">
                             <SelectValue placeholder="Select staff" />
@@ -646,8 +649,8 @@ export default function AssetFormModal({
                             </SelectItem>
                             {(watchedUnitId
                               ? staffs.filter(
-                                (s) => s.unit_id === Number(watchedUnitId),
-                              )
+                                  (s) => s.unit_id === Number(watchedUnitId),
+                                )
                               : staffs
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
@@ -677,10 +680,10 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>Cost</FieldLabel>
-                        <Input
-                          type="number"
+                        <FormattedNumberInput
                           {...field}
-                          value={(field.value as number) ?? 0}
+                          value={field.value as number | string | null}
+                          onChange={(val) => field.onChange(val ?? 0)}
                           placeholder="0.00"
                         />
                         {fieldState.invalid && (

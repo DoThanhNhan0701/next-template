@@ -43,6 +43,7 @@ import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 import RentalReturnModal from "./RentalReturnModal";
 
@@ -277,7 +278,7 @@ export default function RentalDetail({ id }: Props) {
                       </TableCell>
                       <TableCell className="px-4 py-3 text-right">
                         <span className="text-sm font-semibold text-emerald-600">
-                          {item.rental_revenue.toLocaleString()} đ
+                          {formatNumberWithCommas(item.rental_revenue)}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -380,7 +381,7 @@ export default function RentalDetail({ id }: Props) {
                   </span>
                 </div>
                 <span className="text-sm font-bold text-emerald-600">
-                  {detail.total_revenue.toLocaleString()} đ
+                  {formatNumberWithCommas(detail.total_revenue)}
                 </span>
               </div>
               {detail.external_link && (

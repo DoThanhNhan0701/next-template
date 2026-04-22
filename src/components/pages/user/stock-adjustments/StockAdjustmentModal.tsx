@@ -10,6 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import {
+  type StockAdjustmentFormValues,
+  StockAdjustmentSchema,
+} from "@/components/schemas/user/stock-adjustment.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -46,8 +50,6 @@ import { ITemplate, ITemplateStep } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
-
-import { StockAdjustmentSchema, type StockAdjustmentFormValues } from "@/components/schemas/user/stock-adjustment.schema";
 
 type FormValues = StockAdjustmentFormValues;
 
@@ -145,7 +147,7 @@ function DetailRow({
               value={field.value ? field.value.toString() : ""}
               disabled={!locationId || locationId === 0}
             >
-              <SelectTrigger className="h-9 text-xs">
+              <SelectTrigger>
                 <SelectValue
                   placeholder={
                     !locationId || locationId === 0

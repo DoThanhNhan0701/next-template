@@ -1,6 +1,5 @@
 "use client";
 
-import { UserCircle2 } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { ApproverSelect } from "@/components/common/ApproverSelect";
@@ -33,13 +32,12 @@ export function ApprovalProcessSection({
   }
 
   return (
-    <div className="flex flex-col gap-3 pt-4 border-t px-1">
-      <h3 className="text-sm font-semibold text-primary pb-2 flex items-center gap-2 tracking-tight">
-        <UserCircle2 className="w-5 h-5 text-primary" />
+    <div className="flex flex-col gap-3 pt-3">
+      <h3 className="text-sm font-semibold text-primary flex items-center gap-2 tracking-tight">
         <span>4. Approval Process</span>
       </h3>
 
-      <div className="bg-muted/20 border rounded-md p-6 space-y-6">
+      <div className="bg-muted/20 border rounded-md p-3 space-y-3">
         <FieldGroup className="grid grid-cols-2 gap-8">
           {activeTransferTemplate.steps.map((step: ITemplateStep, idx) => {
             const name =
@@ -50,7 +48,7 @@ export function ApprovalProcessSection({
                 name={name as keyof TransferFormValues}
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field className="gap-2.5">
+                  <Field className="gap-1">
                     <FieldLabel>{step.name}</FieldLabel>
                     <ApproverSelect
                       step={step}

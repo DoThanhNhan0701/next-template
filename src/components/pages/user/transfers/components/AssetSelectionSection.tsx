@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, PlusIcon, RefreshCcw, Trash } from "lucide-react";
+import { PlusIcon, RefreshCcw, Trash } from "lucide-react";
 import {
   Controller,
   FieldArrayWithId,
@@ -9,10 +9,15 @@ import {
   UseFormReturn,
 } from "react-hook-form";
 
+import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import { Button } from "@/components/ui/button";
-import { FieldError } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -44,10 +49,9 @@ export function AssetSelectionSection({
   watchedType,
 }: AssetSelectionSectionProps) {
   return (
-    <div className="space-y-4 pt-4 border-t">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wider">
-          <Box size={20} />
           <span>2. Assets Selection</span>
         </div>
         <div className="flex items-center gap-2">
@@ -63,7 +67,7 @@ export function AssetSelectionSection({
               size={14}
               className={assetsPending ? "animate-spin" : ""}
             />
-            Reload Assets
+            Reload assets
           </Button>
           <Button
             type="button"
@@ -81,7 +85,7 @@ export function AssetSelectionSection({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-3"
+            className="relative bg-muted/30 border rounded-lg p-3 flex flex-row items-start gap-3"
           >
             <Button
               type="button"
@@ -95,75 +99,76 @@ export function AssetSelectionSection({
             </Button>
 
             <div className="flex-1 space-y-1">
-              <label className="text-[11px] font-semibold text-muted-foreground tracking-wider block">
-                Select Asset *
-              </label>
-              <Controller
-                name={`details.${index}.asset_id`}
-                control={form.control}
-                render={({ field: detailField, fieldState }) => (
-                  <div className="space-y-1">
-                    <Select
-                      onValueChange={(val) => detailField.onChange(Number(val))}
-                      value={
-                        detailField.value ? detailField.value.toString() : ""
-                      }
-                      disabled={
-                        assetsPending || (!assetsPending && assets.length === 0)
-                      }
-                    >
-                      <SelectTrigger className="h-9 text-xs w-full">
-                        <SelectValue
-                          placeholder={
-                            assetsPending
-                              ? "Loading..."
-                              : assets.length === 0
-                                ? "No assets available"
-                                : "Select asset"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {assets.map((a) => (
-                          <SelectItem
-                            key={`asset-${a.id}`}
-                            value={a.id.toString()}
-                          >
-                            {a.name} ({a.asset_code}) Quantity:{" "}
-                            {watchedType === "holder"
-                              ? (a?.holding_qty ?? 0)
-                              : (a?.current_stock ?? 0)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FieldError errors={[fieldState.error]} />
-                  </div>
-                )}
-              />
+              <FieldGroup className="gap-3">
+                <Controller
+                  name={`details.${index}.asset_id`}
+                  control={form.control}
+                  render={({ field: detailField, fieldState }) => (
+                    <Field className="gap-1">
+                      <FieldLabel>Select asset</FieldLabel>
+                      <Select
+                        onValueChange={(val) =>
+                          detailField.onChange(Number(val))
+                        }
+                        value={
+                          detailField.value ? detailField.value.toString() : ""
+                        }
+                        disabled={
+                          assetsPending ||
+                          (!assetsPending && assets.length === 0)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={
+                              assetsPending
+                                ? "Loading..."
+                                : assets.length === 0
+                                  ? "No assets available"
+                                  : "Select asset"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {assets.map((a) => (
+                            <SelectItem
+                              key={`asset-${a.id}`}
+                              value={a.id.toString()}
+                            >
+                              {a.name} ({a.asset_code}) Quantity:{" "}
+                              {watchedType === "holder"
+                                ? (a?.holding_qty ?? 0)
+                                : (a?.current_stock ?? 0)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FieldError errors={[fieldState.error]} />
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
             </div>
 
             <div className="w-24 space-y-1 text-center">
-              <label className="text-[11px] font-semibold text-muted-foreground tracking-wider block">
-                Quantity *
-              </label>
-              <Controller
-                name={`details.${index}.quantity`}
-                control={form.control}
-                render={({ field: qtyField, fieldState }) => (
-                  <div className="space-y-1">
-                    <Input
-                      type="number"
-                      className="h-9 text-xs text-center"
-                      {...qtyField}
-                      onChange={(e) =>
-                        qtyField.onChange(Number(e.target.value))
-                      }
-                    />
-                    <FieldError errors={[fieldState.error]} />
-                  </div>
-                )}
-              />
+              <FieldGroup className="gap-3">
+                <Controller
+                  name={`details.${index}.quantity`}
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field className="gap-1">
+                      <FieldLabel>Quantity</FieldLabel>
+                      <FormattedNumberInput
+                        {...field}
+                        value={field.value as number | string | null}
+                        onChange={(val) => field.onChange(val ?? 0)}
+                        placeholder="e.g. 1"
+                      />
+                      <FieldError errors={[fieldState.error]} />
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
             </div>
           </div>
         ))}

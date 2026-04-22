@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightCircle, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
@@ -33,26 +33,25 @@ export function TargetDestinationSection({
   watchedType,
 }: TargetDestinationSectionProps) {
   return (
-    <div className="flex flex-col gap-3 pt-4 border-t">
-      <h3 className="text-sm font-semibold text-primary pb-2 flex items-center gap-2 tracking-tight">
-        <ArrowRightCircle className="w-5 h-5" />
+    <div className="flex flex-col gap-3 pt-3">
+      <h3 className="text-sm font-semibold text-primary flex items-center gap-2 tracking-tight">
         <span>3. Target Destination</span>
       </h3>
 
-      <div className="bg-muted/20 border rounded-md p-6 space-y-6">
+      <div className="bg-muted/20 border rounded-md p-3 space-y-3">
         {watchedType === "holder" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <Controller
               name="target_id"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field>
+                <Field className="gap-1">
                   <FieldLabel>Select specific personnel</FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(Number(val))}
                     value={field.value ? field.value.toString() : ""}
                   >
-                    <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
+                    <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
                       <SelectValue placeholder="Select specific personnel..." />
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px]">
@@ -79,7 +78,7 @@ export function TargetDestinationSection({
               name="target_id"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field>
+                <Field className="gap-1">
                   <FieldLabel>
                     Select new target location / warehouse
                   </FieldLabel>
@@ -87,7 +86,7 @@ export function TargetDestinationSection({
                     onValueChange={(val) => field.onChange(Number(val))}
                     value={field.value ? field.value.toString() : ""}
                   >
-                    <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
+                    <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-muted-foreground" />
                         <SelectValue placeholder="Select target location..." />
@@ -117,7 +116,7 @@ export function TargetDestinationSection({
           name="location_id"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="gap-1">
               <FieldLabel>New geographical location (optional)</FieldLabel>
               <Select
                 onValueChange={(val) =>
@@ -125,7 +124,7 @@ export function TargetDestinationSection({
                 }
                 value={field.value ? field.value.toString() : "none"}
               >
-                <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-2 focus:ring-primary/20 hover:border-primary/50">
+                <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-2 focus:ring-primary/20 hover:border-primary/50">
                   <SelectValue placeholder="Keep current location (No warehouse change)" />
                 </SelectTrigger>
                 <SelectContent>
@@ -196,7 +195,7 @@ export function TargetDestinationSection({
         />
       </div>
       <FormAttachmentsSection
-        className="[&>h3]:text-[10px] [&>h3]:font-bold [&>h3]:tracking-wider [&>h3]:text-muted-foreground"
+        className="[&>h3]:text-xs [&>h3]:font-semibold [&>h3]:tracking-wider [&>h3]:text-muted-foreground"
         control={form.control}
       />
     </div>

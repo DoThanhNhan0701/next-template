@@ -173,6 +173,10 @@ export default function TransferFormModal({
     }
   }, [isOpen, transferToEdit, form]);
 
+  useEffect(() => {
+    form.setValue("required_steps", activeTransferTemplate?.steps?.length || 0);
+  }, [activeTransferTemplate, form]);
+
   const onSubmit = async (data: TransferFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.TRANSFER_DETAIL(transferToEdit.id)

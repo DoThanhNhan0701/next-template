@@ -36,7 +36,7 @@ export function SourceInfoSection({
 }: SourceInfoSectionProps) {
   return (
     <div className="flex flex-col gap-3 mb-3">
-      <h3 className="text-sm font-semibold text-primary border-b pb-2 tracking-tight">
+      <h3 className="text-sm font-semibold text-primary tracking-tight">
         1. Source Information
       </h3>
       <FieldGroup className="grid grid-cols-2 gap-3">
