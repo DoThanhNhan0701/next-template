@@ -19,17 +19,17 @@ import {
 import { IUser } from "@/types/auth";
 import { ITemplate } from "@/types/template";
 
-interface ApprovalProcessSectionProps {
+interface MaintenanceApprovalSectionProps {
   form: UseFormReturn<MaintenanceFormValues>;
   users: IUser[];
   activeTemplate?: ITemplate;
 }
 
-export function ApprovalProcessSection({
+export function MaintenanceApprovalSection({
   form,
   users,
   activeTemplate,
-}: ApprovalProcessSectionProps) {
+}: MaintenanceApprovalSectionProps) {
   if (!activeTemplate?.steps || activeTemplate.steps.length === 0) {
     return (
       <div className="py-10 text-center text-muted-foreground bg-muted/10 rounded-lg border border-dashed">
@@ -44,9 +44,8 @@ export function ApprovalProcessSection({
         {activeTemplate.steps.map((step, index) => (
           <Controller
             key={step.id}
-            name={`workflow_assignments.${index}.user_id`}
+            name={`approvals.step_${index}`}
             control={form.control}
-            rules={{ required: "Approver is required" }}
             render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel>
@@ -56,7 +55,7 @@ export function ApprovalProcessSection({
                   onValueChange={(val) => field.onChange(Number(val))}
                   value={field.value ? field.value.toString() : ""}
                 >
-                  <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
+                  <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder={`Select ${step.name}`} />
                   </SelectTrigger>
                   <SelectContent>
@@ -67,7 +66,7 @@ export function ApprovalProcessSection({
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldError errors={[fieldState.error]} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />

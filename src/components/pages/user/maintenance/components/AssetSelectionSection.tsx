@@ -12,6 +12,7 @@ import {
   UseFormReturn,
 } from "react-hook-form";
 
+import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -337,7 +338,7 @@ export function AssetSelectionSection({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="relative bg-muted/20 border border-border/40 rounded-lg p-5 pr-12 space-y-4 transition-all hover:bg-muted/30"
+            className="relative bg-muted/20 border border-border/40 rounded-lg p-5 space-y-4 transition-all hover:bg-muted/30"
           >
             <Button
               type="button"
@@ -484,13 +485,11 @@ export function AssetSelectionSection({
                   render={({ field: qtyField, fieldState }) => (
                     <Field className="gap-1">
                       <FieldLabel>Quantity</FieldLabel>
-                      <Input
-                        type="number"
-                        className="bg-white text-center font-semibold"
+                      <FormattedNumberInput
                         {...qtyField}
-                        onChange={(e) =>
-                          qtyField.onChange(Number(e.target.value))
-                        }
+                        value={qtyField.value as number | string | null}
+                        onChange={(val) => qtyField.onChange(val ?? 0)}
+                        placeholder="e.g. 1"
                       />
                       <FieldError errors={[fieldState.error]} />
                     </Field>

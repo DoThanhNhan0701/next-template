@@ -2,6 +2,7 @@
 
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import {
   Field,
@@ -9,6 +10,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+
 import { Input } from "@/components/ui/input";
 
 interface ServiceInfoSectionProps {
@@ -95,12 +97,12 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>Expected cost</FieldLabel>
-              <Input
+              <FormattedNumberInput
                 {...field}
-                value={field.value ?? 0}
-                type="number"
+                value={field.value as number | string | null}
+                onChange={(val) => field.onChange(val ?? 0)}
+                placeholder="e.g. 500,000"
                 className="bg-white"
-                onChange={(e) => field.onChange(Number(e.target.value))}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -112,12 +114,12 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>Actual cost</FieldLabel>
-              <Input
+              <FormattedNumberInput
                 {...field}
-                value={field.value ?? 0}
-                type="number"
+                value={field.value as number | string | null}
+                onChange={(val) => field.onChange(val ?? 0)}
+                placeholder="e.g. 500,000"
                 className="bg-white"
-                onChange={(e) => field.onChange(Number(e.target.value))}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>

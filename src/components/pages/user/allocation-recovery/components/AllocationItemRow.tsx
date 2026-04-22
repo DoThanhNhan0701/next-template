@@ -166,7 +166,6 @@ export function AllocationItemRow({
               value={field.value as number | string | null}
               onChange={(val) => field.onChange(val ?? 0)}
               placeholder="e.g. 1"
-              className="h-9 text-xs font-medium"
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>

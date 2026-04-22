@@ -4,9 +4,13 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
-import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, type Resolver } from "react-hook-form";
 
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import {
+  MaintenanceSchema,
+  type MaintenanceFormValues,
+} from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,12 +33,10 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
 import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { GeneralInfoSection } from "./components/GeneralInfoSection";
+import { MaintenanceApprovalSection } from "./components/MaintenanceApprovalSection";
 import { ServiceInfoSection } from "./components/ServiceInfoSection";
-
-import { MaintenanceSchema, type MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 
 interface MaintenanceFormModalProps {
   isOpen: boolean;
@@ -52,38 +54,39 @@ export default function MaintenanceFormModal({
   const isEditing = !!maintenanceToEdit;
   const { mutate, pending } = useMutation();
 
-  const form: UseFormReturn<MaintenanceFormValues> =
-    useForm<MaintenanceFormValues>({
-      resolver: zodResolver(MaintenanceSchema),
-      defaultValues: {
-        record_number: "",
-        ticket_number: "",
-        reason: "",
-        handover_person: "",
-        taker_person_name: "",
-        taker_phone: null,
-        service_provider_name: "",
-        service_provider_address: null,
-        notes: null,
-        expected_cost: 0,
-        actual_cost: 0,
-        external_link: null,
-        outing_date: getTodayISO(),
-        items: [
-          {
-            asset_id: 0,
-            quantity: 1,
-            notes: null,
-            from_location_id: 0,
-            from_staff_id: 0,
-            from_unit_id: 0,
-            return_to_location_id: null,
-          },
-        ],
-        attachments: [],
-        workflow_assignments: [],
-      },
-    });
+  const form = useForm<MaintenanceFormValues>({
+    resolver: zodResolver(MaintenanceSchema) as unknown as Resolver<MaintenanceFormValues>,
+    defaultValues: {
+      record_number: "",
+      ticket_number: "",
+      reason: "",
+      handover_person: "",
+      taker_person_name: "",
+      taker_phone: null,
+      service_provider_name: "",
+      service_provider_address: null,
+      notes: null,
+      expected_cost: 0,
+      actual_cost: 0,
+      external_link: null,
+      outing_date: getTodayISO(),
+      items: [
+        {
+          asset_id: 0,
+          quantity: 1,
+          notes: null,
+          from_location_id: 0,
+          from_staff_id: 0,
+          from_unit_id: 0,
+          return_to_location_id: null,
+        },
+      ],
+      attachments: [],
+      approvals: {},
+      required_steps: 0,
+      workflow_assignments: [],
+    },
+  });
 
   const { fields, append, remove } = useFieldArray<
     MaintenanceFormValues,
@@ -124,14 +127,45 @@ export default function MaintenanceFormModal({
     if (!isOpen) return;
 
     if (maintenanceToEdit) {
-      // Handle edit mapping
-    } else {
-      const initialWorkflow =
-        activeTemplate?.steps?.map((step) => ({
-          step_id: step.id,
-          user_id: 0,
-        })) || [];
+      const initialApprovals: Record<string, number> = {};
+      if (maintenanceToEdit.workflow_assignments) {
+        maintenanceToEdit.workflow_assignments.forEach((assignment, index) => {
+          initialApprovals[`step_${index}`] = assignment.user_id;
+        });
+      }
 
+      form.reset({
+        record_number: maintenanceToEdit.record_number || "",
+        ticket_number: maintenanceToEdit.ticket_number || "",
+        reason: maintenanceToEdit.reason || "",
+        handover_person: maintenanceToEdit.handover_person || "",
+        taker_person_name: maintenanceToEdit.taker_person_name || "",
+        taker_phone: maintenanceToEdit.taker_phone,
+        service_provider_name: maintenanceToEdit.service_provider_name || "",
+        service_provider_address: maintenanceToEdit.service_provider_address,
+        notes: maintenanceToEdit.notes,
+        expected_cost: maintenanceToEdit.expected_cost || 0,
+        actual_cost: maintenanceToEdit.actual_cost || 0,
+        external_link: maintenanceToEdit.external_link,
+        outing_date: maintenanceToEdit.outing_date
+          ? new Date(maintenanceToEdit.outing_date).toISOString().split("T")[0]
+          : getTodayISO(),
+        items:
+          maintenanceToEdit.items?.map((item) => ({
+            asset_id: item.asset_id,
+            quantity: item.quantity,
+            notes: item.notes,
+            from_location_id: item.from_location_id,
+            from_staff_id: item.from_staff_id,
+            from_unit_id: item.from_unit_id,
+            return_to_location_id: item.return_to_location_id,
+          })) || [],
+        attachments: maintenanceToEdit.attachments || [],
+        approvals: initialApprovals,
+        required_steps: activeTemplate?.steps?.length || 0,
+        workflow_assignments: [],
+      });
+    } else {
       form.reset({
         record_number: "",
         ticket_number: "",
@@ -158,7 +192,9 @@ export default function MaintenanceFormModal({
           },
         ],
         attachments: [],
-        workflow_assignments: initialWorkflow,
+        approvals: {},
+        required_steps: activeTemplate?.steps?.length || 0,
+        workflow_assignments: [],
       });
     }
   }, [isOpen, maintenanceToEdit, form, activeTemplate]);
@@ -169,29 +205,52 @@ export default function MaintenanceFormModal({
       : endpoints.MAINTENANCES;
     const method = isEditing ? "patch" : "post";
 
-    // Transform data for backend if needed
+    const workflow_assignments: { step_id: number; user_id: number }[] = [];
+    if (activeTemplate?.steps?.length) {
+      activeTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
+    }
+
+    // Construct the payload to match API expectations
     const payload = {
-      ...data,
+      ticket_number: data.ticket_number,
+      reason: data.reason,
+      handover_person: data.handover_person,
+      taker_person_name: data.taker_person_name,
+      taker_phone: data.taker_phone,
+      service_provider_name: data.service_provider_name,
+      service_provider_address: data.service_provider_address,
+      notes: data.notes,
+      expected_cost: data.expected_cost,
+      actual_cost: isEditing ? data.actual_cost : undefined,
+      external_link: data.external_link,
+      outing_date: data.outing_date, // Already in YYYY-MM-DD from form reset/default
       attachments: data.attachments || [],
-      outing_date: new Date(data.outing_date).toISOString(),
-      items: data.items.map((item) => {
-        const assetObj = assets.find((a) => a.id === item.asset_id);
-        return {
-          ...item,
-          from_location_id: assetObj?.location_id || 0,
-          from_staff_id: assetObj?.staff_id || 0,
-          from_unit_id: assetObj?.unit_id || 0,
-          return_to_location_id:
-            item.return_to_location_id || assetObj?.location_id || 0,
-        };
-      }),
+      items: data.items.map((item) => ({
+        asset_id: item.asset_id,
+        quantity: item.quantity,
+        notes: item.notes,
+      })),
+      workflow_assignments,
+    };
+
+    const finalPayload = {
+      ...payload,
+      ...(data.record_number ? { record_number: data.record_number } : {}),
     };
 
     await mutate(
       {
         url,
         method,
-        body: payload,
+        body: finalPayload,
       },
       {
         onSuccess: (res) => {
@@ -226,7 +285,7 @@ export default function MaintenanceFormModal({
     errors.expected_cost ||
     errors.actual_cost
   );
-  const hasApprovalErrors = !!errors.workflow_assignments;
+  const hasApprovalErrors = !!(errors.workflow_assignments || errors.approvals);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -331,7 +390,7 @@ export default function MaintenanceFormModal({
                 value="approval"
                 className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
               >
-                <ApprovalProcessSection
+                <MaintenanceApprovalSection
                   form={form}
                   users={users}
                   activeTemplate={activeTemplate ?? undefined}

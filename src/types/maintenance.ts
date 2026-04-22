@@ -24,6 +24,8 @@ export interface IMaintenance {
   status: string;
   status_color: string;
   total_assets: number;
+  items: IMaintenanceItem[];
+  workflow_assignments: IWorkflowAssignment[];
 }
 
 export interface IMaintenanceFull {
