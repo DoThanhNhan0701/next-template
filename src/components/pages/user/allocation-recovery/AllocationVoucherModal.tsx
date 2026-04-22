@@ -1,17 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon, Trash } from "lucide-react";
-import {
-  type Control,
-  Controller,
-  type UseFormSetValue,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { PlusIcon } from "lucide-react";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
@@ -50,200 +43,17 @@ import { closeAllocation } from "@/redux/slices/allocation";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
-import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStaff } from "@/types/staff";
-import { ITemplate, ITemplateStep } from "@/types/template";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-/* ── ApproverSelect: fetch users by role if step has default_assignee_role_id ── */
-function ApproverSelect({
-  step,
-  allUsers,
-  value,
-  onChange,
-}: {
-  step: ITemplateStep;
-  allUsers: IUser[];
-  value: string;
-  onChange: (val: string) => void;
-}) {
-  const hasRole = !!step.default_assignee_role_id;
-  const options = hasRole
-    ? allUsers.filter(
-        (u) => u.is_active && u.role_id === step.default_assignee_role_id,
-      )
-    : allUsers.filter((u) => u.is_active);
-
-  return (
-    <Select onValueChange={onChange} value={value}>
-      <SelectTrigger className="h-9">
-        <SelectValue placeholder="Select approver" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="none" className="text-muted-foreground italic">
-          (None)
-        </SelectItem>
-        {options.map((u) => (
-          <SelectItem key={u.id} value={u.id.toString()}>
-            {u.full_name} ({u.username})
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
+import { AllocationApprovalSection } from "./components/AllocationApprovalSection";
+import { AllocationItemRow } from "./components/AllocationItemRow";
 
 type AllocationFormValues = z.input<typeof AllocationCreateSchema>;
 
-/* ───── Per-item row component ───── */
-interface AllocationItemRowProps {
-  index: number;
-  control: Control<AllocationFormValues>;
-  setValue: UseFormSetValue<AllocationFormValues>;
-  locations: ILocation[];
-  onRemove: () => void;
-  prefillLocationId?: number;
-  prefillAssetId?: number;
-}
-
-function AllocationItemRow({
-  index,
-  control,
-  setValue,
-  locations,
-  onRemove,
-  prefillLocationId,
-  prefillAssetId,
-}: AllocationItemRowProps) {
-  const [warehouseId, setWarehouseId] = useState<number>(
-    prefillLocationId ?? 0,
-  );
-
-  const { response: assetRes, pending: assetsPending } = useGet<{
-    items: IPhysicalAsset[];
-  }>(
-    {
-      url: endpoints.PHYSICAL_ASSETS,
-      config: {
-        params: { location_id: warehouseId, limit: 200, status_code: "READY" },
-      },
-    },
-    { disabled: !warehouseId, deps: [warehouseId] },
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const assets = assetRes?.items || [];
-
-  useEffect(() => {
-    // Only clear asset when user manually changes location (not on initial prefill)
-    setValue(`items.${index}.location_id`, warehouseId);
-  }, [warehouseId, index, setValue]);
-
-  // Set prefill asset after assets load
-  useEffect(() => {
-    if (prefillAssetId && assets.length > 0) {
-      setValue(`items.${index}.asset_id`, prefillAssetId);
-    }
-  }, [prefillAssetId, assets, index, setValue]);
-
-  return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-3">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
-        onClick={onRemove}
-      >
-        <Trash size={12} />
-      </Button>
-
-      {/* Issuing Warehouse */}
-      <Field className="gap-1 flex-1">
-        <FieldLabel>Locations</FieldLabel>
-        <Select
-          onValueChange={(val) => {
-            const vid = Number(val);
-            setWarehouseId(vid);
-            setValue(`items.${index}.location_id`, vid);
-          }}
-          value={warehouseId ? warehouseId.toString() : ""}
-        >
-          <SelectTrigger className="h-9 text-xs">
-            <SelectValue placeholder="Select location" />
-          </SelectTrigger>
-          <SelectContent>
-            {locations.map((loc) => (
-              <SelectItem key={loc.id} value={loc.id.toString()}>
-                {loc.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-
-      {/* Asset */}
-      <Controller
-        name={`items.${index}.asset_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
-            <FieldLabel>Asset</FieldLabel>
-            <Select
-              onValueChange={(val) => field.onChange(Number(val))}
-              value={field.value ? field.value.toString() : ""}
-              disabled={!warehouseId}
-            >
-              <SelectTrigger className="h-9 text-xs">
-                <SelectValue
-                  placeholder={
-                    !warehouseId
-                      ? "Select unit first"
-                      : assetsPending
-                        ? "Loading..."
-                        : "Select asset"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {assets.map((a) => (
-                  <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity:{" "}
-                    {a?.in_stock_quantity ?? 0}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      {/* Quantity */}
-      <Controller
-        name={`items.${index}.quantity`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 w-24">
-            <FieldLabel>Quantity</FieldLabel>
-            <Input
-              type="number"
-              className="h-9 text-xs"
-              {...field}
-              value={(field.value as number) ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-    </div>
-  );
-}
-
-/* ───── Main modal ───── */
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -302,8 +112,8 @@ export default function AllocationVoucherModal({
       external_link: "",
       items: [],
       attachments: [],
-      approver_step_1_id: null,
-      approver_step_2_id: null,
+      approvals: {},
+      required_steps: 0,
     },
   });
 
@@ -339,52 +149,37 @@ export default function AllocationVoucherModal({
           },
         ],
         attachments: [],
-        approver_step_1_id: null,
-        approver_step_2_id: null,
+        approvals: {},
+        required_steps: activeAllocationTemplate?.steps?.length || 0,
       });
     }
-  }, [
-    isOpen,
-    form,
-    prefill?.asset_id,
-    prefill?.location_id,
-    prefill?.reason,
-    prefill?.unit_id,
-  ]);
+  }, [isOpen, prefill, form, activeAllocationTemplate]);
+
+  useEffect(() => {
+    if (activeAllocationTemplate?.steps?.length) {
+      form.setValue("required_steps", activeAllocationTemplate.steps.length);
+    }
+  }, [activeAllocationTemplate, form]);
 
   const onSubmit = async (data: AllocationFormValues) => {
-    // Transform data for backend
-    const workflow_assignments = [];
-    if (
-      activeAllocationTemplate?.steps &&
-      activeAllocationTemplate.steps.length > 0
-    ) {
-      if (data.approver_step_1_id) {
-        workflow_assignments.push({
-          step_id: activeAllocationTemplate.steps[0].id,
-          user_id: data.approver_step_1_id,
-        });
-      }
-      if (
-        activeAllocationTemplate.steps.length > 1 &&
-        data.approver_step_2_id
-      ) {
-        workflow_assignments.push({
-          step_id: activeAllocationTemplate.steps[1].id,
-          user_id: data.approver_step_2_id,
-        });
-      }
+    const workflow_assignments: { step_id: number; user_id: number }[] = [];
+    if (activeAllocationTemplate?.steps?.length) {
+      activeAllocationTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals?.[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { approvals, required_steps, ...rest } = data;
+
     const payload = {
-      allocated_to_type: data.allocated_to_type,
-      unit_id: data.unit_id,
-      staff_id: data.staff_id,
-      allocation_date: data.allocation_date,
-      reason: data.reason,
-      external_link: data.external_link,
-      location_id: data.location_id,
-      items: data.items,
+      ...rest,
       attachments: data.attachments || [],
       workflow_assignments,
     };
@@ -426,8 +221,8 @@ export default function AllocationVoucherModal({
             <div className="flex flex-col gap-3">
               {/* General Information */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  General Information
+                <h3 className="text-sm font-semibold text-primary">
+                  1. General information
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -466,7 +261,7 @@ export default function AllocationVoucherModal({
                         <FieldLabel>Recipient (staff)</FieldLabel>
                         <Select
                           onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
+                            field.onChange(val === "none" ? null : Number(val))
                           }
                           value={
                             field.value !== null && field.value !== undefined
@@ -565,11 +360,10 @@ export default function AllocationVoucherModal({
                 </FieldGroup>
               </div>
 
-              {/* Items Section */}
               <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between border-b pb-1">
+                <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-primary">
-                    Assets Selection
+                    2. Assets Selection
                   </h3>
                   <Button
                     type="button"
@@ -588,6 +382,7 @@ export default function AllocationVoucherModal({
                   {fields.map((item, index) => (
                     <AllocationItemRow
                       key={item.id}
+                      disabled={fields.length === 1}
                       index={index}
                       control={form.control}
                       setValue={form.setValue}
@@ -604,54 +399,11 @@ export default function AllocationVoucherModal({
                 </div>
               </div>
 
-              {/* Approval Process */}
-              {activeAllocationTemplate &&
-                (activeAllocationTemplate.steps || []).length > 0 && (
-                  <div className="flex flex-col gap-3">
-                    <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                      Approval Process
-                    </h3>
-                    <FieldGroup className="grid grid-cols-2 gap-3">
-                      {(activeAllocationTemplate?.steps || []).map(
-                        (step: ITemplateStep, idx) => {
-                          const name =
-                            idx === 0
-                              ? "approver_step_1_id"
-                              : "approver_step_2_id";
-                          return (
-                            <Controller
-                              key={step.id}
-                              name={name as keyof AllocationFormValues}
-                              control={form.control}
-                              render={({ field, fieldState }) => (
-                                <Field className="gap-1">
-                                  <FieldLabel>{step.name}</FieldLabel>
-                                  <ApproverSelect
-                                    step={step}
-                                    allUsers={users}
-                                    value={
-                                      field.value != null
-                                        ? field.value.toString()
-                                        : ""
-                                    }
-                                    onChange={(val) =>
-                                      field.onChange(
-                                        val === "none" ? null : val,
-                                      )
-                                    }
-                                  />
-                                  {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                  )}
-                                </Field>
-                              )}
-                            />
-                          );
-                        },
-                      )}
-                    </FieldGroup>
-                  </div>
-                )}
+              <AllocationApprovalSection
+                form={form}
+                users={users}
+                activeTemplate={activeAllocationTemplate}
+              />
 
               {/* Attachments */}
               <FormAttachmentsSection
