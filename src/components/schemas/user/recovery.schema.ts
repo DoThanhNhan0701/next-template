@@ -11,13 +11,24 @@ export const RecoveryCreateSchema = z.object({
   staff_id: z.coerce.number().optional().nullable(),
   unit_id: z.coerce.number().min(1, "Field is required!"),
   recovery_date: z.string().min(1, "Field is required!"),
-  location_id: z.coerce.number().optional().nullable(),
+  location_id: z.coerce.number().min(1, "Field is required!"),
   reason: z.string().min(1, "Field is required!"),
   external_link: z.string().optional().default(""),
-  approver_step_1_id: z.number().nullable().optional(),
-  approver_step_2_id: z.number().nullable().optional(),
   items: z
     .array(RecoveryCreateItemSchema)
     .min(1, "Field is required!"),
+  required_steps: z.number().default(0),
+  approvals: z.record(z.string(), z.number().nullable().optional()).optional(),
   attachments: z.array(z.string()).optional(),
+}).superRefine((data, ctx) => {
+  for (let i = 0; i < data.required_steps; i++) {
+    const approverId = data.approvals?.[`step_${i}`];
+    if (!approverId || approverId === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Field is required!",
+        path: ["approvals", `step_${i}`],
+      });
+    }
+  }
 });

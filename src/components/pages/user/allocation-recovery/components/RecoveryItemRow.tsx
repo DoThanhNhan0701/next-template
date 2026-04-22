@@ -3,16 +3,11 @@
 import { useEffect, useMemo } from "react";
 
 import { Trash } from "lucide-react";
-import {
-  Control,
-  Controller,
-  UseFormSetValue,
-  useWatch,
-} from "react-hook-form";
+import { Control, Controller, UseFormSetValue } from "react-hook-form";
 import { z } from "zod";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
-import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
+import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import {
@@ -27,52 +22,51 @@ import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
 
-type AllocationFormValues = z.input<typeof AllocationCreateSchema>;
+type RecoveryFormValues = z.input<typeof RecoveryCreateSchema>;
 
-interface AllocationItemRowProps {
-  disabled: boolean;
+interface RecoveryItemRowProps {
+  disabled?: boolean;
   index: number;
-  control: Control<AllocationFormValues>;
-  setValue: UseFormSetValue<AllocationFormValues>;
+  control: Control<RecoveryFormValues>;
+  setValue: UseFormSetValue<RecoveryFormValues>;
   locations: ILocation[];
+  unitId: number;
+  staffId: string | null;
   onRemove: () => void;
-  prefillLocationId?: number;
   prefillAssetId?: number;
 }
 
-export function AllocationItemRow({
+export function RecoveryItemRow({
   disabled,
   index,
   control,
   setValue,
   locations,
+  unitId,
+  staffId,
   onRemove,
   prefillAssetId,
-}: AllocationItemRowProps) {
-  const warehouseId = useWatch({
-    control,
-    name: `items.${index}.location_id`,
-  }) as number;
-
+}: RecoveryItemRowProps) {
   const { response: assetRes, pending: assetsPending } = useGet<{
     items: IPhysicalAsset[];
   }>(
     {
       url: endpoints.PHYSICAL_ASSETS,
       config: {
-        params: { location_id: warehouseId, limit: 200, status_code: "READY" },
+        params: {
+          ...(staffId ? { staff_id: staffId } : { unit_id: unitId }),
+        },
       },
     },
-    { disabled: !warehouseId, deps: [warehouseId] },
+    { disabled: !unitId && !staffId, deps: [unitId, staffId] },
   );
 
   const assets = useMemo(() => assetRes?.items || [], [assetRes?.items]);
 
   useEffect(() => {
-    if (prefillAssetId && assets.length > 0) {
-      setValue(`items.${index}.asset_id`, prefillAssetId);
-    }
-  }, [prefillAssetId, assets, index, setValue]);
+    if (!prefillAssetId || assetsPending || !assets.length) return;
+    setValue(`items.${index}.asset_id`, prefillAssetId);
+  }, [prefillAssetId, assetsPending, assets, index, setValue]);
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 flex flex-row items-start gap-3 shadow-sm transition-all hover:bg-muted/40">
@@ -87,37 +81,6 @@ export function AllocationItemRow({
         <Trash size={12} />
       </Button>
 
-      {/* Issuing Warehouse */}
-      <Controller
-        name={`items.${index}.location_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
-            <FieldLabel>Location</FieldLabel>
-            <Select
-              onValueChange={(val) => {
-                const vid = Number(val);
-                field.onChange(vid);
-                setValue(`items.${index}.asset_id`, 0);
-              }}
-              value={field.value ? field.value.toString() : ""}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select location" />
-              </SelectTrigger>
-              <SelectContent>
-                {locations.map((loc) => (
-                  <SelectItem key={loc.id} value={loc.id.toString()}>
-                    {loc.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
       {/* Asset */}
       <Controller
         name={`items.${index}.asset_id`}
@@ -126,14 +89,24 @@ export function AllocationItemRow({
           <Field className="gap-1 flex-1">
             <FieldLabel>Asset</FieldLabel>
             <Select
-              onValueChange={(val) => field.onChange(Number(val))}
+              onValueChange={(val) => {
+                const aid = Number(val);
+                field.onChange(aid);
+                const selectedAsset = assets.find((a) => a.id === aid);
+                if (selectedAsset?.location_id) {
+                  setValue(
+                    `items.${index}.location_id`,
+                    selectedAsset.location_id,
+                  );
+                }
+              }}
               value={field.value ? field.value.toString() : ""}
-              disabled={!warehouseId}
+              disabled={!unitId}
             >
               <SelectTrigger>
                 <SelectValue
                   placeholder={
-                    !warehouseId
+                    !unitId
                       ? "Select unit first"
                       : assetsPending
                         ? "Loading..."
@@ -144,7 +117,34 @@ export function AllocationItemRow({
               <SelectContent>
                 {assets.map((a: IPhysicalAsset) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Qty: {a?.in_stock_quantity ?? 0}
+                    {a.name} ({a.asset_code}) Qty: {a?.holding_qty ?? 0}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      {/* Recovering Locations */}
+      <Controller
+        name={`items.${index}.location_id`}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field className="gap-1 flex-1">
+            <FieldLabel>Location</FieldLabel>
+            <Select
+              onValueChange={(val) => field.onChange(Number(val))}
+              value={field.value ? field.value.toString() : ""}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select location" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations.map((loc) => (
+                  <SelectItem key={loc.id} value={loc.id.toString()}>
+                    {loc.name}
                   </SelectItem>
                 ))}
               </SelectContent>

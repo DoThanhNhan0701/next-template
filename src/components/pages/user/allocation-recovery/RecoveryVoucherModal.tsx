@@ -3,19 +3,11 @@
 import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon, Trash } from "lucide-react";
-import {
-  type Control,
-  Controller,
-  type UseFormSetValue,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { PlusIcon } from "lucide-react";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
-import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
@@ -51,168 +43,17 @@ import { closeRecovery } from "@/redux/slices/recovery";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
-import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStaff } from "@/types/staff";
-import { ITemplate, ITemplateStep } from "@/types/template";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
+import { RecoveryApprovalSection } from "./components/RecoveryApprovalSection";
+import { RecoveryItemRow } from "./components/RecoveryItemRow";
+
 type RecoveryFormValues = z.input<typeof RecoveryCreateSchema>;
 
-/* ───── Per-item row component ───── */
-interface RecoveryItemRowProps {
-  index: number;
-  control: Control<RecoveryFormValues>;
-  setValue: UseFormSetValue<RecoveryFormValues>;
-  locations: ILocation[];
-  unitId: number;
-  staffId: string | null;
-  onRemove: () => void;
-  prefillAssetId?: number;
-}
-
-function RecoveryItemRow({
-  index,
-  control,
-  setValue,
-  locations,
-  unitId,
-  staffId,
-  onRemove,
-  prefillAssetId,
-}: RecoveryItemRowProps) {
-  const { response: assetRes, pending: assetsPending } = useGet<{
-    items: IPhysicalAsset[];
-  }>(
-    {
-      url: endpoints.PHYSICAL_ASSETS,
-      config: {
-        params: {
-          ...(staffId ? { staff_id: staffId } : { unit_id: unitId }),
-        },
-      },
-    },
-    { disabled: !unitId && !staffId, deps: [unitId, staffId] },
-  );
-
-  const assets = assetRes?.items || [];
-
-  // Auto-select prefill asset once assets finish loading
-  useEffect(() => {
-    if (!prefillAssetId || assetsPending || !assetRes?.items?.length) return;
-    setValue(`items.${index}.asset_id`, prefillAssetId);
-  }, [prefillAssetId, assetsPending, assetRes, index, setValue]);
-
-  return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row items-start gap-3">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
-        onClick={onRemove}
-      >
-        <Trash size={12} />
-      </Button>
-
-      {/* Asset */}
-      <Controller
-        name={`items.${index}.asset_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
-            <FieldLabel>Asset</FieldLabel>
-            <Select
-              onValueChange={(val) => {
-                const aid = Number(val);
-                field.onChange(aid);
-                // Auto-fill location if asset is selected
-                const selectedAsset = assets.find((a) => a.id === aid);
-                if (selectedAsset?.location_id) {
-                  setValue(
-                    `items.${index}.location_id`,
-                    selectedAsset.location_id,
-                  );
-                }
-              }}
-              value={field.value ? field.value.toString() : ""}
-              disabled={!unitId}
-            >
-              <SelectTrigger className="h-9 text-xs">
-                <SelectValue
-                  placeholder={
-                    !unitId
-                      ? "Select unit first"
-                      : assetsPending
-                        ? "Loading..."
-                        : "Select asset"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {assets.map((a) => (
-                  <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      {/* Recovering Locations */}
-      <Controller
-        name={`items.${index}.location_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
-            <FieldLabel>Locations</FieldLabel>
-            <Select
-              onValueChange={(val) => field.onChange(Number(val))}
-              value={field.value ? field.value.toString() : ""}
-            >
-              <SelectTrigger className="h-9 text-xs">
-                <SelectValue placeholder="Select location" />
-              </SelectTrigger>
-              <SelectContent>
-                {locations.map((loc) => (
-                  <SelectItem key={loc.id} value={loc.id.toString()}>
-                    {loc.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      {/* Quantity */}
-      <Controller
-        name={`items.${index}.quantity`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 w-24">
-            <FieldLabel>Qty</FieldLabel>
-            <Input
-              type="number"
-              className="h-9 text-xs"
-              {...field}
-              value={(field.value as number) ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-    </div>
-  );
-}
-
-/* ───── Main modal ───── */
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -271,6 +112,8 @@ export default function RecoveryVoucherModal({
       external_link: "",
       items: [],
       attachments: [],
+      approvals: {},
+      required_steps: 0,
     },
   });
 
@@ -303,8 +146,6 @@ export default function RecoveryVoucherModal({
         location_id: null,
         reason: prefill?.reason ?? "",
         external_link: "",
-        approver_step_1_id: null,
-        approver_step_2_id: null,
         items: [
           {
             location_id: prefill?.location_id ?? 0,
@@ -313,33 +154,34 @@ export default function RecoveryVoucherModal({
           },
         ],
         attachments: [],
+        approvals: {},
+        required_steps: activeTemplate?.steps?.length || 0,
       });
     }
-  }, [isOpen, prefill, form]);
+  }, [isOpen, prefill, form, activeTemplate]);
+
+  useEffect(() => {
+    if (activeTemplate?.steps?.length) {
+      form.setValue("required_steps", activeTemplate.steps.length);
+    }
+  }, [activeTemplate, form]);
 
   const onSubmit = async (data: RecoveryFormValues) => {
     const workflow_assignments: { step_id: number; user_id: number }[] = [];
     if (activeTemplate?.steps?.length) {
-      if (data.approver_step_1_id) {
-        workflow_assignments.push({
-          step_id: activeTemplate.steps[0].id,
-          user_id: data.approver_step_1_id,
-        });
-      }
-      if (activeTemplate.steps.length > 1 && data.approver_step_2_id) {
-        workflow_assignments.push({
-          step_id: activeTemplate.steps[1].id,
-          user_id: data.approver_step_2_id,
-        });
-      }
+      activeTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals?.[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
     }
-    const { approver_step_1_id, approver_step_2_id, ...rest } =
-      data as RecoveryFormValues & {
-        approver_step_1_id?: number | null;
-        approver_step_2_id?: number | null;
-      };
-    void approver_step_1_id;
-    void approver_step_2_id;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { approvals, required_steps, ...rest } = data;
 
     await mutate(
       {
@@ -382,8 +224,8 @@ export default function RecoveryVoucherModal({
             <div className="flex flex-col gap-3">
               {/* General Information */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  General Information
+                <h3 className="text-sm font-semibold text-primary">
+                  1. General Information
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -523,9 +365,9 @@ export default function RecoveryVoucherModal({
 
               {/* Items Section */}
               <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between border-b pb-1">
+                <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-primary">
-                    Assets Selection
+                    2. Assets Selection
                   </h3>
                   <Button
                     type="button"
@@ -544,6 +386,7 @@ export default function RecoveryVoucherModal({
                   {fields.map((item, index) => (
                     <RecoveryItemRow
                       key={`${item.id}-${prefill?.unit_id ?? 0}`}
+                      disabled={fields.length === 1}
                       index={index}
                       control={form.control}
                       setValue={form.setValue}
@@ -560,52 +403,11 @@ export default function RecoveryVoucherModal({
               </div>
 
               {/* Approval Process */}
-              {activeTemplate && (activeTemplate.steps || []).length > 0 && (
-                <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                    Approval Process
-                  </h3>
-                  <FieldGroup className="grid grid-cols-2 gap-3">
-                    {(activeTemplate.steps || []).map(
-                      (step: ITemplateStep, idx) => {
-                        const name =
-                          idx === 0
-                            ? "approver_step_1_id"
-                            : "approver_step_2_id";
-                        return (
-                          <Controller
-                            key={step.id}
-                            name={name as keyof RecoveryFormValues}
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                              <Field className="gap-1">
-                                <FieldLabel>{step.name}</FieldLabel>
-                                <ApproverSelect
-                                  step={step}
-                                  allUsers={users}
-                                  value={
-                                    field.value != null
-                                      ? field.value.toString()
-                                      : ""
-                                  }
-                                  onChange={(val) =>
-                                    field.onChange(
-                                      val === "none" ? null : Number(val),
-                                    )
-                                  }
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        );
-                      },
-                    )}
-                  </FieldGroup>
-                </div>
-              )}
+              <RecoveryApprovalSection
+                form={form}
+                users={users}
+                activeTemplate={activeTemplate}
+              />
 
               {/* Attachments */}
               <FormAttachmentsSection
