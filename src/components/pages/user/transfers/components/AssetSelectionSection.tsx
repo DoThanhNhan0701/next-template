@@ -150,7 +150,7 @@ export function AssetSelectionSection({
               </FieldGroup>
             </div>
 
-            <div className="w-24 space-y-1 text-center">
+            <div className="w-32 space-y-1 text-center">
               <FieldGroup className="gap-3">
                 <Controller
                   name={`details.${index}.quantity`}

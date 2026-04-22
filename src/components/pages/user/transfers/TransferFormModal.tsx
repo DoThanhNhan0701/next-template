@@ -80,8 +80,7 @@ export default function TransferFormModal({
       target_unit_id: null,
       target_id: null,
       location_id: null,
-      approver_step_1_id: null,
-      approver_step_2_id: null,
+      approvals: {},
       transfer_date: getTodayISO(),
       external_link: "",
       reason: "",
@@ -161,8 +160,7 @@ export default function TransferFormModal({
           target_unit_id: null,
           target_id: null,
           location_id: null,
-          approver_step_1_id: null,
-          approver_step_2_id: null,
+          approvals: {},
           transfer_date: getTodayISO(),
           external_link: "",
           reason: "",
@@ -224,18 +222,15 @@ export default function TransferFormModal({
       activeTransferTemplate?.steps &&
       activeTransferTemplate.steps.length > 0
     ) {
-      if (data.approver_step_1_id) {
-        payload.workflow_assignments.push({
-          step_id: activeTransferTemplate.steps[0].id,
-          user_id: data.approver_step_1_id,
-        });
-      }
-      if (activeTransferTemplate.steps.length > 1 && data.approver_step_2_id) {
-        payload.workflow_assignments.push({
-          step_id: activeTransferTemplate.steps[1].id,
-          user_id: data.approver_step_2_id,
-        });
-      }
+      activeTransferTemplate.steps.forEach((step, idx) => {
+        const approverId = data.approvals?.[`step_${idx}`];
+        if (approverId) {
+          payload.workflow_assignments.push({
+            step_id: step.id,
+            user_id: approverId,
+          });
+        }
+      });
     }
 
     await mutate(

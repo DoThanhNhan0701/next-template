@@ -38,14 +38,14 @@ export function ApprovalProcessSection({
       </h3>
 
       <div className="bg-muted/20 border rounded-md p-3 space-y-3">
-        <FieldGroup className="grid grid-cols-2 gap-8">
+        <FieldGroup className="grid grid-cols-2 gap-3">
           {activeTransferTemplate.steps.map((step: ITemplateStep, idx) => {
-            const name =
-              idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
+            const name = `approvals.step_${idx}`;
             return (
               <Controller
                 key={`transfer-approver-${step.id}`}
-                name={name as keyof TransferFormValues}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                name={name as any}
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="gap-1">
