@@ -3,11 +3,10 @@
 import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon, Trash } from "lucide-react";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { PlusIcon } from "lucide-react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ApproverSelect } from "@/components/common/ApproverSelect";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
@@ -30,13 +29,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
@@ -45,11 +37,13 @@ import { AppDispatch, RootState } from "@/redux";
 import { closeStockAdjustment } from "@/redux/slices/stockAdjustment";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { ITemplate, ITemplateStep } from "@/types/template";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
+
+import { AdjustmentDetailRow } from "./components/AdjustmentDetailRow";
+import { StockAdjustmentApprovalSection } from "./components/StockAdjustmentApprovalSection";
 
 type FormValues = StockAdjustmentFormValues;
 
@@ -57,182 +51,6 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-}
-function DetailRow({
-  index,
-  control,
-  setValue,
-  locations,
-  onRemove,
-}: {
-  index: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setValue: any;
-  locations: ILocation[];
-  onRemove: () => void;
-}) {
-  const locationId = useWatch({
-    control,
-    name: `details.${index}.location_id`,
-  });
-
-  const { response: assetRes, pending: assetsPending } = useGet<{
-    items: IPhysicalAsset[];
-  }>(
-    {
-      url: endpoints.PHYSICAL_ASSETS,
-      config: {
-        params: { location_id: locationId, limit: 200, status_code: "READY" },
-      },
-    },
-    { disabled: !locationId || locationId === 0, deps: [locationId] },
-  );
-
-  const assets = assetRes?.items || [];
-
-  return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 pr-10 flex flex-row flex-wrap items-start gap-3">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
-        onClick={onRemove}
-      >
-        <Trash size={12} />
-      </Button>
-
-      {/* Location — select first */}
-      <Controller
-        name={`details.${index}.location_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel>Location</FieldLabel>
-            <Select
-              onValueChange={(v) => {
-                field.onChange(Number(v));
-                // clear asset khi đổi location
-                setValue(`details.${index}.asset_id`, 0);
-              }}
-              value={field.value ? field.value.toString() : ""}
-            >
-              <SelectTrigger className="h-9 text-xs">
-                <SelectValue placeholder="Select location" />
-              </SelectTrigger>
-              <SelectContent>
-                {locations.map((l) => (
-                  <SelectItem key={l.id} value={l.id.toString()}>
-                    {l.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      {/* Asset — depends on location */}
-      <Controller
-        name={`details.${index}.asset_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1 min-w-[160px]">
-            <FieldLabel>Asset</FieldLabel>
-            <Select
-              onValueChange={(v) => field.onChange(Number(v))}
-              value={field.value ? field.value.toString() : ""}
-              disabled={!locationId || locationId === 0}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={
-                    !locationId || locationId === 0
-                      ? "Select location first"
-                      : assetsPending
-                        ? "Loading..."
-                        : assets.length === 0
-                          ? "No assets found"
-                          : "Select asset"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {assets.map((a) => (
-                  <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.current_stock ?? 0}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-      {/* Type */}
-      <Controller
-        name={`details.${index}.adjustment_type`}
-        control={control}
-        render={({ field }) => (
-          <Field className="gap-1 w-[130px]">
-            <FieldLabel>Type</FieldLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger className="h-9 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="INCREASE">
-                  <span className="text-green-600 font-medium">↑ Increase</span>
-                </SelectItem>
-                <SelectItem value="DECREASE">
-                  <span className="text-red-500 font-medium">↓ Decrease</span>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </Field>
-        )}
-      />
-
-      {/* Quantity */}
-      <Controller
-        name={`details.${index}.quantity_diff`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 w-20">
-            <FieldLabel>Quantity</FieldLabel>
-            <Input
-              type="number"
-              className="h-9 text-xs"
-              {...field}
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      {/* Notes */}
-      <Controller
-        name={`details.${index}.notes`}
-        control={control}
-        render={({ field }) => (
-          <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel>Notes</FieldLabel>
-            <Input
-              className="h-9 text-xs"
-              {...field}
-              value={field.value ?? ""}
-              placeholder="Optional"
-            />
-          </Field>
-        )}
-      />
-    </div>
-  );
 }
 
 export default function StockAdjustmentModal({
@@ -271,10 +89,10 @@ export default function StockAdjustmentModal({
       adjustment_date: getTodayISO(),
       reason: "",
       external_link: "",
-      approver_step_1_id: null,
-      approver_step_2_id: null,
       attachments: [],
       details: [],
+      approvals: {},
+      required_steps: 0,
     },
   });
 
@@ -289,8 +107,6 @@ export default function StockAdjustmentModal({
         adjustment_date: getTodayISO(),
         reason: "",
         external_link: "",
-        approver_step_1_id: null,
-        approver_step_2_id: null,
         attachments: [],
         details: [
           {
@@ -301,30 +117,34 @@ export default function StockAdjustmentModal({
             notes: "",
           },
         ],
+        approvals: {},
+        required_steps: activeTemplate?.steps?.length || 0,
       });
     }
-  }, [isOpen, prefill, form]);
+  }, [isOpen, prefill, form, activeTemplate]);
+
+  useEffect(() => {
+    if (activeTemplate?.steps?.length) {
+      form.setValue("required_steps", activeTemplate.steps.length);
+    }
+  }, [activeTemplate, form]);
 
   const onSubmit = async (data: FormValues) => {
     const workflow_assignments: { step_id: number; user_id: number }[] = [];
     if (activeTemplate?.steps?.length) {
-      if (data.approver_step_1_id) {
-        workflow_assignments.push({
-          step_id: activeTemplate.steps[0].id,
-          user_id: data.approver_step_1_id,
-        });
-      }
-      if (activeTemplate.steps.length > 1 && data.approver_step_2_id) {
-        workflow_assignments.push({
-          step_id: activeTemplate.steps[1].id,
-          user_id: data.approver_step_2_id,
-        });
-      }
+      activeTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals?.[`step_${idx}`];
+        if (userId) {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
     }
 
-    const { approver_step_1_id, approver_step_2_id, ...rest } = data;
-    void approver_step_1_id;
-    void approver_step_2_id;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { approvals, required_steps, ...rest } = data;
 
     await mutate(
       {
@@ -365,10 +185,9 @@ export default function StockAdjustmentModal({
         >
           <div className="flex-1 px-6 pb-6 overflow-y-auto">
             <div className="flex flex-col gap-3">
-              {/* General Info */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  General Information
+                <h3 className="text-sm font-semibold text-primary">
+                  1. General information
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -423,9 +242,9 @@ export default function StockAdjustmentModal({
 
               {/* Items */}
               <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between border-b pb-1">
+                <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-primary">
-                    Adjustment Items
+                    2. Adjustment items
                   </h3>
                   <Button
                     type="button"
@@ -442,7 +261,7 @@ export default function StockAdjustmentModal({
                       })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> Add Item
+                    <PlusIcon size={12} className="mr-1" /> Add item
                   </Button>
                 </div>
 
@@ -453,7 +272,8 @@ export default function StockAdjustmentModal({
                 ) : (
                   <div className="flex flex-col gap-3">
                     {fields.map((field, index) => (
-                      <DetailRow
+                      <AdjustmentDetailRow
+                        disabled={fields.length === 1}
                         key={field.id}
                         index={index}
                         control={form.control}
@@ -467,52 +287,11 @@ export default function StockAdjustmentModal({
               </div>
 
               {/* Approval Process */}
-              {activeTemplate && (activeTemplate.steps || []).length > 0 && (
-                <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                    Approval Process
-                  </h3>
-                  <FieldGroup className="grid grid-cols-2 gap-3">
-                    {(activeTemplate.steps || []).map(
-                      (step: ITemplateStep, idx) => {
-                        const name =
-                          idx === 0
-                            ? "approver_step_1_id"
-                            : "approver_step_2_id";
-                        return (
-                          <Controller
-                            key={step.id}
-                            name={name as keyof FormValues}
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                              <Field className="gap-1">
-                                <FieldLabel>{step.name}</FieldLabel>
-                                <ApproverSelect
-                                  step={step}
-                                  allUsers={users}
-                                  value={
-                                    field.value != null
-                                      ? field.value.toString()
-                                      : ""
-                                  }
-                                  onChange={(val) =>
-                                    field.onChange(
-                                      val === "none" ? null : Number(val),
-                                    )
-                                  }
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        );
-                      },
-                    )}
-                  </FieldGroup>
-                </div>
-              )}
+              <StockAdjustmentApprovalSection
+                form={form}
+                users={users}
+                activeTemplate={activeTemplate || undefined}
+              />
 
               {/* Attachments */}
               <FormAttachmentsSection

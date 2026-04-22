@@ -122,9 +122,7 @@ function RecoveryItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>
-              Asset
-            </FieldLabel>
+            <FieldLabel>Asset</FieldLabel>
             <Select
               onValueChange={(val) => {
                 const aid = Number(val);
@@ -171,9 +169,7 @@ function RecoveryItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>
-              Locations
-            </FieldLabel>
+            <FieldLabel>Locations</FieldLabel>
             <Select
               onValueChange={(val) => field.onChange(Number(val))}
               value={field.value ? field.value.toString() : ""}
@@ -200,9 +196,7 @@ function RecoveryItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-24">
-            <FieldLabel>
-              Qty
-            </FieldLabel>
+            <FieldLabel>Qty</FieldLabel>
             <Input
               type="number"
               className="h-9 text-xs"
