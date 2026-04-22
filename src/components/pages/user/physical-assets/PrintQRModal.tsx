@@ -74,7 +74,7 @@ export default function PrintQRModal({
           justify-content: center; 
           align-items: center; 
           min-height: 100vh; 
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-family: Arial, Helvetica, sans-serif;
           background: #f5f5f5;
         }
         .container { 
