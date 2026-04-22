@@ -45,13 +45,6 @@ export function LiquidationApprovalSection({
         {activeTemplate.steps.map((step, index) => (
           <div key={step.id}>
             <Controller
-              name={`workflow_assignments.${index}.step_id`}
-              control={form.control}
-              render={({ field }) => (
-                <input type="hidden" {...field} value={step.id} />
-              )}
-            />
-            <Controller
               name={`workflow_assignments.${index}.user_id`}
               control={form.control}
               rules={{ required: "Approver is required" }}

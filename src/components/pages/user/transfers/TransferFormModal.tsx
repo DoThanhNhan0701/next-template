@@ -66,7 +66,7 @@ interface ITransferPayload {
   items: Array<{
     asset_id: number;
     quantity: number;
-    from_location_id: number;
+    from_location_id: number | null;
   }>;
   workflow_assignments: Array<{
     step_id: number;
@@ -213,11 +213,9 @@ export default function TransferFormModal({
       external_link: data.external_link || "",
       attachments: data.attachments || [],
       items: data.details.map((item) => {
-        const assetObj = assets.find((a) => a.id === item.asset_id);
+        // const assetObj = assets.find((a) => a.id === item.asset_id);
         const from_location_id =
-          transfer_type === "location"
-            ? data.source_id
-            : (assetObj?.location_id ?? 0);
+          transfer_type === "location" ? data.source_id : null;
         return {
           asset_id: item.asset_id,
           quantity: item.quantity,

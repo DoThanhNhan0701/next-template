@@ -125,9 +125,7 @@ function DetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel>
-              Location
-            </FieldLabel>
+            <FieldLabel>Location</FieldLabel>
             <Select
               onValueChange={(v) => {
                 field.onChange(Number(v));
@@ -158,9 +156,7 @@ function DetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1 min-w-[160px]">
-            <FieldLabel>
-              Asset
-            </FieldLabel>
+            <FieldLabel>Asset</FieldLabel>
             <Select
               onValueChange={(v) => field.onChange(Number(v))}
               value={field.value ? field.value.toString() : ""}
@@ -182,7 +178,7 @@ function DetailRow({
               <SelectContent>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
+                    {a.name} ({a.asset_code}) Quantity: {a?.current_stock ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -197,9 +193,7 @@ function DetailRow({
         control={control}
         render={({ field }) => (
           <Field className="gap-1 w-[130px]">
-            <FieldLabel>
-              Type
-            </FieldLabel>
+            <FieldLabel>Type</FieldLabel>
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger className="h-9 text-xs">
                 <SelectValue />
@@ -223,9 +217,7 @@ function DetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-20">
-            <FieldLabel>
-              Qty
-            </FieldLabel>
+            <FieldLabel>Quantity</FieldLabel>
             <Input
               type="number"
               className="h-9 text-xs"
@@ -244,9 +236,7 @@ function DetailRow({
         control={control}
         render={({ field }) => (
           <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel>
-              Notes
-            </FieldLabel>
+            <FieldLabel>Notes</FieldLabel>
             <Input
               className="h-9 text-xs"
               {...field}

@@ -158,41 +158,47 @@ export default function MaintenanceFormModal({
   const assets = assetRes?.items || [];
 
   useEffect(() => {
-    if (isOpen) {
-      if (maintenanceToEdit) {
-        // Handle edit mapping
-      } else {
-        form.reset({
-          record_number: "",
-          ticket_number: "",
-          reason: "",
-          handover_person: "",
-          taker_person_name: "",
-          taker_phone: null,
-          service_provider_name: "",
-          service_provider_address: null,
-          notes: null,
-          expected_cost: 0,
-          actual_cost: 0,
-          external_link: null,
-          outing_date: getTodayISO(),
-          items: [
-            {
-              asset_id: 0,
-              quantity: 1,
-              notes: "",
-              from_location_id: 0,
-              from_staff_id: 0,
-              from_unit_id: 0,
-              return_to_location_id: null,
-            },
-          ],
-          attachments: [],
-          workflow_assignments: [],
-        });
-      }
+    if (!isOpen) return;
+
+    if (maintenanceToEdit) {
+      // Handle edit mapping
+    } else {
+      const initialWorkflow =
+        activeTemplate?.steps?.map((step) => ({
+          step_id: step.id,
+          user_id: 0,
+        })) || [];
+
+      form.reset({
+        record_number: "",
+        ticket_number: "",
+        reason: "",
+        handover_person: "",
+        taker_person_name: "",
+        taker_phone: null,
+        service_provider_name: "",
+        service_provider_address: null,
+        notes: null,
+        expected_cost: 0,
+        actual_cost: 0,
+        external_link: null,
+        outing_date: getTodayISO(),
+        items: [
+          {
+            asset_id: 0,
+            quantity: 1,
+            notes: "",
+            from_location_id: 0,
+            from_staff_id: 0,
+            from_unit_id: 0,
+            return_to_location_id: null,
+          },
+        ],
+        attachments: [],
+        workflow_assignments: initialWorkflow,
+      });
     }
-  }, [isOpen, maintenanceToEdit, form]);
+  }, [isOpen, maintenanceToEdit, form, activeTemplate]);
 
   const onSubmit = async (data: MaintenanceFormValues) => {
     const url = isEditing

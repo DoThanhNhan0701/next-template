@@ -162,9 +162,7 @@ function AllocationItemRow({
 
       {/* Issuing Warehouse */}
       <Field className="gap-1 flex-1">
-        <FieldLabel>
-          Locations
-        </FieldLabel>
+        <FieldLabel>Locations</FieldLabel>
         <Select
           onValueChange={(val) => {
             const vid = Number(val);
@@ -192,9 +190,7 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>
-              Asset
-            </FieldLabel>
+            <FieldLabel>Asset</FieldLabel>
             <Select
               onValueChange={(val) => field.onChange(Number(val))}
               value={field.value ? field.value.toString() : ""}
@@ -214,7 +210,8 @@ function AllocationItemRow({
               <SelectContent>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
+                    {a.name} ({a.asset_code}) Quantity:{" "}
+                    {a?.in_stock_quantity ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -230,9 +227,7 @@ function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-24">
-            <FieldLabel>
-              Qty
-            </FieldLabel>
+            <FieldLabel>Quantity</FieldLabel>
             <Input
               type="number"
               className="h-9 text-xs"

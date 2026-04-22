@@ -71,9 +71,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Locations
-              </FieldLabel>
+              <FieldLabel>Locations</FieldLabel>
               <Select
                 onValueChange={(val) => {
                   field.onChange(Number(val));
@@ -102,9 +100,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Select asset
-              </FieldLabel>
+              <FieldLabel>Select asset</FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
                 value={field.value ? field.value.toString() : ""}
@@ -120,7 +116,8 @@ function AssetListItem({
                 <SelectContent className="max-h-[300px]">
                   {assets.map((a) => (
                     <SelectItem key={a.id} value={a.id.toString()}>
-                      {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
+                      {a.name} ({a.asset_code}) Quantity:{" "}
+                      {a?.current_stock ?? 0}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -137,9 +134,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Quantity
-              </FieldLabel>
+              <FieldLabel>Quantity</FieldLabel>
               <Input
                 type="number"
                 className="bg-white"
@@ -156,9 +151,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Unit price
-              </FieldLabel>
+              <FieldLabel>Unit price</FieldLabel>
               <Input
                 type="number"
                 className="bg-white"
@@ -175,9 +168,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                Remaining value
-              </FieldLabel>
+              <FieldLabel>Remaining value</FieldLabel>
               <Input
                 type="number"
                 className="bg-white"
@@ -196,9 +187,7 @@ function AssetListItem({
         control={form.control}
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>
-              Item notes
-            </FieldLabel>
+            <FieldLabel>Item notes</FieldLabel>
             <Input
               {...field}
               placeholder="Detailed notes for this asset..."

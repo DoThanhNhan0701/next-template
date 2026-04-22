@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import {
@@ -33,26 +31,12 @@ export function ApprovalProcessSection({
   users,
   activeTemplate,
 }: ApprovalProcessSectionProps) {
-  // Map steps to workflow_assignments in the form
-  useEffect(() => {
-    if (activeTemplate?.steps && activeTemplate.steps.length > 0) {
-      const currentAssignments = form.getValues("workflow_assignments") || [];
-      if (currentAssignments.length === 0) {
-        const initialAssignments = activeTemplate.steps.map((step) => ({
-          step_id: step.id,
-          user_id: 0,
-        }));
-        form.setValue("workflow_assignments", initialAssignments);
-      }
-    }
-  }, [activeTemplate, form]);
-
-  if (
-    !activeTemplate ||
-    !activeTemplate.steps ||
-    activeTemplate.steps.length === 0
-  ) {
-    return null;
+  if (!activeTemplate?.steps || activeTemplate.steps.length === 0) {
+    return (
+      <div className="py-10 text-center text-muted-foreground bg-muted/10 rounded-lg border border-dashed">
+        No approval workflow configured for this process type.
+      </div>
+    );
   }
 
   return (
