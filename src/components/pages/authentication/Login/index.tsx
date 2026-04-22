@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Logo from "@public/icons/logo.png";
 import { Eye, EyeOff } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { LoginSchema } from "@/components/schemas/auth/login.schema";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
-import { AppDispatch } from "@/redux";
+import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser, actionLogin } from "@/redux/slices/auth";
 import { LoginRequest } from "@/types/auth/requests";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -43,7 +43,14 @@ interface LoginApiResponse {
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -80,7 +87,10 @@ export default function LoginPage() {
           );
           dispatch(actionFetchUser());
           getApiSuccessMessage(response);
-          router.push("/dashboard");
+          // Small delay to ensure state and cookies are synchronized
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 100);
         },
         onError: (error) => {
           getApiErrorMessage(error);

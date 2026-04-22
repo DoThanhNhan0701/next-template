@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export const useFaviconBadge = (count: number, trigger?: any) => {
+export const useFaviconBadge = (count: number, trigger?: unknown) => {
   useEffect(() => {
     const originalFaviconUrl = "/favicon.ico";
 
