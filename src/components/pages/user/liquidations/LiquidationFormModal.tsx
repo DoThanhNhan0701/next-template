@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck } from "lucide-react";
-import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
+import { Resolver, useFieldArray, useForm } from "react-hook-form";
 
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { IUser } from "@/types/auth";
-import { ILiquidation } from "@/types/liquidation";
+import { ILiquidationFull } from "@/types/liquidation";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
 import { ITemplate } from "@/types/template";
@@ -38,7 +38,7 @@ interface LiquidationFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (data: unknown, method: string) => void;
-  liquidationToEdit?: ILiquidation | null;
+  liquidationToEdit?: ILiquidationFull | null;
 }
 
 export default function LiquidationFormModal({
@@ -50,35 +50,36 @@ export default function LiquidationFormModal({
   const isEditing = !!liquidationToEdit;
   const { mutate, pending } = useMutation();
 
-  const form: UseFormReturn<LiquidationFormValues> =
-    useForm<LiquidationFormValues>({
-      resolver: zodResolver(LiquidationSchema),
-      defaultValues: {
-        record_number: "",
-        reason: "",
-        notes: null,
-        liquidation_date: getTodayISO(),
-        liquidation_type: "sell",
-        committee: [],
-        total_value: 0,
-        buyer_name: null,
-        external_link: null,
-        attachments: [],
-        items: [
-          {
-            asset_id: 0,
-            quantity: 1,
-            unit_value: 0,
-            remaining_value: 0,
-            notes: null,
-            from_location_id: 0,
-            from_staff_id: 0,
-            from_unit_id: 0,
-          },
-        ],
-        workflow_assignments: [],
-      },
-    });
+  const form = useForm<LiquidationFormValues>({
+    resolver: zodResolver(LiquidationSchema) as Resolver<LiquidationFormValues>,
+    defaultValues: {
+      record_number: "",
+      reason: "",
+      notes: null,
+      liquidation_date: getTodayISO(),
+      liquidation_type: "sell",
+      committee: [],
+      total_value: 0,
+      buyer_name: null,
+      external_link: null,
+      attachments: [],
+      items: [
+        {
+          asset_id: 0,
+          quantity: 1,
+          unit_value: 0,
+          remaining_value: 0,
+          notes: null,
+          from_location_id: 0,
+          from_staff_id: 0,
+          from_unit_id: 0,
+        },
+      ],
+      workflow_assignments: [],
+      required_steps: 0,
+      approvals: {},
+    },
+  });
 
   const { fields, append, remove } = useFieldArray<
     LiquidationFormValues,
@@ -116,13 +117,65 @@ export default function LiquidationFormModal({
     if (!isOpen) return;
 
     if (liquidationToEdit) {
-      // Handle edit mapping if needed
+      const approvals: Record<string, number> = {};
+      
+      // Map existing assignments to the approvals record if they exist
+      if (liquidationToEdit.workflow_assignments) {
+        liquidationToEdit.workflow_assignments.forEach((assignment, idx) => {
+          approvals[`step_${idx}`] = assignment.user_id;
+        });
+      }
+
+      form.reset({
+        record_number: liquidationToEdit.record_number || "",
+        reason: liquidationToEdit.reason || "",
+        notes: liquidationToEdit.notes || null,
+        liquidation_date: liquidationToEdit.liquidation_date || getTodayISO(),
+        liquidation_type: liquidationToEdit.liquidation_type || "sell",
+        committee: liquidationToEdit.committee
+          ? (typeof liquidationToEdit.committee === "string"
+              ? [] // Simplified for now since committee logic is complex
+              : []) 
+          : [],
+        total_value: liquidationToEdit.total_value || 0,
+        buyer_name: liquidationToEdit.buyer_name || null,
+        external_link: liquidationToEdit.external_link || null,
+        attachments: liquidationToEdit.attachments || [],
+        items: Array.isArray(liquidationToEdit.details) 
+          ? liquidationToEdit.details.map((item) => ({
+              asset_id: item.asset_id || 0,
+              quantity: item.quantity || 1,
+              unit_value: item.unit_value || 0,
+              remaining_value: item.remaining_value || 0,
+              notes: item.notes ?? null,
+              from_location_id: item.from_location_id || 0,
+              from_staff_id: 0, // Not in details
+              from_unit_id: 0,  // Not in details
+            })) 
+          : [
+              {
+                asset_id: 0,
+                quantity: 1,
+                unit_value: 0,
+                remaining_value: 0,
+                notes: "",
+                from_location_id: 0,
+                from_staff_id: 0,
+                from_unit_id: 0,
+              }
+            ],
+        approvals,
+        required_steps: activeTemplate?.steps?.length || 0,
+        workflow_assignments: liquidationToEdit.workflow_assignments || [],
+      });
     } else {
-      const initialWorkflow =
-        activeTemplate?.steps?.map((step) => ({
-          step_id: step.id,
-          user_id: 0,
-        })) || [];
+      const requiredSteps = activeTemplate?.steps?.length || 0;
+      const initialApprovals: Record<string, number> = {};
+      if (activeTemplate?.steps) {
+        activeTemplate.steps.forEach((_, idx) => {
+          initialApprovals[`step_${idx}`] = 0;
+        });
+      }
 
       form.reset({
         record_number: "",
@@ -141,13 +194,15 @@ export default function LiquidationFormModal({
             quantity: 1,
             unit_value: 0,
             remaining_value: 0,
-            notes: "",
+            notes: null,
             from_location_id: 0,
             from_staff_id: 0,
             from_unit_id: 0,
           },
         ],
-        workflow_assignments: initialWorkflow,
+        approvals: initialApprovals,
+        required_steps: requiredSteps,
+        workflow_assignments: [],
       });
     }
   }, [isOpen, liquidationToEdit, form, activeTemplate]);
@@ -164,6 +219,19 @@ export default function LiquidationFormModal({
       .filter(Boolean)
       .join(", ");
 
+    const workflow_assignments: { step_id: number; user_id: number }[] = [];
+    if (activeTemplate?.steps?.length) {
+      activeTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
+    }
+
     // Clean items
     const cleanedItems = data.items.map((item) => ({
       asset_id: item.asset_id,
@@ -175,7 +243,7 @@ export default function LiquidationFormModal({
     }));
 
     const payload = {
-      liquidation_date: data.liquidation_date, // Keep as YYYY-MM-DD
+      liquidation_date: data.liquidation_date,
       liquidation_type: data.liquidation_type,
       reason: data.reason,
       total_value: data.total_value,
@@ -185,7 +253,7 @@ export default function LiquidationFormModal({
       attachments: data.attachments || [],
       items: cleanedItems,
       committee: committeeNames,
-      workflow_assignments: data.workflow_assignments,
+      workflow_assignments,
     };
 
     await mutate(
@@ -220,7 +288,7 @@ export default function LiquidationFormModal({
     errors.notes
   );
   const hasAssetsErrors = !!errors.items;
-  const hasApprovalErrors = !!errors.workflow_assignments;
+  const hasApprovalErrors = !!(errors.workflow_assignments || errors.approvals);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

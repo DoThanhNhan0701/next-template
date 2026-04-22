@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
-import { useFieldArray, useForm, type Resolver } from "react-hook-form";
+import { Resolver, useFieldArray, useForm } from "react-hook-form";
 
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
@@ -55,7 +55,7 @@ export default function MaintenanceFormModal({
   const { mutate, pending } = useMutation();
 
   const form = useForm<MaintenanceFormValues>({
-    resolver: zodResolver(MaintenanceSchema) as unknown as Resolver<MaintenanceFormValues>,
+    resolver: zodResolver(MaintenanceSchema) as Resolver<MaintenanceFormValues>,
     defaultValues: {
       record_number: "",
       ticket_number: "",
@@ -184,7 +184,7 @@ export default function MaintenanceFormModal({
           {
             asset_id: 0,
             quantity: 1,
-            notes: "",
+            notes: null,
             from_location_id: 0,
             from_staff_id: 0,
             from_unit_id: 0,

@@ -1,37 +1,4 @@
 import { z } from "zod";
-import type { FieldValues } from "react-hook-form";
-
-export interface MaintenanceFormValues extends FieldValues {
-  record_number: string;
-  ticket_number: string;
-  reason: string;
-  handover_person: string;
-  taker_person_name: string;
-  taker_phone?: string | null;
-  service_provider_name: string;
-  service_provider_address?: string | null;
-  notes?: string | null;
-  expected_cost: number;
-  actual_cost: number;
-  external_link?: string | null;
-  outing_date: string;
-  items: {
-    asset_id: number;
-    quantity: number;
-    notes?: string | null;
-    from_location_id: number;
-    from_staff_id: number;
-    from_unit_id: number;
-    return_to_location_id?: number | null;
-  }[];
-  attachments: string[];
-  approvals: Record<string, number | null | undefined>;
-  required_steps: number;
-  workflow_assignments: {
-    step_id: number;
-    user_id: number;
-  }[];
-}
 
 export const MaintenanceSchema = z
   .object({
@@ -61,18 +28,20 @@ export const MaintenanceSchema = z
         }),
       )
       .min(1, "Field is required!"),
-    attachments: z.array(z.string()),
-    approvals: z.record(z.string(), z.number().nullable().optional()),
-    required_steps: z.number(),
-    workflow_assignments: z.array(
-      z.object({
-        step_id: z.coerce.number(),
-        user_id: z.coerce.number().min(1, "Field is required!"),
-      }),
-    ),
+    attachments: z.array(z.string()).optional().default([]),
+    approvals: z.record(z.string(), z.number().nullable().optional()).default({}),
+    required_steps: z.number().default(0),
+    workflow_assignments: z
+      .array(
+        z.object({
+          step_id: z.coerce.number(),
+          user_id: z.coerce.number().min(1, "Field is required!"),
+        }),
+      )
+      .optional()
+      .default([]),
   })
   .superRefine((data, ctx) => {
-    // Validate each expected step has a user assigned
     for (let i = 0; i < data.required_steps; i++) {
       const stepKey = `step_${i}`;
       const userId = data.approvals[stepKey];
@@ -85,3 +54,5 @@ export const MaintenanceSchema = z
       }
     }
   });
+
+export type MaintenanceFormValues = z.infer<typeof MaintenanceSchema>;

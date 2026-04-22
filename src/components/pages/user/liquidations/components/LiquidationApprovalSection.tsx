@@ -2,6 +2,7 @@
 
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 import {
   Field,
   FieldError,
@@ -17,8 +18,6 @@ import {
 } from "@/components/ui/select";
 import { IUser } from "@/types/auth";
 import { ITemplate } from "@/types/template";
-
-import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 
 interface LiquidationApprovalSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
@@ -45,11 +44,10 @@ export function LiquidationApprovalSection({
         {activeTemplate.steps.map((step, index) => (
           <div key={step.id}>
             <Controller
-              name={`workflow_assignments.${index}.user_id`}
+              name={`approvals.step_${index}`}
               control={form.control}
-              rules={{ required: "Approver is required" }}
               render={({ field, fieldState }) => (
-                <Field>
+                <Field className="gap-1">
                   <FieldLabel>
                     Step {index + 1}: {step.name}
                   </FieldLabel>

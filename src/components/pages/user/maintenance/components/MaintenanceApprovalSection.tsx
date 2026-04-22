@@ -47,7 +47,7 @@ export function MaintenanceApprovalSection({
             name={`approvals.step_${index}`}
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field>
+              <Field className="gap-1">
                 <FieldLabel>
                   Step {index + 1}: {step.name}
                 </FieldLabel>
@@ -66,7 +66,9 @@ export function MaintenanceApprovalSection({
                     ))}
                   </SelectContent>
                 </Select>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />

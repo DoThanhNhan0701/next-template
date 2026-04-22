@@ -7,6 +7,7 @@ import {
   UseFormReturn,
 } from "react-hook-form";
 
+import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -135,12 +136,10 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>Quantity</FieldLabel>
-              <Input
-                type="number"
-                className="bg-white"
+              <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(val) => field.onChange(val ?? 0)}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -152,12 +151,10 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>Unit price</FieldLabel>
-              <Input
-                type="number"
-                className="bg-white"
+              <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(val) => field.onChange(val ?? 0)}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -169,12 +166,10 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>Remaining value</FieldLabel>
-              <Input
-                type="number"
-                className="bg-white"
+              <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(val) => field.onChange(val ?? 0)}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>

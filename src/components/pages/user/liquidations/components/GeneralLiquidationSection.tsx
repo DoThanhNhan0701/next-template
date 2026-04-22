@@ -10,6 +10,7 @@ import {
 import { Controller, UseFormReturn, useWatch } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -137,16 +138,10 @@ export function GeneralLiquidationSection({
               <FieldLabel>
                 Total value (VND)
               </FieldLabel>
-              <Input
+              <FormattedNumberInput
                 {...field}
-                type="number"
                 value={field.value ?? 0}
-                onChange={(e) =>
-                  field.onChange(
-                    e.target.value === "" ? 0 : Number(e.target.value),
-                  )
-                }
-                className="bg-white"
+                onChange={(val) => field.onChange(val ?? 0)}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>

@@ -32,6 +32,7 @@ export interface ILiquidationFull {
   status_id: number;
   status_obj: IStatus;
   details: ILiquidationDetail[];
+  workflow_assignments?: { step_id: number; user_id: number }[];
 }
 
 export interface ILiquidationDetail {
