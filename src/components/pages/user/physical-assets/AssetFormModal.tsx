@@ -290,7 +290,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-2 col-span-2">
-                        <FieldLabel>Phương thức quản lý</FieldLabel>
+                        <FieldLabel>Management method</FieldLabel>
                         <Tabs
                           value={field.value}
                           onValueChange={(val) => {
@@ -311,7 +311,7 @@ export default function AssetFormModal({
                             >
                               <CircleAlert className="w-4 h-4" />
                               <span className="text-xs font-medium">
-                                Theo Mã (Duy nhất)
+                                By code (Unique)
                               </span>
                             </TabsTrigger>
                             <TabsTrigger
@@ -320,7 +320,7 @@ export default function AssetFormModal({
                             >
                               <Package className="w-4 h-4" />
                               <span className="text-xs font-medium">
-                                Theo Số lượng (Lô)
+                                By quantity (Batch)
                               </span>
                             </TabsTrigger>
                           </TabsList>
@@ -334,17 +334,18 @@ export default function AssetFormModal({
                           <CircleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                           {field.value === "unique" ? (
                             <span>
-                              Mỗi tài sản được định danh bằng{" "}
-                              <strong>mã riêng biệt</strong> (serial number). Số
-                              lượng luôn là 1. Phù hợp với thiết bị có giá trị
-                              cao cần theo dõi từng cái.
+                              Each asset is identified by a{" "}
+                              <strong>unique code</strong> (serial number).
+                              Quantity is always 1. Suitable for high-value
+                              equipment that needs individual tracking.
                             </span>
                           ) : (
                             <span>
-                              Tài sản được quản lý theo{" "}
-                              <strong>số lượng tổng</strong>, không phân biệt
-                              từng cái. Phù hợp với vật tư, phụ kiện hoặc hàng
-                              hóa nhập/xuất kho theo lô.
+                              Assets are managed by{" "}
+                              <strong>total quantity</strong>, without
+                              distinguishing individual items. Suitable for
+                              supplies, accessories, or goods imported/exported
+                              in batches.
                             </span>
                           )}
                         </div>
@@ -645,8 +646,8 @@ export default function AssetFormModal({
                             </SelectItem>
                             {(watchedUnitId
                               ? staffs.filter(
-                                  (s) => s.unit_id === Number(watchedUnitId),
-                                )
+                                (s) => s.unit_id === Number(watchedUnitId),
+                              )
                               : staffs
                             ).map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>

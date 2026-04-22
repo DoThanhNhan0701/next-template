@@ -39,8 +39,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
   const auditResults = [
     {
       code: "MATCHED",
-      label: "Khớp",
-      sub: "Tài sản đúng vị trí, tốt",
+      label: "Matched",
+      sub: "Asset in correct location",
       icon: CheckCircle2,
       color: "text-emerald-600",
       border: "border-emerald-500",
@@ -50,8 +50,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     },
     {
       code: "LOST",
-      label: "Mất",
-      sub: "Không tìm thấy",
+      label: "Lost",
+      sub: "Not found",
       icon: XCircle,
       color: "text-red-600",
       border: "border-red-500",
@@ -61,8 +61,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     },
     {
       code: "DAMAGED",
-      label: "Hỏng",
-      sub: "Bị hư hỏng",
+      label: "Damaged",
+      sub: "Asset is broken",
       icon: AlertTriangle,
       color: "text-amber-600",
       border: "border-amber-500",
@@ -73,8 +73,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     {
       code: "UNKNOWN",
       aliasCodes: ["MISMATCHED", "EXTRA", "COMPLETED"],
-      label: "Tài sản lạ",
-      sub: "Không có trong DS",
+      label: "Unknown asset",
+      sub: "Not in list",
       icon: HelpCircle,
       color: "text-blue-600",
       border: "border-blue-500",
@@ -85,18 +85,18 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
   ];
 
   const proposedActions = [
-    { key: null, label: "Không", sub: "Giữ nguyên", icon: Package },
+    { key: null, label: "None", sub: "Keep as is", icon: Package },
     {
       key: "TRANSFER",
-      label: "Điều chuyển",
-      sub: "Chuyển đơn vị/người",
+      label: "Transfer",
+      sub: "Move to unit/person",
       icon: ArrowRightLeft,
     },
     {
       key: "RECALL",
       aliasKeys: ["RECOVER"],
-      label: "Thu hồi",
-      sub: "Thu về kho",
+      label: "Recall",
+      sub: "Return to warehouse",
       icon: RotateCcw,
     },
   ];
@@ -105,7 +105,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[560px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Kiểm kê Tài sản</DialogTitle>
+          <DialogTitle>Asset audit</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {item.asset.asset_code} — {item.asset.name}
           </DialogDescription>
@@ -117,7 +117,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
             <div className="text-[12px] font-medium leading-relaxed">
               <span>
-                Chế độ xem — bạn không có quyền chỉnh sửa kết quả kiểm kê này.
+                View mode — you do not have permission to edit this audit result.
               </span>
             </div>
           </div>
@@ -127,12 +127,12 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <div className="p-5 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-5">
               <h3 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                 <Info size={14} className="text-primary/60" />
-                Thông tin hiện tại
+                Current information
               </h3>
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Mã tài sản
+                    Asset code
                   </span>
                   <span className="text-sm font-bold text-foreground">
                     {item.asset.asset_code}
@@ -140,7 +140,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Tên tài sản
+                    Asset name
                   </span>
                   <p className="text-sm font-bold text-foreground line-clamp-1">
                     {item.asset.name}
@@ -148,7 +148,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Người giữ
+                    Holder
                   </span>
                   <div className="flex items-center gap-1.5">
                     <User size={13} className="text-primary/60" />
@@ -159,7 +159,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Số lượng
+                    Quantity
                   </span>
                   <span className="text-sm font-bold text-primary">
                     {item.transfer_quantity ?? item.unit_quantity ?? 0}
@@ -167,7 +167,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1 col-span-2">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Trạng thái hệ thống
+                    System status
                   </span>
                   <Badge
                     variant="secondary"
@@ -183,7 +183,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <Field className="gap-3">
               <FieldLabel>
                 <span className="h-1 w-4 bg-primary rounded-full" />
-                Kết quả kiểm kê
+                Audit result
               </FieldLabel>
               <div className="grid grid-cols-2 gap-3">
                 {auditResults.map((res) => {
@@ -201,11 +201,11 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                         "p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1 transition-all duration-300",
                         isSelected
                           ? cn(
-                              res.border,
-                              res.bg,
-                              res.ring,
-                              "shadow-lg scale-[1.03] ring-2 ring-offset-2 ring-offset-background",
-                            )
+                            res.border,
+                            res.bg,
+                            res.ring,
+                            "shadow-lg scale-[1.03] ring-2 ring-offset-2 ring-offset-background",
+                          )
                           : "border-border/40 bg-muted/20 opacity-35 grayscale",
                       )}
                     >
@@ -252,7 +252,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <Field className="gap-3">
               <FieldLabel>
                 <span className="h-1 w-4 bg-primary rounded-full" />
-                Đề xuất hành động
+                Proposed action
               </FieldLabel>
               <div className="grid grid-cols-3 gap-3">
                 {proposedActions.map((action) => {
@@ -318,14 +318,14 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
               <Field className="p-3 rounded-xl bg-muted/20 border border-border/50 flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-200">
                 <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
                   {item.proposed_action === "RECALL"
-                    ? "Thông tin thu hồi"
-                    : "Thông tin điều chuyển"}
+                    ? "Recall information"
+                    : "Transfer information"}
                 </h4>
                 <div className="flex flex-col gap-1.5">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest flex items-center gap-1">
                     {item.proposed_action === "RECALL"
-                      ? "Kho nhận"
-                      : "Người/Đơn vị nhận"}
+                      ? "Receiving warehouse"
+                      : "Recipient / unit"}
                     <span className="text-red-500">*</span>
                   </span>
                   <div className="p-2.5 rounded-md border border-border/50 bg-background shadow-sm flex items-center gap-2 font-bold text-sm">
@@ -337,14 +337,14 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                     <span>
                       {item.target_holder_name ||
                         item.target_staff?.full_name ||
-                        "Hệ thống tự động"}
+                        "Auto-assigned"}
                     </span>
                     {(item.transfer_quantity !== null ||
                       item.unit_quantity !== null) && (
-                      <span className="ml-auto text-primary">
-                        Qty: {item.transfer_quantity ?? item.unit_quantity}
-                      </span>
-                    )}
+                        <span className="ml-auto text-primary">
+                          Qty: {item.transfer_quantity ?? item.unit_quantity}
+                        </span>
+                      )}
                   </div>
                 </div>
               </Field>
@@ -353,10 +353,10 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             {/* Notes */}
             <Field className="gap-2">
               <FieldLabel>
-                Ghi chú tình trạng
+                Condition notes
               </FieldLabel>
               <div className="p-3 rounded-xl border border-border bg-muted/5 min-h-[100px] text-sm text-foreground/80 leading-relaxed italic whitespace-pre-wrap">
-                {item.notes || "Không có ghi chú nào cho kết quả kiểm kê này."}
+                {item.notes || "No notes for this audit result."}
               </div>
             </Field>
           </FieldGroup>
@@ -364,7 +364,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
 
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button type="button" variant="outline" onClick={onClose}>
-            Đóng
+            Close
           </Button>
         </DialogFooter>
       </DialogContent>

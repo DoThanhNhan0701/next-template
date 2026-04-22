@@ -24,7 +24,7 @@ export default function LanguageSwitcher() {
       size="sm"
       className="h-7 w-9 p-0 text-[11px] font-bold border border-(--surface-border-color) hover:bg-primary/10 transition-colors uppercase rounded-md shadow-sm"
       onClick={toggleLanguage}
-      title={locale === 'en' ? 'Đổi sang Tiếng Việt' : 'Switch to English'}
+      title={locale === 'en' ? 'Switch to Vietnamese' : 'Switch to English'}
     >
       {displayLocale}
     </Button>

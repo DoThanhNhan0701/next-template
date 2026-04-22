@@ -78,7 +78,7 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Số biên bản
+                Record number
               </FieldLabel>
               <Input
                 {...field}
@@ -96,7 +96,7 @@ export function GeneralLiquidationSection({
           render={({ fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Ngày thanh lý
+                Liquidation date
               </FieldLabel>
               <DatePickerField form={form} name="liquidation_date" />
               <FieldError errors={[fieldState.error]} />
@@ -112,17 +112,17 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Hình thức thanh lý
+                Liquidation method
               </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger className="bg-white shadow-sm">
-                  <SelectValue placeholder="Chọn hình thức" />
+                  <SelectValue placeholder="Select method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sell">Bán thanh lý</SelectItem>
-                  <SelectItem value="destroy">Tiêu hủy</SelectItem>
-                  <SelectItem value="give">Cho/Tặng</SelectItem>
-                  <SelectItem value="other">Khác</SelectItem>
+                  <SelectItem value="sell">Sell</SelectItem>
+                  <SelectItem value="destroy">Destroy</SelectItem>
+                  <SelectItem value="give">Donate</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
               <FieldError errors={[fieldState.error]} />
@@ -135,7 +135,7 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Tổng giá trị (VND)
+                Total value (VND)
               </FieldLabel>
               <Input
                 {...field}
@@ -156,7 +156,7 @@ export function GeneralLiquidationSection({
 
       <Field className="gap-1">
         <FieldLabel>
-          Hội đồng thanh lý
+          Liquidation committee
         </FieldLabel>
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>
@@ -167,7 +167,7 @@ export function GeneralLiquidationSection({
               <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
                 {selectedUserIds.length === 0 ? (
                   <span className="text-sm text-muted-foreground">
-                    Chọn thành viên hội đồng...
+                    Select committee members...
                   </span>
                 ) : (
                   selectedUserIds.map((id) => {
@@ -208,7 +208,7 @@ export function GeneralLiquidationSection({
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Tìm thành viên..."
+                  placeholder="Search member..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
@@ -218,7 +218,7 @@ export function GeneralLiquidationSection({
             <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
               {filteredUsers.length === 0 ? (
                 <div className="py-6 text-center text-xs text-muted-foreground">
-                  Không tìm thấy thành viên
+                  No members found
                 </div>
               ) : (
                 filteredUsers.map((u) => (
@@ -259,13 +259,13 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Người/đơn vị mua
+                Buyer / organization
               </FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="Tên người hoặc đơn vị mua..."
+                placeholder="Buyer name or organization..."
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -277,13 +277,13 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Đường dẫn tài liệu
+                Document link
               </FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="Link drive, folder..."
+                placeholder="Drive/folder link..."
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -297,13 +297,13 @@ export function GeneralLiquidationSection({
         render={({ field, fieldState }) => (
           <Field className="gap-1">
             <FieldLabel>
-              Lý do
+              Reason
             </FieldLabel>
             <Textarea
               {...field}
               value={field.value ?? ""}
               className="min-h-[80px] bg-white resize-none"
-              placeholder="Tại sao tài sản này lại được thanh lý?"
+              placeholder="Why is this asset being liquidated?"
             />
             <FieldError errors={[fieldState.error]} />
           </Field>
@@ -316,13 +316,13 @@ export function GeneralLiquidationSection({
         render={({ field, fieldState }) => (
           <Field className="gap-1">
             <FieldLabel>
-              Ghi chú
+              Notes
             </FieldLabel>
             <Textarea
               {...field}
               value={field.value || ""}
               className="min-h-[60px] bg-white resize-none"
-              placeholder="Ghi chú thêm nếu có..."
+              placeholder="Additional notes if any..."
             />
             <FieldError errors={[fieldState.error]} />
           </Field>

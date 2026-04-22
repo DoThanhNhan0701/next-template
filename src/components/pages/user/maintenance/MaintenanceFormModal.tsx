@@ -289,7 +289,7 @@ export default function MaintenanceFormModal({
                   value="assets"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <Package size={16} /> Lựa chọn tài sản
+                  <Package size={16} /> Asset selection
                   {hasAssetsErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -298,7 +298,7 @@ export default function MaintenanceFormModal({
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <ClipboardList size={16} /> Thông tin chung
+                  <ClipboardList size={16} /> General information
                   {hasGeneralErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -307,7 +307,7 @@ export default function MaintenanceFormModal({
                   value="service"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <Wrench size={16} /> Dịch vụ sửa chữa
+                  <Wrench size={16} /> Repair service
                   {hasServiceErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -316,7 +316,7 @@ export default function MaintenanceFormModal({
                   value="approval"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <UserCheck size={16} /> Quy trình phê duyệt
+                  <UserCheck size={16} /> Approval process
                   {hasApprovalErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}

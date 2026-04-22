@@ -321,8 +321,8 @@ export default function StockAdjustmentDetail({ id }: Props) {
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
               {isCompleted
-                ? "Phiếu đã hoàn tất và không thể chỉnh sửa."
-                : "Phiếu đang được xử lý."}
+                ? "Record is finalized and cannot be edited."
+                : "Record is being processed."}
             </p>
           </div>
         </div>
@@ -374,7 +374,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">Chưa có lịch sử phê duyệt.</p>
+              <p className="text-sm italic">No approval history yet.</p>
             </div>
           ) : (
             <Table>

@@ -34,13 +34,13 @@ export default function AdminLayout({
     { title: "Roles", url: "/admin/roles", icon: Shield },
     { title: "Organization", url: "/admin/organization", icon: Building2 },
     { title: "Locations", url: "/admin/locations", icon: MapPin },
-    { title: "Asset Groups", url: "/admin/asset-groups", icon: Layers },
-    { title: "Catalog Types", url: "/admin/catalog-types", icon: Grid },
-    { title: "Asset Statuses", url: "/admin/asset-statuses", icon: Activity },
-    { title: "Usage Modes", url: "/admin/usage-modes", icon: MousePointerClick },
+    { title: "Asset groups", url: "/admin/asset-groups", icon: Layers },
+    { title: "Catalog types", url: "/admin/catalog-types", icon: Grid },
+    { title: "Asset statuses", url: "/admin/asset-statuses", icon: Activity },
+    { title: "Usage modes", url: "/admin/usage-modes", icon: MousePointerClick },
     { title: "Suppliers", url: "/admin/suppliers", icon: Store },
     { title: "Customers", url: "/admin/customers", icon: Users },
-    { title: "Approval Workflows", url: "/admin/workflow-templates", icon: GitBranch },
+    { title: "Approval workflows", url: "/admin/workflow-templates", icon: GitBranch },
   ];
 
   return (

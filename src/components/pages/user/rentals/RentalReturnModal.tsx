@@ -105,7 +105,7 @@ export default function RentalReturnModal({
         asset_id: d.asset_id,
         rental_detail_id: d.id,
         quantity: d.quantity - d.returned_quantity,
-        condition: "Bình thường",
+        condition: "Normal",
         asset_name: d.asset.name,
         asset_code: d.asset.asset_code,
         max_quantity: d.quantity - d.returned_quantity,
@@ -161,9 +161,9 @@ export default function RentalReturnModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[700px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Hoàn trả tài sản thuê</DialogTitle>
+          <DialogTitle>Return rented assets</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Lập biên bản nhận lại tài sản từ khách hàng cho phiếu{" "}
+            Create a return record for assets from customer — voucher{" "}
             {rentalDetail.record_number}
           </DialogDescription>
         </DialogHeader>
@@ -172,13 +172,13 @@ export default function RentalReturnModal({
           <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-amber-900">
-              CẢNH BÁO: QUY TRÌNH PHÊ DUYỆT ĐANG BỊ KHÓA
+              WARNING: APPROVAL WORKFLOW IS LOCKED
             </p>
             <p className="text-xs text-amber-700 mt-1">
-              Nghiệp vụ này đã được thiết lập quy trình phê duyệt{" "}
-              <span className="font-semibold">bắt buộc</span>. Chứng từ sẽ ở
-              trạng thái <span className="font-semibold">Chờ duyệt</span> sau
-              khi lưu và không thể thực thi ngay lập tức.
+              This process has a mandatory approval workflow configured.
+              The voucher will be in{" "}
+              <span className="font-semibold">Pending review</span> status
+              after saving and cannot be executed immediately.
             </p>
           </div>
         </div>
@@ -192,7 +192,7 @@ export default function RentalReturnModal({
                   htmlFor="returnDate"
                   className="text-xs font-semibold uppercase text-muted-foreground"
                 >
-                  Ngày trả thực tế
+                  Actual return date
                 </Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -211,7 +211,7 @@ export default function RentalReturnModal({
                   htmlFor="toLocation"
                   className="text-xs font-semibold uppercase text-muted-foreground"
                 >
-                  Kho nhận lại tài sản
+                  Return warehouse
                 </Label>
                 <Controller
                   name="to_location_id"
@@ -219,7 +219,7 @@ export default function RentalReturnModal({
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Kho tổng (ST_TOTAL)" />
+                        <SelectValue placeholder="Main warehouse (ST_TOTAL)" />
                       </SelectTrigger>
                       <SelectContent>
                         {locations.map((loc) => (
@@ -232,8 +232,7 @@ export default function RentalReturnModal({
                   )}
                 />
                 <p className="text-xs text-muted-foreground italic">
-                  * Mặc định hệ thống sẽ trả về kho đã xuất ban đầu nếu không
-                  chọn kho khác.
+                  * By default the system will return to the original dispatch warehouse if no other warehouse is selected.
                 </p>
               </div>
             </div>
@@ -244,11 +243,11 @@ export default function RentalReturnModal({
                 htmlFor="notes"
                 className="text-xs font-semibold uppercase text-muted-foreground"
               >
-                Ghi chú chung
+                General notes
               </Label>
               <Textarea
                 id="notes"
-                placeholder="VD: Khách trả tại kho, máy còn mới..."
+                placeholder="e.g. Customer returned at warehouse, device in good condition..."
                 {...form.register("notes")}
                 className="resize-none flex-1"
               />
@@ -258,7 +257,7 @@ export default function RentalReturnModal({
           {/* Items Table */}
           <div className="space-y-2">
             <Label className="text-xs font-semibold uppercase text-muted-foreground">
-              Danh sách tài sản
+              Asset list
             </Label>
             <div className="border rounded-lg overflow-hidden">
               <table className="w-full text-sm">
@@ -271,17 +270,17 @@ export default function RentalReturnModal({
                           className="rounded"
                           defaultChecked
                         />
-                        Tên tài sản
+                        Asset name
                       </div>
                     </th>
                     <th className="px-3 py-2 text-center text-xs font-semibold">
-                      Đang thuê
+                      Renting
                     </th>
                     <th className="px-3 py-2 text-center text-xs font-semibold">
-                      Số lượng trả
+                      Return quantity
                     </th>
                     <th className="px-3 py-2 text-left text-xs font-semibold">
-                      Tình trạng nhận lại
+                      Condition on return
                     </th>
                   </tr>
                 </thead>
@@ -322,7 +321,7 @@ export default function RentalReturnModal({
                           {...form.register(
                             `items.${index}.condition` as const,
                           )}
-                          placeholder="Bình thường"
+                          placeholder="Normal"
                           className="h-8"
                         />
                       </td>
@@ -352,9 +351,9 @@ export default function RentalReturnModal({
                         control={form.control}
                         render={({ field, fieldState }) => (
                           <Field className="gap-2.5">
-                          <FieldLabel>
-                            {step.name}
-                          </FieldLabel>
+                            <FieldLabel>
+                              {step.name}
+                            </FieldLabel>
                             <ApproverSelect
                               step={step}
                               allUsers={users}
@@ -380,7 +379,7 @@ export default function RentalReturnModal({
 
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button variant="outline" onClick={onClose} disabled={pending}>
-            Hủy bỏ
+            Cancel
           </Button>
           <Button
             onClick={() => form.handleSubmit(onSubmit)()}

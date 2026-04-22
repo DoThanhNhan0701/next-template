@@ -1,13 +1,13 @@
 {
   "Menu": {
     "dashboard": "Dashboard",
-    "my_tasks": "My Tasks",
+    "my_tasks": "My tasks",
     "assets": "Assets",
     "rentals": "Rentals",
     "inventory": "Inventory",
     "transfers": "Transfers",
-    "stock_in_out": "Stock In & Out",
-    "allocation_recovery": "Allocation & Recovery",
+    "stock_in_out": "Stock in & out",
+    "allocation_recovery": "Allocation & recovery",
     "audits": "Audits",
     "maintenance": "Maintenance",
     "liquidations": "Liquidations"

@@ -32,13 +32,13 @@ export default function RentalsPage() {
             value="rentals"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Phiếu cho thuê
+            Rental vouchers
           </TabsTrigger>
           <TabsTrigger
             value="returns"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Biên bản hoàn trả
+            Return records
           </TabsTrigger>
         </TabsList>
 

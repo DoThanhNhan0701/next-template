@@ -226,7 +226,7 @@ export default function InventoryTable() {
                 Location
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
-                Loại quản lý
+                Management type
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
                 Quantity
@@ -281,11 +281,11 @@ export default function InventoryTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {stock.management_type === "unique" ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-600">
-                        Theo Mã
+                        By code
                       </span>
                     ) : stock.management_type === "bulk" ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-600">
-                        Theo SL
+                        By quantity
                       </span>
                     ) : (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-muted text-muted-foreground">
@@ -295,11 +295,10 @@ export default function InventoryTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
-                        stock.quantity > 0
-                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                          : "bg-red-500/10 text-red-600 border border-red-500/20"
-                      }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
+                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                        : "bg-red-500/10 text-red-600 border border-red-500/20"
+                        }`}
                     >
                       {stock.quantity}
                     </div>

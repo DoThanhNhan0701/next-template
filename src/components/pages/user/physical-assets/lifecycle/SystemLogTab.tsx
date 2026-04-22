@@ -21,7 +21,7 @@ export default function SystemLogTab({
   if (!logs || logs.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
-        Không có nhật ký hệ thống.
+        No system log entries.
       </div>
     );
   }
@@ -32,28 +32,28 @@ export default function SystemLogTab({
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
           <TableRow>
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
-              STT
+              No
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-25 w-32">
-              Ngày
+              Date
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
-              Loại nghiệp vụ
+              Process type
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
-              Chi tiết
+              Details
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40 text-center">
-              Số chứng từ
+              Voucher number
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40 text-right pr-6">
-              Người dùng
+              User
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-20 text-center">
-              Số lượng
+              Quantity
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-36">
-              Trạng thái
+              Status
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -99,7 +99,7 @@ export default function SystemLogTab({
                   </Link>
                 ) : (
                   <span className="text-muted-foreground text-xs italic">
-                    Nhật ký
+                    Log entry
                   </span>
                 )}
               </TableCell>

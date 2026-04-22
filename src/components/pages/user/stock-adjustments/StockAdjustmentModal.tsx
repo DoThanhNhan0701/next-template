@@ -119,7 +119,7 @@ function DetailRow({
         <Trash size={12} />
       </Button>
 
-      {/* Location — chọn trước */}
+      {/* Location — select first */}
       <Controller
         name={`details.${index}.location_id`}
         control={control}
@@ -152,7 +152,7 @@ function DetailRow({
         )}
       />
 
-      {/* Asset — phụ thuộc location */}
+      {/* Asset — depends on location */}
       <Controller
         name={`details.${index}.asset_id`}
         control={control}

@@ -160,7 +160,7 @@ export default function OverviewTab({
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <UserCheck className="w-3.5 h-3.5 text-blue-500" />
-                                Người đang dùng
+                                Current users
                               </div>
                               <div className="flex flex-col gap-1">
                                 {userHolders.map((h, i) => (
@@ -183,7 +183,7 @@ export default function OverviewTab({
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <Clock className="w-3.5 h-3.5 text-amber-500" />
-                                Đang cho thuê
+                                Currently rented
                               </div>
                               <div className="flex flex-col gap-1">
                                 {customerHolders.map((h, i) => (
@@ -206,7 +206,7 @@ export default function OverviewTab({
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <MapPin className="w-3.5 h-3.5 text-emerald-500" />
-                                Vị trí hiện tại
+                                Current locations
                               </div>
                               <div className="flex flex-col gap-1">
                                 {stocks.map((s, i) => (
@@ -256,9 +256,9 @@ export default function OverviewTab({
                     value={
                       asset.cost
                         ? new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(asset.cost)
+                          style: "currency",
+                          currency: "VND",
+                        }).format(asset.cost)
                         : "N/A"
                     }
                     bold

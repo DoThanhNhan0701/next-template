@@ -182,9 +182,9 @@ export default function PrintQRModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>In QR Code</DialogTitle>
+          <DialogTitle>Print QR code</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Chọn tên người nhận để in kèm theo QR Code.
+            Select a recipient name to print alongside the QR code.
           </DialogDescription>
         </DialogHeader>
 
@@ -238,10 +238,10 @@ export default function PrintQRModal({
             </div>
           </div>
 
-          {/* Chọn tên */}
+          {/* Select recipient name */}
           {holders.length > 0 && (
             <div className="w-full flex flex-col gap-1.5">
-              <span className="text-sm font-medium">Tên người nhận</span>
+              <span className="text-sm font-medium">Recipient name</span>
               <div className="flex flex-wrap gap-1.5">
                 {holders.map((h: IHolder, i: number) => (
                   <button
@@ -250,11 +250,10 @@ export default function PrintQRModal({
                     onClick={() =>
                       setSelectedName(selectedName === h.name ? "" : h.name)
                     }
-                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
-                      selectedName === h.name
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                    }`}
+                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${selectedName === h.name
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                      }`}
                   >
                     {h.name}
                   </button>
@@ -266,11 +265,11 @@ export default function PrintQRModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Hủy
+            Cancel
           </Button>
           <Button onClick={doPrint} className="gap-2">
             <Printer className="w-4 h-4" />
-            In ngay
+            Print
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -128,7 +128,7 @@ export function RecordAttachmentsCard({
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (!extension || !ALLOWED_EXTENSIONS.includes(extension)) {
       toast.error(
-        "Định dạng tập tin không được hỗ trợ. Chỉ chấp nhận các định dạng: xls, xlsx, png, rar, docx, jpeg, csv, jpg, pdf, doc, zip, txt",
+        "Unsupported file format. Only the following formats are accepted: xls, xlsx, png, rar, docx, jpeg, csv, jpg, pdf, doc, zip, txt",
       );
       e.target.value = "";
       return;

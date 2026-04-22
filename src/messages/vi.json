@@ -6,8 +6,8 @@
     "rentals": "Cho thuê",
     "inventory": "Kho hàng",
     "transfers": "Điều chuyển",
-    "stock_in_out": "Nhập & Xuất kho",
-    "allocation_recovery": "Cấp phát & Thu hồi",
+    "stock_in_out": "Nhập & xuất kho",
+    "allocation_recovery": "Cấp phát & thu hồi",
     "audits": "Kiểm kê",
     "maintenance": "Bảo trì",
     "liquidations": "Thanh lý"

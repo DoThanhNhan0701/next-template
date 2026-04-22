@@ -252,7 +252,7 @@ export default function LiquidationFormModal({
                   value="assets"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <Package size={16} /> Lựa chọn tài sản
+                  <Package size={16} /> Asset selection
                   {hasAssetsErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -262,7 +262,7 @@ export default function LiquidationFormModal({
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <ClipboardList size={16} /> Thông tin chung
+                  <ClipboardList size={16} /> General information
                   {hasGeneralErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -272,7 +272,7 @@ export default function LiquidationFormModal({
                   value="approval"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <UserCheck size={16} /> Quy trình phê duyệt
+                  <UserCheck size={16} /> Approval process
                   {hasApprovalErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}

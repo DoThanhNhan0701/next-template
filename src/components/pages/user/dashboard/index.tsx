@@ -84,7 +84,7 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      title: "Total Assets",
+      title: "Total assets",
       value: summary?.total_assets_count || 0,
       change: "+12.5%",
       trend: "up",
@@ -93,7 +93,7 @@ export default function DashboardPage() {
       bg: "bg-blue-50",
     },
     {
-      title: "Total Locations",
+      title: "Total locations",
       value: summary?.total_locations_count || 0,
       change: "+4.3%",
       trend: "up",
@@ -102,7 +102,7 @@ export default function DashboardPage() {
       bg: "bg-amber-50",
     },
     {
-      title: "Total Users",
+      title: "Total users",
       value: summary?.total_users_count || 0,
       change: "+1.2%",
       trend: "up",
@@ -111,7 +111,7 @@ export default function DashboardPage() {
       bg: "bg-emerald-50",
     },
     {
-      title: "Total Asset Value",
+      title: "Total asset value",
       value: formatCurrency(summary?.financials?.total_asset_value || 0),
       change: "+5.4%",
       trend: "up",
@@ -120,7 +120,7 @@ export default function DashboardPage() {
       bg: "bg-purple-50",
     },
     {
-      title: "Rental Revenue",
+      title: "Rental revenue",
       value: formatCurrency(summary?.financials?.total_rental_revenue || 0),
       change: "+2.1%",
       trend: "up",
@@ -129,7 +129,7 @@ export default function DashboardPage() {
       bg: "bg-emerald-50",
     },
     {
-      title: "Maintenance Cost",
+      title: "Maintenance cost",
       value: formatCurrency(summary?.financials?.total_maintenance_cost || 0),
       change: "-1.5%",
       trend: "down",
@@ -247,7 +247,7 @@ export default function DashboardPage() {
               })}
               {statusChartData.length === 0 && (
                 <div className="w-full h-full flex flex-col items-center justify-center text-sm text-muted-foreground">
-                  Đang tải biểu đồ...
+                  Loading chart...
                 </div>
               )}
             </div>
@@ -300,7 +300,7 @@ export default function DashboardPage() {
                         {activity.asset_name}
                       </p>
                       <p className="text-xs text-muted-foreground leading-snug line-clamp-2">
-                        {activity.action_label} - {activity.asset_code} (Bởi:{" "}
+                        {activity.action_label} - {activity.asset_code} (By:{" "}
                         {activity.performed_by})
                       </p>
                       <span
@@ -356,11 +356,11 @@ export default function DashboardPage() {
         <Card className="lg:col-span-1 border-none shadow-sm ring-1 ring-border/50 bg-card/60 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between py-3 px-4 border-b border-border/40">
             <CardTitle className="text-sm font-semibold text-primary">
-              Module Tác vụ
+              Task modules
             </CardTitle>
             {totalPendingStats > 0 && (
               <Badge className="bg-rose-500/15 text-rose-500 border-none font-bold text-[10px] animate-pulse">
-                {totalPendingStats} Việc cần xử lý
+                {totalPendingStats} Pending tasks
               </Badge>
             )}
           </CardHeader>
@@ -370,7 +370,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <UserCheck className="h-4 w-4 text-blue-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Cấp phát
+                    Allocation
                   </span>
                 </div>
                 <Badge
@@ -386,7 +386,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <ArrowRightLeft className="h-4 w-4 text-indigo-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Điều chuyển
+                    Transfer
                   </span>
                 </div>
                 <Badge
@@ -402,7 +402,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <Wrench className="h-4 w-4 text-orange-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Bảo trì
+                    Maintenance
                   </span>
                 </div>
                 <Badge
@@ -418,7 +418,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <Trash2 className="h-4 w-4 text-stone-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Thanh lý
+                    Liquidation
                   </span>
                 </div>
                 <Badge
@@ -434,7 +434,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <ListTodo className="h-4 w-4 text-emerald-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Duyệt workflow
+                    Workflow approval
                   </span>
                 </div>
                 <Badge
@@ -447,7 +447,7 @@ export default function DashboardPage() {
             )}
             {totalPendingStats === 0 && (
               <div className="flex items-center justify-center p-3 text-sm text-muted-foreground/70">
-                Không có việc cần xử lý.
+                No pending tasks.
               </div>
             )}
           </CardContent>

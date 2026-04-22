@@ -60,14 +60,14 @@ export default function WorkflowTemplateTable() {
   };
 
   const DOCUMENT_TYPE_LABELS: Record<string, string> = {
-    transfer: "Transfer · Điều chuyển tài sản",
-    allocation: "Allocation · Cấp phát tài sản",
-    recovery: "Recovery · Thu hồi tài sản",
-    maintenance: "Maintenance · Bảo trì/Sửa chữa",
-    rental: "Rental · Cho thuê tài sản",
-    rental_return: "Rental Return · Hoàn trả cho thuê",
-    liquidation: "Liquidation · Thanh lý tài sản",
-    audit: "Audit · Kiểm kê tài sản",
+    transfer: "Transfer · Asset transfer",
+    allocation: "Allocation · Asset allocation",
+    recovery: "Recovery · Asset recovery",
+    maintenance: "Maintenance · Repair & maintenance",
+    rental: "Rental · Asset rental",
+    rental_return: "Rental Return · Return rental assets",
+    liquidation: "Liquidation · Asset liquidation",
+    audit: "Audit · Asset audit",
   };
 
   return (

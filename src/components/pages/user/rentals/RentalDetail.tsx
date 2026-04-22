@@ -133,7 +133,7 @@ export default function RentalDetail({ id }: Props) {
             onClick={() => setShowReturnModal(true)}
             className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all"
           >
-            Hoàn trả
+            Return assets
           </Button>
         )}
       </div>
@@ -466,7 +466,7 @@ export default function RentalDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">Chưa có lịch sử phê duyệt.</p>
+              <p className="text-sm italic">No approval history yet.</p>
             </div>
           ) : (
             <Table>

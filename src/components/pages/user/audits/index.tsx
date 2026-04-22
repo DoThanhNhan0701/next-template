@@ -14,13 +14,13 @@ export default function AuditsPage() {
             value="my-audits"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Nhiệm vụ của tôi
+            My tasks
           </TabsTrigger>
           <TabsTrigger
             value="all-audits"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Quản lý tất cả
+            Manage all
           </TabsTrigger>
         </TabsList>
 

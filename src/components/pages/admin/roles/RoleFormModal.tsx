@@ -155,7 +155,7 @@ export default function RoleFormModal({
               </Label>
               <Input
                 id="name"
-                placeholder="Ex: sys_admin"
+                placeholder="e.g. sys_admin"
                 {...register("name")}
                 className={errors.name ? "border-red-500" : ""}
               />

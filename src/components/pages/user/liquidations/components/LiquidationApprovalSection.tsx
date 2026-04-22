@@ -34,7 +34,7 @@ export function LiquidationApprovalSection({
   if (!activeTemplate?.steps || activeTemplate.steps.length === 0) {
     return (
       <div className="py-10 text-center text-muted-foreground bg-muted/10 rounded-lg border border-dashed">
-        Không có quy trình phê duyệt cho loại nghiệp vụ này.
+        No approval workflow configured for this process type.
       </div>
     );
   }

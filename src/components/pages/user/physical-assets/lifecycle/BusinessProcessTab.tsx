@@ -22,7 +22,7 @@ export default function BusinessProcessTab({
   if (!history || history.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
-        Không có lịch sử quy trình.
+        No process history.
       </div>
     );
   }
@@ -33,23 +33,23 @@ export default function BusinessProcessTab({
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm outline outline-border/20">
           <TableRow>
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
-              STT
+              No
             </TableHead>
-            <TableHead className="font-semibold h-10 px-4 w-40">Ngày</TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-40">Date</TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
-              Nghiệp vụ
+              Process
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40">
-              Số chứng từ
+              Voucher number
             </TableHead>
             <TableHead className="font-semibold h-10 px-4">
-              Người dùng/Vị trí
+              User / Location
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-20 text-center">
-              Số lượng
+              Quantity
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-36">
-              Trạng thái
+              Status
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -93,7 +93,7 @@ export default function BusinessProcessTab({
                     <span>
                       {log.old_location_name ||
                         log.old_user_name ||
-                        "Kho / Mặc định"}
+                        "Warehouse / Default"}
                     </span>
                     <ArrowRight className="w-3 h-3 shrink-0" />
                   </div>

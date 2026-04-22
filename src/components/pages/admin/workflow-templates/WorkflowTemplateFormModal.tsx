@@ -62,18 +62,18 @@ type FormValues = z.infer<typeof TemplateSchema>;
 type AssigneeType = "none" | "role" | "user";
 
 const DOCUMENT_TYPES = [
-  { value: "transfer", label: "Transfer", labelVi: "Điều chuyển tài sản" },
-  { value: "allocation", label: "Allocation", labelVi: "Cấp phát tài sản" },
-  { value: "recovery", label: "Recovery", labelVi: "Thu hồi tài sản" },
-  { value: "maintenance", label: "Maintenance", labelVi: "Bảo trì/Sửa chữa" },
-  { value: "rental", label: "Rental", labelVi: "Cho thuê tài sản" },
+  { value: "transfer", label: "Transfer", labelSub: "Asset transfer" },
+  { value: "allocation", label: "Allocation", labelSub: "Asset allocation" },
+  { value: "recovery", label: "Recovery", labelSub: "Asset recovery" },
+  { value: "maintenance", label: "Maintenance", labelSub: "Repair & maintenance" },
+  { value: "rental", label: "Rental", labelSub: "Asset rental" },
   {
     value: "rental_return",
     label: "Rental Return",
-    labelVi: "Hoàn trả cho thuê",
+    labelSub: "Return rental assets",
   },
-  { value: "liquidation", label: "Liquidation", labelVi: "Thanh lý tài sản" },
-  { value: "audit", label: "Audit", labelVi: "Kiểm kê tài sản" },
+  { value: "liquidation", label: "Liquidation", labelSub: "Asset liquidation" },
+  { value: "audit", label: "Audit", labelSub: "Asset audit" },
 ];
 
 function getAssigneeType(
@@ -362,7 +362,7 @@ export default function WorkflowTemplateFormModal({
                           <SelectItem key={t.value} value={t.value}>
                             <span>{t.label}</span>
                             <span className="text-muted-foreground ml-1.5">
-                              · {t.labelVi}
+                              · {t.labelSub}
                             </span>
                           </SelectItem>
                         ))}

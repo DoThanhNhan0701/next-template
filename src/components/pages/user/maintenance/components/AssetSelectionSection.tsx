@@ -76,7 +76,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
       <div className="space-y-3">
         <label className="text-xs font-semibold text-primary flex items-center gap-2">
           <CheckCircle2 size={12} className="text-primary" />
-          Nguồn lấy tài sản
+          Asset source
         </label>
 
         {/* Source Pills Container */}
@@ -166,7 +166,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 : "border-primary/20 text-muted-foreground bg-white",
             )}
           >
-            <Warehouse size={16} /> Lấy từ kho
+            <Warehouse size={16} /> From warehouse
           </Button>
           <Button
             type="button"
@@ -180,7 +180,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 : "border-primary/20 text-muted-foreground bg-white",
             )}
           >
-            <User size={16} /> Lấy từ người giữ
+            <User size={16} /> From holder
           </Button>
         </div>
 
@@ -191,7 +191,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
               sourceType === "stock" ? "text-emerald-700" : "text-blue-700",
             )}
           >
-            {sourceType === "stock" ? "Chọn kho xuất" : "Chọn người giữ xuất"}
+            {sourceType === "stock" ? "Select source warehouse" : "Select source holder"}
           </FieldLabel>
           <Controller
             name={
@@ -234,30 +234,30 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                   <SelectValue
                     placeholder={
                       sourceType === "stock"
-                        ? "-- Chọn kho --"
-                        : "-- Chọn người giữ --"
+                        ? "-- Select warehouse --"
+                        : "-- Select holder --"
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
                   {sourceType === "stock"
                     ? stocks.map((s, i) => (
-                        <SelectItem
-                          key={`s-opt-${i}`}
-                          value={s.location_id.toString()}
-                        >
-                          [{s.location_code}] {s.location_name} - Qty:{" "}
-                          {s.quantity}
-                        </SelectItem>
-                      ))
+                      <SelectItem
+                        key={`s-opt-${i}`}
+                        value={s.location_id.toString()}
+                      >
+                        [{s.location_code}] {s.location_name} - Qty:{" "}
+                        {s.quantity}
+                      </SelectItem>
+                    ))
                     : holders.map((h, i) => {
-                        const id = h.staff_id || h.unit_id || 0;
-                        return (
-                          <SelectItem key={`h-opt-${i}`} value={id.toString()}>
-                            {h.name} ({h.type}) - Qty: {h.quantity}
-                          </SelectItem>
-                        );
-                      })}
+                      const id = h.staff_id || h.unit_id || 0;
+                      return (
+                        <SelectItem key={`h-opt-${i}`} value={id.toString()}>
+                          {h.name} ({h.type}) - Qty: {h.quantity}
+                        </SelectItem>
+                      );
+                    })}
                 </SelectContent>
               </Select>
             )}
@@ -357,7 +357,7 @@ export function AssetSelectionSection({
                   render={({ field: detailField, fieldState }) => (
                     <Field className="gap-1">
                       <FieldLabel>
-                        Chọn tài sản
+                        Select asset
                       </FieldLabel>
                       <Select
                         onValueChange={(val) => {
@@ -375,7 +375,7 @@ export function AssetSelectionSection({
                             statusName === "Đang cho thuê";
 
                           if (isRestricted) {
-                            const noteText = `${statusName} - không thể bảo trì`;
+                            const noteText = `${statusName} - cannot be maintained`;
                             form.setValue(`items.${index}.notes`, noteText);
                           }
 
@@ -431,7 +431,7 @@ export function AssetSelectionSection({
                                     {a.holder_name || "N/A"}
                                     {isUniqueRestricted && (
                                       <span className="ml-2 text-destructive font-medium italic">
-                                        - {sName} - không thể bảo trì
+                                        - {sName} - cannot be maintained
                                       </span>
                                     )}
                                   </span>
@@ -459,7 +459,7 @@ export function AssetSelectionSection({
                               Note:
                             </span>
                             <span className="text-[11px] text-amber-600 font-medium italic">
-                              {sName} - không thể bảo trì
+                              {sName} - cannot be maintained
                             </span>
                           </div>
                         );
@@ -485,7 +485,7 @@ export function AssetSelectionSection({
                   render={({ field: qtyField, fieldState }) => (
                     <Field className="gap-1">
                       <FieldLabel>
-                        Số lượng
+                        Quantity
                       </FieldLabel>
                       <Input
                         type="number"
@@ -509,10 +509,10 @@ export function AssetSelectionSection({
                 render={({ field: locField, fieldState }) => (
                   <Field className="gap-1">
                     <FieldLabel>
-                      Vị trí trả về
+                      Return location
                     </FieldLabel>
                     <p className="text-[10px] text-muted-foreground/70 italic -mt-0.5 mb-1">
-                      Để trống trả về nguồn gốc ban đầu
+                      Leave empty to return to original source
                     </p>
                     <Select
                       onValueChange={(val) =>
@@ -523,14 +523,14 @@ export function AssetSelectionSection({
                       }
                     >
                       <SelectTrigger className="bg-white rounded-md border-border/60 text-xs shadow-none">
-                        <SelectValue placeholder="Chọn vị trí trả về" />
+                        <SelectValue placeholder="Select return location" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem
                           value="none"
                           className="text-muted-foreground italic text-xs"
                         >
-                          (None) - Trả về nguồn gốc
+                          (None) - Return to original source
                         </SelectItem>
                         {locations.map((l) => (
                           <SelectItem
@@ -553,7 +553,7 @@ export function AssetSelectionSection({
                 render={({ field: notesField, fieldState }) => (
                   <Field className="gap-1 justify-end">
                     <FieldLabel>
-                      Ghi chú item
+                      Item notes
                     </FieldLabel>
                     <Input
                       {...notesField}

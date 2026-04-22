@@ -24,20 +24,20 @@ export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
       <Tabs defaultValue="process" className="w-full flex flex-col h-full">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-foreground/80">
-            Lịch sử biến động
+            Change history
           </p>
           <TabsList className="bg-muted/40 p-1 rounded-md h-auto gap-1 border border-border/20 shadow-sm">
             <TabsTrigger
               value="process"
               className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded text-xs font-semibold px-4 py-2 hover:bg-muted/60 transition-colors"
             >
-              Quy trình nghiệp vụ
+              Business process
             </TabsTrigger>
             <TabsTrigger
               value="system"
               className="data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded text-xs font-semibold px-4 py-2 hover:bg-muted/60 transition-colors"
             >
-              Nhật ký hệ thống
+              System log
             </TabsTrigger>
           </TabsList>
         </div>

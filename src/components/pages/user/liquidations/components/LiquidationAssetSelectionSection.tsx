@@ -103,7 +103,7 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Chọn tài sản
+                Select asset
               </FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
@@ -113,7 +113,7 @@ function AssetListItem({
                 <SelectTrigger className="bg-white">
                   <SelectValue
                     placeholder={
-                      assetsPending ? "Đang tải tài sản..." : "Chọn tài sản"
+                      assetsPending ? "Loading assets..." : "Select asset"
                     }
                   />
                 </SelectTrigger>
@@ -138,7 +138,7 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Số lượng
+                Quantity
               </FieldLabel>
               <Input
                 type="number"
@@ -157,7 +157,7 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Đơn giá (VND)
+                Unit price
               </FieldLabel>
               <Input
                 type="number"
@@ -176,7 +176,7 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Giá trị còn lại
+                Remaining value
               </FieldLabel>
               <Input
                 type="number"
@@ -197,11 +197,11 @@ function AssetListItem({
         render={({ field, fieldState }) => (
           <Field className="gap-1">
             <FieldLabel>
-              Ghi chú item
+              Item notes
             </FieldLabel>
             <Input
               {...field}
-              placeholder="Ghi chú chi tiết cho tài sản này..."
+              placeholder="Detailed notes for this asset..."
               className="bg-white"
               value={field.value || ""}
             />
@@ -232,7 +232,7 @@ export function LiquidationAssetSelectionSection({
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between border-b border-dashed pb-3">
         <label className="text-xs font-semibold text-primary">
-          Chọn tài sản thanh lý
+          Select assets for liquidation
         </label>
         <div className="flex items-center gap-2">
           <Button
