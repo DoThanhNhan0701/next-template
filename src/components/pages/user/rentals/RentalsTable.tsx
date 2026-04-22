@@ -114,7 +114,7 @@ export default function RentalsTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 backdrop-blur-md rounded-md shadow-sm transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 backdrop-blur-md rounded-md transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search

@@ -74,7 +74,7 @@ export default function LiquidationTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"

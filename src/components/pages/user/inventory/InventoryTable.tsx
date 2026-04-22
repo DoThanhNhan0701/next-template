@@ -109,7 +109,7 @@ export default function InventoryTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 shadow-sm transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
@@ -159,7 +159,7 @@ export default function InventoryTable() {
             </SelectContent>
           </Select>
 
-          <div className="flex items-center space-x-2 bg-background/50 border border-border/50 h-10 px-3 rounded-md">
+          <div className="flex items-center space-x-2 bg-background/50 border border-border/50 h-9 px-3 rounded-md">
             <Checkbox
               id="show-zero"
               checked={showZero}
@@ -295,10 +295,11 @@ export default function InventoryTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
-                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                        : "bg-red-500/10 text-red-600 border border-red-500/20"
-                        }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
+                        stock.quantity > 0
+                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                          : "bg-red-500/10 text-red-600 border border-red-500/20"
+                      }`}
                     >
                       {stock.quantity}
                     </div>

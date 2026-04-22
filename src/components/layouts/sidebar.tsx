@@ -54,7 +54,7 @@ export default function Sidebar({
         loading="eager"
         priority
         className="mx-auto cursor-pointer"
-        onClick={() => router.push("/")}
+        onClick={() => router.push("/dashboard")}
         style={{ width: "auto", height: "auto" }}
       />
       <SidebarProvider className="border-t border-(--surface-border-color) p-3">
