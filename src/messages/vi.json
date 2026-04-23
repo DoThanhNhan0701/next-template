@@ -191,5 +191,96 @@
     "validation": {
       "field_required": "Trường này là bắt buộc!"
     }
+  },
+  "page_locations": {
+    "title": "Vị trí",
+    "add_location": "Thêm Vị trí",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "table": {
+      "no": "STT",
+      "code": "Mã",
+      "name": "Tên Vị trí",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_locations_found": "Không tìm thấy vị trí nào",
+      "add_first_location": "Thêm vị trí đầu tiên của bạn bằng nút phía trên."
+    },
+    "form": {
+      "create_title": "Tạo mới Vị trí",
+      "edit_title": "Chỉnh sửa Vị trí",
+      "create_description": "Thiết lập một vị trí vật lý mới cho tài sản.",
+      "edit_description": "Cập nhật thông tin chi tiết vị trí.",
+      "code_label": "Mã vị trí",
+      "code_placeholder": "VD: KHO_TONG",
+      "name_label": "Tên vị trí",
+      "name_placeholder": "VD: Kho chính",
+      "description_label": "Mô tả (tùy chọn)",
+      "description_placeholder": "Mô tả chi tiết",
+      "active_status": "Trạng thái hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận Xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa vị trí <important>{name}</important>?",
+      "warning": "Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!"
+    }
+  },
+  "page_asset_groups": {
+    "title": "Nhóm Tài sản",
+    "add_group": "Thêm Nhóm Tài sản",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "table": {
+      "no": "STT",
+      "code": "Mã",
+      "name": "Tên",
+      "color": "Màu sắc",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_groups_found": "Không tìm thấy nhóm tài sản nào",
+      "add_first_group": "Thêm nhóm tài sản đầu tiên của bạn bằng nút phía trên."
+    },
+    "form": {
+      "create_title": "Tạo Nhóm Tài sản",
+      "edit_title": "Sửa Nhóm Tài sản",
+      "create_description": "Phân loại tài sản bằng cách tạo nhóm mới.",
+      "edit_description": "Chỉnh sửa các thuộc tính của nhóm tài sản.",
+      "name_label": "Tên",
+      "name_placeholder": "VD: Thiết bị điện tử",
+      "code_label": "Mã",
+      "code_placeholder": "VD: DBDT",
+      "color_label": "Màu sắc",
+      "description_label": "Mô tả (tùy chọn)",
+      "description_placeholder": "Mô tả ngắn gọn về nhóm này",
+      "active_status": "Trạng thái hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận Xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa nhóm tài sản <important>{name}</important>? Hành động này sẽ hủy kích hoạt nhóm.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!"
+    }
   }
 }

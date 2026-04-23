@@ -4,9 +4,12 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { AssetGroupSchema } from "@/components/schemas/admin/asset-group.schema";
+import {
+  GetAssetGroupSchema,
+  IAssetGroupFormValues,
+} from "@/components/schemas/admin/asset-group.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,11 +45,14 @@ export default function AssetGroupFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_asset_groups.form");
+  const vt = useTranslations("page_asset_groups.validation");
   const isEditing = !!assetGroupToEdit;
   const { mutate, pending } = useMutation();
 
-  const form = useForm({
-    resolver: zodResolver(AssetGroupSchema),
+  const schema = GetAssetGroupSchema(vt);
+  const form = useForm<IAssetGroupFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       code: "",
@@ -78,7 +84,7 @@ export default function AssetGroupFormModal({
     }
   }, [isOpen, assetGroupToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof AssetGroupSchema>) => {
+  const onSubmit = async (data: IAssetGroupFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.ASSET_GROUP_DETAIL(assetGroupToEdit.id)
       : endpoints.ASSET_GROUPS;
@@ -109,12 +115,10 @@ export default function AssetGroupFormModal({
       <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit asset group" : "Create asset group"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Modify the asset group attributes."
-              : "Categorize assets by creating a new group."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -129,8 +133,8 @@ export default function AssetGroupFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Name</FieldLabel>
-                    <Input {...field} placeholder="e.g. Electronics" />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -143,8 +147,8 @@ export default function AssetGroupFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Code</FieldLabel>
-                    <Input {...field} placeholder="e.g. ELEC" />
+                    <FieldLabel>{t("code_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("code_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -157,7 +161,7 @@ export default function AssetGroupFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Color</FieldLabel>
+                    <FieldLabel>{t("color_label")}</FieldLabel>
                     <div className="flex gap-2">
                       <Input
                         {...field}
@@ -178,8 +182,12 @@ export default function AssetGroupFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="Brief description of this group" />
+                    <FieldLabel>{t("description_label")}</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("description_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -199,7 +207,7 @@ export default function AssetGroupFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color)"
                       />
-                      Active
+                      {t("active_status")}
                     </label>
                   </Field>
                 )}
@@ -213,10 +221,10 @@ export default function AssetGroupFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>

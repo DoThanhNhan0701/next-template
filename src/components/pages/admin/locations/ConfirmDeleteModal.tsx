@@ -12,6 +12,7 @@ import { useMutation } from "@/hooks/useMutation";
 import { ILocation } from "@/types/location";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
+import { useTranslations } from "next-intl";
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export default function ConfirmDeleteModal({
   location,
   onSuccess,
 }: ConfirmDeleteModalProps) {
+  const t = useTranslations("page_locations.delete");
   const { mutate, pending } = useMutation();
 
   const handleConfirm = async () => {
@@ -53,24 +55,29 @@ export default function ConfirmDeleteModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the location{" "}
-            <strong>{location?.name || "this item"}</strong>? This action cannot
-            be undone.
+            {t.rich("confirm_message", {
+              name: location?.name || "this item",
+              important: (chunks) => (
+                <span className="font-semibold">{chunks}</span>
+              ),
+            })}
+            {" "}
+            {t("warning")}
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button variant="outline" onClick={onClose} disabled={pending}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="destructive"
             onClick={handleConfirm}
             disabled={pending}
           >
-            {pending ? "Deleting..." : "Delete"}
+            {pending ? t("deleting") : t("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

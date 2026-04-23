@@ -69,7 +69,7 @@ export default function OrgUnitDeleteDialog({
           <DialogTitle className="text-center">{t("delete_unit")}</DialogTitle>
           <DialogDescription className="text-center px-4">
             {t.rich("delete_confirm", {
-              name: (chunks) => (
+              name: () => (
                 <span className="font-bold text-foreground underline decoration-destructive/30 decoration-2 underline-offset-4">
                   {unitName}
                 </span>

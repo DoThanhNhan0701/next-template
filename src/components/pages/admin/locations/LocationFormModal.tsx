@@ -3,9 +3,12 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
 
-import { LocationSchema } from "@/components/schemas/admin/location.schema";
+import {
+  GetLocationSchema,
+  ILocationFormValues,
+} from "@/components/schemas/admin/location.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,15 +44,18 @@ export default function LocationFormModal({
   locationToEdit,
   onSuccess,
 }: LocationFormModalProps) {
+  const t = useTranslations("page_locations.form");
+  const vt = useTranslations("page_locations.validation");
   const isEditing = !!locationToEdit;
 
+  const schema = GetLocationSchema(vt);
   const {
     handleSubmit,
     reset,
     control,
     formState: { isDirty },
-  } = useForm<z.infer<typeof LocationSchema>>({
-    resolver: zodResolver(LocationSchema),
+  } = useForm<ILocationFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       code: "",
@@ -80,9 +86,9 @@ export default function LocationFormModal({
 
   const { mutate, pending } = useMutation();
 
-  const onSubmit = async (data: z.infer<typeof LocationSchema>) => {
+  const onSubmit = async (data: ILocationFormValues) => {
     if (isEditing && !isDirty) {
-      toast.info("No changes were made.");
+      toast.info(t("no_changes"));
       onClose();
       return;
     }
@@ -118,12 +124,10 @@ export default function LocationFormModal({
       <DialogContent className="sm:max-w-[500px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Location" : "Create New Location"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update the location details."
-              : "Set up a new physical location for assets."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -139,8 +143,8 @@ export default function LocationFormModal({
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Location code</FieldLabel>
-                    <Input {...field} placeholder="e.g. ST_TOTAL" />
+                    <FieldLabel>{t("code_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("code_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -153,8 +157,8 @@ export default function LocationFormModal({
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Location name</FieldLabel>
-                    <Input {...field} placeholder="e.g. Main warehouse" />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -167,11 +171,11 @@ export default function LocationFormModal({
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Description (optional)</FieldLabel>
+                    <FieldLabel>{t("description_label")}</FieldLabel>
                     <Input
                       {...field}
                       value={field.value || ""}
-                      placeholder="Detailed description"
+                      placeholder={t("description_placeholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -192,7 +196,7 @@ export default function LocationFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color)"
                       />
-                      Active Status
+                      {t("active_status")}
                     </label>
                   </Field>
                 )}
@@ -202,10 +206,10 @@ export default function LocationFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" form="location-form" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>
