@@ -112,7 +112,7 @@ export default function RentalReturnDetail({ id }: Props) {
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Rental: {detail.rental.record_number}
+                  Rental: {detail.rental?.record_number || "—"}
                 </span>
               </div>
             </div>

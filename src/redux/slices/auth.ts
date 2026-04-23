@@ -27,12 +27,14 @@ interface Auth {
   loading: boolean;
   user: IUser | null;
   loggingOut: boolean;
+  isInitialized: boolean;
 }
 
 const initialState: Auth = {
   user: null,
   loading: false,
   loggingOut: false,
+  isInitialized: false,
 };
 
 const authSlice = createSlice({
@@ -41,6 +43,7 @@ const authSlice = createSlice({
   reducers: {
     actionLogout: (state) => {
       state.user = null;
+      state.isInitialized = false;
       cleanClientCookie();
     },
     actionLogin: (
@@ -69,12 +72,14 @@ const authSlice = createSlice({
       .addCase(actionFetchUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.loading = false;
+        state.isInitialized = true;
       })
       .addCase(actionFetchUser.pending, (state) => {
         state.loading = true;
       })
       .addCase(actionFetchUser.rejected, (state) => {
         state.loading = false;
+        state.isInitialized = true;
       });
 
 

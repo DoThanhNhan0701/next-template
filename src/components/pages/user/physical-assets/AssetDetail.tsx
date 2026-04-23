@@ -59,7 +59,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         reason: `Cấp phát tài sản: ${asset.name}`,
       }),
     );
-    router.push("/dispatch-recovery");
+    router.push("/allocation-recovery");
   };
 
   const handleRecovery = () => {
@@ -72,7 +72,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         reason: `Thu hồi tài sản: ${asset.name}`,
       }),
     );
-    router.push("/dispatch-recovery?tab=recoveries");
+    router.push("/allocation-recovery?tab=recoveries");
   };
 
   const handleRental = () => {
@@ -183,7 +183,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               Rentals
             </Button>
             <Button variant="outline" onClick={handleDispatch}>
-              Dispatch
+              Allocation
             </Button>
             <Button variant="outline" onClick={handleRecovery}>
               Recovery

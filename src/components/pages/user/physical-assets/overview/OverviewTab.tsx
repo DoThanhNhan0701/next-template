@@ -60,7 +60,7 @@ export default function OverviewTab({
             />
             <StatItem
               icon={<UserCheck className="w-4 h-4 text-blue-500" />}
-              label="Dispatch"
+              label="Allocation"
               value={asset.allocated_quantity}
               valueColor="text-blue-600"
             />

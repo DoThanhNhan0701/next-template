@@ -73,7 +73,11 @@ export const isRecoveryDocument = (
 export const isRentalReturnDocument = (
     doc: DocumentDetail,
 ): doc is RentalReturnDocument => {
-    return "return_date" in doc && "rental" in doc && "to_location" in doc;
+    return (
+        ("return_date" in doc && "rental" in doc) ||
+        ("rental" in doc) ||
+        ("contract_number" in doc)
+    );
 };
 
 /**

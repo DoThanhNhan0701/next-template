@@ -99,6 +99,7 @@ export const dynamicEndpoints = {
       rental: `/api/v1/rentals/${id}`,
       liquidation: `/api/v1/liquidations/${id}`,
       maintenance: `/api/v1/maintenances/${id}`,
+      rental_return: `/api/v1/rentals/returns/${id}`,
     };
     return map[documentType] ?? `/api/v1/allocations/${id}`;
   },

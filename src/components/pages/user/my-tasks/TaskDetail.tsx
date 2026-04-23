@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
 
 import {
   CheckCircle2,
@@ -16,6 +15,7 @@ import {
   User,
   XCircle,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
@@ -35,10 +35,18 @@ import { dynamicEndpoints } from "@/config/endpoints";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { decrementPendingCount } from "@/redux/slices/task";
 import {
+  AllocationDocument,
   ApprovalHistory,
   DocumentDetail,
   ITask,
+  LiquidationDocument,
+  MaintenanceDocument,
+  RecoveryDocument,
+  RentalReturnDocument,
+  StockAdjustmentDocument,
+  TransferDocument,
   getDocumentTitle,
   isAllocationDocument,
   isLiquidationDocument,
@@ -51,7 +59,6 @@ import {
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
-import { decrementPendingCount } from "@/redux/slices/task";
 import { formatNumberWithCommas } from "@/utils/number";
 
 const getStatusInfo = (statusName: string | undefined) => {
@@ -151,24 +158,26 @@ export default function TaskDetail({ id }: TaskDetailProps) {
       badge?: { label: string; variant?: string };
     }> = [];
 
-    if (isAllocationDocument(detail)) {
+    if (documentType === "allocation" || isAllocationDocument(detail)) {
+      const allocation = detail as AllocationDocument;
       fields.push({
         icon: User,
         iconColor: "bg-primary/10 text-primary",
         label: "Allocated to",
-        value: detail.allocated_to_name,
+        value:
+          allocation.allocated_to_name || allocation.staff?.full_name || "N/A",
         badge: {
-          label: detail.allocated_to_type === "user" ? "User" : "Unit",
+          label: allocation.allocated_to_type === "user" ? "User" : "Unit",
           variant: "secondary",
         },
       });
 
-      if (detail.unit?.name) {
+      if (allocation.unit?.name) {
         fields.push({
           icon: User,
           iconColor: "bg-blue-500/10 text-blue-500",
           label: "Unit",
-          value: detail.unit.name,
+          value: allocation.unit.name,
         });
       }
 
@@ -176,40 +185,61 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Allocation date",
-        value: formatDate(detail.allocation_date),
+        value: formatDate(allocation.allocation_date),
       });
 
-      if (detail.issuer_name) {
+      if (allocation.issuer_name) {
         fields.push({
           icon: User,
           iconColor: "bg-indigo-500/10 text-indigo-500",
           label: "Issuer",
-          value: detail.issuer_name,
+          value: allocation.issuer_name,
         });
       }
-    } else if (isStockAdjustmentDocument(detail)) {
+
+      if (allocation.staff?.staff_code) {
+        fields.push({
+          icon: User,
+          iconColor: "bg-amber-500/10 text-amber-500",
+          label: "Staff code",
+          value: allocation.staff.staff_code,
+        });
+      }
+
+      fields.push({
+        icon: Package,
+        iconColor: "bg-purple-500/10 text-purple-500",
+        label: "Total quantity",
+        value: allocation.total_quantity,
+      });
+    } else if (
+      documentType === "stock_in" ||
+      documentType === "stock_out" ||
+      isStockAdjustmentDocument(detail)
+    ) {
+      const adjustment = detail as StockAdjustmentDocument;
       fields.push({
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Adjustment date",
-        value: formatDate(detail.adjustment_date),
+        value: formatDate(adjustment.adjustment_date),
       });
 
       fields.push({
         icon: Package,
         iconColor: "bg-purple-500/10 text-purple-500",
         label: "Total quantity",
-        value: detail.total_quantity,
+        value: adjustment.total_quantity,
       });
 
-      if (detail.external_link) {
+      if (adjustment.external_link) {
         fields.push({
           icon: FileText,
           iconColor: "bg-cyan-500/10 text-cyan-500",
           label: "External link",
           value: (
             <a
-              href={detail.external_link}
+              href={adjustment.external_link}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
@@ -219,25 +249,27 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
-    } else if (isRecoveryDocument(detail)) {
+    } else if (documentType === "recovery" || isRecoveryDocument(detail)) {
+      const recovery = detail as RecoveryDocument;
       // Recovery specific fields
       fields.push({
         icon: User,
         iconColor: "bg-rose-500/10 text-rose-500",
         label: "Recovered from",
-        value: detail.recovered_from_name || detail.staff?.full_name || "N/A",
+        value:
+          recovery.recovered_from_name || recovery.staff?.full_name || "N/A",
         badge: {
-          label: detail.recovered_from_type === "user" ? "User" : "Unit",
+          label: recovery.recovered_from_type === "user" ? "User" : "Unit",
           variant: "secondary",
         },
       });
 
-      if (detail.unit?.name) {
+      if (recovery.unit?.name) {
         fields.push({
           icon: User,
           iconColor: "bg-blue-500/10 text-blue-500",
           label: "Unit",
-          value: detail.unit.name,
+          value: recovery.unit.name,
         });
       }
 
@@ -245,37 +277,37 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Recovery date",
-        value: formatDate(detail.recovery_date),
+        value: formatDate(recovery.recovery_date),
       });
 
       fields.push({
         icon: Package,
         iconColor: "bg-purple-500/10 text-purple-500",
         label: "Total quantity",
-        value: detail.total_quantity,
+        value: recovery.total_quantity,
       });
 
-      if (detail.notes) {
+      if (recovery.notes) {
         fields.push({
           icon: FileText,
           iconColor: "bg-amber-500/10 text-amber-500",
           label: "Notes",
           value: (
             <span className="text-sm font-medium text-muted-foreground italic">
-              {detail.notes}
+              {recovery.notes}
             </span>
           ),
         });
       }
 
-      if (detail.external_link) {
+      if (recovery.external_link) {
         fields.push({
           icon: FileText,
           iconColor: "bg-cyan-500/10 text-cyan-500",
           label: "External link",
           value: (
             <a
-              href={detail.external_link}
+              href={recovery.external_link}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
@@ -285,61 +317,57 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
-    } else if (isRentalReturnDocument(detail)) {
-      // Rental Return specific fields
-      fields.push({
-        icon: User,
-        iconColor: "bg-violet-500/10 text-violet-500",
-        label: "Customer",
-        value: detail.rental.customer.name,
-        badge: {
-          label:
-            detail.rental.customer.customer_type === "individual"
-              ? "Individual"
-              : "Organization",
-          variant: "secondary",
-        },
-      });
+    } else if (
+      documentType === "rental_return" ||
+      isRentalReturnDocument(detail)
+    ) {
+      const rReturn = detail as RentalReturnDocument;
+
+      if (rReturn.record_number) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-blue-500/10 text-blue-500",
+          label: "Record number",
+          value: rReturn.record_number,
+        });
+      }
+
+      if (rReturn.return_date) {
+        fields.push({
+          icon: History,
+          iconColor: "bg-emerald-500/10 text-emerald-600",
+          label: "Return date",
+          value: formatDate(rReturn.return_date),
+        });
+      }
+
+      const leaseRecord = rReturn.rental?.record_number;
+      if (leaseRecord) {
+        fields.push({
+          icon: FileText,
+          iconColor: "bg-purple-500/10 text-purple-500",
+          label: "Lease record",
+          value: leaseRecord,
+        });
+      }
 
       fields.push({
         icon: FileText,
-        iconColor: "bg-blue-500/10 text-blue-500",
-        label: "Contract number",
-        value: detail.rental.contract_number,
+        iconColor: "bg-amber-500/10 text-amber-500",
+        label: "Notes",
+        value: (
+          <span className="text-sm font-medium text-muted-foreground italic">
+            {rReturn.notes || "-"}
+          </span>
+        ),
       });
-
-      fields.push({
-        icon: History,
-        iconColor: "bg-emerald-500/10 text-emerald-500",
-        label: "Return date",
-        value: formatDate(detail.return_date),
-      });
-
-      fields.push({
-        icon: Package,
-        iconColor: "bg-indigo-500/10 text-indigo-500",
-        label: "Return to location",
-        value: detail.to_location.name,
-      });
-
-      if (detail.notes) {
-        fields.push({
-          icon: FileText,
-          iconColor: "bg-amber-500/10 text-amber-500",
-          label: "Notes",
-          value: (
-            <span className="text-sm font-medium text-muted-foreground italic">
-              {detail.notes}
-            </span>
-          ),
-        });
-      }
-    } else if (isTransferDocument(detail)) {
+    } else if (documentType === "transfer" || isTransferDocument(detail)) {
+      const transfer = detail as TransferDocument;
       // Transfer specific fields
       const transferTypeLabel =
-        detail.transfer_type === "holder"
+        transfer.transfer_type === "holder"
           ? "Holder"
-          : detail.transfer_type === "location"
+          : transfer.transfer_type === "location"
             ? "Location"
             : "Unit";
 
@@ -358,38 +386,38 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: User,
         iconColor: "bg-orange-500/10 text-orange-500",
         label: "From",
-        value: detail.from_name,
+        value: transfer.from_name,
       });
 
       fields.push({
         icon: User,
         iconColor: "bg-green-500/10 text-green-500",
         label: "To",
-        value: detail.to_name,
+        value: transfer.to_name,
       });
 
       fields.push({
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Transfer date",
-        value: formatDate(detail.transfer_date),
+        value: formatDate(transfer.transfer_date),
       });
 
       fields.push({
         icon: Package,
         iconColor: "bg-purple-500/10 text-purple-500",
         label: "Total assets",
-        value: detail.total_assets,
+        value: transfer.total_assets,
       });
 
-      if (detail.external_link) {
+      if (transfer.external_link) {
         fields.push({
           icon: FileText,
           iconColor: "bg-cyan-500/10 text-cyan-500",
           label: "External link",
           value: (
             <a
-              href={detail.external_link}
+              href={transfer.external_link}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
@@ -399,35 +427,39 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           ),
         });
       }
-    } else if (isMaintenanceDocument(detail)) {
+    } else if (
+      documentType === "maintenance" ||
+      isMaintenanceDocument(detail)
+    ) {
+      const maintenance = detail as MaintenanceDocument;
       // Maintenance specific fields
       fields.push({
         icon: FileText,
         iconColor: "bg-blue-500/10 text-blue-500",
         label: "Ticket number",
-        value: detail.ticket_number,
+        value: maintenance.ticket_number,
       });
 
       fields.push({
         icon: User,
         iconColor: "bg-indigo-500/10 text-indigo-500",
         label: "Service provider",
-        value: detail.service_provider_name,
+        value: maintenance.service_provider_name,
       });
 
       fields.push({
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Outing date",
-        value: formatDate(detail.outing_date),
+        value: formatDate(maintenance.outing_date),
       });
 
-      if (detail.return_date) {
+      if (maintenance.return_date) {
         fields.push({
           icon: History,
           iconColor: "bg-amber-500/10 text-amber-500",
           label: "Return date",
-          value: formatDate(detail.return_date),
+          value: formatDate(maintenance.return_date),
         });
       }
 
@@ -435,44 +467,44 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: Package,
         iconColor: "bg-purple-500/10 text-purple-500",
         label: "Expected cost",
-        value: formatNumberWithCommas(detail.expected_cost),
+        value: formatNumberWithCommas(maintenance.expected_cost),
       });
 
-      if (detail.actual_cost) {
+      if (maintenance.actual_cost) {
         fields.push({
           icon: Package,
           iconColor: "bg-emerald-500/10 text-emerald-500",
           label: "Actual cost",
-          value: formatNumberWithCommas(detail.actual_cost),
+          value: formatNumberWithCommas(maintenance.actual_cost),
         });
       }
 
-      if (detail.handover_person) {
+      if (maintenance.handover_person) {
         fields.push({
           icon: User,
           iconColor: "bg-blue-500/10 text-blue-500",
           label: "Handover person",
-          value: detail.handover_person,
+          value: maintenance.handover_person,
         });
       }
 
-      if (detail.taker_person_name) {
+      if (maintenance.taker_person_name) {
         fields.push({
           icon: User,
           iconColor: "bg-orange-500/10 text-orange-500",
           label: "Taker person",
-          value: detail.taker_person_name,
+          value: maintenance.taker_person_name,
         });
       }
 
-      if (detail.external_link) {
+      if (maintenance.external_link) {
         fields.push({
           icon: FileText,
           iconColor: "bg-cyan-500/10 text-cyan-500",
           label: "External link",
           value: (
             <a
-              href={detail.external_link}
+              href={maintenance.external_link}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
@@ -483,27 +515,36 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         });
       }
 
-      if (detail.notes) {
+      if (maintenance.notes) {
         fields.push({
           icon: FileText,
           iconColor: "bg-orange-500/10 text-orange-500",
           label: "Notes",
           value: (
             <span className="text-sm font-medium text-muted-foreground italic">
-              {detail.notes}
+              {maintenance.notes}
             </span>
           ),
         });
       }
     }
 
-    // Reason (common field for Allocation, Stock, and Transfer)
+    // Reason (common field)
     if (
-      (isAllocationDocument(detail) ||
+      (documentType === "allocation" ||
+        documentType === "stock_in" ||
+        documentType === "stock_out" ||
+        documentType === "transfer" ||
+        documentType === "maintenance" ||
+        documentType === "liquidation" ||
+        documentType === "recovery" ||
+        isAllocationDocument(detail) ||
         isStockAdjustmentDocument(detail) ||
         isTransferDocument(detail) ||
-        isMaintenanceDocument(detail)) &&
-      detail.reason
+        isMaintenanceDocument(detail) ||
+        isLiquidationDocument(detail) ||
+        isRecoveryDocument(detail)) &&
+      (detail as { reason?: string }).reason
     ) {
       fields.push({
         icon: FileText,
@@ -511,82 +552,71 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         label: "Reason",
         value: (
           <span className="text-sm font-medium text-muted-foreground italic">
-            {detail.reason}
+            {(detail as { reason?: string }).reason}
           </span>
         ),
       });
     }
 
     // Liquidation specific fields
-    if (isLiquidationDocument(detail)) {
+    if (documentType === "liquidation" || isLiquidationDocument(detail)) {
+      const liquidation = detail as LiquidationDocument;
       fields.push({
         icon: History,
         iconColor: "bg-emerald-500/10 text-emerald-500",
         label: "Liquidation date",
-        value: formatDate(detail.liquidation_date),
+        value: formatDate(liquidation.liquidation_date),
       });
       fields.push({
         icon: FileText,
         iconColor: "bg-violet-500/10 text-violet-500",
         label: "Type",
         value:
-          detail.liquidation_type.charAt(0).toUpperCase() +
-          detail.liquidation_type.slice(1),
+          liquidation.liquidation_type.charAt(0).toUpperCase() +
+          liquidation.liquidation_type.slice(1),
       });
       fields.push({
         icon: Package,
         iconColor: "bg-amber-500/10 text-amber-500",
         label: "Total value",
-        value: formatNumberWithCommas(detail.total_value),
+        value: formatNumberWithCommas(liquidation.total_value),
       });
-      if (detail.buyer_name) {
+      if (liquidation.buyer_name) {
         fields.push({
           icon: User,
           iconColor: "bg-blue-500/10 text-blue-500",
           label: "Buyer",
-          value: detail.buyer_name,
+          value: liquidation.buyer_name,
         });
       }
-      if (detail.committee) {
+      if (liquidation.committee) {
         fields.push({
           icon: User,
           iconColor: "bg-indigo-500/10 text-indigo-500",
           label: "Committee",
-          value: detail.committee,
+          value: liquidation.committee,
         });
       }
-      if (detail.reason) {
-        fields.push({
-          icon: FileText,
-          iconColor: "bg-orange-500/10 text-orange-500",
-          label: "Reason",
-          value: (
-            <span className="text-sm font-medium text-muted-foreground italic">
-              {detail.reason}
-            </span>
-          ),
-        });
-      }
-      if (detail.notes) {
+      if (liquidation.notes) {
         fields.push({
           icon: FileText,
           iconColor: "bg-slate-500/10 text-slate-500",
           label: "Notes",
           value: (
             <span className="text-sm font-medium text-muted-foreground italic">
-              {detail.notes}
+              {liquidation.notes}
             </span>
           ),
         });
       }
-      if (detail.external_link) {
+      if (liquidation.external_link) {
         fields.push({
           icon: FileText,
           iconColor: "bg-cyan-500/10 text-cyan-500",
           label: "External link",
           value: (
             <a
-              href={detail.external_link}
+              href={liquidation.external_link}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
@@ -601,7 +631,11 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     // Detail items (table data)
     let detailItems = null;
 
-    if (isAllocationDocument(detail) && detail.details.length > 0) {
+    if (
+      (documentType === "allocation" || isAllocationDocument(detail)) &&
+      (detail as AllocationDocument).details?.length > 0
+    ) {
+      const allocationDetail = detail as AllocationDocument;
       detailItems = {
         title: "Allocated asset list",
         icon: Package,
@@ -612,16 +646,22 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "location", label: "Location" },
           { key: "quantity", label: "Quantity", align: "center" as const },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: allocationDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
-          location: item.location.name || "-",
+          location: item.location?.name || "-",
           quantity: item.quantity,
         })),
       };
-    } else if (isStockAdjustmentDocument(detail) && detail.details.length > 0) {
+    } else if (
+      (documentType === "stock_in" ||
+        documentType === "stock_out" ||
+        isStockAdjustmentDocument(detail)) &&
+      (detail as StockAdjustmentDocument).details?.length > 0
+    ) {
+      const adjustmentDetail = detail as StockAdjustmentDocument;
       detailItems = {
         title: "Stock adjustment list",
         icon: Package,
@@ -633,17 +673,21 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "type", label: "Type", align: "center" as const },
           { key: "quantity", label: "Quantity Diff", align: "center" as const },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: adjustmentDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
-          location: item.location.name || "-",
+          location: item.location?.name || "-",
           type: item.adjustment_type,
           quantity: item.quantity_diff,
         })),
       };
-    } else if (isRecoveryDocument(detail) && detail.details.length > 0) {
+    } else if (
+      (documentType === "recovery" || isRecoveryDocument(detail)) &&
+      (detail as RecoveryDocument).details?.length > 0
+    ) {
+      const recoveryDetail = detail as RecoveryDocument;
       detailItems = {
         title: "Recovered asset list",
         icon: Package,
@@ -654,16 +698,20 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "location", label: "Location" },
           { key: "quantity", label: "Quantity", align: "center" as const },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: recoveryDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
-          location: item.location.name || "-",
+          location: item.location?.name || "-",
           quantity: item.quantity,
         })),
       };
-    } else if (isRentalReturnDocument(detail) && detail.details.length > 0) {
+    } else if (
+      (documentType === "rental_return" || isRentalReturnDocument(detail)) &&
+      (detail as RentalReturnDocument).details?.length > 0
+    ) {
+      const rentalDetail = detail as RentalReturnDocument;
       detailItems = {
         title: "Returned asset list",
         icon: Package,
@@ -671,19 +719,23 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "no", label: "No", align: "center" as const },
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "quantity", label: "Qty", align: "center" as const },
           { key: "condition", label: "Condition", align: "center" as const },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: rentalDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
           quantity: item.quantity,
-          condition: item.condition,
+          condition: item.condition || "-",
         })),
       };
-    } else if (isTransferDocument(detail) && detail.details.length > 0) {
+    } else if (
+      (documentType === "transfer" || isTransferDocument(detail)) &&
+      (detail as TransferDocument).details?.length > 0
+    ) {
+      const transferDetail = detail as TransferDocument;
       detailItems = {
         title: "Transferred asset list",
         icon: Package,
@@ -694,7 +746,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "from_location_name", label: "From Location" },
           { key: "quantity", label: "Quantity", align: "center" as const },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: transferDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset_name: item.asset_name,
@@ -703,7 +755,11 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           quantity: item.quantity,
         })),
       };
-    } else if (isMaintenanceDocument(detail) && detail.details.length > 0) {
+    } else if (
+      (documentType === "maintenance" || isMaintenanceDocument(detail)) &&
+      (detail as MaintenanceDocument).details?.length > 0
+    ) {
+      const maintenanceDetail = detail as MaintenanceDocument;
       detailItems = {
         title: "Maintenance asset list",
         icon: Package,
@@ -714,7 +770,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "quantity", label: "Quantity", align: "center" as const },
           { key: "notes", label: "Notes" },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: maintenanceDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset: item.asset.name,
@@ -723,7 +779,11 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           notes: item.notes || "-",
         })),
       };
-    } else if (isLiquidationDocument(detail) && detail.details.length > 0) {
+    } else if (
+      (documentType === "liquidation" || isLiquidationDocument(detail)) &&
+      (detail as LiquidationDocument).details?.length > 0
+    ) {
+      const liquidationDetail = detail as LiquidationDocument;
       detailItems = {
         title: "Disposal items",
         icon: Package,
@@ -740,15 +800,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
             align: "center" as const,
           },
         ],
-        rows: detail.details.map((item, index) => ({
+        rows: liquidationDetail.details.map((item, index) => ({
           id: item.id,
           no: index + 1,
           asset: item.asset.name,
           asset_code: item.asset.asset_code,
           from_location: item.from_location?.name || "-",
           quantity: item.quantity,
-          unit_value: item.unit_value.toLocaleString("vi-VN"),
-          remaining_value: item.remaining_value.toLocaleString("vi-VN"),
+          unit_value: formatNumberWithCommas(item.unit_value),
+          remaining_value: formatNumberWithCommas(item.remaining_value),
         })),
       };
     }
@@ -934,7 +994,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                             </Badge>
                           )}
                           {typeof field.value === "string" ||
-                            typeof field.value === "number" ? (
+                          typeof field.value === "number" ? (
                             <span className="text-sm font-bold text-foreground">
                               {field.value}
                             </span>
@@ -987,7 +1047,15 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                                       {row[col.key as keyof typeof row]}
                                     </code>
                                   ) : col.key === "quantity" ? (
-                                    <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
+                                    <span className="inline-flex items-center justify-center w-10 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold px-1">
+                                      {row[col.key as keyof typeof row]}
+                                    </span>
+                                  ) : col.key === "returned_quantity" ? (
+                                    <span className="inline-flex items-center justify-center w-10 h-6 bg-emerald-500/10 text-emerald-600 rounded-lg text-sm font-bold px-1">
+                                      {row[col.key as keyof typeof row]}
+                                    </span>
+                                  ) : col.key === "rental_revenue" ? (
+                                    <span className="text-sm font-bold text-foreground">
                                       {row[col.key as keyof typeof row]}
                                     </span>
                                   ) : col.key === "type" ? (
@@ -1059,7 +1127,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pb-3 border-b border-border/50">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
                       <Clock className="w-4 h-4" />
@@ -1074,6 +1142,27 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                     </span>
                   </div>
                 </div>
+
+                {isAllocationDocument(detail) && detail.issuer && (
+                  <div className="flex items-center justify-between pb-3 border-b border-border/50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-bold text-muted-foreground tracking-wider">
+                        Issuer details
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-sm font-semibold text-foreground">
+                        {detail.issuer.full_name}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground uppercase">
+                        {detail.issuer.role}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-4 p-3 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-2">
                   <span className="text-sm font-black text-muted-foreground tracking-[0.2em] text-center">

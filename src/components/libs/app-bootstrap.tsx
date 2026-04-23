@@ -16,16 +16,16 @@ export default function AppBootstrap({
   children: React.ReactNode;
 }) {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, loading } = useSelector((state: RootState) => state.auth);
+  const { user, loading, isInitialized } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     // Only attempt to fetch if we have a refresh token (prevents infinite loop after logout)
     const hasRefreshToken = !!getClientCookie(REFRESH_TOKEN);
 
-    if (!user && !loading && hasRefreshToken) {
+    if (!user && !loading && !isInitialized && hasRefreshToken) {
       dispatch(actionFetchUser());
     }
-  }, [user, loading, dispatch]);
+  }, [user, loading, isInitialized, dispatch]);
 
   return <>{children}</>;
 }
