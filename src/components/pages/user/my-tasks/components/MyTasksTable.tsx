@@ -433,7 +433,7 @@ export default function MyTasksTable() {
                   size={14}
                   className="text-muted-foreground/70 shrink-0"
                 />
-                <SelectValue placeholder="All Processes" />
+                <SelectValue placeholder="All processes" />
               </div>
             </SelectTrigger>
             <SelectContent>
@@ -598,19 +598,19 @@ export default function MyTasksTable() {
                           </Button>
                           {(task.document_type !== "audit" ||
                             task.status === "COMPLETED") && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleReject(task);
-                              }}
-                              className="rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
-                              title="Reject"
-                            >
-                              <CloseIcon size={16} />
-                            </Button>
-                          )}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleReject(task);
+                                }}
+                                className="rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
+                                title="Reject"
+                              >
+                                <CloseIcon size={16} />
+                              </Button>
+                            )}
                         </>
                       )}
                     </div>

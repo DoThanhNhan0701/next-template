@@ -122,7 +122,7 @@ export default function RentalsTable() {
             size={16}
           />
           <Input
-            placeholder="Record Number, Contract..."
+            placeholder="Search record number, contract..."
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -172,7 +172,7 @@ export default function RentalsTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Customers" />
+                  <SelectValue placeholder="All customers" />
                 </div>
               </div>
             </SelectTrigger>

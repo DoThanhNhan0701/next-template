@@ -128,7 +128,7 @@ export default function RentalReturnTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Statuses" />
+                  <SelectValue placeholder="All statuses" />
                 </div>
               </div>
             </SelectTrigger>
@@ -251,7 +251,7 @@ export default function RentalReturnTable() {
                           className="w-fit text-[10px] px-1.5 py-0"
                         >
                           {rentalReturn.rental.customer.customer_type ===
-                          "individual"
+                            "individual"
                             ? "Individual"
                             : "Organization"}
                         </Badge>

@@ -129,7 +129,7 @@ export default function MyAuditsTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Types" />
+                  <SelectValue placeholder="All types" />
                 </div>
               </div>
             </SelectTrigger>

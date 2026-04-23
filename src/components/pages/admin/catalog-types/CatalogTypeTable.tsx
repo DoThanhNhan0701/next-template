@@ -77,8 +77,8 @@ export default function CatalogTypeTable() {
         setResponse((prev: ICatalogType[] | null) =>
           prev
             ? prev.map((u: ICatalogType) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            )
             : null,
         );
         return;
@@ -109,7 +109,7 @@ export default function CatalogTypeTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>

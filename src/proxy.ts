@@ -7,7 +7,7 @@ export default function proxy(request: NextRequest) {
 
   // Skip proxy for files with extensions (images, fonts, etc.) and Next.js internals
   if (
-    pathname.includes('.') || 
+    pathname.includes('.') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api')
   ) {
@@ -16,10 +16,10 @@ export default function proxy(request: NextRequest) {
 
   const accessToken = request.cookies.get(ACCESS_TOKEN);
   const refreshToken = request.cookies.get(REFRESH_TOKEN);
-  
+
   // User is authenticated if they have either an access token or a refresh token
   const isAuthenticated = !!accessToken || !!refreshToken;
-  
+
   // Check if current page is the login page
   const isAuthPage = pathname.includes('/auth/login');
 

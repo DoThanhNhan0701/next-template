@@ -95,8 +95,8 @@ export default function RoleTable() {
         setResponse((prev: IRole[] | null) =>
           prev
             ? prev.map((r: IRole) =>
-                r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
-              )
+              r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
+            )
             : null,
         );
         return;
@@ -125,7 +125,7 @@ export default function RoleTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>

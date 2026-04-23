@@ -78,8 +78,8 @@ export default function LocationTable() {
         setResponse((prev: ILocation[] | null) =>
           prev
             ? prev.map((loc: ILocation) =>
-                loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
-              )
+              loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
+            )
             : null,
         );
         return;
@@ -123,7 +123,7 @@ export default function LocationTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>

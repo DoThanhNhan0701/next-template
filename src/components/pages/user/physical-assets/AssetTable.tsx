@@ -158,7 +158,7 @@ export default function AssetTable() {
             size={16}
           />
           <Input
-            placeholder="Asset Code, Serial..."
+            placeholder="Search asset code, serial..."
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -205,7 +205,7 @@ export default function AssetTable() {
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Tag size={16} className="text-muted-foreground/70 shrink-0" />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Asset Types" />
+                  <SelectValue placeholder="All asset types" />
                 </div>
               </div>
             </SelectTrigger>
@@ -227,7 +227,7 @@ export default function AssetTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Statuses" />
+                  <SelectValue placeholder="All statuses" />
                 </div>
               </div>
             </SelectTrigger>
@@ -431,7 +431,7 @@ export default function AssetTable() {
                         {((asset.in_stock_quantity ?? 0) > 0 ||
                           (asset.allocated_quantity ?? 0) > 0 ||
                           (asset.rented_quantity ?? 0) > 0) &&
-                        asset.management_type === "bulk" ? (
+                          asset.management_type === "bulk" ? (
                           <div className="flex items-center gap-1 flex-wrap justify-center">
                             {(asset.in_stock_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
@@ -455,16 +455,16 @@ export default function AssetTable() {
                             style={
                               status?.color
                                 ? {
-                                    backgroundColor: `${status.color}20`,
-                                    color: status.color,
-                                    borderColor: `${status.color}40`,
-                                  }
+                                  backgroundColor: `${status.color}20`,
+                                  color: status.color,
+                                  borderColor: `${status.color}40`,
+                                }
                                 : {}
                             }
                             className={cn(
                               "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
                               !status?.color &&
-                                "bg-primary/10 text-primary border-primary/20",
+                              "bg-primary/10 text-primary border-primary/20",
                             )}
                           >
                             {status?.name || `Status ${asset.status_id}`}

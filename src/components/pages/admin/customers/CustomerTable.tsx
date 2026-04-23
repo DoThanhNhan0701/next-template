@@ -110,7 +110,7 @@ export default function CustomerTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>

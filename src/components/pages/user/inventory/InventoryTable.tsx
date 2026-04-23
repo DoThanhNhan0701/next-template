@@ -145,7 +145,7 @@ export default function InventoryTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All Locations" />
+                  <SelectValue placeholder="All locations" />
                 </div>
               </div>
             </SelectTrigger>
@@ -295,11 +295,10 @@ export default function InventoryTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
-                        stock.quantity > 0
-                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                          : "bg-red-500/10 text-red-600 border border-red-500/20"
-                      }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
+                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                        : "bg-red-500/10 text-red-600 border border-red-500/20"
+                        }`}
                     >
                       {stock.quantity}
                     </div>

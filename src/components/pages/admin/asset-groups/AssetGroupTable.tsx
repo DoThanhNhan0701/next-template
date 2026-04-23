@@ -78,8 +78,8 @@ export default function AssetGroupTable() {
         setResponse((prev: IAssetGroup[] | null) =>
           prev
             ? prev.map((u: IAssetGroup) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            )
             : null,
         );
         return;
@@ -110,7 +110,7 @@ export default function AssetGroupTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>

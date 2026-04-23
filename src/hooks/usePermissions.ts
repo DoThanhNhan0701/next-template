@@ -2,29 +2,25 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
 
 export const usePermissions = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, loading } = useSelector((state: RootState) => state.auth);
 
   const permissions = user?.permissions || [];
   const userRole = user?.role || "";
 
-  /**
-   * Check if user has a specific permission
-   */
+  const isReady = !loading;
+
   const hasPermission = (permission: string): boolean => {
+    if (!isReady) return false; // 🔥 tránh check sớm
     return permissions.includes(permission);
   };
 
-  /**
-   * Check if user has any of the listed permissions
-   */
   const hasAnyPermission = (requiredPermissions: string[]): boolean => {
+    if (!isReady) return false;
     return requiredPermissions.some((perm) => permissions.includes(perm));
   };
 
-  /**
-   * Check if user has all of the listed permissions
-   */
   const hasAllPermissions = (requiredPermissions: string[]): boolean => {
+    if (!isReady) return false;
     return requiredPermissions.every((perm) => permissions.includes(perm));
   };
 
@@ -32,6 +28,7 @@ export const usePermissions = () => {
     user,
     permissions,
     userRole,
+    isReady, // 👈 thêm vào đây
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,

@@ -39,7 +39,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     (state: RootState) => state.auth,
   );
   const { counts } = useSelector((state: RootState) => state.task);
-  const { hasPermission } = usePermissions();
+  const { hasPermission, isReady } = usePermissions();
   const t = useTranslations("Menu");
   const pendingCountFetched = useRef(false);
 
@@ -122,7 +122,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || isReady) return;
 
     const restrictedItem = allItems.find((item) => {
       const matches =
@@ -136,7 +136,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     if (restrictedItem) {
       router.push("/dashboard");
     }
-  }, [pathname, authLoading, hasPermission, router, allItems]);
+  }, [pathname, authLoading, hasPermission, router, allItems, isReady]);
 
   // Before mount or while auth loads: show skeleton (user manually enters URL)
   // After mount + auth done: filter by permission.
@@ -144,8 +144,8 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     authLoading || !hasHydrated
       ? []
       : allItems.filter(
-          (item) => !item.permission || hasPermission(item.permission),
-        );
+        (item) => !item.permission || hasPermission(item.permission),
+      );
 
   return (
     <AppBootstrap>

@@ -75,11 +75,11 @@ export default function StaffTable() {
         setResponse((prev: { items: IStaff[] } | null) =>
           prev
             ? {
-                ...prev,
-                items: prev.items.map((u: IStaff) =>
-                  u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-                ),
-              }
+              ...prev,
+              items: prev.items.map((u: IStaff) =>
+                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+              ),
+            }
             : null,
         );
         return;
@@ -91,9 +91,9 @@ export default function StaffTable() {
         setResponse((prev: { items: IStaff[] } | null) =>
           prev
             ? {
-                ...prev,
-                items: [newItem, ...prev.items],
-              }
+              ...prev,
+              items: [newItem, ...prev.items],
+            }
             : null,
         );
         return;
@@ -113,7 +113,7 @@ export default function StaffTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
@@ -207,7 +207,7 @@ export default function StaffTable() {
                           variant="ghost"
                           size="icon"
                           className="text-red-500 hover:bg-red-500/10"
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <Trash2Icon size={14} />
                         </Button>

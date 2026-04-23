@@ -93,8 +93,8 @@ export default function UserTable() {
         setResponse((prev: IUser[] | null) =>
           prev
             ? prev.map((u: IUser) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            )
             : null,
         );
         return;
@@ -123,7 +123,7 @@ export default function UserTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
