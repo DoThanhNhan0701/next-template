@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Activity, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -41,6 +42,8 @@ import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import UsageModeFormModal from "./UsageModeFormModal";
 
 export default function UsageModeTable() {
+  const t = useTranslations("page_usage_modes");
+  const tt = useTranslations("page_usage_modes.table");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -95,17 +98,17 @@ export default function UsageModeTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All statuses" />
+            <SelectValue placeholder={t("all_statuses")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="true">Active</SelectItem>
-            <SelectItem value="false">Inactive</SelectItem>
+            <SelectItem value="all">{t("all_statuses")}</SelectItem>
+            <SelectItem value="true">{t("active")}</SelectItem>
+            <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
-          Add Usage Mode
+          {t("add_mode")}
         </Button>
       </div>
 
@@ -114,25 +117,25 @@ export default function UsageModeTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {tt("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                Code
+                {tt("code")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                Name
+                {tt("name")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
-                Color
+                {tt("color")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                Description
+                {tt("description")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                Status
+                {tt("status")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right w-[15%]">
-                Actions
+                {tt("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -143,8 +146,8 @@ export default function UsageModeTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={Activity}
-                message="No usage modes found"
-                description="Add your first usage mode using the button above."
+                message={tt("no_modes_found")}
+                description={tt("add_first_mode")}
               />
             ) : (
               usageModes.map((item, index) => (
@@ -176,11 +179,11 @@ export default function UsageModeTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {item.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Active
+                        {t("active")}
                       </span>
                     ) : (
                       <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Inactive
+                        {t("inactive")}
                       </span>
                     )}
                   </TableCell>

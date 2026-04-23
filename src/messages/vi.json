@@ -217,7 +217,7 @@
       "code_placeholder": "VD: KHO_TONG",
       "name_label": "Tên vị trí",
       "name_placeholder": "VD: Kho chính",
-      "description_label": "Mô tả (tùy chọn)",
+      "description_label": "Mô tả",
       "description_placeholder": "Mô tả chi tiết",
       "active_status": "Trạng thái hoạt động",
       "cancel": "Hủy",
@@ -264,7 +264,7 @@
       "code_label": "Mã",
       "code_placeholder": "VD: DBDT",
       "color_label": "Màu sắc",
-      "description_label": "Mô tả (tùy chọn)",
+      "description_label": "Mô tả",
       "description_placeholder": "Mô tả ngắn gọn về nhóm này",
       "active_status": "Trạng thái hoạt động",
       "cancel": "Hủy",
@@ -365,6 +365,53 @@
     "delete": {
       "title": "Xác nhận Xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa trạng thái <important>{name}</important>? Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!",
+      "invalid_color": "Định dạng màu không hợp lệ"
+    }
+  },
+  "page_usage_modes": {
+    "title": "Chế độ sử dụng",
+    "add_mode": "Thêm Chế độ sử dụng",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động",
+    "table": {
+      "no": "STT",
+      "code": "Mã",
+      "name": "Tên",
+      "color": "Màu sắc",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_modes_found": "Không tìm thấy chế độ sử dụng nào",
+      "add_first_mode": "Thêm chế độ sử dụng đầu tiên của bạn bằng nút phía trên."
+    },
+    "form": {
+      "create_title": "Thêm Chế độ sử dụng",
+      "edit_title": "Sửa Chế độ sử dụng",
+      "create_description": "Tạo một chế độ sử dụng mới cho tài sản.",
+      "edit_description": "Cập nhật thông tin chi tiết của chế độ sử dụng này.",
+      "code_label": "Mã",
+      "code_placeholder": "VD: DUNG_CHUNG",
+      "name_label": "Tên",
+      "name_placeholder": "VD: Dùng chung",
+      "color_label": "Màu sắc",
+      "description_label": "Mô tả",
+      "description_placeholder": "Mô tả ngắn gọn về chế độ sử dụng này",
+      "active_status": "Hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận Xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa chế độ sử dụng <important>{name}</important>? Hành động này không thể hoàn tác.",
       "cancel": "Hủy",
       "delete": "Xóa",
       "deleting": "Đang xóa..."

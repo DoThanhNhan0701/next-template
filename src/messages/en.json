@@ -217,7 +217,7 @@
       "code_placeholder": "e.g. ST_TOTAL",
       "name_label": "Location name",
       "name_placeholder": "e.g. Main warehouse",
-      "description_label": "Description (optional)",
+      "description_label": "Description",
       "description_placeholder": "Detailed description",
       "active_status": "Active Status",
       "cancel": "Cancel",
@@ -264,7 +264,7 @@
       "code_label": "Code",
       "code_placeholder": "e.g. ELEC",
       "color_label": "Color",
-      "description_label": "Description (optional)",
+      "description_label": "Description",
       "description_placeholder": "Brief description of this group",
       "active_status": "Active Status",
       "cancel": "Cancel",
@@ -365,6 +365,53 @@
     "delete": {
       "title": "Confirm Deletion",
       "confirm_message": "Are you sure you want to delete status <important>{name}</important>? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!",
+      "invalid_color": "Invalid color format"
+    }
+  },
+  "page_usage_modes": {
+    "title": "Usage Modes",
+    "add_mode": "Add Usage Mode",
+    "all_statuses": "All Statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "table": {
+      "no": "No",
+      "code": "Code",
+      "name": "Name",
+      "color": "Color",
+      "description": "Description",
+      "status": "Status",
+      "actions": "Actions",
+      "no_modes_found": "No usage modes found",
+      "add_first_mode": "Add your first usage mode using the button above."
+    },
+    "form": {
+      "create_title": "Add Usage Mode",
+      "edit_title": "Edit Usage Mode",
+      "create_description": "Create a new usage mode for assets.",
+      "edit_description": "Update the details of this usage mode.",
+      "code_label": "Code",
+      "code_placeholder": "e.g. SHARED",
+      "name_label": "Name",
+      "name_placeholder": "e.g. Shared Use",
+      "color_label": "Color",
+      "description_label": "Description",
+      "description_placeholder": "Brief description of this usage mode",
+      "active_status": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "no_changes": "No changes were made."
+    },
+    "delete": {
+      "title": "Confirm Deletion",
+      "confirm_message": "Are you sure you want to delete usage mode <important>{name}</important>? This action cannot be undone.",
       "cancel": "Cancel",
       "delete": "Delete",
       "deleting": "Deleting..."

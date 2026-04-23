@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { UsageModeSchema } from "@/components/schemas/admin/usage-mode.schema";
+import { GetUsageModeSchema, IUsageModeFormValues } from "@/components/schemas/admin/usage-mode.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,11 +43,14 @@ export default function UsageModeFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_usage_modes.form");
+  const vt = useTranslations("page_usage_modes.validation");
   const isEditing = !!usageModeToEdit;
   const { mutate, pending } = useMutation();
 
-  const form = useForm({
-    resolver: zodResolver(UsageModeSchema),
+  const schema = GetUsageModeSchema(vt);
+  const form = useForm<IUsageModeFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       code: "",
       name: "",
@@ -78,7 +82,7 @@ export default function UsageModeFormModal({
     }
   }, [isOpen, usageModeToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof UsageModeSchema>) => {
+  const onSubmit = async (data: IUsageModeFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.USAGE_MODE_DETAIL(usageModeToEdit.id)
       : endpoints.USAGE_MODES;
@@ -108,12 +112,10 @@ export default function UsageModeFormModal({
       <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Usage Mode" : "Add Usage Mode"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update the details of this usage mode."
-              : "Create a new usage mode for assets."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -128,8 +130,8 @@ export default function UsageModeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Code</FieldLabel>
-                    <Input {...field} placeholder="e.g. SHARED" />
+                    <FieldLabel>{t("code_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("code_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -142,8 +144,8 @@ export default function UsageModeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Name</FieldLabel>
-                    <Input {...field} placeholder="e.g. Shared Use" />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -156,7 +158,7 @@ export default function UsageModeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Color</FieldLabel>
+                    <FieldLabel>{t("color_label")}</FieldLabel>
                     <div className="flex gap-2">
                       <Input
                         type="color"
@@ -181,8 +183,12 @@ export default function UsageModeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="Brief description of this usage mode" />
+                    <FieldLabel>{t("description_label")}</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("description_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -202,7 +208,7 @@ export default function UsageModeFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color)"
                       />
-                      Active
+                      {t("active_status")}
                     </label>
                   </Field>
                 )}
@@ -217,10 +223,10 @@ export default function UsageModeFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>
