@@ -6,7 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CatalogTypeSchema } from "@/components/schemas/admin/catalog-type.schema";
+import {
+  GetCatalogTypeSchema,
+  ICatalogTypeFormValues,
+} from "@/components/schemas/admin/catalog-type.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,11 +46,14 @@ export default function CatalogTypeFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_catalog_types.form");
+  const vt = useTranslations("page_catalog_types.validation");
   const isEditing = !!catalogTypeToEdit;
   const { mutate, pending } = useMutation();
 
-  const form = useForm({
-    resolver: zodResolver(CatalogTypeSchema),
+  const schema = GetCatalogTypeSchema(vt);
+  const form = useForm<ICatalogTypeFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       code: "",
@@ -84,7 +91,7 @@ export default function CatalogTypeFormModal({
     }
   }, [isOpen, catalogTypeToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof CatalogTypeSchema>) => {
+  const onSubmit = async (data: ICatalogTypeFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.CATALOG_TYPE_DETAIL(catalogTypeToEdit.id)
       : endpoints.CATALOG_TYPES;
@@ -115,12 +122,10 @@ export default function CatalogTypeFormModal({
       <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Catalog Type" : "Add Catalog Type"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update the catalog type properties."
-              : "Register a new type of catalog for inventory management."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -135,8 +140,8 @@ export default function CatalogTypeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Name</FieldLabel>
-                    <Input {...field} placeholder="e.g. Laptop" />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -149,8 +154,8 @@ export default function CatalogTypeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Code</FieldLabel>
-                    <Input {...field} placeholder="e.g. LAPTOP" />
+                    <FieldLabel>{t("code_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("code_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -163,8 +168,12 @@ export default function CatalogTypeFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="Brief description of this catalog type" />
+                    <FieldLabel>{t("description_label")}</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("description_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -184,7 +193,7 @@ export default function CatalogTypeFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color)"
                       />
-                      Active
+                      {t("active_status")}
                     </label>
                   </Field>
                 )}
@@ -194,10 +203,10 @@ export default function CatalogTypeFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>

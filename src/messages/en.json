@@ -282,5 +282,54 @@
     "validation": {
       "field_required": "Field is required!"
     }
+  },
+  "page_catalog_types": {
+    "title": "Catalog Types",
+    "add_type": "Add Catalog Type",
+    "all_statuses": "All Statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "table": {
+      "no": "No",
+      "code": "Code",
+      "name": "Name",
+      "group": "Group",
+      "mgmt_type": "Mgmt Type",
+      "warranty": "Warranty",
+      "status": "Status",
+      "actions": "Actions",
+      "no_types_found": "No catalog types found",
+      "add_first_type": "Add your first catalog type using the button above.",
+      "yes": "Yes",
+      "no_val": "No",
+      "by_quantity": "By Quantity"
+    },
+    "form": {
+      "create_title": "Add Catalog Type",
+      "edit_title": "Edit Catalog Type",
+      "create_description": "Register a new type of catalog for inventory management.",
+      "edit_description": "Update the catalog type properties.",
+      "name_label": "Name",
+      "name_placeholder": "e.g. Laptop",
+      "code_label": "Code",
+      "code_placeholder": "e.g. LAPTOP",
+      "description_label": "Description",
+      "description_placeholder": "Brief description of this catalog type",
+      "active_status": "Active Status",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "no_changes": "No changes were made."
+    },
+    "delete": {
+      "title": "Confirm Deletion",
+      "confirm_message": "Are you sure you want to delete catalog type <important>{name}</important>? This will deactivate the item.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!"
+    }
   }
 }

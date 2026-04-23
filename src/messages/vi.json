@@ -282,5 +282,54 @@
     "validation": {
       "field_required": "Trường này là bắt buộc!"
     }
+  },
+  "page_catalog_types": {
+    "title": "Loại danh mục",
+    "add_type": "Thêm Loại danh mục",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "table": {
+      "no": "STT",
+      "code": "Mã",
+      "name": "Tên",
+      "group": "Nhóm",
+      "mgmt_type": "Loại quản lý",
+      "warranty": "Bảo hành",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_types_found": "Không tìm thấy loại danh mục nào",
+      "add_first_type": "Thêm loại danh mục đầu tiên của bạn bằng nút phía trên.",
+      "yes": "Có",
+      "no_val": "Không",
+      "by_quantity": "Theo số lượng"
+    },
+    "form": {
+      "create_title": "Thêm Loại danh mục",
+      "edit_title": "Sửa Loại danh mục",
+      "create_description": "Đăng ký một loại danh mục mới để quản lý kho.",
+      "edit_description": "Cập nhật các thuộc tính của loại danh mục.",
+      "name_label": "Tên",
+      "name_placeholder": "VD: Laptop",
+      "code_label": "Mã",
+      "code_placeholder": "VD: LAPTOP",
+      "description_label": "Mô tả",
+      "description_placeholder": "Mô tả ngắn gọn về loại danh mục này",
+      "active_status": "Trạng thái hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận Xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa loại danh mục <important>{name}</important>? Hành động này sẽ hủy kích hoạt mục.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!"
+    }
   }
 }
