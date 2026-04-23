@@ -43,6 +43,7 @@ import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 interface Props {
   id: string;
@@ -134,7 +135,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   Expected Cost
                 </span>
                 <span className="text-base font-bold text-muted-foreground">
-                  {detail.expected_cost?.toLocaleString("vi-VN")} VND
+                  {formatNumberWithCommas(detail.expected_cost)}
                 </span>
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-emerald-500/5 border border-emerald-510/10 min-w-[140px]">
@@ -142,7 +143,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   Actual Cost
                 </span>
                 <span className="text-xl font-bold text-emerald-600">
-                  {detail.actual_cost?.toLocaleString("vi-VN")} VND
+                  {formatNumberWithCommas(detail.actual_cost)}
                 </span>
               </div>
               <Badge
@@ -183,7 +184,7 @@ export default function MaintenanceDetail({ id }: Props) {
                       Asset
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Qty
+                      Quantity
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
                       Issue / Notes

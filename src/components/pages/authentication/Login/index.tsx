@@ -89,6 +89,7 @@ export default function LoginPage() {
           getApiSuccessMessage(response);
           // Small delay to ensure state and cookies are synchronized
           setTimeout(() => {
+            router.refresh()
             router.push("/dashboard");
           }, 100);
         },

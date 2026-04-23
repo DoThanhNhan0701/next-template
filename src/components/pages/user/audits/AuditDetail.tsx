@@ -295,12 +295,12 @@ export default function AuditDetail({ id }: Props) {
                                   </span>
                                   {(item.transfer_quantity !== null ||
                                     item.unit_quantity !== null) && (
-                                    <span className="ml-auto font-bold text-primary">
-                                      qty:{" "}
-                                      {item.transfer_quantity ??
-                                        item.unit_quantity}
-                                    </span>
-                                  )}
+                                      <span className="ml-auto font-bold text-primary">
+                                        Quantity:{" "}
+                                        {item.transfer_quantity ??
+                                          item.unit_quantity}
+                                      </span>
+                                    )}
                                 </div>
                               </>
                             ) : (

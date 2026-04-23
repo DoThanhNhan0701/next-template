@@ -52,6 +52,7 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
 import { decrementPendingCount } from "@/redux/slices/task";
+import { formatNumberWithCommas } from "@/utils/number";
 
 const getStatusInfo = (statusName: string | undefined) => {
   const name = (statusName || "").toLowerCase();
@@ -434,7 +435,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: Package,
         iconColor: "bg-purple-500/10 text-purple-500",
         label: "Expected cost",
-        value: `${(detail.expected_cost || 0).toLocaleString("vi-VN")} VND`,
+        value: formatNumberWithCommas(detail.expected_cost),
       });
 
       if (detail.actual_cost) {
@@ -442,7 +443,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           icon: Package,
           iconColor: "bg-emerald-500/10 text-emerald-500",
           label: "Actual cost",
-          value: `${detail.actual_cost.toLocaleString("vi-VN")} VND`,
+          value: formatNumberWithCommas(detail.actual_cost),
         });
       }
 
@@ -536,7 +537,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         icon: Package,
         iconColor: "bg-amber-500/10 text-amber-500",
         label: "Total value",
-        value: `${detail.total_value.toLocaleString("vi-VN")} VND`,
+        value: formatNumberWithCommas(detail.total_value),
       });
       if (detail.buyer_name) {
         fields.push({
@@ -731,7 +732,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "from_location", label: "From Location" },
-          { key: "quantity", label: "Qty", align: "center" as const },
+          { key: "quantity", label: "Quantity", align: "center" as const },
           { key: "unit_value", label: "Unit Value", align: "center" as const },
           {
             key: "remaining_value",
@@ -933,7 +934,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
                             </Badge>
                           )}
                           {typeof field.value === "string" ||
-                          typeof field.value === "number" ? (
+                            typeof field.value === "number" ? (
                             <span className="text-sm font-bold text-foreground">
                               {field.value}
                             </span>

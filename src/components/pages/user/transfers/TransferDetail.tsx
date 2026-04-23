@@ -191,7 +191,7 @@ export default function TransferDetail({ id }: Props) {
                       To Location
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Qty
+                      Quantity
                     </TableHead>
                   </TableRow>
                 </TableHeader>

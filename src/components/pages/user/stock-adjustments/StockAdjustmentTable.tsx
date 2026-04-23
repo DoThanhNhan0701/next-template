@@ -167,7 +167,7 @@ export default function StockAdjustmentTable({
                 Type
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Qty
+                Quantity
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
               <TableHead className="font-semibold h-10 px-4">Date</TableHead>

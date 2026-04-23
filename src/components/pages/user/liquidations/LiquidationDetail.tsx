@@ -42,6 +42,7 @@ import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 interface Props {
   id: string;
@@ -132,7 +133,7 @@ export default function LiquidationDetail({ id }: Props) {
                   Total Value
                 </span>
                 <span className="text-xl font-bold text-primary">
-                  {detail.total_value?.toLocaleString("vi-VN")} VND
+                  {formatNumberWithCommas(detail.total_value ?? 0)}
                 </span>
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-muted/40 border border-border/50 min-w-[80px]">
@@ -184,7 +185,7 @@ export default function LiquidationDetail({ id }: Props) {
                       From Location
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Qty
+                      Quantity
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-right">
                       Unit Value

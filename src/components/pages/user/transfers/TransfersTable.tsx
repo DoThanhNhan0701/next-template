@@ -201,7 +201,7 @@ export default function TransfersTable() {
                 Asset Details
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">From/To</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Qty</TableHead>
+              <TableHead className="font-semibold h-10 px-4">Quantity</TableHead>
               <TableHead className="font-semibold h-10 px-4">Status</TableHead>
               <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
             </TableRow>

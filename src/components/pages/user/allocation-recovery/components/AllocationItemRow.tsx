@@ -144,7 +144,7 @@ export function AllocationItemRow({
               <SelectContent>
                 {assets.map((a: IPhysicalAsset) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Qty: {a?.in_stock_quantity ?? 0}
+                    {a.name} ({a.asset_code}) Quantity: {a?.in_stock_quantity ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>

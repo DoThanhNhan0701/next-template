@@ -40,6 +40,7 @@ import {
   DashboardSummaryResponse,
 } from "@/types/dashboard";
 import { formatDate } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
@@ -76,11 +77,7 @@ export default function DashboardPage() {
   const statusChartData = statusChartRes?.data || [];
   const maxStatusCount = Math.max(...statusChartData.map((d) => d.count), 1);
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value || 0);
+
 
   const stats = [
     {
@@ -112,7 +109,7 @@ export default function DashboardPage() {
     },
     {
       title: "Total asset value",
-      value: formatCurrency(summary?.financials?.total_asset_value || 0),
+      value: formatNumberWithCommas(summary?.financials?.total_asset_value ?? 0),
       change: "+5.4%",
       trend: "up",
       icon: DollarSign,
@@ -121,7 +118,7 @@ export default function DashboardPage() {
     },
     {
       title: "Rental revenue",
-      value: formatCurrency(summary?.financials?.total_rental_revenue || 0),
+      value: formatNumberWithCommas(summary?.financials?.total_rental_revenue ?? 0),
       change: "+2.1%",
       trend: "up",
       icon: TrendingUp,
@@ -130,7 +127,7 @@ export default function DashboardPage() {
     },
     {
       title: "Maintenance cost",
-      value: formatCurrency(summary?.financials?.total_maintenance_cost || 0),
+      value: formatNumberWithCommas(summary?.financials?.total_maintenance_cost ?? 0),
       change: "-1.5%",
       trend: "down",
       icon: Wrench,

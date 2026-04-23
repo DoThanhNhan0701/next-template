@@ -224,7 +224,7 @@ export default function RentalDetail({ id }: Props) {
                       Lessee Location
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Qty
+                      Quantity
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
                       Returned

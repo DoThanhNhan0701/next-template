@@ -244,22 +244,22 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 <SelectContent>
                   {sourceType === "stock"
                     ? stocks.map((s, i) => (
-                        <SelectItem
-                          key={`s-opt-${i}`}
-                          value={s.location_id.toString()}
-                        >
-                          [{s.location_code}] {s.location_name} - Qty:{" "}
-                          {s.quantity}
-                        </SelectItem>
-                      ))
+                      <SelectItem
+                        key={`s-opt-${i}`}
+                        value={s.location_id.toString()}
+                      >
+                        [{s.location_code}] {s.location_name} - Quantity:{" "}
+                        {s.quantity}
+                      </SelectItem>
+                    ))
                     : holders.map((h, i) => {
-                        const id = h.staff_id || h.unit_id || 0;
-                        return (
-                          <SelectItem key={`h-opt-${i}`} value={id.toString()}>
-                            {h.name} ({h.type}) - Qty: {h.quantity}
-                          </SelectItem>
-                        );
-                      })}
+                      const id = h.staff_id || h.unit_id || 0;
+                      return (
+                        <SelectItem key={`h-opt-${i}`} value={id.toString()}>
+                          {h.name} ({h.type}) - Quantity: {h.quantity}
+                        </SelectItem>
+                      );
+                    })}
                 </SelectContent>
               </Select>
             )}

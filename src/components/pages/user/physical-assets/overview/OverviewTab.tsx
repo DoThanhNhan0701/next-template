@@ -26,6 +26,7 @@ import {
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 export default function OverviewTab({
   asset,
@@ -253,14 +254,7 @@ export default function OverviewTab({
                   <InfoRow
                     icon="💵"
                     label="Original cost"
-                    value={
-                      asset.cost
-                        ? new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(asset.cost)
-                        : "N/A"
-                    }
+                    value={formatNumberWithCommas(asset.cost)}
                     bold
                   />
                   <InfoRow

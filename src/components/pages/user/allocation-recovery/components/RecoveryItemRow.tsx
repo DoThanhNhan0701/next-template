@@ -117,7 +117,7 @@ export function RecoveryItemRow({
               <SelectContent>
                 {assets.map((a: IPhysicalAsset) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Qty: {a?.holding_qty ?? 0}
+                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>

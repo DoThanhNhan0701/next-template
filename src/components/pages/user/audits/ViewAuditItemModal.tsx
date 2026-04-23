@@ -342,7 +342,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                     {(item.transfer_quantity !== null ||
                       item.unit_quantity !== null) && (
                         <span className="ml-auto text-primary">
-                          Qty: {item.transfer_quantity ?? item.unit_quantity}
+                          Quantity: {item.transfer_quantity ?? item.unit_quantity}
                         </span>
                       )}
                   </div>

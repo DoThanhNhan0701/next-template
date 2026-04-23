@@ -136,7 +136,7 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Total value (VND)
+                Total value
               </FieldLabel>
               <FormattedNumberInput
                 {...field}

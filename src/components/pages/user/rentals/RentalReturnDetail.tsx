@@ -173,7 +173,7 @@ export default function RentalReturnDetail({ id }: Props) {
                       Asset
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Qty
+                      Quantity
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
                       Condition

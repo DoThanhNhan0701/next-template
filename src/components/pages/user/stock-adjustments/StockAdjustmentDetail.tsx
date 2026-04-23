@@ -131,7 +131,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[80px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Total Qty
+                  Total Quantity
                 </span>
                 <span className="text-2xl font-bold text-primary">
                   {detail.total_quantity}
@@ -189,7 +189,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                       Type
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Qty
+                      Quantity
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
                       Notes
