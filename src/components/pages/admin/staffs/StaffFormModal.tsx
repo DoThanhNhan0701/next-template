@@ -4,9 +4,10 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
-import { StaffSchema } from "@/components/schemas/admin/staff.schema";
+import { GetStaffSchema } from "@/components/schemas/admin/staff.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -51,13 +52,15 @@ export default function StaffFormModal({
   onSuccess,
 }: Props) {
   const isEditing = !!staffToEdit;
+  const t = useTranslations("page_staff");
   const { mutate, pending } = useMutation();
   const { response: units = [] } = useGet<IUnit[]>({
     url: endpoints.ORG_UNITS,
   });
 
+  const schema = GetStaffSchema(t);
   const form = useForm({
-    resolver: zodResolver(StaffSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       staff_code: "",
       full_name: "",
@@ -92,7 +95,7 @@ export default function StaffFormModal({
     }
   }, [isOpen, staffToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof StaffSchema>) => {
+  const onSubmit = async (data: z.infer<ReturnType<typeof GetStaffSchema>>) => {
     const url = isEditing
       ? dynamicEndpoints.STAFF_DETAIL(staffToEdit.id)
       : endpoints.STAFFS;
@@ -122,11 +125,11 @@ export default function StaffFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[450px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? "Edit Staff" : "Add Staff"}</DialogTitle>
+          <DialogTitle>{isEditing ? t("edit_staff") : t("add_staff")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
-              ? "Update staff member information."
-              : "Register a new staff member in the system."}
+              ? t("update_staff_info")
+              : t("register_new_staff")}
           </DialogDescription>
         </DialogHeader>
 
@@ -142,7 +145,7 @@ export default function StaffFormModal({
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className="gap-1">
-                      <FieldLabel>Staff code</FieldLabel>
+                      <FieldLabel>{t("staff_code")}</FieldLabel>
                       <Input
                         {...field}
                         disabled={isEditing}
@@ -160,7 +163,7 @@ export default function StaffFormModal({
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className="gap-1">
-                      <FieldLabel>Full name</FieldLabel>
+                      <FieldLabel>{t("full_name")}</FieldLabel>
                       <Input {...field} placeholder="John Doe" />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -175,7 +178,7 @@ export default function StaffFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Email</FieldLabel>
+                    <FieldLabel>{t("email")}</FieldLabel>
                     <Input
                       {...field}
                       type="email"
@@ -193,7 +196,7 @@ export default function StaffFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Phone (Optional)</FieldLabel>
+                    <FieldLabel>{t("phone_optional")}</FieldLabel>
                     <Input
                       {...field}
                       value={field.value || ""}
@@ -211,13 +214,13 @@ export default function StaffFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Organization</FieldLabel>
+                    <FieldLabel>{t("organization")}</FieldLabel>
                     <Select
                       onValueChange={(val) => field.onChange(Number(val))}
                       value={field.value?.toString() || ""}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select organization" />
+                        <SelectValue placeholder={t("select_organization")} />
                       </SelectTrigger>
                       <SelectContent>
                         {units
@@ -251,7 +254,7 @@ export default function StaffFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color) text-primary focus:ring-primary"
                       />
-                      Active
+                      {t("active")}
                     </label>
                   </Field>
                 )}
@@ -266,10 +269,10 @@ export default function StaffFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>

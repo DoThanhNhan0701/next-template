@@ -78,5 +78,35 @@
       "confirm_password_required": "Xác nhận mật khẩu là bắt buộc",
       "passwords_dont_match": "Mật khẩu không trùng khớp"
     }
+  },
+  "page_staff": {
+    "title": "Nhân viên",
+    "description": "Quản lý nhân viên",
+    "add_staff": "Thêm nhân viên",
+    "edit_staff": "Sửa nhân viên",
+    "staff_code": "Mã nhân viên",
+    "full_name": "Họ và tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "phone_optional": "Số điện thoại (Tùy chọn)",
+    "unit": "Đơn vị",
+    "organization": "Tổ chức",
+    "status": "Trạng thái",
+    "actions": "Thao tác",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động",
+    "no_staff_found": "Không tìm thấy nhân viên",
+    "add_first_staff_description": "Thêm nhân viên đầu tiên của bạn bằng nút phía trên.",
+    "register_new_staff": "Đăng ký nhân viên mới trong hệ thống.",
+    "update_staff_info": "Cập nhật thông tin nhân viên.",
+    "select_organization": "Chọn tổ chức",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "saving": "Đang lưu...",
+    "validation": {
+      "field_required": "Trường này là bắt buộc!",
+      "invalid_email": "Email không hợp lệ"
+    }
   }
 }

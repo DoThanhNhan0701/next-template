@@ -78,5 +78,35 @@
       "confirm_password_required": "Confirm password is required",
       "passwords_dont_match": "Passwords don't match"
     }
+  },
+  "page_staff": {
+    "title": "Staff",
+    "description": "Manage staff",
+    "add_staff": "Add Staff",
+    "edit_staff": "Edit Staff",
+    "staff_code": "Staff Code",
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "phone_optional": "Phone (Optional)",
+    "unit": "Unit",
+    "organization": "Organization",
+    "status": "Status",
+    "actions": "Actions",
+    "all_statuses": "All statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "no_staff_found": "No staff found",
+    "add_first_staff_description": "Add your first staff member using the button above.",
+    "register_new_staff": "Register a new staff member in the system.",
+    "update_staff_info": "Update staff member information.",
+    "select_organization": "Select organization",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "validation": {
+      "field_required": "Field is required!",
+      "invalid_email": "Invalid email"
+    }
   }
 }
