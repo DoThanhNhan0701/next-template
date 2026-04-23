@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { EditIcon, PlusIcon, Shield, Trash2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -45,6 +46,7 @@ import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import RoleFormModal from "./RoleFormModal";
 
 export default function RoleTable() {
+  const t = useTranslations("page_roles");
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const [skip, setSkip] = useState(0);
@@ -125,17 +127,17 @@ export default function RoleTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All statuses" />
+            <SelectValue placeholder={t("all_statuses")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="true">Active</SelectItem>
-            <SelectItem value="false">Inactive</SelectItem>
+            <SelectItem value="all">{t("all_statuses")}</SelectItem>
+            <SelectItem value="true">{t("active")}</SelectItem>
+            <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
-          Add Role
+          {t("add_role")}
         </Button>
       </div>
 
@@ -144,19 +146,19 @@ export default function RoleTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                Ref
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                Role Name
+                {t("role_name")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[40%]">
-                Description
+                {t("description_label")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[15%]">
-                Status
+                {t("status")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right w-[20%]">
-                Actions
+                {t("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -167,8 +169,8 @@ export default function RoleTable() {
               <TableEmptyRow
                 colSpan={5}
                 icon={Shield}
-                message="No roles found"
-                description="Add your first role using the button above."
+                message={t("no_roles_found")}
+                description={t("add_first_role_description")}
               />
             ) : (
               roles.map((role, index) => (
@@ -188,11 +190,11 @@ export default function RoleTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {role.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Active
+                        {t("active")}
                       </span>
                     ) : (
                       <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Inactive
+                        {t("inactive")}
                       </span>
                     )}
                   </TableCell>

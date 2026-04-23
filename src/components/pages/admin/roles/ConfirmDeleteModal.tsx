@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +26,7 @@ export default function ConfirmDeleteModal({
   role,
   onSuccess,
 }: ConfirmDeleteModalProps) {
+  const t = useTranslations("page_roles");
   const { mutate, pending } = useMutation({
     url: role ? `${endpoints.RBAC_ROLES}/${role.id}` : "",
     method: "delete",
@@ -46,23 +49,24 @@ export default function ConfirmDeleteModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Deactivate Role</DialogTitle>
+          <DialogTitle>{t("deactivate_role")}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to deactivate or delete the role{" "}
-            <strong>{role?.name}</strong>? This action may affect users assigned
-            to this role.
+            {t.rich("deactivate_confirm_question", {
+              name: role?.name || "",
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button variant="outline" onClick={onClose} disabled={pending}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="destructive"
             onClick={handleDelete}
             disabled={pending}
           >
-            {pending ? "Deleting..." : "Delete"}
+            {pending ? t("deleting") : t("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

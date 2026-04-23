@@ -108,5 +108,36 @@
       "field_required": "Field is required!",
       "invalid_email": "Invalid email"
     }
+  },
+  "page_roles": {
+    "title": "Roles",
+    "description": "Manage roles and permissions in the system",
+    "add_role": "Add Role",
+    "edit_role": "Edit Role",
+    "create_role": "Create Role",
+    "role_name": "Role Name",
+    "description_label": "Description",
+    "status": "Status",
+    "actions": "Actions",
+    "all_statuses": "All statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "no_roles_found": "No roles found",
+    "add_first_role_description": "Add your first role using the button above.",
+    "modify_role_permissions": "Modify the role name and its permissions.",
+    "define_new_role": "Define a new role and assign permissions to it.",
+    "active_status": "Active Status",
+    "permissions_distribution": "Permissions Distribution",
+    "no_permissions_available": "No permissions available.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "deactivate_role": "Deactivate Role",
+    "deactivate_confirm_question": "Are you sure you want to deactivate or delete the role {name}? This action may affect users assigned to this role.",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "validation": {
+      "field_required": "Field is required!"
+    }
   }
 }

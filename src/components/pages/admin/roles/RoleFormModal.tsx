@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 
-import { RoleSchema } from "@/components/schemas/admin/role.schema";
+import { GetRoleSchema } from "@/components/schemas/admin/role.schema";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -15,6 +16,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
@@ -23,6 +30,7 @@ import { useMutation } from "@/hooks/useMutation";
 import { IPermission, IRole } from "@/types/rbac";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
+import { Controller } from "react-hook-form";
 
 interface RoleFormModalProps {
   isOpen: boolean;
@@ -38,21 +46,21 @@ export default function RoleFormModal({
   onSuccess,
 }: RoleFormModalProps) {
   const isEditing = !!roleToEdit;
+  const t = useTranslations("page_roles");
 
   const { response: permissionsData } = useGet<IPermission[]>({
     url: endpoints.RBAC_PERMISSIONS,
   });
   const allPermissions = permissionsData || [];
 
+  const schema = GetRoleSchema(t);
   const {
-    register,
     handleSubmit,
     reset,
     setValue,
     control,
-    formState: { errors },
-  } = useForm<z.infer<typeof RoleSchema>>({
-    resolver: zodResolver(RoleSchema),
+  } = useForm<z.infer<ReturnType<typeof GetRoleSchema>>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       description: "",
@@ -66,11 +74,6 @@ export default function RoleFormModal({
       control,
       name: "permission_ids",
     }) || [];
-
-  const isActive = useWatch({
-    control,
-    name: "is_active",
-  });
 
   useEffect(() => {
     if (isOpen) {
@@ -94,7 +97,7 @@ export default function RoleFormModal({
 
   const { mutate, pending } = useMutation();
 
-  const onSubmit = async (data: z.infer<typeof RoleSchema>) => {
+  const onSubmit = async (data: z.infer<ReturnType<typeof GetRoleSchema>>) => {
     const url = isEditing
       ? dynamicEndpoints.RBAC_ROLE_DETAIL(roleToEdit.id)
       : endpoints.RBAC_ROLES;
@@ -135,101 +138,109 @@ export default function RoleFormModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[500px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? "Edit role" : "Create role"}</DialogTitle>
+          <DialogTitle>{isEditing ? t("edit_role") : t("create_role")}</DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Modify the role name and its permissions."
-              : "Define a new role and assign permissions to it."}
+              ? t("modify_role_permissions")
+              : t("define_new_role")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="px-6 overflow-y-auto flex-1">
-          <form
-            id="role-form"
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
-            <div className="space-y-2">
-              <Label htmlFor="name">
-                Role Name <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="name"
-                placeholder="e.g. sys_admin"
-                {...register("name")}
-                className={errors.name ? "border-red-500" : ""}
+        <form
+          id="role-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col min-h-0 overflow-hidden"
+        >
+          <div className="flex-1 px-6 pb-6 overflow-y-auto min-h-0">
+            <FieldGroup className="gap-3">
+              <Controller
+                name="name"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>{t("role_name")}</FieldLabel>
+                    <Input {...field} placeholder="e.g. sys_admin" />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                placeholder="Role description"
-                {...register("description")}
+              <Controller
+                name="description"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>{t("description_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("description_label")} value={field.value || ""} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-              {errors.description && (
-                <p className="text-sm text-red-500">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
 
-            <div className="flex items-center gap-2 my-3">
-              <Checkbox
-                id="is_active"
-                checked={isActive}
-                onCheckedChange={(checked) =>
-                  setValue("is_active", checked as boolean)
-                }
-              />
-              <Label htmlFor="is_active" className="cursor-pointer font-normal">
-                Active Status
-              </Label>
-            </div>
-
-            <div className="space-y-3">
-              <Label>Permissions Distribution</Label>
-              <div className="grid grid-cols-1 gap-2 border rounded-md p-3 bg-muted/20 pb-4 max-h-[300px] overflow-y-auto">
-                {allPermissions.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
-                    No permissions available.
-                  </p>
-                ) : (
-                  allPermissions.map((perm) => (
-                    <div
-                      key={perm.id}
-                      className="flex items-start gap-2 space-y-0"
+              <Controller
+                name="is_active"
+                control={control}
+                render={({ field }) => (
+                  <Field className="gap-1 flex justify-start items-center">
+                    <label
+                      htmlFor="is_active"
+                      className="flex items-center gap-2 text-sm text-foreground cursor-pointer"
                     >
                       <Checkbox
-                        id={`perm-${perm.id}`}
-                        className="mt-0.5"
-                        checked={selectedPermissionIds.includes(perm.id)}
-                        onCheckedChange={(checked) =>
-                          handleTogglePermission(perm.id, checked === true)
-                        }
+                        id="is_active"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
                       />
-                      <div className="flex flex-col">
-                        <Label
-                          htmlFor={`perm-${perm.id}`}
-                          className="font-medium cursor-pointer"
-                        >
-                          {perm.name}
-                        </Label>
-                        <span className="text-xs text-muted-foreground">
-                          {perm.description || perm.code}
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                      {t("active_status")}
+                    </label>
+                  </Field>
                 )}
+              />
+
+              <div className="space-y-3">
+                <FieldLabel>{t("permissions_distribution")}</FieldLabel>
+                <div className="grid grid-cols-1 gap-2 border rounded-md p-3 bg-muted/20 pb-4 max-h-[300px] overflow-y-auto">
+                  {allPermissions.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      {t("no_permissions_available")}
+                    </p>
+                  ) : (
+                    allPermissions.map((perm) => (
+                      <div
+                        key={perm.id}
+                        className="flex items-start gap-2 space-y-0"
+                      >
+                        <Checkbox
+                          id={`perm-${perm.id}`}
+                          className="mt-0.5"
+                          checked={selectedPermissionIds.includes(perm.id)}
+                          onCheckedChange={(checked) =>
+                            handleTogglePermission(perm.id, checked === true)
+                          }
+                        />
+                        <div className="flex flex-col">
+                          <Label
+                            htmlFor={`perm-${perm.id}`}
+                            className="font-medium cursor-pointer"
+                          >
+                            {perm.name}
+                          </Label>
+                          <span className="text-xs text-muted-foreground">
+                            {perm.description || perm.code}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
-          </form>
-        </div>
+            </FieldGroup>
+          </div>
+        </form>
 
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button
@@ -238,10 +249,10 @@ export default function RoleFormModal({
             onClick={onClose}
             disabled={pending}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button type="submit" form="role-form" disabled={pending}>
-            {pending ? "Saving..." : "Save"}
+            {pending ? t("saving") : t("save")}
           </Button>
         </DialogFooter>
       </DialogContent>

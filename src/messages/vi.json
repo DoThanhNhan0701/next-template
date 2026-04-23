@@ -108,5 +108,36 @@
       "field_required": "Trường này là bắt buộc!",
       "invalid_email": "Email không hợp lệ"
     }
+  },
+  "page_roles": {
+    "title": "Vai trò",
+    "description": "Quản lý vai trò và quyền hạn trong hệ thống",
+    "add_role": "Thêm vai trò",
+    "edit_role": "Sửa vai trò",
+    "create_role": "Tạo vai trò",
+    "role_name": "Tên vai trò",
+    "description_label": "Mô tả",
+    "status": "Trạng thái",
+    "actions": "Thao tác",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động",
+    "no_roles_found": "Không tìm thấy vai trò",
+    "add_first_role_description": "Thêm vai trò đầu tiên của bạn bằng nút phía trên.",
+    "modify_role_permissions": "Chỉnh sửa tên vai trò và các quyền hạn của nó.",
+    "define_new_role": "Định nghĩa một vai trò mới và gán các quyền hạn cho nó.",
+    "active_status": "Trạng thái hoạt động",
+    "permissions_distribution": "Phân bổ quyền hạn",
+    "no_permissions_available": "Không có quyền hạn khả dụng.",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "saving": "Đang lưu...",
+    "deactivate_role": "Hủy kích hoạt vai trò",
+    "deactivate_confirm_question": "Bạn có chắc chắn muốn hủy kích hoạt hoặc xóa vai trò {name}? Hành động này có thể ảnh hưởng đến những người dùng được gán vai trò này.",
+    "delete": "Xóa",
+    "deleting": "Đang xóa...",
+    "validation": {
+      "field_required": "Trường này là bắt buộc!"
+    }
   }
 }
