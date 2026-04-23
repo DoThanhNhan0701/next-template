@@ -11,7 +11,7 @@ export const AllocationCreateSchema = z.object({
   staff_id: z.coerce.number().optional().nullable(),
   unit_id: z.coerce.number().min(1, "Field is required!"),
   allocation_date: z.string().min(1, "Field is required!"),
-  location_id: z.coerce.number().min(1, "Field is required!"),
+  location_id: z.coerce.number().optional().nullable(),
   reason: z.string().min(1, "Field is required!"),
   external_link: z.string().optional().default(""),
   items: z

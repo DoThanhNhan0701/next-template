@@ -161,7 +161,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   className="font-medium text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                 >
                   {asset.management_type === "bulk"
-                    ? "By quantity (Batch)"
+                    ? "By quantity (Bulk)"
                     : "By code (Unique)"}
                 </Badge>
               </div>

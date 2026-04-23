@@ -145,7 +145,11 @@ export function AdjustmentDetailRow({
         render={({ field }) => (
           <Field className="gap-1 w-32">
             <FieldLabel>Type</FieldLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value}
+              disabled
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

@@ -323,7 +323,7 @@ export default function AssetFormModal({
                             >
                               <Package className="w-4 h-4" />
                               <span className="text-xs font-medium">
-                                By quantity (Batch)
+                                By quantity (Bulk)
                               </span>
                             </TabsTrigger>
                           </TabsList>

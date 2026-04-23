@@ -149,6 +149,7 @@ export default function StockAdjustmentTable({
         onSuccess={() => {
           reFetch();
         }}
+        defaultType={defaultType}
       />
 
       {/* Table */}
