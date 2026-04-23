@@ -331,5 +331,47 @@
     "validation": {
       "field_required": "Field is required!"
     }
+  },
+  "page_asset_statuses": {
+    "title": "Asset Statuses",
+    "add_status": "Add Asset Status",
+    "table": {
+      "no": "No",
+      "code": "Code",
+      "name": "Name",
+      "color": "Color",
+      "system": "System",
+      "actions": "Actions",
+      "no_statuses_found": "No statuses found",
+      "add_first_status": "Add your first status using the button above.",
+      "badge_system": "System",
+      "badge_user": "User"
+    },
+    "form": {
+      "create_title": "Add Asset Status",
+      "edit_title": "Edit Asset Status",
+      "create_description": "Define a new status for tracking assets.",
+      "edit_description": "Update the status name and color.",
+      "code_label": "Code",
+      "code_placeholder": "e.g. IN_USE",
+      "name_label": "Name",
+      "name_placeholder": "e.g. In Use",
+      "color_label": "Color",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "no_changes": "No changes were made."
+    },
+    "delete": {
+      "title": "Confirm Deletion",
+      "confirm_message": "Are you sure you want to delete status <important>{name}</important>? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!",
+      "invalid_color": "Invalid color format"
+    }
   }
 }

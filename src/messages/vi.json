@@ -331,5 +331,47 @@
     "validation": {
       "field_required": "Trường này là bắt buộc!"
     }
+  },
+  "page_asset_statuses": {
+    "title": "Trạng thái tài sản",
+    "add_status": "Thêm Trạng thái tài sản",
+    "table": {
+      "no": "STT",
+      "code": "Mã",
+      "name": "Tên",
+      "color": "Màu sắc",
+      "system": "Hệ thống",
+      "actions": "Hành động",
+      "no_statuses_found": "Không tìm thấy trạng thái nào",
+      "add_first_status": "Thêm trạng thái đầu tiên của bạn bằng nút phía trên.",
+      "badge_system": "Hệ thống",
+      "badge_user": "Người dùng"
+    },
+    "form": {
+      "create_title": "Thêm Trạng thái tài sản",
+      "edit_title": "Sửa Trạng thái tài sản",
+      "create_description": "Định nghĩa một trạng thái mới để theo dõi tài sản.",
+      "edit_description": "Cập nhật tên và màu sắc trạng thái.",
+      "code_label": "Mã",
+      "code_placeholder": "VD: DANG_SU_DUNG",
+      "name_label": "Tên",
+      "name_placeholder": "VD: Đang sử dụng",
+      "color_label": "Màu sắc",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận Xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa trạng thái <important>{name}</important>? Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!",
+      "invalid_color": "Định dạng màu không hợp lệ"
+    }
   }
 }

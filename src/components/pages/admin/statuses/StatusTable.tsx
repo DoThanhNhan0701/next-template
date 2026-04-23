@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { CircleDot, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -34,6 +35,8 @@ import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import StatusFormModal from "./StatusFormModal";
 
 export default function StatusTable() {
+  const t = useTranslations("page_asset_statuses");
+  const tt = useTranslations("page_asset_statuses.table");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -73,7 +76,7 @@ export default function StatusTable() {
       <div className="flex items-center justify-end w-full">
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
-          Add Status
+          {t("add_status")}
         </Button>
       </div>
 
@@ -82,22 +85,22 @@ export default function StatusTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {tt("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                Code
+                {tt("code")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[30%]">
-                Name
+                {tt("name")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                Color
+                {tt("color")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[15%]">
-                System
+                {tt("system")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right w-[15%]">
-                Actions
+                {tt("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -108,8 +111,8 @@ export default function StatusTable() {
               <TableEmptyRow
                 colSpan={6}
                 icon={CircleDot}
-                message="No statuses found"
-                description="Add your first status using the button above."
+                message={tt("no_statuses_found")}
+                description={tt("add_first_status")}
               />
             ) : (
               statuses.map((item, index) => (
@@ -138,11 +141,11 @@ export default function StatusTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {item.is_system ? (
                       <span className="text-blue-600 bg-blue-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        System
+                        {tt("badge_system")}
                       </span>
                     ) : (
                       <span className="text-gray-500 bg-gray-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        User
+                        {tt("badge_user")}
                       </span>
                     )}
                   </TableCell>

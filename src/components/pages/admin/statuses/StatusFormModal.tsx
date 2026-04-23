@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { StatusSchema } from "@/components/schemas/admin/status.schema";
+import { GetStatusSchema, IStatusFormValues } from "@/components/schemas/admin/status.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,12 +43,15 @@ export default function StatusFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_asset_statuses.form");
+  const vt = useTranslations("page_asset_statuses.validation");
   const isEditing = !!statusToEdit;
   const isSystem = statusToEdit?.is_system;
   const { mutate, pending } = useMutation();
 
-  const form = useForm({
-    resolver: zodResolver(StatusSchema),
+  const schema = GetStatusSchema(vt);
+  const form = useForm<IStatusFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       category: "asset",
       code: "",
@@ -76,7 +80,7 @@ export default function StatusFormModal({
     }
   }, [isOpen, statusToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof StatusSchema>) => {
+  const onSubmit = async (data: IStatusFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.STATUS_DETAIL(statusToEdit.id)
       : endpoints.STATUSES;
@@ -106,12 +110,10 @@ export default function StatusFormModal({
       <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Asset Status" : "Add Asset Status"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update the status name and color."
-              : "Define a new status for tracking assets."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -126,8 +128,12 @@ export default function StatusFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Code</FieldLabel>
-                    <Input {...field} disabled={isSystem} placeholder="e.g. IN_USE" />
+                    <FieldLabel>{t("code_label")}</FieldLabel>
+                    <Input
+                      {...field}
+                      disabled={isSystem}
+                      placeholder={t("code_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -140,8 +146,8 @@ export default function StatusFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Name</FieldLabel>
-                    <Input {...field} placeholder="e.g. In Use" />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -154,7 +160,7 @@ export default function StatusFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Color</FieldLabel>
+                    <FieldLabel>{t("color_label")}</FieldLabel>
                     <div className="flex gap-2">
                       <Input
                         type="color"
@@ -183,10 +189,10 @@ export default function StatusFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>
