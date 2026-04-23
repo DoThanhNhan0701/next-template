@@ -266,7 +266,7 @@ export default function RentalDetail({ id }: Props) {
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-sm text-muted-foreground">
-                        {item.lessee_location || "—"}
+                        {item.lessee_location || ""}
                       </TableCell>
                       <TableCell className="px-4 py-3 text-center">
                         <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">

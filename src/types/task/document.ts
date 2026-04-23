@@ -5,6 +5,7 @@ import { RentalReturnDocument } from "./rental-return";
 import { TransferDocument } from "./transfer";
 import { LiquidationDocument } from "./liquidation";
 import { MaintenanceDocument } from "./maintenance";
+import { RentalDocument } from "./rental";
 
 // ============================================
 // UNIFIED DOCUMENT DETAIL TYPE
@@ -21,7 +22,8 @@ export type DocumentDetail =
     | RentalReturnDocument
     | TransferDocument
     | LiquidationDocument
-    | MaintenanceDocument;
+    | MaintenanceDocument
+    | RentalDocument;
 
 // ============================================
 // TYPE GUARDS
@@ -73,10 +75,21 @@ export const isRecoveryDocument = (
 export const isRentalReturnDocument = (
     doc: DocumentDetail,
 ): doc is RentalReturnDocument => {
+    return ("return_date" in doc && "rental" in doc) || "rental" in doc;
+};
+
+/**
+ * Type guard to check if document is a Rental
+ */
+export const isRentalDocument = (
+    doc: DocumentDetail,
+): doc is RentalDocument => {
     return (
-        ("return_date" in doc && "rental" in doc) ||
-        ("rental" in doc) ||
-        ("contract_number" in doc)
+        "lease_date" in doc &&
+        "duration_days" in doc &&
+        "customer" in doc &&
+        "unit" in doc &&
+        !("rental" in doc)
     );
 };
 
@@ -148,6 +161,7 @@ export const getDocumentTitle = (documentType: string): string => {
         transfer: "Transfer information",
         maintenance: "Maintenance information",
         liquidation: "Liquidation information",
+        rental: "Rental information",
     };
 
     return titles[documentType] || "Document information";

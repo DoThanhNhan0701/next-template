@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
@@ -48,10 +49,12 @@ import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { AppDispatch, RootState } from "@/redux";
 import { closeRental } from "@/redux/slices/rental";
+import { IUser } from "@/types/auth";
 import { ICustomer } from "@/types/customer";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
 import { IPhysicalAsset } from "@/types/physical-asset";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
@@ -240,14 +243,19 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
     { disabled: !isOpen },
   );
 
+  const { response: activeRentalTemplate } = useGet<ITemplate>({
+    url: `${endpoints.TEMPLATE_ACTIVE}rental`,
+  });
+  const { response: userRes } = useGet<IUser[]>({ url: endpoints.USERS });
+
   const orgUnits = orgRes || [];
   const customers = cusRes?.data || [];
   const locations = locationRes || [];
+  const users = userRes || [];
 
   const form = useForm<RentalFormValues>({
     resolver: zodResolver(RentalCreateSchema),
     defaultValues: {
-      record_number: "",
       unit_id: 0,
       customer_id: 0,
       lease_date: getTodayISO(),
@@ -270,17 +278,18 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
   useEffect(() => {
     if (isOpen) {
       form.reset({
-        record_number: "",
         unit_id: prefill?.unit_id ?? 0,
         customer_id: 0,
         lease_date: getTodayISO(),
-        duration_days: 1,
+        duration_days: 30,
         reason: prefill?.reason ?? "",
         total_revenue: 0,
         contract_number: "",
         notes: "",
         external_link: "",
         attachments: [],
+        approvals: {},
+        required_steps: activeRentalTemplate?.steps?.length || 0,
         items: [
           {
             asset_id: prefill?.asset_id ?? 0,
@@ -292,11 +301,38 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
         ],
       });
     }
-  }, [isOpen, prefill, form]);
+  }, [isOpen, prefill, form, activeRentalTemplate]);
+
+  useEffect(() => {
+    if (activeRentalTemplate?.steps?.length) {
+      form.setValue("required_steps", activeRentalTemplate.steps.length);
+    }
+  }, [activeRentalTemplate, form]);
 
   const onSubmit = async (data: RentalFormValues) => {
+    const workflow_assignments: { step_id: number; user_id: number }[] = [];
+    if (activeRentalTemplate?.steps?.length) {
+      activeRentalTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals?.[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { approvals, required_steps, ...rest } = data;
+    const payload = {
+      ...rest,
+      attachments: data.attachments || [],
+      workflow_assignments,
+    };
+
     await mutate(
-      { url: endpoints.RENTALS, method: "post", body: data },
+      { url: endpoints.RENTALS, method: "post", body: payload },
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
@@ -333,22 +369,6 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
-                    name="record_number"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field
-                        data-invalid={fieldState.invalid}
-                        className="gap-1"
-                      >
-                        <FieldLabel>Record number</FieldLabel>
-                        <Input {...field} placeholder="e.g. CT20240001" />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
                     name="contract_number"
                     control={form.control}
                     render={({ field, fieldState }) => (
@@ -358,6 +378,20 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="external_link"
+                    control={form.control}
+                    render={({ field }) => (
+                      <Field className="gap-1">
+                        <FieldLabel>External link</FieldLabel>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. Jira/Helpdesk link"
+                        />
                       </Field>
                     )}
                   />
@@ -528,10 +562,17 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              {/* Attachments */}
               <FormAttachmentsSection
                 control={form.control}
                 title="Attachments"
+              />
+
+              <ApprovalProcessSection
+                className="[&_h3]:border-b [&_h3]:pb-1"
+                control={form.control}
+                steps={activeRentalTemplate?.steps || []}
+                users={users}
+                title="Approval Process"
               />
             </div>
           </div>
