@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,7 @@ export default function ConfirmDeleteModal({
   onSuccess,
 }: Props) {
   const { mutate, pending } = useMutation();
+  const t = useTranslations("page_users");
 
   const handleConfirm = async () => {
     if (!user) return;
@@ -55,11 +57,12 @@ export default function ConfirmDeleteModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Deactivate User</DialogTitle>
+          <DialogTitle>{t("deactivate_user")}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to deactivate the account{" "}
-            <strong>{user?.username}</strong>? This action will prevent the user
-            from logging in.
+            {t.rich("deactivate_confirm_question", {
+              username: user?.username || "",
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </DialogDescription>
         </DialogHeader>
 
@@ -70,7 +73,7 @@ export default function ConfirmDeleteModal({
             onClick={onClose}
             disabled={pending}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
@@ -78,7 +81,7 @@ export default function ConfirmDeleteModal({
             onClick={handleConfirm}
             disabled={pending}
           >
-            {pending ? "Processing..." : "Confirm"}
+            {pending ? t("processing") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -4,9 +4,10 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
-import { UserChangePasswordSchema } from "@/components/schemas/admin/user.schema";
+import { GetUserChangePasswordSchema } from "@/components/schemas/admin/user.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,9 +41,11 @@ export default function ChangePasswordModal({
   onClose,
 }: Props) {
   const { mutate, pending } = useMutation();
+  const t = useTranslations("page_users");
 
+  const schema = GetUserChangePasswordSchema(t);
   const form = useForm({
-    resolver: zodResolver(UserChangePasswordSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       old_password: "",
       new_password: "",
@@ -54,7 +57,9 @@ export default function ChangePasswordModal({
     if (!isOpen) form.reset();
   }, [isOpen, form]);
 
-  const onSubmit = async (data: z.infer<typeof UserChangePasswordSchema>) => {
+  const onSubmit = async (
+    data: z.infer<ReturnType<typeof GetUserChangePasswordSchema>>,
+  ) => {
     if (!userId) return;
 
     await mutate(
@@ -82,9 +87,9 @@ export default function ChangePasswordModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Change User Password</DialogTitle>
+          <DialogTitle>{t("change_user_password")}</DialogTitle>
           <DialogDescription>
-            Enter a new password for the user. passwords must match.
+            {t("enter_new_password_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -98,7 +103,7 @@ export default function ChangePasswordModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Old password</FieldLabel>
+                  <FieldLabel>{t("old_password")}</FieldLabel>
                   <Input {...field} type="password" placeholder="••••••••" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -112,7 +117,7 @@ export default function ChangePasswordModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>New password</FieldLabel>
+                  <FieldLabel>{t("new_password")}</FieldLabel>
                   <Input {...field} type="password" placeholder="••••••••" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -126,7 +131,7 @@ export default function ChangePasswordModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-1">
-                  <FieldLabel>Confirm password</FieldLabel>
+                  <FieldLabel>{t("confirm_password")}</FieldLabel>
                   <Input {...field} type="password" placeholder="••••••••" />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -143,10 +148,10 @@ export default function ChangePasswordModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Changing..." : "Change Password"}
+              {pending ? t("changing") : t("change_password")}
             </Button>
           </DialogFooter>
         </form>

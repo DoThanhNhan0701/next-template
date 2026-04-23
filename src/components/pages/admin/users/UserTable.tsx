@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { EditIcon, Key, PlusIcon, Trash2Icon, UserCog } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -47,6 +48,7 @@ import UserFormModal from "./UserFormModal";
 export default function UserTable() {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
+  const t = useTranslations("page_users");
 
   console.log(user);
 
@@ -123,17 +125,17 @@ export default function UserTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All statuses" />
+            <SelectValue placeholder={t("all_statuses")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="true">Active</SelectItem>
-            <SelectItem value="false">Inactive</SelectItem>
+            <SelectItem value="all">{t("all_statuses")}</SelectItem>
+            <SelectItem value="true">{t("active")}</SelectItem>
+            <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
-          Add User
+          {t("add_user")}
         </Button>
       </div>
 
@@ -142,25 +144,25 @@ export default function UserTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                Ref
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                Username
+                {t("username")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                Full Name
+                {t("full_name")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                Email
+                {t("email")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                Role
+                {t("role")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                Status
+                {t("status")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right w-[15%]">
-                Actions
+                {t("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -171,8 +173,8 @@ export default function UserTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={UserCog}
-                message="No users found"
-                description="Add your first user using the button above."
+                message={t("no_users_found")}
+                description={t("add_first_user_description")}
               />
             ) : (
               users.map((user, index) => (
@@ -196,11 +198,11 @@ export default function UserTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {user.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Active
+                        {t("active")}
                       </span>
                     ) : (
                       <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Inactive
+                        {t("inactive")}
                       </span>
                     )}
                   </TableCell>

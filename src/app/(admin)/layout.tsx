@@ -6,6 +6,7 @@ import { RootState } from "@/redux";
 import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import AppBootstrap from "@/components/libs/app-bootstrap";
+import { useTranslations } from "next-intl";
 
 import {
   Users,
@@ -26,21 +27,22 @@ export default function AdminLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   const { user } = useSelector((state: RootState) => state.auth);
+  const t = useTranslations("layout_admin");
 
   const adminSidebarItems = [
-    { title: "Dashboard", url: "/admin", icon: SquareDashedKanbanIcon },
-    { title: "Users", url: "/admin/users", icon: Users },
-    { title: "Staff", url: "/admin/staff", icon: Contact },
-    { title: "Roles", url: "/admin/roles", icon: Shield },
-    { title: "Organization", url: "/admin/organization", icon: Building2 },
-    { title: "Locations", url: "/admin/locations", icon: MapPin },
-    { title: "Asset groups", url: "/admin/asset-groups", icon: Layers },
-    { title: "Catalog types", url: "/admin/catalog-types", icon: Grid },
-    { title: "Asset statuses", url: "/admin/asset-statuses", icon: Activity },
-    { title: "Usage modes", url: "/admin/usage-modes", icon: MousePointerClick },
-    { title: "Suppliers", url: "/admin/suppliers", icon: Store },
-    { title: "Customers", url: "/admin/customers", icon: Users },
-    { title: "Approval workflows", url: "/admin/workflow-templates", icon: GitBranch },
+    { title: t("dashboard"), url: "/admin", icon: SquareDashedKanbanIcon },
+    { title: t("users"), url: "/admin/users", icon: Users },
+    { title: t("staff"), url: "/admin/staff", icon: Contact },
+    { title: t("roles"), url: "/admin/roles", icon: Shield },
+    { title: t("organization"), url: "/admin/organization", icon: Building2 },
+    { title: t("locations"), url: "/admin/locations", icon: MapPin },
+    { title: t("asset_groups"), url: "/admin/asset-groups", icon: Layers },
+    { title: t("catalog_types"), url: "/admin/catalog-types", icon: Grid },
+    { title: t("asset_statuses"), url: "/admin/asset-statuses", icon: Activity },
+    { title: t("usage_modes"), url: "/admin/usage-modes", icon: MousePointerClick },
+    { title: t("suppliers"), url: "/admin/suppliers", icon: Store },
+    { title: t("customers"), url: "/admin/customers", icon: Users },
+    { title: t("approval_workflows"), url: "/admin/workflow-templates", icon: GitBranch },
   ];
 
   return (

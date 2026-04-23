@@ -4,9 +4,10 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
-import { UserSchema } from "@/components/schemas/admin/user.schema";
+import { GetUserSchema } from "@/components/schemas/admin/user.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,13 +53,15 @@ export default function UserFormModal({
   onSuccess,
 }: Props) {
   const isEditing = !!userToEdit;
+  const t = useTranslations("page_users");
   const { mutate, pending } = useMutation();
   const { response: roles = [] } = useGet<IRole[]>({
     url: endpoints.RBAC_ROLES,
   });
 
+  const schema = GetUserSchema(t);
   const form = useForm({
-    resolver: zodResolver(UserSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       username: "",
       email: "",
@@ -96,7 +99,7 @@ export default function UserFormModal({
     }
   }, [isOpen, userToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof UserSchema>) => {
+  const onSubmit = async (data: z.infer<ReturnType<typeof GetUserSchema>>) => {
     const url = isEditing
       ? dynamicEndpoints.USER_DETAIL(userToEdit.id)
       : endpoints.USERS;
@@ -126,11 +129,11 @@ export default function UserFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? "Edit User" : "Add User"}</DialogTitle>
+          <DialogTitle>{isEditing ? t("edit_user") : t("add_user")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
-              ? "Update the user's profile and permissions."
-              : "Register a new user in the system."}
+              ? t("update_profile_permissions")
+              : t("register_new_user")}
           </DialogDescription>
         </DialogHeader>
 
@@ -145,8 +148,8 @@ export default function UserFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Username</FieldLabel>
-                    <Input {...field} disabled={isEditing} placeholder="e.g. john.doe" />
+                    <FieldLabel>{t("username")}</FieldLabel>
+                    <Input {...field} disabled={isEditing} placeholder={t("placeholder_username")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -159,8 +162,8 @@ export default function UserFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Full name</FieldLabel>
-                    <Input {...field} placeholder="e.g. John Doe" />
+                    <FieldLabel>{t("full_name")}</FieldLabel>
+                    <Input {...field} placeholder={t("placeholder_full_name")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -173,8 +176,8 @@ export default function UserFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Email</FieldLabel>
-                    <Input {...field} type="email" placeholder="e.g. john.doe@example.com" />
+                    <FieldLabel>{t("email")}</FieldLabel>
+                    <Input {...field} type="email" placeholder={t("placeholder_email")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -188,13 +191,13 @@ export default function UserFormModal({
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className="gap-1">
-                      <FieldLabel>Role</FieldLabel>
+                      <FieldLabel>{t("role")}</FieldLabel>
                       <Select
                         onValueChange={(val) => field.onChange(Number(val))}
                         value={field.value?.toString() || ""}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
+                          <SelectValue placeholder={t("select_role")} />
                         </SelectTrigger>
                         <SelectContent>
                           {roles
@@ -228,7 +231,7 @@ export default function UserFormModal({
                           onChange={field.onChange}
                           className="w-4 h-4 rounded border-(--surface-border-color)"
                         />
-                        Active
+                        {t("active")}
                       </label>
                     </Field>
                   )}
@@ -244,10 +247,10 @@ export default function UserFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>
