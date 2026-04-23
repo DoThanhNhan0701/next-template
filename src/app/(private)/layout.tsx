@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useRef } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,13 +21,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import Header from "@/components/layouts/header";
-import Sidebar from "@/components/layouts/sidebar";
-import { SidebarItem } from "@/components/layouts/sidebar";
+import Sidebar, { SidebarItem } from "@/components/layouts/sidebar";
 import AppBootstrap from "@/components/libs/app-bootstrap";
+import { useFaviconBadge } from "@/hooks/useFaviconBadge";
 import { useHasHydrated } from "@/hooks/useHasHydrated";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch, RootState } from "@/redux";
-import { useFaviconBadge } from "@/hooks/useFaviconBadge";
 import { actionFetchPendingCount } from "@/redux/slices/task";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
@@ -41,18 +40,14 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const { counts } = useSelector((state: RootState) => state.task);
   const { hasPermission, isReady } = usePermissions();
   const t = useTranslations("Menu");
-  const pendingCountFetched = useRef(false);
 
   useFaviconBadge(counts.PENDING, pathname);
 
   useEffect(() => {
-    if (pendingCountFetched.current) return;
-    pendingCountFetched.current = true;
-
+    if (authLoading || !isReady) return;
     if (pathname !== "/my-tasks") {
       dispatch(actionFetchPendingCount());
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -122,7 +117,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (authLoading || isReady) return;
+    if (authLoading || !isReady) return;
 
     const restrictedItem = allItems.find((item) => {
       const matches =
@@ -138,14 +133,12 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     }
   }, [pathname, authLoading, hasPermission, router, allItems, isReady]);
 
-  // Before mount or while auth loads: show skeleton (user manually enters URL)
-  // After mount + auth done: filter by permission.
   const sidebarItems =
     authLoading || !hasHydrated
       ? []
       : allItems.filter(
-        (item) => !item.permission || hasPermission(item.permission),
-      );
+          (item) => !item.permission || hasPermission(item.permission),
+        );
 
   return (
     <AppBootstrap>

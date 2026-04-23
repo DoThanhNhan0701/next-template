@@ -16,12 +16,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
 import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch } from "@/redux";
 import { actionLogout } from "@/redux/slices/auth";
@@ -90,24 +90,24 @@ export default function Header({
   return (
     <header className="flex items-center px-4 min-h-10">
       <div className="h-full flex-1">
-          {loading ? (
-            <div className="flex items-center gap-1 h-full">
-              <Skeleton className="size-4 shrink-0" />
-              <Skeleton className="h-4 w-24" />
-            </div>
-          ) : (
-            activeItem && (
-              <section className="flex items-center gap-1 h-full cursor-pointer">
-                {activeItem.icon && <activeItem.icon size={13} />}
-                <p className="text-sm leading-none">{activeItem.title}</p>
-                {activeItem.badge && activeItem.badge > 0 ? (
-                  <div className="bg-red-500 text-white text-[9px] font-bold rounded-full size-4 flex items-center justify-center shrink-0 ml-1">
-                    {activeItem.badge}
-                  </div>
-                ) : null}
-              </section>
-            )
-          )}
+        {loading ? (
+          <div className="flex items-center gap-1 h-full">
+            <Skeleton className="size-4 shrink-0" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        ) : (
+          activeItem && (
+            <section className="flex items-center gap-1 h-full cursor-pointer">
+              {activeItem.icon && <activeItem.icon size={13} />}
+              <p className="text-sm leading-none">{activeItem.title}</p>
+              {activeItem.badge && activeItem.badge > 0 ? (
+                <div className="bg-red-500 text-white text-[9px] font-bold rounded-full size-4 flex items-center justify-center shrink-0 ml-1">
+                  {activeItem.badge}
+                </div>
+              ) : null}
+            </section>
+          )
+        )}
       </div>
       <div className="ml-auto flex items-center shrink-0 gap-1">
         <p className="text-sm leading-none mr-2" suppressHydrationWarning>
