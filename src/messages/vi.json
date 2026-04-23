@@ -420,5 +420,59 @@
       "field_required": "Trường này là bắt buộc!",
       "invalid_color": "Định dạng màu không hợp lệ"
     }
+  },
+  "page_suppliers": {
+    "title": "Nhà cung cấp",
+    "add_supplier": "Thêm nhà cung cấp",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động",
+    "table": {
+      "no": "STT",
+      "supplier": "Nhà cung cấp",
+      "contact": "Liên hệ",
+      "tax_code": "Mã số thuế",
+      "address": "Địa chỉ",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_suppliers_found": "Không tìm thấy nhà cung cấp nào",
+      "add_first_supplier": "Thêm nhà cung cấp đầu tiên của bạn bằng nút phía trên."
+    },
+    "form": {
+      "create_title": "Thêm nhà cung cấp",
+      "edit_title": "Sửa nhà cung cấp",
+      "create_description": "Thêm một nhà cung cấp mới vào danh mục.",
+      "edit_description": "Cập nhật thông tin liên hệ của nhà cung cấp.",
+      "name_label": "Tên nhà cung cấp",
+      "name_placeholder": "VD: Công ty TNHH Công nghệ ABC",
+      "tax_code_label": "Mã số thuế",
+      "tax_code_placeholder": "VD: 0123456789",
+      "contact_name_label": "Người liên hệ",
+      "contact_name_placeholder": "VD: Nguyễn Văn B",
+      "phone_label": "Số điện thoại",
+      "phone_placeholder": "VD: 0987 654 321",
+      "email_label": "Email",
+      "email_placeholder": "VD: supplier@email.com",
+      "address_label": "Địa chỉ",
+      "address_placeholder": "VD: 456 Lê Lợi, Quận 1",
+      "description_label": "Mô tả",
+      "description_placeholder": "Ghi chú thêm về nhà cung cấp này",
+      "active_status": "Hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa nhà cung cấp <important>{name}</important>? Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!",
+      "invalid_email": "Định dạng email không hợp lệ"
+    }
   }
 }

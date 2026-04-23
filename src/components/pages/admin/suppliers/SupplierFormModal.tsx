@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { SupplierSchema } from "@/components/schemas/admin/supplier.schema";
+import { GetSupplierSchema, ISupplierFormValues } from "@/components/schemas/admin/supplier.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,11 +43,14 @@ export default function SupplierFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_suppliers.form");
+  const vt = useTranslations("page_suppliers.validation");
   const isEditing = !!supplierToEdit;
   const { mutate, pending } = useMutation();
 
-  const form = useForm({
-    resolver: zodResolver(SupplierSchema),
+  const schema = GetSupplierSchema(vt);
+  const form = useForm<ISupplierFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       tax_code: "",
@@ -87,7 +91,7 @@ export default function SupplierFormModal({
     }
   }, [isOpen, supplierToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof SupplierSchema>) => {
+  const onSubmit = async (data: ISupplierFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.SUPPLIER_DETAIL(supplierToEdit.id)
       : endpoints.SUPPLIERS;
@@ -117,12 +121,10 @@ export default function SupplierFormModal({
       <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Supplier" : "Add Supplier"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update supplier contact information."
-              : "Add a new vendor or supplier to the directory."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -140,8 +142,8 @@ export default function SupplierFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Supplier name</FieldLabel>
-                    <Input {...field} placeholder="e.g. ABC Technology Co." />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -154,8 +156,8 @@ export default function SupplierFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Tax code</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. 0123456789" />
+                    <FieldLabel>{t("tax_code_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("tax_code_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -168,8 +170,8 @@ export default function SupplierFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Contact name</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. Nguyen Van B" />
+                    <FieldLabel>{t("contact_name_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("contact_name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -182,8 +184,8 @@ export default function SupplierFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Phone</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. 0987 654 321" />
+                    <FieldLabel>{t("phone_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("phone_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -196,8 +198,8 @@ export default function SupplierFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Email</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. supplier@email.com" />
+                    <FieldLabel>{t("email_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("email_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -213,8 +215,8 @@ export default function SupplierFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Address</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. 456 Le Loi, District 3" />
+                    <FieldLabel>{t("address_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("address_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -230,8 +232,8 @@ export default function SupplierFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="Optional notes about this supplier" />
+                    <FieldLabel>{t("description_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("description_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -251,7 +253,7 @@ export default function SupplierFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color)"
                       />
-                      Active
+                      {t("active_status")}
                     </label>
                   </Field>
                 )}
@@ -266,10 +268,10 @@ export default function SupplierFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>

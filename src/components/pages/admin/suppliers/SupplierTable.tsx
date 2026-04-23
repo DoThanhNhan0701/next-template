@@ -11,6 +11,7 @@ import {
   Truck,
   User,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -49,6 +50,8 @@ import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import SupplierFormModal from "./SupplierFormModal";
 
 export default function SupplierTable() {
+  const t = useTranslations("page_suppliers");
+  const tt = useTranslations("page_suppliers.table");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -101,17 +104,17 @@ export default function SupplierTable() {
           }}
         >
           <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder="All statuses" />
+            <SelectValue placeholder={t("all_statuses")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="true">Active</SelectItem>
-            <SelectItem value="false">Inactive</SelectItem>
+            <SelectItem value="all">{t("all_statuses")}</SelectItem>
+            <SelectItem value="true">{t("active")}</SelectItem>
+            <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={() => setIsCreating(true)}>
           <PlusIcon size={16} className="mr-2" />
-          Add Supplier
+          {t("add_supplier")}
         </Button>
       </div>
 
@@ -120,25 +123,25 @@ export default function SupplierTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {tt("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%] text-left">
-                Supplier
+                {tt("supplier")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                Contact
+                {tt("contact")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                Tax Code
+                {tt("tax_code")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                Address
+                {tt("address")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                Status
+                {tt("status")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right w-[10%]">
-                Actions
+                {tt("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -149,8 +152,8 @@ export default function SupplierTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={Truck}
-                message="No suppliers found"
-                description="Add your first supplier using the button above."
+                message={tt("no_suppliers_found")}
+                description={tt("add_first_supplier")}
               />
             ) : (
               suppliers.map((item, index) => (
@@ -200,11 +203,11 @@ export default function SupplierTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {item.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Active
+                        {t("active")}
                       </span>
                     ) : (
                       <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Inactive
+                        {t("inactive")}
                       </span>
                     )}
                   </TableCell>

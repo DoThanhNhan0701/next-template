@@ -420,5 +420,59 @@
       "field_required": "Field is required!",
       "invalid_color": "Invalid color format"
     }
+  },
+  "page_suppliers": {
+    "title": "Suppliers",
+    "add_supplier": "Add Supplier",
+    "all_statuses": "All Statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "table": {
+      "no": "No",
+      "supplier": "Supplier",
+      "contact": "Contact",
+      "tax_code": "Tax Code",
+      "address": "Address",
+      "status": "Status",
+      "actions": "Actions",
+      "no_suppliers_found": "No suppliers found",
+      "add_first_supplier": "Add your first supplier using the button above."
+    },
+    "form": {
+      "create_title": "Add Supplier",
+      "edit_title": "Edit Supplier",
+      "create_description": "Add a new vendor or supplier to the directory.",
+      "edit_description": "Update supplier contact information.",
+      "name_label": "Supplier name",
+      "name_placeholder": "e.g. ABC Technology Co.",
+      "tax_code_label": "Tax code",
+      "tax_code_placeholder": "e.g. 0123456789",
+      "contact_name_label": "Contact name",
+      "contact_name_placeholder": "e.g. Nguyen Van B",
+      "phone_label": "Phone",
+      "phone_placeholder": "e.g. 0987 654 321",
+      "email_label": "Email",
+      "email_placeholder": "e.g. supplier@email.com",
+      "address_label": "Address",
+      "address_placeholder": "e.g. 456 Le Loi, District 3",
+      "description_label": "Description",
+      "description_placeholder": "Optional notes about this supplier",
+      "active_status": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "no_changes": "No changes were made."
+    },
+    "delete": {
+      "title": "Confirm Deletion",
+      "confirm_message": "Are you sure you want to delete supplier <important>{name}</important>? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!",
+      "invalid_email": "Invalid email format"
+    }
   }
 }
