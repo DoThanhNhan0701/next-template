@@ -6,7 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck } from "lucide-react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import {
+  LiquidationFormValues,
+  LiquidationSchema,
+} from "@/components/schemas/user/liquidation.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,9 +35,7 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
 import { GeneralLiquidationSection } from "./components/GeneralLiquidationSection";
-import { LiquidationApprovalSection } from "./components/LiquidationApprovalSection";
 import { LiquidationAssetSelectionSection } from "./components/LiquidationAssetSelectionSection";
-import { LiquidationFormValues, LiquidationSchema } from "@/components/schemas/user/liquidation.schema";
 
 interface LiquidationFormModalProps {
   isOpen: boolean;
@@ -118,7 +121,7 @@ export default function LiquidationFormModal({
 
     if (liquidationToEdit) {
       const approvals: Record<string, number> = {};
-      
+
       // Map existing assignments to the approvals record if they exist
       if (liquidationToEdit.workflow_assignments) {
         liquidationToEdit.workflow_assignments.forEach((assignment, idx) => {
@@ -133,15 +136,15 @@ export default function LiquidationFormModal({
         liquidation_date: liquidationToEdit.liquidation_date || getTodayISO(),
         liquidation_type: liquidationToEdit.liquidation_type || "sell",
         committee: liquidationToEdit.committee
-          ? (typeof liquidationToEdit.committee === "string"
-              ? [] // Simplified for now since committee logic is complex
-              : []) 
+          ? typeof liquidationToEdit.committee === "string"
+            ? [] // Simplified for now since committee logic is complex
+            : []
           : [],
         total_value: liquidationToEdit.total_value || 0,
         buyer_name: liquidationToEdit.buyer_name || null,
         external_link: liquidationToEdit.external_link || null,
         attachments: liquidationToEdit.attachments || [],
-        items: Array.isArray(liquidationToEdit.details) 
+        items: Array.isArray(liquidationToEdit.details)
           ? liquidationToEdit.details.map((item) => ({
               asset_id: item.asset_id || 0,
               quantity: item.quantity || 1,
@@ -150,8 +153,8 @@ export default function LiquidationFormModal({
               notes: item.notes ?? null,
               from_location_id: item.from_location_id || 0,
               from_staff_id: 0, // Not in details
-              from_unit_id: 0,  // Not in details
-            })) 
+              from_unit_id: 0, // Not in details
+            }))
           : [
               {
                 asset_id: 0,
@@ -162,7 +165,7 @@ export default function LiquidationFormModal({
                 from_location_id: 0,
                 from_staff_id: 0,
                 from_unit_id: 0,
-              }
+              },
             ],
         approvals,
         required_steps: activeTemplate?.steps?.length || 0,
@@ -369,10 +372,14 @@ export default function LiquidationFormModal({
                 />
               </TabsContent>
               <TabsContent value="approval" className="mt-0 outline-none">
-                <LiquidationApprovalSection
-                  form={form}
+                <ApprovalProcessSection
+                  control={form.control}
+                  steps={activeTemplate?.steps || []}
                   users={users}
-                  activeTemplate={activeTemplate ?? undefined}
+                  title={null}
+                  useApproverSelect={false}
+                  showStepNumber={true}
+                  fallbackMessage="No approval workflow configured for this process type."
                 />
               </TabsContent>
             </div>

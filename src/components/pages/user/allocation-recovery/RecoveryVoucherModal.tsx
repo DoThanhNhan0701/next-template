@@ -8,6 +8,7 @@ import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
@@ -49,7 +50,6 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-import { RecoveryApprovalSection } from "./components/RecoveryApprovalSection";
 import { RecoveryItemRow } from "./components/RecoveryItemRow";
 
 type RecoveryFormValues = z.input<typeof RecoveryCreateSchema>;
@@ -402,14 +402,12 @@ export default function RecoveryVoucherModal({
                 </div>
               </div>
 
-              {/* Approval Process */}
-              <RecoveryApprovalSection
-                form={form}
+              <ApprovalProcessSection
+                control={form.control}
+                steps={activeTemplate?.steps || []}
                 users={users}
-                activeTemplate={activeTemplate}
               />
 
-              {/* Attachments */}
               <FormAttachmentsSection
                 control={form.control}
                 title="Attachments"

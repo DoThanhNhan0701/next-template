@@ -8,6 +8,7 @@ import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
@@ -49,7 +50,6 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-import { AllocationApprovalSection } from "./components/AllocationApprovalSection";
 import { AllocationItemRow } from "./components/AllocationItemRow";
 
 type AllocationFormValues = z.input<typeof AllocationCreateSchema>;
@@ -359,7 +359,6 @@ export default function AllocationVoucherModal({
                   />
                 </FieldGroup>
               </div>
-
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-primary">
@@ -398,14 +397,12 @@ export default function AllocationVoucherModal({
                   ))}
                 </div>
               </div>
-
-              <AllocationApprovalSection
-                form={form}
+              <ApprovalProcessSection
+                control={form.control}
+                steps={activeAllocationTemplate?.steps || []}
                 users={users}
-                activeTemplate={activeAllocationTemplate}
               />
 
-              {/* Attachments */}
               <FormAttachmentsSection
                 control={form.control}
                 title="Attachments"

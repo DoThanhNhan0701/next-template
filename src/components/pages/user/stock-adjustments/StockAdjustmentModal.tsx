@@ -7,6 +7,7 @@ import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
@@ -43,7 +44,6 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
 import { AdjustmentDetailRow } from "./components/AdjustmentDetailRow";
-import { StockAdjustmentApprovalSection } from "./components/StockAdjustmentApprovalSection";
 
 type FormValues = StockAdjustmentFormValues;
 
@@ -286,14 +286,13 @@ export default function StockAdjustmentModal({
                 )}
               </div>
 
-              {/* Approval Process */}
-              <StockAdjustmentApprovalSection
-                form={form}
+              <ApprovalProcessSection
+                control={form.control}
+                steps={activeTemplate?.steps || []}
                 users={users}
-                activeTemplate={activeTemplate || undefined}
+                title="3. Approval process"
               />
 
-              {/* Attachments */}
               <FormAttachmentsSection
                 control={form.control}
                 title="Attachments"

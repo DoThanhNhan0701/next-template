@@ -6,10 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
-  MaintenanceSchema,
   type MaintenanceFormValues,
+  MaintenanceSchema,
 } from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +36,6 @@ import { getTodayISO } from "@/utils/date";
 
 import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { GeneralInfoSection } from "./components/GeneralInfoSection";
-import { MaintenanceApprovalSection } from "./components/MaintenanceApprovalSection";
 import { ServiceInfoSection } from "./components/ServiceInfoSection";
 
 interface MaintenanceFormModalProps {
@@ -390,10 +390,14 @@ export default function MaintenanceFormModal({
                 value="approval"
                 className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
               >
-                <MaintenanceApprovalSection
-                  form={form}
+                <ApprovalProcessSection
+                  control={form.control}
+                  steps={activeTemplate?.steps || []}
                   users={users}
-                  activeTemplate={activeTemplate ?? undefined}
+                  title={null}
+                  useApproverSelect={false}
+                  showStepNumber={true}
+                  fallbackMessage="No approval workflow configured for this process type."
                 />
               </TabsContent>
             </div>

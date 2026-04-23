@@ -5,6 +5,11 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
+import {
+  type TransferFormValues,
+  TransferSchema,
+} from "@/components/schemas/user/transfer.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,12 +32,9 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-import { ApprovalProcessSection } from "./components/ApprovalProcessSection";
 import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { SourceInfoSection } from "./components/SourceInfoSection";
 import { TargetDestinationSection } from "./components/TargetDestinationSection";
-
-import { TransferSchema, type TransferFormValues } from "@/components/schemas/user/transfer.schema";
 
 interface ITransferPayload {
   transfer_type: "holder" | "location";
@@ -302,9 +304,11 @@ export default function TransferFormModal({
 
             {hasSelectedAssets && (
               <ApprovalProcessSection
-                form={form}
+                control={form.control}
+                steps={activeTransferTemplate?.steps || []}
                 users={users}
-                activeTransferTemplate={activeTransferTemplate ?? undefined}
+                title="4. Approval Process"
+                className="pt-3"
               />
             )}
           </div>

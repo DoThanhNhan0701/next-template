@@ -1,10 +1,15 @@
 import { useEffect } from "react";
 
-import { AlertCircle, Calendar } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, Resolver, useFieldArray, useForm } from "react-hook-form";
 
-import { ApproverSelect } from "@/components/common/ApproverSelect";
-import { Badge } from "@/components/ui/badge";
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
+import { DatePickerField } from "@/components/common/DatePickerField";
+import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import {
+  RentalReturnFormValues,
+  RentalReturnSchema,
+} from "@/components/schemas/user/rental-return.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,9 +19,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -24,6 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
@@ -33,29 +48,14 @@ import { IRentalFull } from "@/types/rental";
 import { ITemplate } from "@/types/template";
 import { getTodayISO } from "@/utils/date";
 
+import { ReturnItemRow } from "./component/ReturnItemRow";
+
 interface RentalReturnModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (data: Record<string, unknown>) => void;
   pending: boolean;
   rentalDetail: IRentalFull | null;
-}
-
-interface RentalReturnFormValues {
-  return_date: string;
-  notes: string;
-  to_location_id: string;
-  approver_step_1_id: number | null;
-  approver_step_2_id: number | null;
-  items: Array<{
-    asset_id: number;
-    rental_detail_id: number;
-    quantity: number;
-    condition: string;
-    asset_name: string; // for display
-    asset_code: string; // for display
-    max_quantity: number; // for validation
-  }>;
 }
 
 export default function RentalReturnModal({
@@ -66,13 +66,17 @@ export default function RentalReturnModal({
   rentalDetail,
 }: RentalReturnModalProps) {
   const form = useForm<RentalReturnFormValues>({
+    resolver: zodResolver(
+      RentalReturnSchema,
+    ) as Resolver<RentalReturnFormValues>,
     defaultValues: {
       return_date: getTodayISO(),
       notes: "",
       to_location_id: "",
-      approver_step_1_id: null,
-      approver_step_2_id: null,
       items: [],
+      approvals: {},
+      required_steps: 0,
+      workflow_assignments: [],
     },
   });
 
@@ -98,7 +102,6 @@ export default function RentalReturnModal({
   const locations = locationsRes || [];
   const users = userRes || [];
 
-  // Reset items when modal opens or rentalDetail changes
   useEffect(() => {
     if (isOpen && rentalDetail) {
       const initialItems = rentalDetail.details.map((d) => ({
@@ -109,57 +112,78 @@ export default function RentalReturnModal({
         asset_name: d.asset.name,
         asset_code: d.asset.asset_code,
         max_quantity: d.quantity - d.returned_quantity,
+        selected: true,
       }));
+
+      const requiredSteps = activeTemplate?.steps?.length || 0;
+      const initialApprovals: Record<string, number> = {};
+      if (activeTemplate?.steps) {
+        activeTemplate.steps.forEach((_, idx) => {
+          initialApprovals[`step_${idx}`] = 0;
+        });
+      }
+
       replace(initialItems);
       form.reset({
-        ...form.getValues(),
+        return_date: getTodayISO(),
+        notes: "",
         items: initialItems,
         to_location_id:
           rentalDetail.details[0]?.from_location_id?.toString() || "",
+        approvals: initialApprovals,
+        required_steps: requiredSteps,
+        workflow_assignments: [],
       });
     }
-  }, [isOpen, rentalDetail, replace, form]);
+  }, [isOpen, rentalDetail, replace, form, activeTemplate]);
 
   const onSubmit = (values: RentalReturnFormValues) => {
     const workflow_assignments: Array<{ step_id: number; user_id: number }> =
       [];
     if (activeTemplate?.steps) {
-      if (values.approver_step_1_id && activeTemplate.steps[0]) {
-        workflow_assignments.push({
-          step_id: activeTemplate.steps[0].id,
-          user_id: values.approver_step_1_id,
-        });
-      }
-      if (values.approver_step_2_id && activeTemplate.steps[1]) {
-        workflow_assignments.push({
-          step_id: activeTemplate.steps[1].id,
-          user_id: values.approver_step_2_id,
-        });
-      }
+      activeTemplate.steps.forEach((step, idx) => {
+        const userId = values.approvals[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
     }
 
     const payload = {
       return_date: new Date(values.return_date).toISOString(),
       notes: values.notes,
       to_location_id: Number(values.to_location_id),
-      attachments: [],
-      items: values.items.map((item) => ({
-        asset_id: item.asset_id,
-        rental_detail_id: item.rental_detail_id,
-        quantity: Number(item.quantity),
-        condition: item.condition,
-      })),
+      attachments: values.attachments || [],
+      items: values.items
+        .filter((item) => item.selected)
+        .map((item) => ({
+          asset_id: item.asset_id,
+          rental_detail_id: item.rental_detail_id,
+          quantity: Number(item.quantity),
+          condition: item.condition,
+        })),
       workflow_assignments,
     };
 
     onConfirm(payload);
   };
 
+  const errors = form.formState.errors;
+  const hasGeneralErrors = !!(
+    errors.return_date ||
+    errors.to_location_id ||
+    errors.notes
+  );
+  const hasAssetsErrors = !!errors.items;
+
   if (!rentalDetail) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[700px] flex flex-col p-0 overflow-hidden">
+    <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>Return rented assets</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
@@ -168,226 +192,165 @@ export default function RentalReturnModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-3 mx-6">
-          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-900">
-              WARNING: APPROVAL WORKFLOW IS LOCKED
-            </p>
-            <p className="text-xs text-amber-700 mt-1">
-              This process has a mandatory approval workflow configured.
-              The voucher will be in{" "}
-              <span className="font-semibold">Pending review</span> status
-              after saving and cannot be executed immediately.
-            </p>
-          </div>
-        </div>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
+          <div className="flex-1 px-6 pb-6 overflow-y-auto flex flex-col gap-3">
+            {/* General Information */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-semibold text-primary flex justify-between items-center">
+                General Information
+                {hasGeneralErrors && (
+                  <span className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                )}
+              </h3>
+              <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Controller
+                  name="return_date"
+                  control={form.control}
+                  render={({ fieldState }) => (
+                    <Field className="gap-1.5">
+                      <FieldLabel className="text-xs">
+                        Actual return date
+                      </FieldLabel>
+                      <DatePickerField form={form} name="return_date" />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
-        <div className="space-y-4 px-6 pb-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-4">
-              {/* Return Date */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="returnDate"
-                  className="text-xs font-semibold uppercase text-muted-foreground"
-                >
-                  Actual return date
-                </Label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="returnDate"
-                    type="date"
-                    {...form.register("return_date")}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              {/* To Location */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="toLocation"
-                  className="text-xs font-semibold uppercase text-muted-foreground"
-                >
-                  Return warehouse
-                </Label>
                 <Controller
                   name="to_location_id"
                   control={form.control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Main warehouse (ST_TOTAL)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations.map((loc) => (
-                          <SelectItem key={loc.id} value={loc.id.toString()}>
-                            {loc.name} ({loc.code})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  render={({ field, fieldState }) => (
+                    <Field className="gap-1.5">
+                      <FieldLabel className="text-xs">
+                        Return warehouse
+                      </FieldLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          className="h-9"
+                          data-invalid={fieldState.invalid}
+                        >
+                          <SelectValue placeholder="Select warehouse" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {locations.map((loc) => (
+                            <SelectItem key={loc.id} value={loc.id.toString()}>
+                              {loc.name} ({loc.code})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
                 />
-                <p className="text-xs text-muted-foreground italic">
-                  * By default the system will return to the original dispatch warehouse if no other warehouse is selected.
-                </p>
-              </div>
-            </div>
 
-            {/* General Notes */}
-            <div className="space-y-2 flex flex-col">
-              <Label
-                htmlFor="notes"
-                className="text-xs font-semibold uppercase text-muted-foreground"
-              >
-                General notes
-              </Label>
-              <Textarea
-                id="notes"
-                placeholder="e.g. Customer returned at warehouse, device in good condition..."
-                {...form.register("notes")}
-                className="resize-none flex-1"
-              />
-            </div>
-          </div>
-
-          {/* Items Table */}
-          <div className="space-y-2">
-            <Label className="text-xs font-semibold uppercase text-muted-foreground">
-              Asset list
-            </Label>
-            <div className="border rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
-                  <tr>
-                    <th className="px-3 py-2 text-left text-xs font-semibold">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          className="rounded"
-                          defaultChecked
-                        />
-                        Asset name
-                      </div>
-                    </th>
-                    <th className="px-3 py-2 text-center text-xs font-semibold">
-                      Renting
-                    </th>
-                    <th className="px-3 py-2 text-center text-xs font-semibold">
-                      Return quantity
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold">
-                      Condition on return
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {fields.map((field, index) => (
-                    <tr key={field.id} className="hover:bg-muted/30">
-                      <td className="px-3 py-2">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            className="rounded"
-                            defaultChecked
-                          />
-                          <div>
-                            <p className="font-medium">{field.asset_name}</p>
-                            <code className="text-xs text-muted-foreground">
-                              {field.asset_code}
-                            </code>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-3 py-2 text-center">
-                        <Badge variant="outline" className="font-semibold">
-                          {field.max_quantity}
-                        </Badge>
-                      </td>
-                      <td className="px-3 py-2 text-center">
-                        <Input
-                          type="number"
-                          {...form.register(`items.${index}.quantity` as const)}
-                          min={0}
-                          max={field.max_quantity}
-                          className="w-16 h-8 text-center mx-auto"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <Input
-                          {...form.register(
-                            `items.${index}.condition` as const,
-                          )}
-                          placeholder="Normal"
-                          className="h-8"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Approval Workflow */}
-          {activeTemplate?.steps && activeTemplate.steps.length > 0 && (
-            <div className="flex flex-col gap-1 pt-3 border-t px-1">
-              <span className="text-sm font-semibold text-primary flex items-center tracking-tight">
-                Approval Process
-              </span>
-
-              <div className="bg-muted/20 border rounded-md p-6 space-y-6">
-                <div className="grid grid-cols-2 gap-8">
-                  {activeTemplate.steps.map((step, idx) => {
-                    const name =
-                      idx === 0 ? "approver_step_1_id" : "approver_step_2_id";
-                    return (
-                      <Controller
-                        key={`rental-return-approver-${step.id}`}
-                        name={name as keyof RentalReturnFormValues}
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field className="gap-2.5">
-                            <FieldLabel>
-                              {step.name}
-                            </FieldLabel>
-                            <ApproverSelect
-                              step={step}
-                              allUsers={users}
-                              value={field.value ? field.value.toString() : ""}
-                              onChange={(val) =>
-                                field.onChange(
-                                  val === "none" ? null : Number(val),
-                                )
-                              }
-                              triggerClassName="h-14 bg-white rounded-md border-muted-foreground/30 shadow-sm transition-all hover:border-primary/50 focus:ring-4 focus:ring-primary/5"
-                            />
-                            <FieldError errors={[fieldState.error]} />
-                          </Field>
-                        )}
+                <Controller
+                  name="notes"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Field className="gap-1.5 col-span-1 sm:col-span-2">
+                      <FieldLabel className="text-xs">General notes</FieldLabel>
+                      <Textarea
+                        id="notes"
+                        placeholder="e.g. Customer returned at warehouse, device in good condition..."
+                        {...field}
+                        value={field.value ?? ""}
+                        className="min-h-[80px] text-sm"
                       />
-                    );
-                  })}
-                </div>
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
+
+            {/* Asset selection */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-semibold text-primary flex justify-between items-center">
+                Asset list
+                {hasAssetsErrors && (
+                  <span className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                )}
+              </h3>
+              <div className="border rounded-lg overflow-hidden border-border/60 shadow-sm">
+                <Table>
+                  <TableHeader className="bg-muted/50">
+                    <TableRow>
+                      <TableHead className="py-2.5 w-10" />
+                      <TableHead className="py-2.5 text-xs font-bold text-muted-foreground tracking-wider">
+                        Asset Info
+                      </TableHead>
+                      <TableHead className="py-2.5 text-center text-xs font-bold text-muted-foreground tracking-wider w-[10%]">
+                        Renting
+                      </TableHead>
+                      <TableHead className="py-2.5 text-center text-xs font-bold text-muted-foreground tracking-wider w-[15%]">
+                        Quantity
+                      </TableHead>
+                      <TableHead className="py-2.5 text-xs font-bold text-muted-foreground tracking-wider">
+                        Condition
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody className="divide-y divide-border/60">
+                    {fields.map((field, index) => (
+                      <ReturnItemRow
+                        key={field.id}
+                        index={index}
+                        register={form.register}
+                        setValue={form.setValue}
+                        control={form.control}
+                        field={field}
+                      />
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </div>
-          )}
-        </div>
 
-        <DialogFooter className="p-3 shrink-0 border-t">
-          <Button variant="outline" onClick={onClose} disabled={pending}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => form.handleSubmit(onSubmit)()}
-            disabled={pending}
-          >
-            {pending ? "Processing..." : "Confirm"}
-          </Button>
-        </DialogFooter>
+            <FormAttachmentsSection
+              control={form.control}
+              title="Attachments"
+            />
+
+            <ApprovalProcessSection
+              control={form.control}
+              steps={activeTemplate?.steps || []}
+              users={users}
+              title="Approval Process"
+              triggerClassName="h-10 bg-white"
+            />
+
+            {/* <ApprovalWorkflow
+              control={form.control}
+              template={activeTemplate}
+              users={users}
+            /> */}
+          </div>
+
+          <DialogFooter className="p-3 shrink-0 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? "Processing..." : "Confirm"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

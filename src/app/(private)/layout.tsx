@@ -34,9 +34,11 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const hasHydrated = useHasHydrated();
 
   const dispatch = useDispatch<AppDispatch>();
-  const { user, loading: authLoading } = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const {
+    user,
+    isInitialized,
+    loading: authLoading,
+  } = useSelector((state: RootState) => state.auth);
   const { counts } = useSelector((state: RootState) => state.task);
   const { hasPermission, isReady } = usePermissions();
   const t = useTranslations("Menu");
@@ -117,7 +119,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (authLoading || !isReady) return;
+    if (authLoading || !isReady || !isInitialized) return;
 
     const restrictedItem = allItems.find((item) => {
       const matches =
@@ -131,10 +133,18 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     if (restrictedItem) {
       router.push("/dashboard");
     }
-  }, [pathname, authLoading, hasPermission, router, allItems, isReady]);
+  }, [
+    pathname,
+    authLoading,
+    hasPermission,
+    router,
+    allItems,
+    isReady,
+    isInitialized,
+  ]);
 
   const sidebarItems =
-    authLoading || !hasHydrated
+    authLoading || !hasHydrated || !isInitialized
       ? []
       : allItems.filter(
           (item) => !item.permission || hasPermission(item.permission),

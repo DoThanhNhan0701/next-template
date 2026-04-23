@@ -98,7 +98,9 @@ export default function RentalDetail({ id }: Props) {
 
   if (!detail) return null;
 
-  const isActive = detail.status_obj?.code === "ACTIVE";
+  const isActive = ["PARTIALLY_RETURNED", "ACTIVE"].includes(
+    detail.status_obj?.code,
+  );
   const totalAssets = detail.details.reduce(
     (sum, item) => sum + item.quantity,
     0,
