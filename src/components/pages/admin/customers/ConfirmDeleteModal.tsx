@@ -13,6 +13,7 @@ import { useMutation } from "@/hooks/useMutation";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
+import { useTranslations } from "next-intl";
 import { ICustomer } from "@/types/customer";
 
 interface Props {
@@ -28,6 +29,7 @@ export default function ConfirmDeleteModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_customers.delete");
   const { mutate, pending } = useMutation();
 
   const onDelete = async () => {
@@ -55,11 +57,14 @@ export default function ConfirmDeleteModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription className="py-4 text-foreground">
-            Are you sure you want to delete customer{" "}
-            <span className="font-semibold">{customer?.name}</span>? This action
-            cannot be undone.
+            {t.rich("confirm_message", {
+              name: customer?.name || "this customer",
+              important: (chunks) => (
+                <span className="font-semibold">{chunks}</span>
+              ),
+            })}
           </DialogDescription>
         </DialogHeader>
 
@@ -70,7 +75,7 @@ export default function ConfirmDeleteModal({
             onClick={onClose}
             disabled={pending}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
@@ -78,7 +83,7 @@ export default function ConfirmDeleteModal({
             onClick={onDelete}
             disabled={pending}
           >
-            {pending ? "Deleting..." : "Delete"}
+            {pending ? t("deleting") : t("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

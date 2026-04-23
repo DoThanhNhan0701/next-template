@@ -474,5 +474,61 @@
       "field_required": "Trường này là bắt buộc!",
       "invalid_email": "Định dạng email không hợp lệ"
     }
+  },
+  "page_customers": {
+    "title": "Khách hàng",
+    "add_customer": "Thêm khách hàng",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động",
+    "table": {
+      "no": "STT",
+      "customer": "Khách hàng",
+      "contact": "Liên hệ",
+      "identifier": "Mã định danh",
+      "address": "Địa chỉ",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_customers_found": "Không tìm thấy khách hàng nào",
+      "add_first_customer": "Thêm khách hàng đầu tiên của bạn bằng nút phía trên."
+    },
+    "form": {
+      "create_title": "Thêm khách hàng",
+      "edit_title": "Sửa khách hàng",
+      "create_description": "Nhập thông tin cho khách hàng mới.",
+      "edit_description": "Cập nhật thông tin khách hàng.",
+      "name_label": "Tên khách hàng",
+      "name_placeholder": "VD: Nguyễn Văn A",
+      "type_label": "Loại khách hàng",
+      "type_placeholder": "Chọn loại",
+      "type_individual": "Cá nhân",
+      "type_organization": "Tổ chức",
+      "identifier_label": "Mã định danh (MST/CCCD)",
+      "identifier_placeholder": "VD: 0123456789 hoặc TAX001",
+      "phone_label": "Số điện thoại",
+      "phone_placeholder": "VD: 0123 456 789",
+      "email_label": "Email",
+      "email_placeholder": "VD: contact@company.com",
+      "address_label": "Địa chỉ",
+      "address_placeholder": "VD: 123 Nguyễn Huệ, Quận 1",
+      "description_label": "Mô tả",
+      "description_placeholder": "Ghi chú thêm về khách hàng này",
+      "active_status": "Hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa khách hàng <important>{name}</important>? Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!",
+      "invalid_email": "Định dạng email không hợp lệ"
+    }
   }
 }

@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CustomerSchema } from "@/components/schemas/admin/customer.schema";
+import { GetCustomerSchema, ICustomerFormValues } from "@/components/schemas/admin/customer.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,11 +50,14 @@ export default function CustomerFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_customers.form");
+  const vt = useTranslations("page_customers.validation");
   const isEditing = !!customerToEdit;
   const { mutate, pending } = useMutation();
 
-  const form = useForm({
-    resolver: zodResolver(CustomerSchema),
+  const schema = GetCustomerSchema(vt);
+  const form = useForm<ICustomerFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       customer_type: "Individual",
@@ -96,7 +100,7 @@ export default function CustomerFormModal({
     }
   }, [isOpen, customerToEdit, form]);
 
-  const onSubmit = async (data: z.infer<typeof CustomerSchema>) => {
+  const onSubmit = async (data: ICustomerFormValues) => {
     const url = isEditing
       ? dynamicEndpoints.CUSTOMER_DETAIL(customerToEdit.id)
       : endpoints.CUSTOMERS;
@@ -126,12 +130,10 @@ export default function CustomerFormModal({
       <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit Customer" : "Add Customer"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update the customer's information."
-              : "Enter details for a new customer."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -149,8 +151,8 @@ export default function CustomerFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Customer name</FieldLabel>
-                    <Input {...field} placeholder="e.g. Nguyen Van A" />
+                    <FieldLabel>{t("name_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -163,19 +165,19 @@ export default function CustomerFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Customer type</FieldLabel>
+                    <FieldLabel>{t("type_label")}</FieldLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                       value={field.value?.toString() || ""}
                     >
                       <SelectTrigger className="h-9">
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder={t("type_placeholder")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Individual">Individual</SelectItem>
+                        <SelectItem value="Individual">{t("type_individual")}</SelectItem>
                         <SelectItem value="Organization">
-                          Organization
+                          {t("type_organization")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -191,8 +193,8 @@ export default function CustomerFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Identifier (tax code/ID)</FieldLabel>
-                    <Input {...field} placeholder="e.g. 0123456789 or TAX001" />
+                    <FieldLabel>{t("identifier_label")}</FieldLabel>
+                    <Input {...field} placeholder={t("identifier_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -205,8 +207,8 @@ export default function CustomerFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Phone</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. 0123 456 789" />
+                    <FieldLabel>{t("phone_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("phone_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -219,8 +221,8 @@ export default function CustomerFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Email</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. contact@company.com" />
+                    <FieldLabel>{t("email_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("email_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -236,8 +238,8 @@ export default function CustomerFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Address</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="e.g. 123 Nguyen Hue, District 1" />
+                    <FieldLabel>{t("address_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("address_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -253,8 +255,8 @@ export default function CustomerFormModal({
                     data-invalid={fieldState.invalid}
                     className="gap-1 col-span-2"
                   >
-                    <FieldLabel>Description</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder="Optional notes about this customer" />
+                    <FieldLabel>{t("description_label")}</FieldLabel>
+                    <Input {...field} value={field.value || ""} placeholder={t("description_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -274,7 +276,7 @@ export default function CustomerFormModal({
                         onChange={field.onChange}
                         className="w-4 h-4 rounded border-(--surface-border-color)"
                       />
-                      Active
+                      {t("active_status")}
                     </label>
                   </Field>
                 )}
@@ -284,10 +286,10 @@ export default function CustomerFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>

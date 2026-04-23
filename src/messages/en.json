@@ -474,5 +474,61 @@
       "field_required": "Field is required!",
       "invalid_email": "Invalid email format"
     }
+  },
+  "page_customers": {
+    "title": "Customers",
+    "add_customer": "Add Customer",
+    "all_statuses": "All Statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "table": {
+      "no": "No",
+      "customer": "Customer",
+      "contact": "Contact",
+      "identifier": "Identifier",
+      "address": "Address",
+      "status": "Status",
+      "actions": "Actions",
+      "no_customers_found": "No customers found",
+      "add_first_customer": "Add your first customer using the button above."
+    },
+    "form": {
+      "create_title": "Add Customer",
+      "edit_title": "Edit Customer",
+      "create_description": "Enter details for a new customer.",
+      "edit_description": "Update the customer's information.",
+      "name_label": "Customer name",
+      "name_placeholder": "e.g. Nguyen Van A",
+      "type_label": "Customer type",
+      "type_placeholder": "Select type",
+      "type_individual": "Individual",
+      "type_organization": "Organization",
+      "identifier_label": "Identifier (tax code/ID)",
+      "identifier_placeholder": "e.g. 0123456789 or TAX001",
+      "phone_label": "Phone",
+      "phone_placeholder": "e.g. 0123 456 789",
+      "email_label": "Email",
+      "email_placeholder": "e.g. contact@company.com",
+      "address_label": "Address",
+      "address_placeholder": "e.g. 123 Nguyen Hue, District 1",
+      "description_label": "Description",
+      "description_placeholder": "Optional notes about this customer",
+      "active_status": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "no_changes": "No changes were made."
+    },
+    "delete": {
+      "title": "Confirm Deletion",
+      "confirm_message": "Are you sure you want to delete customer <important>{name}</important>? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!",
+      "invalid_email": "Invalid email format"
+    }
   }
 }
