@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 
-import {
-  EditIcon,
-  GitBranch,
-  Lock,
-  PlusIcon,
-  Trash2Icon,
-  Unlock,
-} from "lucide-react";
+import { EditIcon, GitBranch, Lock, Trash2Icon, Unlock } from "lucide-react";
 
 import {
   TableEmptyRow,
@@ -60,23 +53,22 @@ export default function WorkflowTemplateTable() {
   };
 
   const DOCUMENT_TYPE_LABELS: Record<string, string> = {
-    transfer: "Transfer · Asset transfer",
-    allocation: "Allocation · Asset allocation",
-    recovery: "Recovery · Asset recovery",
-    maintenance: "Maintenance · Repair & maintenance",
-    rental: "Rental · Asset rental",
-    rental_return: "Rental Return · Return rental assets",
-    liquidation: "Liquidation · Asset liquidation",
-    audit: "Audit · Asset audit",
+    transfer: "Transfer",
+    allocation: "Allocation",
+    recovery: "Recovery",
+    maintenance: "Maintenance",
+    rental: "Rental",
+    rental_return: "Rental return",
+    liquidation: "Liquidation",
+    audit: "Audit",
+    stock_in: "Stock in",
+    stock_out: "Stock out",
   };
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-end w-full">
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          Add Workflow
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>Create</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -198,6 +190,7 @@ export default function WorkflowTemplateTable() {
           setTemplateToEdit(null);
         }}
         templateToEdit={templateToEdit}
+        existingTemplates={templates}
         onSuccess={handleSaveSuccess}
       />
 

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
@@ -82,24 +82,15 @@ export default function StockAdjustmentModal({
     onClose();
   };
 
-  const watchedDetails = useWatch({
-    control: form.control,
-    name: "details",
-  });
-
-  const isDecreaseType = watchedDetails?.some(
-    (d) => d?.adjustment_type === "DECREASE",
-  );
-
   const { response: locationRes } = useGet<ILocation[]>(
     { url: endpoints.LOCATIONS },
     { disabled: !isOpen },
   );
   const { response: activeTemplate } = useGet<ITemplate>(
     {
-      url: `${endpoints.TEMPLATE_ACTIVE}${isDecreaseType ? "stock_out" : "stock_in"}`,
+      url: `${endpoints.TEMPLATE_ACTIVE}${defaultType === "DECREASE" ? "stock_out" : "stock_in"}`,
     },
-    { disabled: !isOpen, deps: [isDecreaseType] },
+    { disabled: !isOpen, deps: [defaultType] },
   );
   const { response: userRes } = useGet<IUser[]>(
     { url: endpoints.USERS },
@@ -137,16 +128,14 @@ export default function StockAdjustmentModal({
   }, [isOpen, prefill, form, activeTemplate, defaultType]);
 
   useEffect(() => {
-    if (isDecreaseType) {
-      form.setValue("required_steps", 0);
-    } else if (activeTemplate?.steps?.length) {
-      form.setValue("required_steps", activeTemplate.steps.length);
+    if (activeTemplate?.steps?.length) {
+      form.setValue("required_steps", activeTemplate.steps.length ?? 0);
     }
-  }, [activeTemplate, form, isDecreaseType]);
+  }, [activeTemplate, form]);
 
   const onSubmit = async (data: FormValues) => {
     const workflow_assignments: { step_id: number; user_id: number }[] = [];
-    if (!isDecreaseType && activeTemplate?.steps?.length) {
+    if (activeTemplate?.steps?.length) {
       activeTemplate.steps.forEach((step, idx) => {
         const userId = data.approvals?.[`step_${idx}`];
         if (userId) {
@@ -189,10 +178,12 @@ export default function StockAdjustmentModal({
       <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isDecreaseType ? "Create Stock Out" : "Create Stock In"}
+            {defaultType === "DECREASE"
+              ? "Create Stock Out"
+              : "Create Stock In"}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            {isDecreaseType
+            {defaultType === "DECREASE"
               ? "Create a new stock decrease record."
               : "Create a new stock increase record."}
           </DialogDescription>
@@ -305,14 +296,12 @@ export default function StockAdjustmentModal({
                 )}
               </div>
 
-              {!isDecreaseType && (
-                <ApprovalProcessSection
-                  control={form.control}
-                  steps={activeTemplate?.steps || []}
-                  users={users}
-                  title="3. Approval process"
-                />
-              )}
+              <ApprovalProcessSection
+                control={form.control}
+                steps={activeTemplate?.steps || []}
+                users={users}
+                title="3. Approval process"
+              />
 
               <FormAttachmentsSection
                 control={form.control}

@@ -6,6 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { GripVertical, PlusIcon, Shield, Trash2Icon, User } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 
+import {
+  type TemplateFormValues,
+  TemplateSchema,
+} from "@/components/schemas/admin/workflow-template.schema";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -40,24 +44,20 @@ import { IWorkflowStep, IWorkflowTemplate } from "@/types/workflow-template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
-import { TemplateSchema, type TemplateFormValues } from "@/components/schemas/admin/workflow-template.schema";
-
 type FormValues = TemplateFormValues;
 type AssigneeType = "none" | "role" | "user";
 
 const DOCUMENT_TYPES = [
-  { value: "transfer", label: "Transfer", labelSub: "Asset transfer" },
-  { value: "allocation", label: "Allocation", labelSub: "Asset allocation" },
-  { value: "recovery", label: "Recovery", labelSub: "Asset recovery" },
-  { value: "maintenance", label: "Maintenance", labelSub: "Repair & maintenance" },
-  { value: "rental", label: "Rental", labelSub: "Asset rental" },
-  {
-    value: "rental_return",
-    label: "Rental Return",
-    labelSub: "Return rental assets",
-  },
-  { value: "liquidation", label: "Liquidation", labelSub: "Asset liquidation" },
-  { value: "audit", label: "Audit", labelSub: "Asset audit" },
+  { value: "transfer", label: "Transfer" },
+  { value: "allocation", label: "Allocation" },
+  { value: "recovery", label: "Recovery" },
+  { value: "maintenance", label: "Maintenance" },
+  { value: "rental", label: "Rental" },
+  { value: "rental_return", label: "Rental return" },
+  { value: "liquidation", label: "Liquidation" },
+  { value: "audit", label: "Audit" },
+  { value: "stock_in", label: "Stock in" },
+  { value: "stock_out", label: "Stock out" },
 ];
 
 function getAssigneeType(
@@ -197,6 +197,7 @@ function StepAssigneeFields({
 
 interface Props {
   templateToEdit?: IWorkflowTemplate | null;
+  existingTemplates: IWorkflowTemplate[];
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (saved: IWorkflowTemplate, isEdit: boolean) => void;
@@ -204,12 +205,23 @@ interface Props {
 
 export default function WorkflowTemplateFormModal({
   templateToEdit,
+  existingTemplates,
   isOpen,
   onClose,
   onSuccess,
 }: Props) {
   const isEditing = !!templateToEdit;
   const { mutate, pending } = useMutation<IWorkflowTemplate>();
+
+  const usedDocumentTypes = existingTemplates
+    .map((t) => t.document_type)
+    .filter((type) =>
+      isEditing ? type !== templateToEdit.document_type : true,
+    );
+
+  const availableDocumentTypes = DOCUMENT_TYPES.filter(
+    (t) => !usedDocumentTypes.includes(t.value),
+  );
 
   const { response: rolesRes } = useGet<IRole[]>(
     { url: endpoints.RBAC_ROLES },
@@ -296,7 +308,7 @@ export default function WorkflowTemplateFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] h-[90vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing ? "Edit workflow" : "Create approval workflow"}
@@ -313,7 +325,7 @@ export default function WorkflowTemplateFormModal({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 overflow-y-auto px-6 pb-6">
-            <FieldGroup>
+            <FieldGroup className="gap-3">
               <Controller
                 name="name"
                 control={form.control}
@@ -342,12 +354,9 @@ export default function WorkflowTemplateFormModal({
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {DOCUMENT_TYPES.map((t) => (
+                        {availableDocumentTypes.map((t) => (
                           <SelectItem key={t.value} value={t.value}>
                             <span>{t.label}</span>
-                            <span className="text-muted-foreground ml-1.5">
-                              · {t.labelSub}
-                            </span>
                           </SelectItem>
                         ))}
                       </SelectContent>
