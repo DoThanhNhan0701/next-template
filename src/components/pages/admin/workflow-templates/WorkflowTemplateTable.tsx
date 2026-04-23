@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { EditIcon, GitBranch, Lock, Trash2Icon, Unlock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -25,6 +26,8 @@ import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import WorkflowTemplateFormModal from "./WorkflowTemplateFormModal";
 
 export default function WorkflowTemplateTable() {
+  const t = useTranslations("page_workflow_templates");
+  const tt = useTranslations("page_workflow_templates.table");
   const { response, pending, setResponse } = useGet<IWorkflowTemplate[]>({
     url: endpoints.TEMPLATES,
   });
@@ -52,23 +55,23 @@ export default function WorkflowTemplateTable() {
     );
   };
 
-  const DOCUMENT_TYPE_LABELS: Record<string, string> = {
-    transfer: "Transfer",
-    allocation: "Allocation",
-    recovery: "Recovery",
-    maintenance: "Maintenance",
-    rental: "Rental",
-    rental_return: "Rental return",
-    liquidation: "Liquidation",
-    audit: "Audit",
-    stock_in: "Stock in",
-    stock_out: "Stock out",
+  const docTypeLabels: Record<string, string> = {
+    transfer: tt("doc_types.transfer"),
+    allocation: tt("doc_types.allocation"),
+    recovery: tt("doc_types.recovery"),
+    maintenance: tt("doc_types.maintenance"),
+    rental: tt("doc_types.rental"),
+    rental_return: tt("doc_types.rental_return"),
+    liquidation: tt("doc_types.liquidation"),
+    audit: tt("doc_types.audit"),
+    stock_in: tt("doc_types.stock_in"),
+    stock_out: tt("doc_types.stock_out"),
   };
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-end w-full">
-        <Button onClick={() => setIsCreating(true)}>Create</Button>
+        <Button onClick={() => setIsCreating(true)}>{t("create")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -76,25 +79,25 @@ export default function WorkflowTemplateTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {tt("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[30%]">
-                Workflow Name
+                {tt("workflow_name")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                Document Type
+                {tt("document_type")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                Steps
+                {tt("steps")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                Status
+                {tt("status")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                Locked
+                {tt("locked")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%] text-right">
-                Actions
+                {tt("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -105,8 +108,8 @@ export default function WorkflowTemplateTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={GitBranch}
-                message="No workflows found"
-                description="Add your first approval workflow using the button above."
+                message={tt("no_workflows_found")}
+                description={tt("add_first_workflow")}
               />
             ) : (
               templates.map((item, index) => (
@@ -128,7 +131,7 @@ export default function WorkflowTemplateTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm">
-                    {DOCUMENT_TYPE_LABELS[item.document_type] ??
+                    {docTypeLabels[item.document_type] ??
                       item.document_type}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center text-sm">
@@ -137,11 +140,11 @@ export default function WorkflowTemplateTable() {
                   <TableCell className="px-4 py-3 text-center">
                     {item.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Active
+                        {t("active")}
                       </span>
                     ) : (
                       <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        Inactive
+                        {t("inactive")}
                       </span>
                     )}
                   </TableCell>

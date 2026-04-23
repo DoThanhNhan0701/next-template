@@ -7,9 +7,10 @@ import { GripVertical, PlusIcon, Shield, Trash2Icon, User } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import {
-  type TemplateFormValues,
-  TemplateSchema,
+  GetTemplateSchema,
+  TemplateFormValues,
 } from "@/components/schemas/admin/workflow-template.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -47,18 +48,6 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 type FormValues = TemplateFormValues;
 type AssigneeType = "none" | "role" | "user";
 
-const DOCUMENT_TYPES = [
-  { value: "transfer", label: "Transfer" },
-  { value: "allocation", label: "Allocation" },
-  { value: "recovery", label: "Recovery" },
-  { value: "maintenance", label: "Maintenance" },
-  { value: "rental", label: "Rental" },
-  { value: "rental_return", label: "Rental return" },
-  { value: "liquidation", label: "Liquidation" },
-  { value: "audit", label: "Audit" },
-  { value: "stock_in", label: "Stock in" },
-  { value: "stock_out", label: "Stock out" },
-];
 
 function getAssigneeType(
   roleId?: number | null,
@@ -75,6 +64,7 @@ function StepAssigneeFields({
   setValue,
   roles,
   users,
+  t,
 }: {
   index: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,6 +73,8 @@ function StepAssigneeFields({
   setValue: any;
   roles: IRole[];
   users: IUser[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any;
 }) {
   const roleId = useWatch({
     control,
@@ -105,7 +97,7 @@ function StepAssigneeFields({
   return (
     <div className="grid grid-cols-2 gap-3 col-span-2">
       <Field className="gap-1">
-        <FieldLabel>Default assignee type</FieldLabel>
+        <FieldLabel>{t("assignee_type_label")}</FieldLabel>
         <Select
           value={assigneeType}
           onValueChange={(v) => handleTypeChange(v as AssigneeType)}
@@ -114,17 +106,17 @@ function StepAssigneeFields({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">No default</SelectItem>
+            <SelectItem value="none">{t("assignee_type.none")}</SelectItem>
             <SelectItem value="role">
               <span className="flex items-center gap-1.5">
                 <Shield size={12} />
-                By Role
+                {t("assignee_type.role")}
               </span>
             </SelectItem>
             <SelectItem value="user">
               <span className="flex items-center gap-1.5">
                 <User size={12} />
-                Specific Person
+                {t("assignee_type.user")}
               </span>
             </SelectItem>
           </SelectContent>
@@ -134,10 +126,10 @@ function StepAssigneeFields({
       <Field className="gap-1">
         <FieldLabel>
           {assigneeType === "role"
-            ? "Select Role"
+            ? t("select_role_label")
             : assigneeType === "user"
-              ? "Select Staff"
-              : "Select Assignee"}
+              ? t("select_staff_label")
+              : t("select_assignee_label")}
         </FieldLabel>
         {assigneeType === "role" ? (
           <Controller
@@ -149,7 +141,7 @@ function StepAssigneeFields({
                 onValueChange={(v) => f.onChange(v ? Number(v) : null)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select role..." />
+                  <SelectValue placeholder={t("role_placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map((r) => (
@@ -171,7 +163,7 @@ function StepAssigneeFields({
                 onValueChange={(v) => f.onChange(v ? Number(v) : null)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select staff..." />
+                  <SelectValue placeholder={t("staff_placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {users.map((s) => (
@@ -186,7 +178,7 @@ function StepAssigneeFields({
         ) : (
           <Select disabled>
             <SelectTrigger className="opacity-50">
-              <SelectValue placeholder="Select assignee..." />
+              <SelectValue placeholder={t("assignee_placeholder")} />
             </SelectTrigger>
           </Select>
         )}
@@ -210,18 +202,12 @@ export default function WorkflowTemplateFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_workflow_templates.form");
+  const vt = useTranslations("page_workflow_templates.validation");
+  const tt = useTranslations("page_workflow_templates.table");
+
   const isEditing = !!templateToEdit;
   const { mutate, pending } = useMutation<IWorkflowTemplate>();
-
-  const usedDocumentTypes = existingTemplates
-    .map((t) => t.document_type)
-    .filter((type) =>
-      isEditing ? type !== templateToEdit.document_type : true,
-    );
-
-  const availableDocumentTypes = DOCUMENT_TYPES.filter(
-    (t) => !usedDocumentTypes.includes(t.value),
-  );
 
   const { response: rolesRes } = useGet<IRole[]>(
     { url: endpoints.RBAC_ROLES },
@@ -235,8 +221,32 @@ export default function WorkflowTemplateFormModal({
   const roles = rolesRes || [];
   const users = Array.isArray(usersRes) ? usersRes : [];
 
+  const documentTypes = [
+    { value: "transfer", label: tt("doc_types.transfer") },
+    { value: "allocation", label: tt("doc_types.allocation") },
+    { value: "recovery", label: tt("doc_types.recovery") },
+    { value: "maintenance", label: tt("doc_types.maintenance") },
+    { value: "rental", label: tt("doc_types.rental") },
+    { value: "rental_return", label: tt("doc_types.rental_return") },
+    { value: "liquidation", label: tt("doc_types.liquidation") },
+    { value: "audit", label: tt("doc_types.audit") },
+    { value: "stock_in", label: tt("doc_types.stock_in") },
+    { value: "stock_out", label: tt("doc_types.stock_out") },
+  ];
+
+  const usedDocumentTypes = existingTemplates
+    .map((et) => et.document_type)
+    .filter((type) =>
+      isEditing ? type !== templateToEdit.document_type : true,
+    );
+
+  const availableDocumentTypes = documentTypes.filter(
+    (dt) => !usedDocumentTypes.includes(dt.value),
+  );
+
+  const schema = GetTemplateSchema(vt);
   const form = useForm<FormValues>({
-    resolver: zodResolver(TemplateSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       document_type: "",
@@ -311,12 +321,12 @@ export default function WorkflowTemplateFormModal({
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit workflow" : "Create approval workflow"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? `Editing: ${templateToEdit.name}`
-              : "Fill in the details for the new workflow."}
+              ? t("edit_description", { name: templateToEdit.name })
+              : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -331,10 +341,10 @@ export default function WorkflowTemplateFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Workflow name</FieldLabel>
+                    <FieldLabel>{t("name_label")}</FieldLabel>
                     <Input
                       {...field}
-                      placeholder="e.g. Default Transfer Workflow"
+                      placeholder={t("name_placeholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -348,10 +358,10 @@ export default function WorkflowTemplateFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
-                    <FieldLabel>Document type</FieldLabel>
+                    <FieldLabel>{t("doc_type_label")}</FieldLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder={t("doc_type_placeholder")} />
                       </SelectTrigger>
                       <SelectContent>
                         {availableDocumentTypes.map((t) => (
@@ -373,11 +383,11 @@ export default function WorkflowTemplateFormModal({
                 control={form.control}
                 render={({ field }) => (
                   <Field className="gap-1">
-                    <FieldLabel>Description</FieldLabel>
+                    <FieldLabel>{t("description_label")}</FieldLabel>
                     <Textarea
                       {...field}
                       value={field.value ?? ""}
-                      placeholder="Brief description (optional)"
+                      placeholder={t("description_placeholder")}
                       rows={3}
                     />
                   </Field>
@@ -396,7 +406,7 @@ export default function WorkflowTemplateFormModal({
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
-                        Active
+                        {t("active_status")}
                       </label>
                     </Field>
                   )}
@@ -412,7 +422,7 @@ export default function WorkflowTemplateFormModal({
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
-                        Lock Workflow
+                        {t("lock_workflow")}
                       </label>
                     </Field>
                   )}
@@ -423,7 +433,7 @@ export default function WorkflowTemplateFormModal({
             {/* Steps */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Approval Steps</span>
+                <span className="text-sm font-medium">{t("approval_steps")}</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -438,13 +448,13 @@ export default function WorkflowTemplateFormModal({
                   }
                 >
                   <PlusIcon size={14} className="mr-1" />
-                  Add Step
+                  {t("add_step")}
                 </Button>
               </div>
 
               {fields.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-md">
-                  No steps yet. Click &quot;Add Step&quot; to get started.
+                  {t("no_steps")}
                 </p>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -469,10 +479,10 @@ export default function WorkflowTemplateFormModal({
                               data-invalid={fieldState.invalid}
                               className="gap-1 col-span-2"
                             >
-                              <FieldLabel>Step name</FieldLabel>
+                              <FieldLabel>{t("step_name_label")}</FieldLabel>
                               <Input
                                 {...f}
-                                placeholder="e.g. Manager Approval"
+                                placeholder={t("step_name_placeholder")}
                               />
                               {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -486,6 +496,7 @@ export default function WorkflowTemplateFormModal({
                           setValue={form.setValue}
                           roles={roles}
                           users={users}
+                          t={t}
                         />
                       </div>
 
@@ -537,10 +548,10 @@ export default function WorkflowTemplateFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>

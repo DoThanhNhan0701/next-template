@@ -530,5 +530,79 @@
       "field_required": "Trường này là bắt buộc!",
       "invalid_email": "Định dạng email không hợp lệ"
     }
+  },
+  "page_workflow_templates": {
+    "title": "Quy trình phê duyệt",
+    "create": "Tạo mới",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động",
+    "table": {
+      "no": "STT",
+      "workflow_name": "Tên quy trình",
+      "document_type": "Loại chứng từ",
+      "steps": "Số bước",
+      "status": "Trạng thái",
+      "locked": "Đã khóa",
+      "actions": "Hành động",
+      "no_workflows_found": "Không tìm thấy quy trình nào",
+      "add_first_workflow": "Thêm quy trình phê duyệt đầu tiên của bạn bằng nút phía trên.",
+      "doc_types": {
+        "transfer": "Điều chuyển",
+        "allocation": "Cấp phát",
+        "recovery": "Thu hồi",
+        "maintenance": "Bảo trì",
+        "rental": "Thuê",
+        "rental_return": "Trả thuê",
+        "liquidation": "Thanh lý",
+        "audit": "Kiểm kê",
+        "stock_in": "Nhập kho",
+        "stock_out": "Xuất kho"
+      }
+    },
+    "form": {
+      "create_title": "Tạo quy trình phê duyệt",
+      "edit_title": "Sửa quy trình",
+      "create_description": "Nhập thông tin cho quy trình mới.",
+      "edit_description": "Đang sửa: {name}",
+      "name_label": "Tên quy trình",
+      "name_placeholder": "VD: Quy trình điều chuyển mặc định",
+      "doc_type_label": "Loại chứng từ",
+      "doc_type_placeholder": "Chọn loại",
+      "description_label": "Mô tả",
+      "description_placeholder": "Mô tả ngắn (tùy chọn)",
+      "active_status": "Hoạt động",
+      "lock_workflow": "Khóa quy trình",
+      "approval_steps": "Các bước phê duyệt",
+      "add_step": "Thêm bước",
+      "no_steps": "Chưa có bước nào. Nhấp vào \"Thêm bước\" để bắt đầu.",
+      "step_name_label": "Tên bước",
+      "step_name_placeholder": "VD: Trưởng phòng duyệt",
+      "assignee_type_label": "Loại người duyệt mặc định",
+      "assignee_type": {
+        "none": "Không có mặc định",
+        "role": "Theo vai trò",
+        "user": "Người cụ thể"
+      },
+      "select_role_label": "Chọn vai trò",
+      "select_staff_label": "Chọn nhân viên",
+      "select_assignee_label": "Chọn người duyệt",
+      "role_placeholder": "Chọn vai trò...",
+      "staff_placeholder": "Chọn nhân viên...",
+      "assignee_placeholder": "Chọn người duyệt...",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu..."
+    },
+    "delete": {
+      "title": "Xác nhận xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa quy trình <important>{name}</important>? Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!"
+    }
   }
 }

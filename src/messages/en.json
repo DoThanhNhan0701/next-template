@@ -530,5 +530,79 @@
       "field_required": "Field is required!",
       "invalid_email": "Invalid email format"
     }
+  },
+  "page_workflow_templates": {
+    "title": "Approval Workflows",
+    "create": "Create",
+    "all_statuses": "All Statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "table": {
+      "no": "No",
+      "workflow_name": "Workflow Name",
+      "document_type": "Document Type",
+      "steps": "Steps",
+      "status": "Status",
+      "locked": "Locked",
+      "actions": "Actions",
+      "no_workflows_found": "No workflows found",
+      "add_first_workflow": "Add your first approval workflow using the button above.",
+      "doc_types": {
+        "transfer": "Transfer",
+        "allocation": "Allocation",
+        "recovery": "Recovery",
+        "maintenance": "Maintenance",
+        "rental": "Rental",
+        "rental_return": "Rental return",
+        "liquidation": "Liquidation",
+        "audit": "Audit",
+        "stock_in": "Stock in",
+        "stock_out": "Stock out"
+      }
+    },
+    "form": {
+      "create_title": "Create approval workflow",
+      "edit_title": "Edit workflow",
+      "create_description": "Fill in the details for the new workflow.",
+      "edit_description": "Editing: {name}",
+      "name_label": "Workflow name",
+      "name_placeholder": "e.g. Default Transfer Workflow",
+      "doc_type_label": "Document type",
+      "doc_type_placeholder": "Select type",
+      "description_label": "Description",
+      "description_placeholder": "Brief description (optional)",
+      "active_status": "Active",
+      "lock_workflow": "Lock Workflow",
+      "approval_steps": "Approval Steps",
+      "add_step": "Add Step",
+      "no_steps": "No steps yet. Click \"Add Step\" to get started.",
+      "step_name_label": "Step name",
+      "step_name_placeholder": "e.g. Manager Approval",
+      "assignee_type_label": "Default assignee type",
+      "assignee_type": {
+        "none": "No default",
+        "role": "By Role",
+        "user": "Specific Person"
+      },
+      "select_role_label": "Select Role",
+      "select_staff_label": "Select Staff",
+      "select_assignee_label": "Select Assignee",
+      "role_placeholder": "Select role...",
+      "staff_placeholder": "Select staff...",
+      "assignee_placeholder": "Select assignee...",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "delete": {
+      "title": "Confirm Deletion",
+      "confirm_message": "Are you sure you want to delete workflow <important>{name}</important>? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!"
+    }
   }
 }
