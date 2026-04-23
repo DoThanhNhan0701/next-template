@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Search } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ const flattenOrgUnits = (units: OrgUnit[]): OrgUnit[] => {
 };
 
 export default function OrganizationalStructurePage() {
+  const t = useTranslations("page_organization");
   const {
     response: data,
     pending: loading,
@@ -231,7 +233,7 @@ export default function OrganizationalStructurePage() {
       };
 
       if (isDescendant(unit.id, targetId)) {
-        toast.error("Invalid move: cannot move a unit to its own branch.");
+        toast.error(t("invalid_move"));
         return;
       }
     }
@@ -239,7 +241,7 @@ export default function OrganizationalStructurePage() {
     // Call API using useMutation for consistency
     await mutate(
       {
-        url: `${endpoints.ORG_UNITS}${unit.id}`,
+        url: `${endpoints.ORG_UNITS}/${unit.id}`,
         method: "patch",
         body: { parent_id: targetId },
       },
@@ -261,7 +263,7 @@ export default function OrganizationalStructurePage() {
         <div className="flex flex-col items-center gap-3">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           <p className="text-muted-foreground font-medium">
-            Building organizational hierarchy...
+            {t("building_hierarchy")}
           </p>
         </div>
       </div>
@@ -278,10 +280,10 @@ export default function OrganizationalStructurePage() {
           disabled={loading}
           className="shadow-sm"
         >
-          Refresh
+          {t("refresh")}
         </Button>
         <Button size="sm" onClick={handleCreateRoot} className="shadow-sm">
-          Create
+          {t("create")}
         </Button>
       </div>
 
@@ -290,7 +292,7 @@ export default function OrganizationalStructurePage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search units, codes..."
+              placeholder={t("search_placeholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 bg-muted/30 border-none ring-1 ring-border/50 focus-visible:ring-primary/40"
@@ -312,7 +314,7 @@ export default function OrganizationalStructurePage() {
               <div className="h-40 flex flex-col items-center justify-center text-center p-3">
                 <Search className="h-8 w-8 text-muted-foreground/30 mb-2" />
                 <p className="text-sm text-muted-foreground">
-                  No units found matching &quot;{searchQuery}&quot;
+                  {t("no_units_found", { query: searchQuery })}
                 </p>
               </div>
             )}

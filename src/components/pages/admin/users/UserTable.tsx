@@ -50,8 +50,6 @@ export default function UserTable() {
   const { user } = useSelector((state: RootState) => state.auth);
   const t = useTranslations("page_users");
 
-  console.log(user);
-
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");

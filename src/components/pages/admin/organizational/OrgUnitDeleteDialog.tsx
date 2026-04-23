@@ -15,6 +15,7 @@ import { endpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
+import { useTranslations } from "next-intl";
 
 interface Props {
   unitId: number | null;
@@ -31,6 +32,7 @@ export default function OrgUnitDeleteDialog({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_organization");
   const { mutate, pending } = useMutation();
 
   const handleDelete = async () => {
@@ -38,7 +40,7 @@ export default function OrgUnitDeleteDialog({
 
     await mutate(
       {
-        url: `${endpoints.ORG_UNITS}${unitId}/`,
+        url: `${endpoints.ORG_UNITS}/${unitId}/`,
         method: "delete",
       },
       {
@@ -64,19 +66,23 @@ export default function OrgUnitDeleteDialog({
               aria-hidden="true"
             />
           </div>
-          <DialogTitle className="text-center">Confirm Deletion</DialogTitle>
+          <DialogTitle className="text-center">{t("delete_unit")}</DialogTitle>
           <DialogDescription className="text-center px-4">
-            Are you sure you want to delete{" "}
-            <span className="font-bold text-foreground">
-              &quot;{unitName}&quot;
-            </span>
-            ? This action cannot be undone and may affect associated data.
+            {t.rich("delete_confirm", {
+              name: (chunks) => (
+                <span className="font-bold text-foreground underline decoration-destructive/30 decoration-2 underline-offset-4">
+                  {unitName}
+                </span>
+              ),
+            })}
+            {" "}
+            {t("delete_warning")}
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
@@ -84,7 +90,7 @@ export default function OrgUnitDeleteDialog({
             onClick={handleDelete}
             disabled={pending}
           >
-            {pending ? "Deleting..." : "Delete"}
+            {pending ? t("deleting") : t("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

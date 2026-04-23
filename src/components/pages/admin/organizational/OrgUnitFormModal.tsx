@@ -6,9 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
 import {
+  GetOrgUnitSchema,
   IOrgUnitFormValues,
-  OrgUnitSchema,
 } from "@/components/schemas/admin/org-unit.schema";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -60,6 +61,7 @@ export default function OrgUnitFormModal({
   onSuccess,
   isParentDisabled = false,
 }: Props) {
+  const t = useTranslations("page_organization");
   const isEditing = !!unitToEdit;
   const { mutate, pending } = useMutation<IOrgUnit>();
 
@@ -121,8 +123,9 @@ export default function OrgUnitFormModal({
     return formatTree();
   })();
 
+  const schema = GetOrgUnitSchema(t);
   const form = useForm<IOrgUnitFormValues>({
-    resolver: zodResolver(OrgUnitSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       code: "",
@@ -173,7 +176,7 @@ export default function OrgUnitFormModal({
     if (data.parent_id === null) cleanedData.parent_id = null;
     if (data.leader_id === null) cleanedData.leader_id = null;
     const url = isEditing
-      ? `${endpoints.ORG_UNITS}${unitToEdit.id}/`
+      ? `${endpoints.ORG_UNITS}/${unitToEdit.id}/`
       : endpoints.ORG_UNITS;
     const method = isEditing ? "patch" : "post";
 
@@ -201,16 +204,14 @@ export default function OrgUnitFormModal({
       <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing
-              ? "Edit Organization Unit"
-              : "Create New Organization Unit"}
+            {isEditing ? t("edit_unit") : t("create_unit")}
           </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? `Modifying ${unitToEdit.name}`
+              ? t("modifying_unit", { name: unitToEdit.name })
               : parentUnit
-                ? `Adding a sub-unit to ${parentUnit.name}`
-                : "Adding a new root organizational unit."}
+                ? t("adding_sub_unit", { name: parentUnit.name })
+                : t("adding_root_unit")}
           </DialogDescription>
         </DialogHeader>
 
@@ -225,7 +226,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Unit name</FieldLabel>
+                    <FieldLabel>{t("unit_name")}</FieldLabel>
                     <Input {...field} placeholder="e.g. Finance Department" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -239,7 +240,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <FieldLabel>Unit code</FieldLabel>
+                    <FieldLabel>{t("unit_code")}</FieldLabel>
                     <Input {...field} placeholder="e.g. FIN-01" />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -253,15 +254,17 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <FieldLabel>Unit type</FieldLabel>
+                    <FieldLabel>{t("unit_type")}</FieldLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder={t("select_type")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="company">Company</SelectItem>
-                        <SelectItem value="branch">Branch</SelectItem>
-                        <SelectItem value="department">Department</SelectItem>
+                        <SelectItem value="company">{t("company")}</SelectItem>
+                        <SelectItem value="branch">{t("branch")}</SelectItem>
+                        <SelectItem value="department">
+                          {t("department")}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     {fieldState.invalid && (
@@ -276,7 +279,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Parent unit</FieldLabel>
+                    <FieldLabel>{t("parent_unit")}</FieldLabel>
                     <Select
                       onValueChange={(val) =>
                         field.onChange(val === "none" ? null : Number(val))
@@ -285,10 +288,10 @@ export default function OrgUnitFormModal({
                       disabled={isParentDisabled}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select parent unit" />
+                        <SelectValue placeholder={t("select_parent")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">(None - Root Unit)</SelectItem>
+                        <SelectItem value="none">{t("none_root")}</SelectItem>
                         {availableParentUnits.map((unit) => (
                           <SelectItem key={unit.id} value={unit.id.toString()}>
                             {unit.displayName}
@@ -308,7 +311,7 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Leader</FieldLabel>
+                    <FieldLabel>{t("leader")}</FieldLabel>
                     <Select
                       onValueChange={(val) =>
                         field.onChange(val === "none" ? null : Number(val))
@@ -316,10 +319,10 @@ export default function OrgUnitFormModal({
                       value={field.value?.toString() || ""}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select leader" />
+                        <SelectValue placeholder={t("select_leader")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">(None)</SelectItem>
+                        <SelectItem value="none">{t("none")}</SelectItem>
                         {users.map((u) => (
                           <SelectItem key={u.id} value={u.id.toString()}>
                             {u.full_name} ({u.username})
@@ -339,11 +342,11 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Address</FieldLabel>
+                    <FieldLabel>{t("address")}</FieldLabel>
                     <Input
                       {...field}
                       value={field.value ?? ""}
-                      placeholder="Physical address"
+                      placeholder={t("address")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -357,11 +360,11 @@ export default function OrgUnitFormModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>Description</FieldLabel>
+                    <FieldLabel>{t("description")}</FieldLabel>
                     <Textarea
                       {...field}
                       value={field.value ?? ""}
-                      placeholder="Brief description"
+                      placeholder={t("description")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -388,10 +391,10 @@ export default function OrgUnitFormModal({
                         htmlFor="is_active"
                         className="text-sm font-medium cursor-pointer"
                       >
-                        Active Status
+                        {t("active_status")}
                       </FieldLabel>
                       <p className="text-xs text-muted-foreground">
-                        Whether this unit is currently active.
+                        {t("active_status_description")}
                       </p>
                     </div>
                   </Field>
@@ -402,10 +405,10 @@ export default function OrgUnitFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </DialogFooter>
         </form>
