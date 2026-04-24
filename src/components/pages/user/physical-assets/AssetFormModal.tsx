@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, Package } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -49,6 +50,7 @@ import { ISupplier } from "@/types/supplier";
 import { IUsageMode } from "@/types/usage-mode";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
+import { getTodayISO } from "@/utils/date";
 import { cleanFormData } from "@/utils/form";
 
 interface Props {
@@ -133,7 +135,7 @@ export default function AssetFormModal({
       purchase_date: "",
       purchase_ticket: "",
       warranty_expiration: "",
-      system_declaration_date: "",
+      system_declaration_date: getTodayISO(),
       holder_id: null,
       holder_name: "",
       category_id: null,
@@ -202,7 +204,7 @@ export default function AssetFormModal({
           purchase_date: "",
           purchase_ticket: "",
           warranty_expiration: "",
-          system_declaration_date: "",
+          system_declaration_date: getTodayISO(),
           supplier_id: null,
           category_id: null,
           location_id: null,
@@ -268,7 +270,9 @@ export default function AssetFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? t("modals.edit_title") : t("modals.create_title")}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? t("modals.edit_title") : t("modals.create_title")}
+          </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
               ? t("modals.edit_description")
@@ -293,7 +297,9 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-2 col-span-2">
-                        <FieldLabel>{t("modals.fields.management_method")}</FieldLabel>
+                        <FieldLabel>
+                          {t("modals.fields.management_method")}
+                        </FieldLabel>
                         <Tabs
                           value={field.value}
                           onValueChange={(val) => {
@@ -340,13 +346,17 @@ export default function AssetFormModal({
                           {field.value === "unique" ? (
                             <span>
                               {t.rich("modals.fields.unique_help", {
-                                important: (chunks) => <strong>{chunks}</strong>,
+                                important: (chunks) => (
+                                  <strong>{chunks}</strong>
+                                ),
                               })}
                             </span>
                           ) : (
                             <span>
                               {t.rich("modals.fields.bulk_help", {
-                                important: (chunks) => <strong>{chunks}</strong>,
+                                important: (chunks) => (
+                                  <strong>{chunks}</strong>
+                                ),
                               })}
                             </span>
                           )}
@@ -387,7 +397,11 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_category")} />
+                            <SelectValue
+                              placeholder={t(
+                                "modals.fields.placeholder_category",
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -486,7 +500,9 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_unit")} />
+                            <SelectValue
+                              placeholder={t("modals.fields.placeholder_unit")}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -521,7 +537,11 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_usage_mode")} />
+                            <SelectValue
+                              placeholder={t(
+                                "modals.fields.placeholder_usage_mode",
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -556,7 +576,11 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_importance")} />
+                            <SelectValue
+                              placeholder={t(
+                                "modals.fields.placeholder_importance",
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -601,7 +625,11 @@ export default function AssetFormModal({
                           disabled={hasHolderValue || isEditing}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_location")} />
+                            <SelectValue
+                              placeholder={t(
+                                "modals.fields.placeholder_location",
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -637,7 +665,11 @@ export default function AssetFormModal({
                           disabled={hasLocationValue || isEditing}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_holder")} />
+                            <SelectValue
+                              placeholder={t(
+                                "modals.fields.placeholder_holder",
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -715,7 +747,9 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>{t("modals.fields.purchase_date")}</FieldLabel>
+                        <FieldLabel>
+                          {t("modals.fields.purchase_date")}
+                        </FieldLabel>
                         <DatePickerField form={form} name="purchase_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -744,7 +778,9 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>{t("modals.fields.declaration_date")}</FieldLabel>
+                        <FieldLabel>
+                          {t("modals.fields.declaration_date")}
+                        </FieldLabel>
                         <DatePickerField
                           form={form}
                           name="system_declaration_date"
@@ -760,11 +796,15 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>{t("modals.fields.purchase_ticket")}</FieldLabel>
+                        <FieldLabel>
+                          {t("modals.fields.purchase_ticket")}
+                        </FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder={t("modals.fields.placeholder_purchase_ticket")}
+                          placeholder={t(
+                            "modals.fields.placeholder_purchase_ticket",
+                          )}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -785,7 +825,11 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("modals.fields.placeholder_supplier")} />
+                            <SelectValue
+                              placeholder={t(
+                                "modals.fields.placeholder_supplier",
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -821,11 +865,15 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>{t("modals.fields.specifications")}</FieldLabel>
+                        <FieldLabel>
+                          {t("modals.fields.specifications")}
+                        </FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}
-                          placeholder={t("modals.fields.placeholder_specifications")}
+                          placeholder={t(
+                            "modals.fields.placeholder_specifications",
+                          )}
                           className="min-h-[100px]"
                         />
                         {fieldState.invalid && (
