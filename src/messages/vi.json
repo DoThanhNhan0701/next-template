@@ -628,5 +628,9 @@
     "validation": {
       "field_required": "Trường này là bắt buộc!"
     }
+  },
+  "page_admin_dashboard": {
+    "title": "Bảng điều khiển Admin",
+    "welcome": "Chào mừng bạn đến với trang quản trị!"
   }
 }

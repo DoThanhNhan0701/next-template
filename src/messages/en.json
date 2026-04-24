@@ -628,5 +628,9 @@
     "validation": {
       "field_required": "Field is required!"
     }
+  },
+  "page_admin_dashboard": {
+    "title": "Admin Dashboard",
+    "welcome": "Welcome to the admin page!"
   }
 }
