@@ -1,5 +1,5 @@
 {
-  "Menu": {
+  "layout_user": {
     "dashboard": "Dashboard",
     "my_tasks": "My tasks",
     "assets": "Assets",
@@ -632,5 +632,42 @@
   "page_admin_dashboard": {
     "title": "Admin dashboard",
     "welcome": "Welcome to the admin page!"
+  },
+  "page_dashboard": {
+    "welcome_back": "Welcome back, <important>{name}</important>!",
+    "daily_overview": "Here's your daily asset overview.",
+    "stats": {
+      "total_assets": "Total assets",
+      "total_locations": "Total locations",
+      "total_users": "Total users",
+      "total_asset_value": "Total asset value",
+      "rental_revenue": "Rental revenue",
+      "maintenance_cost": "Maintenance cost"
+    },
+    "charts": {
+      "status_overview": "Asset status overview",
+      "distribution_description": "Visual distribution across departments.",
+      "loading": "Loading chart..."
+    },
+    "activity": {
+      "recent": "Recent activity",
+      "latest_updates": "Latest updates across your portfolio.",
+      "view_all": "View all activities"
+    },
+    "portfolio": {
+      "growing_title": "Your portfolio is growing",
+      "growing_description": "You've added 12 new assets this month (+15% vs LY). Maintain data accuracy for better reporting.",
+      "view_analytics": "View analytics"
+    },
+    "task_modules": {
+      "title": "Task modules",
+      "pending_tasks": "{count} Pending tasks",
+      "no_pending": "No pending tasks.",
+      "allocation": "Allocation",
+      "transfer": "Transfer",
+      "maintenance": "Maintenance",
+      "liquidation": "Liquidation",
+      "workflow_approval": "Workflow approval"
+    }
   }
 }

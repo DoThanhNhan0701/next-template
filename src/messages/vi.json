@@ -1,14 +1,14 @@
 {
-  "Menu": {
+  "layout_user": {
     "dashboard": "Bảng điều khiển",
-    "my_tasks": "Nhiệm vụ của tôi",
+    "my_tasks": "Công việc của tôi",
     "assets": "Tài sản",
-    "rentals": "Cho thuê",
-    "inventory": "Kho hàng",
+    "rentals": "Thuê/mượn tài sản",
+    "inventory": "Kiểm kê",
     "transfers": "Điều chuyển",
-    "stock_in_out": "Nhập & xuất kho",
-    "allocation_recovery": "Cấp phát & thu hồi",
-    "audits": "Kiểm kê",
+    "stock_in_out": "Nhập & Xuất kho",
+    "allocation_recovery": "Cấp phát & Thu hồi",
+    "audits": "Kiểm toán",
     "maintenance": "Bảo trì",
     "liquidations": "Thanh lý"
   },
@@ -632,5 +632,42 @@
   "page_admin_dashboard": {
     "title": "Bảng điều khiển Admin",
     "welcome": "Chào mừng bạn đến với trang quản trị!"
+  },
+  "page_dashboard": {
+    "welcome_back": "Chào mừng trở lại, <important>{name}</important>!",
+    "daily_overview": "Đây là tổng quan tài sản hàng ngày của bạn.",
+    "stats": {
+      "total_assets": "Tổng tài sản",
+      "total_locations": "Tổng vị trí",
+      "total_users": "Tổng người dùng",
+      "total_asset_value": "Tổng giá trị tài sản",
+      "rental_revenue": "Doanh thu cho thuê",
+      "maintenance_cost": "Chi phí bảo trì"
+    },
+    "charts": {
+      "status_overview": "Tổng quan trạng thái tài sản",
+      "distribution_description": "Phân bổ trực quan theo phòng ban.",
+      "loading": "Đang tải biểu đồ..."
+    },
+    "activity": {
+      "recent": "Hoạt động gần đây",
+      "latest_updates": "Cập nhật mới nhất trong danh mục của bạn.",
+      "view_all": "Xem tất cả hoạt động"
+    },
+    "portfolio": {
+      "growing_title": "Danh mục của bạn đang phát triển",
+      "growing_description": "Bạn đã thêm 12 tài sản mới trong tháng này (+15% so với năm ngoái). Duy trì độ chính xác của dữ liệu để báo cáo tốt hơn.",
+      "view_analytics": "Xem phân tích"
+    },
+    "task_modules": {
+      "title": "Các mô-đun công việc",
+      "pending_tasks": "{count} Công việc đang chờ",
+      "no_pending": "Không có công việc nào đang chờ.",
+      "allocation": "Cấp phát",
+      "transfer": "Điều chuyển",
+      "maintenance": "Bảo trì",
+      "liquidation": "Thanh lý",
+      "workflow_approval": "Phê duyệt quy trình"
+    }
   }
 }

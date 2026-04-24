@@ -41,7 +41,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   } = useSelector((state: RootState) => state.auth);
   const { counts } = useSelector((state: RootState) => state.task);
   const { hasPermission, isReady } = usePermissions();
-  const t = useTranslations("Menu");
+  const t = useTranslations("layout_user");
 
   useFaviconBadge(counts.PENDING, pathname);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Activity,
@@ -18,6 +18,7 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
 import { Badge } from "@/components/ui/badge";
@@ -43,6 +44,7 @@ import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
 export default function DashboardPage() {
+  const t = useTranslations("page_dashboard");
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
@@ -77,11 +79,9 @@ export default function DashboardPage() {
   const statusChartData = statusChartRes?.data || [];
   const maxStatusCount = Math.max(...statusChartData.map((d) => d.count), 1);
 
-
-
   const stats = [
     {
-      title: "Total assets",
+      title: t("stats.total_assets"),
       value: summary?.total_assets_count || 0,
       change: "+12.5%",
       trend: "up",
@@ -90,7 +90,7 @@ export default function DashboardPage() {
       bg: "bg-blue-50",
     },
     {
-      title: "Total locations",
+      title: t("stats.total_locations"),
       value: summary?.total_locations_count || 0,
       change: "+4.3%",
       trend: "up",
@@ -99,7 +99,7 @@ export default function DashboardPage() {
       bg: "bg-amber-50",
     },
     {
-      title: "Total users",
+      title: t("stats.total_users"),
       value: summary?.total_users_count || 0,
       change: "+1.2%",
       trend: "up",
@@ -108,7 +108,7 @@ export default function DashboardPage() {
       bg: "bg-emerald-50",
     },
     {
-      title: "Total asset value",
+      title: t("stats.total_asset_value"),
       value: formatNumberWithCommas(summary?.financials?.total_asset_value ?? 0),
       change: "+5.4%",
       trend: "up",
@@ -117,8 +117,10 @@ export default function DashboardPage() {
       bg: "bg-purple-50",
     },
     {
-      title: "Rental revenue",
-      value: formatNumberWithCommas(summary?.financials?.total_rental_revenue ?? 0),
+      title: t("stats.rental_revenue"),
+      value: formatNumberWithCommas(
+        summary?.financials?.total_rental_revenue ?? 0,
+      ),
       change: "+2.1%",
       trend: "up",
       icon: TrendingUp,
@@ -126,8 +128,10 @@ export default function DashboardPage() {
       bg: "bg-emerald-50",
     },
     {
-      title: "Maintenance cost",
-      value: formatNumberWithCommas(summary?.financials?.total_maintenance_cost ?? 0),
+      title: t("stats.maintenance_cost"),
+      value: formatNumberWithCommas(
+        summary?.financials?.total_maintenance_cost ?? 0,
+      ),
       change: "-1.5%",
       trend: "down",
       icon: Wrench,
@@ -142,14 +146,17 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Welcome back,{" "}
-            <span className="text-primary" suppressHydrationWarning>
-              {user?.full_name || "User"}
-            </span>
-            !
+            {t.rich("welcome_back", {
+              name: user?.full_name || "User",
+              important: (chunks: React.ReactNode) => (
+                <span className="text-primary" suppressHydrationWarning>
+                  {chunks}
+                </span>
+              ),
+            })}
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Here&apos;s your daily asset overview.
+            {t("daily_overview")}
           </p>
         </div>
       </div>
@@ -211,10 +218,10 @@ export default function DashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between py-3 px-4 border-b border-border/40">
             <div>
               <CardTitle className="text-sm font-semibold text-primary">
-                Asset status overview
+                {t("charts.status_overview")}
               </CardTitle>
               <CardDescription className="text-xs">
-                Visual distribution across departments.
+                {t("charts.distribution_description")}
               </CardDescription>
             </div>
           </CardHeader>
@@ -244,7 +251,7 @@ export default function DashboardPage() {
               })}
               {statusChartData.length === 0 && (
                 <div className="w-full h-full flex flex-col items-center justify-center text-sm text-muted-foreground">
-                  Loading chart...
+                  {t("charts.loading")}
                 </div>
               )}
             </div>
@@ -268,10 +275,10 @@ export default function DashboardPage() {
         <Card className="border-none shadow-sm ring-1 ring-border/50 bg-card/60 backdrop-blur-md">
           <CardHeader className="py-3 px-4 border-b border-border/40">
             <CardTitle className="text-sm font-semibold text-primary">
-              Recent activity
+              {t("activity.recent")}
             </CardTitle>
             <CardDescription className="text-xs">
-              Latest updates across your portfolio.
+              {t("activity.latest_updates")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-3">
@@ -316,7 +323,7 @@ export default function DashboardPage() {
               variant="ghost"
               className="w-full mt-4 h-8 text-[11px] font-bold tracking-tight text-muted-foreground hover:text-primary border border-transparent hover:border-primary/10 transition-all"
             >
-              View all activities
+              {t("activity.view_all")}
             </Button>
           </CardContent>
         </Card>
@@ -331,11 +338,10 @@ export default function DashboardPage() {
           </div>
           <div className="space-y-1.5 text-center md:text-left relative z-10">
             <h2 className="text-xl font-bold tracking-tight leading-none">
-              Your portfolio is growing
+              {t("portfolio.growing_title")}
             </h2>
             <p className="text-sm text-primary-foreground/80 leading-snug">
-              You&apos;ve added 12 new assets this month (+15% vs LY). Maintain
-              data accuracy for better reporting.
+              {t("portfolio.growing_description")}
             </p>
             <div className="pt-2">
               <Button
@@ -343,7 +349,7 @@ export default function DashboardPage() {
                 className="shadow-sm hover:translate-x-1 transition-transform h-8 text-xs font-bold"
                 size="sm"
               >
-                View analytics
+                {t("portfolio.view_analytics")}
               </Button>
             </div>
           </div>
@@ -353,11 +359,11 @@ export default function DashboardPage() {
         <Card className="lg:col-span-1 border-none shadow-sm ring-1 ring-border/50 bg-card/60 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between py-3 px-4 border-b border-border/40">
             <CardTitle className="text-sm font-semibold text-primary">
-              Task modules
+              {t("task_modules.title")}
             </CardTitle>
             {totalPendingStats > 0 && (
               <Badge className="bg-rose-500/15 text-rose-500 border-none font-bold text-[10px] animate-pulse">
-                {totalPendingStats} Pending tasks
+                {t("task_modules.pending_tasks", { count: totalPendingStats })}
               </Badge>
             )}
           </CardHeader>
@@ -367,7 +373,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <UserCheck className="h-4 w-4 text-blue-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Allocation
+                    {t("task_modules.allocation")}
                   </span>
                 </div>
                 <Badge
@@ -383,7 +389,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <ArrowRightLeft className="h-4 w-4 text-indigo-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Transfer
+                    {t("task_modules.transfer")}
                   </span>
                 </div>
                 <Badge
@@ -399,7 +405,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <Wrench className="h-4 w-4 text-orange-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Maintenance
+                    {t("task_modules.maintenance")}
                   </span>
                 </div>
                 <Badge
@@ -415,7 +421,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <Trash2 className="h-4 w-4 text-stone-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Liquidation
+                    {t("task_modules.liquidation")}
                   </span>
                 </div>
                 <Badge
@@ -431,7 +437,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2.5">
                   <ListTodo className="h-4 w-4 text-emerald-500" />
                   <span className="text-sm font-bold tracking-tight">
-                    Workflow approval
+                    {t("task_modules.workflow_approval")}
                   </span>
                 </div>
                 <Badge
@@ -444,7 +450,7 @@ export default function DashboardPage() {
             )}
             {totalPendingStats === 0 && (
               <div className="flex items-center justify-center p-3 text-sm text-muted-foreground/70">
-                No pending tasks.
+                {t("task_modules.no_pending")}
               </div>
             )}
           </CardContent>
