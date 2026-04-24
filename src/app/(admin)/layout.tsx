@@ -1,27 +1,28 @@
 "use client";
 
-import Header from "@/components/layouts/header";
-import Sidebar from "@/components/layouts/sidebar";
-import { RootState } from "@/redux";
 import { ReactNode } from "react";
-import { useSelector } from "react-redux";
-import AppBootstrap from "@/components/libs/app-bootstrap";
+
 import { useTranslations } from "next-intl";
 
 import {
-  Users,
-  Shield,
-  SquareDashedKanbanIcon,
-  MapPin,
-  Layers,
-  Grid,
   Activity,
-  MousePointerClick,
-  Store,
-  Contact,
   Building2,
+  Contact,
   GitBranch,
+  Grid,
+  Layers,
+  MapPin,
+  MousePointerClick,
+  Shield,
+  Store,
+  Users,
 } from "lucide-react";
+import { useSelector } from "react-redux";
+
+import Header from "@/components/layouts/header";
+import Sidebar from "@/components/layouts/sidebar";
+import AppBootstrap from "@/components/libs/app-bootstrap";
+import { RootState } from "@/redux";
 
 export default function AdminLayout({
   children,
@@ -30,7 +31,6 @@ export default function AdminLayout({
   const t = useTranslations("layout_admin");
 
   const adminSidebarItems = [
-    { title: t("dashboard"), url: "/admin", icon: SquareDashedKanbanIcon },
     { title: t("users"), url: "/admin/users", icon: Users },
     { title: t("staff"), url: "/admin/staff", icon: Contact },
     { title: t("roles"), url: "/admin/roles", icon: Shield },
@@ -38,11 +38,23 @@ export default function AdminLayout({
     { title: t("locations"), url: "/admin/locations", icon: MapPin },
     { title: t("asset_groups"), url: "/admin/asset-groups", icon: Layers },
     { title: t("catalog_types"), url: "/admin/catalog-types", icon: Grid },
-    { title: t("asset_statuses"), url: "/admin/asset-statuses", icon: Activity },
-    { title: t("usage_modes"), url: "/admin/usage-modes", icon: MousePointerClick },
+    {
+      title: t("asset_statuses"),
+      url: "/admin/asset-statuses",
+      icon: Activity,
+    },
+    {
+      title: t("usage_modes"),
+      url: "/admin/usage-modes",
+      icon: MousePointerClick,
+    },
     { title: t("suppliers"), url: "/admin/suppliers", icon: Store },
     { title: t("customers"), url: "/admin/customers", icon: Users },
-    { title: t("approval_workflows"), url: "/admin/workflow-templates", icon: GitBranch },
+    {
+      title: t("approval_workflows"),
+      url: "/admin/workflow-templates",
+      icon: GitBranch,
+    },
   ];
 
   return (
