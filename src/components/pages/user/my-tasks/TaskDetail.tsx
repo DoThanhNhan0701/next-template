@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+
 import { useSearchParams } from "next/navigation";
+
 import { useDispatch } from "react-redux";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
@@ -11,8 +13,8 @@ import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { decrementPendingCount } from "@/redux/slices/task";
 import {
-  ApprovalHistory as IApprovalHistory,
   DocumentDetail,
+  ApprovalHistory as IApprovalHistory,
   ITask,
 } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -20,10 +22,10 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 
 // New modular components
 import { ActionHeader } from "./task-detail/ActionHeader";
-import { TaskApprovalForm } from "./task-detail/TaskApprovalForm";
+import { ApprovalHistory } from "./task-detail/ApprovalHistory";
 import { DocumentInfo } from "./task-detail/DocumentInfo";
 import { SidebarInfo } from "./task-detail/SidebarInfo";
-import { ApprovalHistory } from "./task-detail/ApprovalHistory";
+import { TaskApprovalForm } from "./task-detail/TaskApprovalForm";
 import { getStatusInfo } from "./task-detail/status-utils";
 
 interface TaskDetailProps {
@@ -116,7 +118,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
   if (!detail) return null;
 
   return (
-    <div className="flex flex-col px-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col px-3 pb-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <ActionHeader />
 
       <TaskApprovalForm
@@ -127,7 +129,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         onAction={handleAction}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-3">
         <div className="lg:col-span-2 flex flex-col gap-3">
           <DocumentInfo detail={detail} documentType={documentType} />
         </div>
@@ -139,7 +141,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
 
       <RecordAttachmentsCard
         title="Vouchers & documents"
-        className="mt-4"
+        className="mt-3"
         initialAttachments={
           (detail.attachments || []).map(
             (a: string | { url?: string; file_path?: string }) =>

@@ -235,7 +235,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
           <TabsContent
             value="overview"
-            className="mt-4 flex flex-col gap-3 outline-none focus-visible:ring-0"
+            className="mt-3 flex flex-col gap-3 outline-none focus-visible:ring-0"
           >
             <OverviewTab
               holders={holders ?? []}
@@ -253,7 +253,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           </TabsContent>
           <TabsContent
             value="specs"
-            className="mt-4 outline-none focus-visible:ring-0"
+            className="mt-3 outline-none focus-visible:ring-0"
           >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
               <div className="lg:col-span-2">
@@ -329,7 +329,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           </TabsContent>
           <TabsContent
             value="docs"
-            className="mt-4 outline-none focus-visible:ring-0"
+            className="mt-3 outline-none focus-visible:ring-0"
           >
             <div className="flex flex-col items-center gap-3 py-8">
               <div className="flex flex-col items-center gap-2">

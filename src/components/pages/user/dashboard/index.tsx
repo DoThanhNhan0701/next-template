@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import {
   Activity,
   ArrowDownRight,
@@ -18,7 +20,6 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useSelector } from "react-redux";
 
 import { Badge } from "@/components/ui/badge";
@@ -109,7 +110,9 @@ export default function DashboardPage() {
     },
     {
       title: t("stats.total_asset_value"),
-      value: formatNumberWithCommas(summary?.financials?.total_asset_value ?? 0),
+      value: formatNumberWithCommas(
+        summary?.financials?.total_asset_value ?? 0,
+      ),
       change: "+5.4%",
       trend: "up",
       icon: DollarSign,
@@ -321,7 +324,7 @@ export default function DashboardPage() {
             </div>
             <Button
               variant="ghost"
-              className="w-full mt-4 h-8 text-[11px] font-bold tracking-tight text-muted-foreground hover:text-primary border border-transparent hover:border-primary/10 transition-all"
+              className="w-full mt-3 h-8 text-[11px] font-bold tracking-tight text-muted-foreground hover:text-primary border border-transparent hover:border-primary/10 transition-all"
             >
               {t("activity.view_all")}
             </Button>

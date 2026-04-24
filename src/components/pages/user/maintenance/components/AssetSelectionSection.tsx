@@ -72,7 +72,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
   if (!assetId) return null;
 
   return (
-    <div className="mt-4 p-3 bg-muted/30 rounded-xl border border-border/40 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+    <div className="mt-3 p-3 bg-muted/30 rounded-xl border border-border/40 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
       <div className="space-y-3">
         <label className="text-xs font-semibold text-primary flex items-center gap-2">
           <CheckCircle2 size={12} className="text-primary" />
@@ -244,22 +244,22 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 <SelectContent>
                   {sourceType === "stock"
                     ? stocks.map((s, i) => (
-                      <SelectItem
-                        key={`s-opt-${i}`}
-                        value={s.location_id.toString()}
-                      >
-                        [{s.location_code}] {s.location_name} - Quantity:{" "}
-                        {s.quantity}
-                      </SelectItem>
-                    ))
-                    : holders.map((h, i) => {
-                      const id = h.staff_id || h.unit_id || 0;
-                      return (
-                        <SelectItem key={`h-opt-${i}`} value={id.toString()}>
-                          {h.name} ({h.type}) - Quantity: {h.quantity}
+                        <SelectItem
+                          key={`s-opt-${i}`}
+                          value={s.location_id.toString()}
+                        >
+                          [{s.location_code}] {s.location_name} - Quantity:{" "}
+                          {s.quantity}
                         </SelectItem>
-                      );
-                    })}
+                      ))
+                    : holders.map((h, i) => {
+                        const id = h.staff_id || h.unit_id || 0;
+                        return (
+                          <SelectItem key={`h-opt-${i}`} value={id.toString()}>
+                            {h.name} ({h.type}) - Quantity: {h.quantity}
+                          </SelectItem>
+                        );
+                      })}
                 </SelectContent>
               </Select>
             )}

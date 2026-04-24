@@ -75,7 +75,7 @@ export function RejectAuditModal({
             />
           </div>
 
-          <div className="mt-4 flex items-start gap-2.5 p-3 rounded-lg bg-orange-500/5 border border-orange-500/20 text-orange-200/90">
+          <div className="mt-3 flex items-start gap-2.5 p-3 rounded-lg bg-orange-500/5 border border-orange-500/20 text-orange-200/90">
             <AlertCircle
               size={14}
               className="mt-0.5 shrink-0 text-orange-500"

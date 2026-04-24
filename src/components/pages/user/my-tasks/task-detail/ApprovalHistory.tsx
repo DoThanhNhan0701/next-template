@@ -20,7 +20,7 @@ export const ApprovalHistory = ({
   getStatusInfo,
 }: ApprovalHistoryProps) => {
   return (
-    <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md mt-4">
+    <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md mt-3">
       <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
         <History className="w-4 h-4 text-amber-500" />
         <CardTitle className="text-sm font-semibold text-primary leading-none">

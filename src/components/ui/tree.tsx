@@ -352,7 +352,7 @@ export function Tree({
           }
         }}
         className={cn(
-          "mt-4 p-3 rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
+          "mt-3 p-3 rounded-lg flex items-center justify-center text-sm text-muted-foreground transition-all duration-200",
           isRootDragOver
             ? "bg-primary/5 text-primary"
             : "border-2 border-dashed border-muted",

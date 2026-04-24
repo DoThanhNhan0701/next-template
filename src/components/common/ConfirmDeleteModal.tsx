@@ -86,7 +86,7 @@ export default function ConfirmDeleteModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md p-0">
-        <DialogHeader className="mt-4">
+        <DialogHeader className="mt-3">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 mb-4">
             <TriangleAlert
               className="h-6 w-6 text-destructive"

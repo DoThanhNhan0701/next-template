@@ -58,28 +58,29 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
             </div>
           </div>
 
-          {isAllocationDocument(detail) && (detail as AllocationDocument).issuer && (
-            <div className="flex items-center justify-between pb-3 border-b border-border/50">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                  <User className="w-4 h-4" />
+          {isAllocationDocument(detail) &&
+            (detail as AllocationDocument).issuer && (
+              <div className="flex items-center justify-between pb-3 border-b border-border/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <span className="text-sm font-bold text-muted-foreground tracking-wider">
+                    Issuer details
+                  </span>
                 </div>
-                <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                  Issuer details
-                </span>
+                <div className="flex flex-col items-end">
+                  <span className="text-sm font-semibold text-foreground">
+                    {(detail as AllocationDocument).issuer.full_name}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground uppercase">
+                    {(detail as AllocationDocument).issuer.role}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col items-end">
-                <span className="text-sm font-semibold text-foreground">
-                  {(detail as AllocationDocument).issuer.full_name}
-                </span>
-                <span className="text-[10px] text-muted-foreground uppercase">
-                  {(detail as AllocationDocument).issuer.role}
-                </span>
-              </div>
-            </div>
-          )}
+            )}
 
-          <div className="mt-4 p-3 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-2">
+          <div className="mt-3 p-3 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-2">
             <span className="text-sm font-black text-muted-foreground tracking-[0.2em] text-center">
               System notes
             </span>
