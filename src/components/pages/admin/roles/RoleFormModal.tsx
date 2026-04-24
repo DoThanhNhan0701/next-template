@@ -159,7 +159,7 @@ export default function RoleFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("role_name")}</FieldLabel>
-                    <Input {...field} placeholder="e.g. sys_admin" />
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -173,7 +173,11 @@ export default function RoleFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("description_label")}</FieldLabel>
-                    <Input {...field} placeholder={t("description_label")} value={field.value || ""} />
+                    <Input
+                      {...field}
+                      placeholder={t("description_placeholder")}
+                      value={field.value || ""}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

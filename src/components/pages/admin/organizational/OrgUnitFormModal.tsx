@@ -227,7 +227,7 @@ export default function OrgUnitFormModal({
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>{t("unit_name")}</FieldLabel>
-                    <Input {...field} placeholder="e.g. Finance Department" />
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -241,7 +241,7 @@ export default function OrgUnitFormModal({
                 render={({ field, fieldState }) => (
                   <Field>
                     <FieldLabel>{t("unit_code")}</FieldLabel>
-                    <Input {...field} placeholder="e.g. FIN-01" />
+                    <Input {...field} placeholder={t("code_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -346,7 +346,7 @@ export default function OrgUnitFormModal({
                     <Input
                       {...field}
                       value={field.value ?? ""}
-                      placeholder={t("address")}
+                      placeholder={t("address_placeholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -364,7 +364,7 @@ export default function OrgUnitFormModal({
                     <Textarea
                       {...field}
                       value={field.value ?? ""}
-                      placeholder={t("description")}
+                      placeholder={t("description_placeholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />

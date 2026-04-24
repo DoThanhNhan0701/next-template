@@ -168,7 +168,7 @@ export default function AssetGroupFormModal({
                         type="color"
                         className="w-12 h-10 p-1"
                       />
-                      <Input {...field} placeholder="#000000" />
+                      <Input {...field} placeholder={t("color_placeholder")} />
                     </div>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />

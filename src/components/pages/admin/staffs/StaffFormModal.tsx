@@ -149,7 +149,7 @@ export default function StaffFormModal({
                       <Input
                         {...field}
                         disabled={isEditing}
-                        placeholder="ST001"
+                        placeholder={t("code_placeholder")}
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -164,7 +164,7 @@ export default function StaffFormModal({
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className="gap-1">
                       <FieldLabel>{t("full_name")}</FieldLabel>
-                      <Input {...field} placeholder="John Doe" />
+                      <Input {...field} placeholder={t("name_placeholder")} />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -182,7 +182,7 @@ export default function StaffFormModal({
                     <Input
                       {...field}
                       type="email"
-                      placeholder="john.doe@example.com"
+                      placeholder={t("email_placeholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -200,7 +200,7 @@ export default function StaffFormModal({
                     <Input
                       {...field}
                       value={field.value || ""}
-                      placeholder="0123456789"
+                      placeholder={t("phone_placeholder")}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
