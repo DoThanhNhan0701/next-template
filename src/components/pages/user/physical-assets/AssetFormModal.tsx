@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, Package } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -63,6 +64,7 @@ export default function AssetFormModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_physical_assets");
   const isEditing = !!assetToEdit;
   const { mutate, pending } = useMutation();
 
@@ -266,11 +268,11 @@ export default function AssetFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? "Edit asset" : "Create asset"}</DialogTitle>
+          <DialogTitle>{isEditing ? t("modals.edit_title") : t("modals.create_title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
-              ? "Modify the information of the selected asset."
-              : "Fill in the required details to register a new asset in the system."}
+              ? t("modals.edit_description")
+              : t("modals.create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -283,7 +285,7 @@ export default function AssetFormModal({
               {/* Section: General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  1. General Information
+                  {t("modals.sections.general")}
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -291,7 +293,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-2 col-span-2">
-                        <FieldLabel>Management method</FieldLabel>
+                        <FieldLabel>{t("modals.fields.management_method")}</FieldLabel>
                         <Tabs
                           value={field.value}
                           onValueChange={(val) => {
@@ -313,7 +315,7 @@ export default function AssetFormModal({
                             >
                               <CircleAlert className="w-4 h-4" />
                               <span className="text-xs font-medium">
-                                By code (Unique)
+                                {t("modals.fields.unique")}
                               </span>
                             </TabsTrigger>
                             <TabsTrigger
@@ -323,7 +325,7 @@ export default function AssetFormModal({
                             >
                               <Package className="w-4 h-4" />
                               <span className="text-xs font-medium">
-                                By quantity (Bulk)
+                                {t("modals.fields.bulk")}
                               </span>
                             </TabsTrigger>
                           </TabsList>
@@ -337,18 +339,15 @@ export default function AssetFormModal({
                           <CircleAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                           {field.value === "unique" ? (
                             <span>
-                              Each asset is identified by a{" "}
-                              <strong>unique code</strong> (serial number).
-                              Quantity is always 1. Suitable for high-value
-                              equipment that needs individual tracking.
+                              {t.rich("modals.fields.unique_help", {
+                                important: (chunks) => <strong>{chunks}</strong>,
+                              })}
                             </span>
                           ) : (
                             <span>
-                              Assets are managed by{" "}
-                              <strong>total quantity</strong>, without
-                              distinguishing individual items. Suitable for
-                              supplies, accessories, or goods imported/exported
-                              in batches.
+                              {t.rich("modals.fields.bulk_help", {
+                                important: (chunks) => <strong>{chunks}</strong>,
+                              })}
                             </span>
                           )}
                         </div>
@@ -363,11 +362,11 @@ export default function AssetFormModal({
                         data-invalid={fieldState.invalid}
                         className="gap-1 col-span-2"
                       >
-                        <FieldLabel>Asset name</FieldLabel>
+                        <FieldLabel>{t("modals.fields.name")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. MacBook Pro 2023"
+                          placeholder={t("modals.fields.placeholder_name")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -380,7 +379,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Category</FieldLabel>
+                        <FieldLabel>{t("modals.fields.category")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -388,14 +387,14 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select category" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_category")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {categories.map((c) => (
                               <SelectItem key={c.id} value={c.id.toString()}>
@@ -418,11 +417,11 @@ export default function AssetFormModal({
                         data-invalid={fieldState.invalid}
                         className="gap-1 col-span-1"
                       >
-                        <FieldLabel>Old code</FieldLabel>
+                        <FieldLabel>{t("modals.fields.old_code")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. OLD-123"
+                          placeholder={t("modals.fields.placeholder_old_code")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -435,11 +434,11 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Serial number</FieldLabel>
+                        <FieldLabel>{t("modals.fields.serial")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. SN12345678"
+                          placeholder={t("modals.fields.placeholder_serial")}
                           disabled={watchedManagementMethod === "bulk"}
                         />
                         {fieldState.invalid && (
@@ -453,11 +452,11 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Model</FieldLabel>
+                        <FieldLabel>{t("modals.fields.model")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. MacBook Pro A2779"
+                          placeholder={t("modals.fields.placeholder_model")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -479,7 +478,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
-                        <FieldLabel>Organization</FieldLabel>
+                        <FieldLabel>{t("modals.fields.unit")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -487,14 +486,14 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select unit" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_unit")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {orgUnits.map((o) => (
                               <SelectItem key={o.id} value={o.id.toString()}>
@@ -514,7 +513,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Usage mode</FieldLabel>
+                        <FieldLabel>{t("modals.fields.usage_mode")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -522,14 +521,14 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select mode" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_usage_mode")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {usageModes.map((m) => (
                               <SelectItem key={m.id} value={m.id.toString()}>
@@ -549,7 +548,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Importance</FieldLabel>
+                        <FieldLabel>{t("modals.fields.importance")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -557,14 +556,14 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select importance" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_importance")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {importances.map((imp) => (
                               <SelectItem
@@ -593,7 +592,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Location</FieldLabel>
+                        <FieldLabel>{t("modals.fields.location")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -602,14 +601,14 @@ export default function AssetFormModal({
                           disabled={hasHolderValue || isEditing}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select location" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_location")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {locations.map((l) => (
                               <SelectItem key={l.id} value={l.id.toString()}>
@@ -629,7 +628,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
-                        <FieldLabel>Holder (staff list)</FieldLabel>
+                        <FieldLabel>{t("modals.fields.holder")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -638,14 +637,14 @@ export default function AssetFormModal({
                           disabled={hasLocationValue || isEditing}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select staff" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_holder")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {(watchedUnitId
                               ? staffs.filter(
@@ -679,7 +678,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Cost</FieldLabel>
+                        <FieldLabel>{t("modals.fields.cost")}</FieldLabel>
                         <FormattedNumberInput
                           {...field}
                           value={field.value as number | string | null}
@@ -697,7 +696,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Quantity</FieldLabel>
+                        <FieldLabel>{t("modals.fields.quantity")}</FieldLabel>
                         <Input
                           type="number"
                           {...field}
@@ -716,7 +715,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Purchase date</FieldLabel>
+                        <FieldLabel>{t("modals.fields.purchase_date")}</FieldLabel>
                         <DatePickerField form={form} name="purchase_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -729,7 +728,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Warranty expiration</FieldLabel>
+                        <FieldLabel>{t("modals.fields.warranty")}</FieldLabel>
                         <DatePickerField
                           form={form}
                           name="warranty_expiration"
@@ -745,7 +744,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>System declaration date</FieldLabel>
+                        <FieldLabel>{t("modals.fields.declaration_date")}</FieldLabel>
                         <DatePickerField
                           form={form}
                           name="system_declaration_date"
@@ -761,11 +760,11 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
-                        <FieldLabel>Purchase ticket</FieldLabel>
+                        <FieldLabel>{t("modals.fields.purchase_ticket")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="Invoice, Receipt, or PO#"
+                          placeholder={t("modals.fields.placeholder_purchase_ticket")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -778,7 +777,7 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Supplier</FieldLabel>
+                        <FieldLabel>{t("modals.fields.supplier")}</FieldLabel>
                         <Select
                           onValueChange={(val) =>
                             field.onChange(val === "none" ? null : val)
@@ -786,14 +785,14 @@ export default function AssetFormModal({
                           value={field.value?.toString() || ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select supplier" />
+                            <SelectValue placeholder={t("modals.fields.placeholder_supplier")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("modals.fields.none")}
                             </SelectItem>
                             {suppliers.map((s) => (
                               <SelectItem key={s.id} value={s.id.toString()}>
@@ -814,7 +813,7 @@ export default function AssetFormModal({
               {/* Section: Description & Notes */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  4. Description & Notes
+                  {t("modals.sections.description")}
                 </h3>
                 <FieldGroup className="flex flex-col gap-3">
                   <Controller
@@ -822,11 +821,11 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Specifications</FieldLabel>
+                        <FieldLabel>{t("modals.fields.specifications")}</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="Technical details, configurations, etc."
+                          placeholder={t("modals.fields.placeholder_specifications")}
                           className="min-h-[100px]"
                         />
                         {fieldState.invalid && (
@@ -840,11 +839,11 @@ export default function AssetFormModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Notes</FieldLabel>
+                        <FieldLabel>{t("modals.fields.notes")}</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="Any additional remarks..."
+                          placeholder={t("modals.fields.placeholder_notes")}
                           className="min-h-[100px]"
                         />
                         {fieldState.invalid && (
@@ -871,10 +870,10 @@ export default function AssetFormModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("modals.buttons.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("modals.buttons.saving") : t("modals.buttons.save")}
             </Button>
           </DialogFooter>
         </form>

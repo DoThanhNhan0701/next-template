@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { ExternalLink } from "lucide-react";
 
@@ -18,10 +19,11 @@ import { formatDateTime } from "@/utils/date";
 export default function SystemLogTab({
   logs,
 }: Readonly<{ logs: ILifecycleLog[] }>) {
+  const t = useTranslations("page_physical_assets.lifecycle");
   if (!logs || logs.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
-        No system log entries.
+        {t("empty")}
       </div>
     );
   }
@@ -32,28 +34,28 @@ export default function SystemLogTab({
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
           <TableRow>
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
-              No
+              {t("table.no")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-25 w-32">
-              Date
+              {t("table.date")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
-              Process type
+              {t("table.process_type")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
-              Details
+              {t("table.details")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40 text-center">
-              Voucher number
+              {t("table.voucher")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40 text-right pr-6">
-              User
+              {t("table.user")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-20 text-center">
-              Quantity
+              {t("table.quantity")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-36">
-              Status
+              {t("table.status")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -99,7 +101,7 @@ export default function SystemLogTab({
                   </Link>
                 ) : (
                   <span className="text-muted-foreground text-xs italic">
-                    Log entry
+                    {t("table.log_entry")}
                   </span>
                 )}
               </TableCell>

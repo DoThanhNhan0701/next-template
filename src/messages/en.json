@@ -931,5 +931,208 @@
         "confirm": "Confirm"
       }
     }
+  },
+  "page_physical_assets": {
+    "title": "Assets",
+    "description": "Manage physical assets in the system",
+    "filters": {
+      "search_placeholder": "Search asset code, serial...",
+      "unit": "Unit",
+      "category": "Asset types",
+      "status": "Status",
+      "all_units": "All units",
+      "all_categories": "All asset types",
+      "all_statuses": "All statuses",
+      "search": "Search",
+      "searching": "Searching...",
+      "clear": "Clear filters"
+    },
+    "table": {
+      "no": "No",
+      "asset": "Asset",
+      "ownership": "Ownership",
+      "location": "Location",
+      "purchase_info": "Purchase Info",
+      "management_type": "Management type",
+      "status": "Status",
+      "actions": "Actions",
+      "no_assets_found": "No assets declared yet",
+      "add_first_asset": "Declare your first asset using the button above to get started.",
+      "unassigned": "Unassigned",
+      "unit": "Unit:",
+      "none": "None",
+      "floating": "Floating",
+      "by_quantity": "By quantity",
+      "by_code": "By code",
+      "stock": "Stock",
+      "in_use": "In use",
+      "rented": "Rented",
+      "edit_asset": "Edit Asset"
+    },
+    "detail": {
+      "back": "Back",
+      "id": "ID:",
+      "edit": "Edit asset",
+      "rentals": "Rentals",
+      "allocation": "Allocation",
+      "recovery": "Recovery",
+      "reasons": {
+        "allocation": "Allocation: {name}",
+        "recovery": "Recovery: {name}",
+        "rental": "Rental: {name}"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "history": "Lifecycle history",
+        "specs": "Specifications",
+        "docs": "Documents & QR"
+      },
+      "specs": {
+        "title": "Technical Specifications",
+        "no_specs": "No technical specifications available.",
+        "model_image": "Model image",
+        "model": "Asset model",
+        "serial_number": "Serial number",
+        "management_type": "Management type",
+        "quantity": "Quantity"
+      },
+      "docs": {
+        "qr_title": "Asset QR Code",
+        "qr_description": "Scan to identify asset {code}",
+        "print_qr": "Print QR Code",
+        "preview": {
+          "code": "Code",
+          "owner": "Owner",
+          "importance": "Importance Level"
+        }
+      }
+    },
+    "overview": {
+      "stats": {
+        "registered": "Registered",
+        "in_stock": "In stock",
+        "allocation": "Allocation",
+        "rented": "Rented",
+        "maintenance": "Maintenance",
+        "liquidated": "Liquidated"
+      },
+      "management_info": "Management info",
+      "fields": {
+        "category": "Asset category",
+        "catalog_group": "Catalog group",
+        "asset_group": "Asset group",
+        "importance": "Importance level",
+        "usage_mode": "Usage mode",
+        "old_code": "Old asset code",
+        "unit": "Managing unit",
+        "holder": "Current holder",
+        "location": "Current location"
+      },
+      "holders": {
+        "current_users": "Current users",
+        "currently_rented": "Currently rented",
+        "current_locations": "Current locations"
+      },
+      "finance": {
+        "title": "Finance & warranty",
+        "purchase_date": "Purchase date",
+        "declaration_date": "Declaration date",
+        "cost": "Original cost",
+        "depreciation": "Depreciation period",
+        "warranty": "Warranty expiration",
+        "supplier": "Supplier",
+        "purchase_ticket": "Purchase ticket",
+        "months": "{count} months"
+      },
+      "notes": "Notes",
+      "attachments": "Asset documents & images"
+    },
+    "lifecycle": {
+      "title": "Change history",
+      "tabs": {
+        "process": "Business process",
+        "system": "System log"
+      },
+      "empty": "No history available.",
+      "table": {
+        "no": "No",
+        "date": "Date",
+        "process": "Process",
+        "process_type": "Process type",
+        "voucher": "Voucher number",
+        "user_location": "User / Location",
+        "quantity": "Quantity",
+        "status": "Status",
+        "details": "Details",
+        "user": "User",
+        "log_entry": "Log entry"
+      }
+    },
+    "modals": {
+      "create_title": "Create asset",
+      "edit_title": "Edit asset",
+      "create_description": "Fill in the required details to register a new asset in the system.",
+      "edit_description": "Modify the information of the selected asset.",
+      "sections": {
+        "general": "1. General Information",
+        "tracking": "2. Tracking & Management",
+        "purchase": "3. Purchase & Acquisition",
+        "description": "4. Description & Notes"
+      },
+      "fields": {
+        "management_method": "Management method",
+        "unique": "By code (Unique)",
+        "bulk": "By quantity (Bulk)",
+        "unique_help": "Each asset is identified by a <important>unique code</important> (serial number). Quantity is always 1. Suitable for high-value equipment that needs individual tracking.",
+        "bulk_help": "Assets are managed by <important>total quantity</important>, without distinguishing individual items. Suitable for supplies, accessories, or goods imported/exported in batches.",
+        "name": "Asset name",
+        "placeholder_name": "e.g. MacBook Pro 2023",
+        "category": "Category",
+        "placeholder_category": "e.g. IT Equipment",
+        "old_code": "Old code",
+        "placeholder_old_code": "e.g. OLD-123",
+        "serial": "Serial number",
+        "placeholder_serial": "e.g. SN12345678",
+        "model": "Model",
+        "placeholder_model": "e.g. MacBook Pro A2779",
+        "unit": "Organization",
+        "placeholder_unit": "e.g. Head Office",
+        "usage_mode": "Usage mode",
+        "placeholder_usage_mode": "e.g. Individual Use",
+        "importance": "Importance",
+        "placeholder_importance": "e.g. High Importance",
+        "location": "Location",
+        "placeholder_location": "e.g. Main Warehouse",
+        "holder": "Holder (staff list)",
+        "placeholder_holder": "e.g. John Doe",
+        "cost": "Cost",
+        "placeholder_cost": "e.g. 1500.00",
+        "quantity": "Quantity",
+        "purchase_date": "Purchase date",
+        "warranty": "Warranty expiration",
+        "declaration_date": "System declaration date",
+        "purchase_ticket": "Purchase ticket",
+        "placeholder_purchase_ticket": "e.g. INV-2023-001",
+        "supplier": "Supplier",
+        "placeholder_supplier": "e.g. Apple Inc.",
+        "specifications": "Specifications",
+        "placeholder_specifications": "e.g. Core i7, 16GB RAM, 512GB SSD",
+        "notes": "Notes",
+        "placeholder_notes": "e.g. Minor scratch on the back",
+        "none": "(None)"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      },
+      "print_qr": {
+        "title": "Print QR code",
+        "description": "Select a recipient name to print alongside the QR code.",
+        "recipient": "Recipient name",
+        "print": "Print",
+        "cancel": "Cancel"
+      }
+    }
   }
 }

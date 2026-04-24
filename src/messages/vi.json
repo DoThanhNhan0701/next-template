@@ -931,5 +931,208 @@
         "confirm": "Xác nhận"
       }
     }
+  },
+  "page_physical_assets": {
+    "title": "Tài sản",
+    "description": "Quản lý tài sản vật chất trong hệ thống",
+    "filters": {
+      "search_placeholder": "Tìm mã tài sản, số serial...",
+      "unit": "Đơn vị",
+      "category": "Loại tài sản",
+      "status": "Trạng thái",
+      "all_units": "Tất cả đơn vị",
+      "all_categories": "Tất cả loại tài sản",
+      "all_statuses": "Tất cả trạng thái",
+      "search": "Tìm kiếm",
+      "searching": "Đang tìm...",
+      "clear": "Xóa bộ lọc"
+    },
+    "table": {
+      "no": "STT",
+      "asset": "Tài sản",
+      "ownership": "Sở hữu",
+      "location": "Vị trí",
+      "purchase_info": "Thông tin mua sắm",
+      "management_type": "Loại quản lý",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_assets_found": "Chưa có tài sản nào được khai báo",
+      "add_first_asset": "Khai báo tài sản đầu tiên của bạn bằng nút phía trên để bắt đầu.",
+      "unassigned": "Chưa giao",
+      "unit": "Đơn vị:",
+      "none": "Không có",
+      "floating": "Lưu động",
+      "by_quantity": "Theo số lượng",
+      "by_code": "Theo mã",
+      "stock": "Kho",
+      "in_use": "Sử dụng",
+      "rented": "Cho thuê",
+      "edit_asset": "Sửa tài sản"
+    },
+    "detail": {
+      "back": "Quay lại",
+      "id": "Mã:",
+      "edit": "Sửa tài sản",
+      "rentals": "Cho thuê",
+      "allocation": "Cấp phát",
+      "recovery": "Thu hồi",
+      "reasons": {
+        "allocation": "Cấp phát tài sản: {name}",
+        "recovery": "Thu hồi tài sản: {name}",
+        "rental": "Cho thuê tài sản: {name}"
+      },
+      "tabs": {
+        "overview": "Tổng quan",
+        "history": "Lịch sử vòng đời",
+        "specs": "Thông số kỹ thuật",
+        "docs": "Tài liệu & QR"
+      },
+      "specs": {
+        "title": "Thông số kỹ thuật",
+        "no_specs": "Không có thông số kỹ thuật.",
+        "model_image": "Hình ảnh model",
+        "model": "Model tài sản",
+        "serial_number": "Số serial",
+        "management_type": "Loại quản lý",
+        "quantity": "Số lượng"
+      },
+      "docs": {
+        "qr_title": "Mã QR tài sản",
+        "qr_description": "Quét để nhận diện tài sản {code}",
+        "print_qr": "In mã QR",
+        "preview": {
+          "code": "Mã",
+          "owner": "Sở hữu",
+          "importance": "Mức độ quan trọng"
+        }
+      }
+    },
+    "overview": {
+      "stats": {
+        "registered": "Đã khai báo",
+        "in_stock": "Trong kho",
+        "allocation": "Cấp phát",
+        "rented": "Cho thuê",
+        "maintenance": "Bảo trì",
+        "liquidated": "Thanh lý"
+      },
+      "management_info": "Thông tin quản lý",
+      "fields": {
+        "category": "Loại tài sản",
+        "catalog_group": "Nhóm danh mục",
+        "asset_group": "Nhóm tài sản",
+        "importance": "Mức độ quan trọng",
+        "usage_mode": "Chế độ sử dụng",
+        "old_code": "Mã tài sản cũ",
+        "unit": "Đơn vị quản lý",
+        "holder": "Người giữ hiện tại",
+        "location": "Vị trí hiện tại"
+      },
+      "holders": {
+        "current_users": "Người dùng hiện tại",
+        "currently_rented": "Đang cho thuê",
+        "current_locations": "Vị trí hiện tại"
+      },
+      "finance": {
+        "title": "Tài chính & Bảo hành",
+        "purchase_date": "Ngày mua",
+        "declaration_date": "Ngày khai báo",
+        "cost": "Nguyên giá",
+        "depreciation": "Thời gian khấu hao",
+        "warranty": "Hết hạn bảo hành",
+        "supplier": "Nhà cung cấp",
+        "purchase_ticket": "Chứng từ mua hàng",
+        "months": "{count} tháng"
+      },
+      "notes": "Ghi chú",
+      "attachments": "Tài liệu & hình ảnh tài sản"
+    },
+    "lifecycle": {
+      "title": "Lịch sử thay đổi",
+      "tabs": {
+        "process": "Quy trình nghiệp vụ",
+        "system": "Nhật ký hệ thống"
+      },
+      "empty": "Không có lịch sử.",
+      "table": {
+        "no": "STT",
+        "date": "Ngày",
+        "process": "Quy trình",
+        "process_type": "Loại quy trình",
+        "voucher": "Số chứng từ",
+        "user_location": "Người dùng / Vị trí",
+        "quantity": "Số lượng",
+        "status": "Trạng thái",
+        "details": "Chi tiết",
+        "user": "Người thực hiện",
+        "log_entry": "Nhật ký"
+      }
+    },
+    "modals": {
+      "create_title": "Thêm tài sản",
+      "edit_title": "Sửa tài sản",
+      "create_description": "Điền các thông tin cần thiết để đăng ký tài sản mới vào hệ thống.",
+      "edit_description": "Chỉnh sửa thông tin của tài sản đã chọn.",
+      "sections": {
+        "general": "1. Thông tin chung",
+        "tracking": "2. Theo dõi & Quản lý",
+        "purchase": "3. Mua sắm & Tiếp nhận",
+        "description": "4. Mô tả & Ghi chú"
+      },
+      "fields": {
+        "management_method": "Phương thức quản lý",
+        "unique": "Theo mã (Unique)",
+        "bulk": "Theo số lượng (Bulk)",
+        "unique_help": "Mỗi tài sản được định danh bằng một <important>mã duy nhất</important> (số serial). Số lượng luôn là 1. Phù hợp cho thiết bị giá trị cao cần theo dõi riêng lẻ.",
+        "bulk_help": "Tài sản được quản lý theo <important>tổng số lượng</important>, không phân biệt từng cái riêng lẻ. Phù hợp cho công cụ dụng cụ, phụ kiện hoặc hàng hóa nhập xuất theo lô.",
+        "name": "Tên tài sản",
+        "placeholder_name": "e.g. MacBook Pro 2023",
+        "category": "Loại tài sản",
+        "placeholder_category": "e.g. Thiết bị CNTT",
+        "old_code": "Mã cũ",
+        "placeholder_old_code": "e.g. OLD-123",
+        "serial": "Số serial",
+        "placeholder_serial": "e.g. SN12345678",
+        "model": "Model",
+        "placeholder_model": "e.g. MacBook Pro A2779",
+        "unit": "Đơn vị",
+        "placeholder_unit": "e.g. Hội sở chính",
+        "usage_mode": "Chế độ sử dụng",
+        "placeholder_usage_mode": "e.g. Sử dụng cá nhân",
+        "importance": "Mức độ quan trọng",
+        "placeholder_importance": "e.g. Quan trọng cao",
+        "location": "Vị trí",
+        "placeholder_location": "e.g. Kho chính",
+        "holder": "Người giữ (danh sách nhân viên)",
+        "placeholder_holder": "e.g. Nguyễn Văn A",
+        "cost": "Nguyên giá",
+        "placeholder_cost": "e.g. 1500000",
+        "quantity": "Số lượng",
+        "purchase_date": "Ngày mua",
+        "warranty": "Hết hạn bảo hành",
+        "declaration_date": "Ngày khai báo hệ thống",
+        "purchase_ticket": "Chứng từ mua hàng",
+        "placeholder_purchase_ticket": "e.g. HD-2023-001",
+        "supplier": "Nhà cung cấp",
+        "placeholder_supplier": "e.g. Công ty Apple",
+        "specifications": "Thông số kỹ thuật",
+        "placeholder_specifications": "e.g. Core i7, 16GB RAM, 512GB SSD",
+        "notes": "Ghi chú",
+        "placeholder_notes": "e.g. Trầy xước nhẹ mặt sau",
+        "none": "(Không có)"
+      },
+      "buttons": {
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "saving": "Đang lưu..."
+      },
+      "print_qr": {
+        "title": "In mã QR",
+        "description": "Chọn tên người nhận để in cùng với mã QR.",
+        "recipient": "Tên người nhận",
+        "print": "In",
+        "cancel": "Hủy"
+      }
+    }
   }
 }

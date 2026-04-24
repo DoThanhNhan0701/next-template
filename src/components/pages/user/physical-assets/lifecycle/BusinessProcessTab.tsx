@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { ArrowRight, ExternalLink } from "lucide-react";
 
@@ -19,10 +20,12 @@ export default function BusinessProcessTab({
 }: Readonly<{
   history: ILifecycleLog[];
 }>) {
+  const t = useTranslations("page_physical_assets.lifecycle");
+
   if (!history || history.length === 0) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
-        No process history.
+        {t("empty")}
       </div>
     );
   }
@@ -33,23 +36,23 @@ export default function BusinessProcessTab({
         <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm outline outline-border/20">
           <TableRow>
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
-              No
+              {t("table.no")}
             </TableHead>
-            <TableHead className="font-semibold h-10 px-4 w-40">Date</TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-40">{t("table.date")}</TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
-              Process
+              {t("table.process")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-40">
-              Voucher number
+              {t("table.voucher")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4">
-              User / Location
+              {t("table.user_location")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-20 text-center">
-              Quantity
+              {t("table.quantity")}
             </TableHead>
             <TableHead className="font-semibold h-10 px-4 w-36">
-              Status
+              {t("table.status")}
             </TableHead>
           </TableRow>
         </TableHeader>

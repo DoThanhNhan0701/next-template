@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import {
   ArrowLeft,
@@ -41,6 +42,7 @@ import OverviewTab from "./overview/OverviewTab";
 
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const router = useRouter();
+  const t = useTranslations("page_physical_assets");
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "overview";
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -56,7 +58,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         asset_id: asset.id,
         location_id: asset.location_id ?? 0,
         unit_id: asset.unit_id ?? 0,
-        reason: `Cấp phát tài sản: ${asset.name}`,
+        reason: t("detail.reasons.allocation", { name: asset.name }),
       }),
     );
     router.push("/allocation-recovery");
@@ -69,7 +71,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         asset_id: asset.id,
         location_id: asset.location_id ?? 0,
         unit_id: asset.unit_id ?? 0,
-        reason: `Thu hồi tài sản: ${asset.name}`,
+        reason: t("detail.reasons.recovery", { name: asset.name }),
       }),
     );
     router.push("/allocation-recovery?tab=recoveries");
@@ -82,7 +84,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         asset_id: asset.id,
         location_id: asset.location_id ?? 0,
         unit_id: asset.unit_id ?? 0,
-        reason: `Cho thuê tài sản: ${asset.name}`,
+        reason: t("detail.reasons.rental", { name: asset.name }),
       }),
     );
     router.push("/rentals");
@@ -161,14 +163,14 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   className="font-medium text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                 >
                   {asset.management_type === "bulk"
-                    ? "By quantity (Bulk)"
-                    : "By code (Unique)"}
+                    ? t("modals.fields.bulk")
+                    : t("modals.fields.unique")}
                 </Badge>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <QrCode className="w-3.5 h-3.5" />
                 <span>
-                  ID:{" "}
+                  {t("detail.id")}{" "}
                   <strong className="text-foreground">
                     {asset.asset_code}
                   </strong>
@@ -180,16 +182,16 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
             <Button variant="outline" onClick={handleRental}>
-              Rentals
+              {t("detail.rentals")}
             </Button>
             <Button variant="outline" onClick={handleDispatch}>
-              Allocation
+              {t("detail.allocation")}
             </Button>
             <Button variant="outline" onClick={handleRecovery}>
-              Recovery
+              {t("detail.recovery")}
             </Button>
             {canEdit && (
-              <Button onClick={() => setIsEditOpen(true)}>Edit asset</Button>
+              <Button onClick={() => setIsEditOpen(true)}>{t("detail.edit")}</Button>
             )}
           </div>
         </div>
@@ -207,28 +209,28 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Info className="w-4 h-4" />
-                <span className="text-sm font-medium">Overview</span>
+                <span className="text-sm font-medium">{t("detail.tabs.overview")}</span>
               </TabsTrigger>
               <TabsTrigger
                 value="history"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Clock className="w-4 h-4" />
-                <span className="text-sm font-medium">Lifecycle history</span>
+                <span className="text-sm font-medium">{t("detail.tabs.history")}</span>
               </TabsTrigger>
               <TabsTrigger
                 value="specs"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Wrench className="w-4 h-4" />
-                <span className="text-sm font-medium">Specifications</span>
+                <span className="text-sm font-medium">{t("detail.tabs.specs")}</span>
               </TabsTrigger>
               <TabsTrigger
                 value="docs"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <QrCode className="w-4 h-4" />
-                <span className="text-sm font-medium">Documents & QR</span>
+                <span className="text-sm font-medium">{t("detail.tabs.docs")}</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -262,7 +264,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                     <div className="bg-muted/40 px-4 py-3 border-b border-border/50 flex items-center gap-2">
                       <Wrench className="w-4 h-4 text-primary" />
                       <span className="text-sm font-semibold text-primary">
-                        Technical Specifications
+                        {t("detail.specs.title")}
                       </span>
                     </div>
                     <div className="px-4 py-4">
@@ -273,7 +275,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   </div>
                 ) : (
                   <div className="p-8 text-center text-sm text-muted-foreground rounded-xl border border-border/50 bg-muted/10 h-full flex items-center justify-center">
-                    No technical specifications available.
+                    {t("detail.specs.no_specs")}
                   </div>
                 )}
               </div>
@@ -281,7 +283,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg h-full flex flex-col">
                   <CardHeader className="py-4 flex-none items-center justify-center border-b border-border/40">
                     <CardTitle className="text-sm font-semibold text-foreground/70">
-                      Model image
+                      {t("detail.specs.model_image")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-3 flex-1 flex flex-col">
@@ -291,7 +293,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
                         <span className="text-sm text-muted-foreground">
-                          Asset model
+                          {t("detail.specs.model")}
                         </span>
                         <span className="text-sm font-medium text-foreground">
                           {asset.model || "—"}
@@ -299,7 +301,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                       </div>
                       <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
                         <span className="text-sm text-muted-foreground">
-                          Serial number
+                          {t("detail.specs.serial_number")}
                         </span>
                         <span className="text-sm font-medium text-foreground">
                           {asset.serial_number || "—"}
@@ -307,7 +309,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                       </div>
                       <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
                         <span className="text-sm text-muted-foreground">
-                          Management type
+                          {t("detail.specs.management_type")}
                         </span>
                         <span className="text-sm font-medium text-foreground">
                           {asset.management_type || "—"}
@@ -315,7 +317,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                       </div>
                       <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
                         <span className="text-sm text-muted-foreground">
-                          Quantity
+                          {t("detail.specs.quantity")}
                         </span>
                         <span className="text-sm font-semibold text-foreground">
                           {asset.quantity ?? "—"}
@@ -334,13 +336,10 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             <div className="flex flex-col items-center gap-3 py-8">
               <div className="flex flex-col items-center gap-2">
                 <h3 className="text-sm font-semibold text-foreground">
-                  Asset QR Code
+                  {t("detail.docs.qr_title")}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Scan to identify asset{" "}
-                  <span className="font-mono font-bold text-foreground">
-                    {asset.asset_code}
-                  </span>
+                  {t("detail.docs.qr_description", { code: asset.asset_code })}
                 </p>
               </div>
               <div
@@ -356,7 +355,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 <div className="flex flex-col gap-3 flex-1 min-w-0">
                   <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
                     <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                      Code
+                      {t("detail.docs.preview.code")}
                     </span>
                     <span className="font-mono text-base font-bold text-gray-900 tracking-wider">
                       {asset.asset_code}
@@ -364,7 +363,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   </div>
                   <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
                     <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                      Owner
+                      {t("detail.docs.preview.owner")}
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
                       {asset.owner || "—"}
@@ -372,7 +371,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   </div>
                   <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
                     <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                      Importance Level
+                      {t("detail.docs.preview.importance")}
                     </span>
                     {asset.importance_obj ? (
                       <span
@@ -399,7 +398,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 onClick={() => setIsPrintModalOpen(true)}
               >
                 <Printer className="w-4 h-4" />
-                Print QR Code
+                {t("detail.docs.print_qr")}
               </Button>
             </div>
           </TabsContent>

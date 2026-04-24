@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 
@@ -41,6 +42,7 @@ export default function PrintQRModal({
   owner,
   importanceLevel,
 }: Props) {
+  const t = useTranslations("page_physical_assets");
   const [selectedName, setSelectedName] = useState("");
 
   const { response: holdersRes } = useGet<IHolder[]>(
@@ -153,15 +155,15 @@ export default function PrintQRModal({
           </div>
           <div class="info-section">
             <div class="info-row">
-              <div class="label">CODE</div>
+              <div class="label">${t("detail.docs.preview.code")}</div>
               <div class="value">${assetCode}</div>
             </div>
             <div class="info-row">
-              <div class="label">OWNER</div>
+              <div class="label">${t("detail.docs.preview.owner")}</div>
               <div class="value-small">${owner || "—"}</div>
             </div>
             <div class="info-row">
-              <div class="label">IMPORTANCE LEVEL</div>
+              <div class="label">${t("detail.docs.preview.importance")}</div>
               <div class="importance-badge" style="background-color: ${importanceLevel?.color || "#ccc"}20; color: ${importanceLevel?.color || "#666"}; border-color: ${importanceLevel?.color || "#ccc"}40;">
                 ${importanceLevel?.name || "—"}
               </div>
@@ -182,9 +184,9 @@ export default function PrintQRModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Print QR code</DialogTitle>
+          <DialogTitle>{t("modals.print_qr.title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Select a recipient name to print alongside the QR code.
+            {t("modals.print_qr.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -203,7 +205,7 @@ export default function PrintQRModal({
             <div className="flex flex-col gap-3 flex-1 min-w-0">
               <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
                 <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                  Code
+                  {t("detail.docs.preview.code")}
                 </span>
                 <span className="font-mono text-sm font-bold text-gray-900 tracking-wider">
                   {assetCode}
@@ -211,7 +213,7 @@ export default function PrintQRModal({
               </div>
               <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
                 <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                  Owner
+                  {t("detail.docs.preview.owner")}
                 </span>
                 <span className="text-sm font-semibold text-gray-800">
                   {owner || "—"}
@@ -219,7 +221,7 @@ export default function PrintQRModal({
               </div>
               <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
                 <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                  Importance Level
+                  {t("detail.docs.preview.importance")}
                 </span>
                 {importanceLevel ? (
                   <span
@@ -241,7 +243,7 @@ export default function PrintQRModal({
           {/* Select recipient name */}
           {holders.length > 0 && (
             <div className="w-full flex flex-col gap-1.5">
-              <span className="text-sm font-medium">Recipient name</span>
+              <span className="text-sm font-medium">{t("modals.print_qr.recipient")}</span>
               <div className="flex flex-wrap gap-1.5">
                 {holders.map((h: IHolder, i: number) => (
                   <button
@@ -265,11 +267,11 @@ export default function PrintQRModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t("modals.print_qr.cancel")}
           </Button>
           <Button onClick={doPrint} className="gap-2">
             <Printer className="w-4 h-4" />
-            Print
+            {t("modals.print_qr.print")}
           </Button>
         </DialogFooter>
       </DialogContent>

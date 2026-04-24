@@ -12,6 +12,7 @@ import {
   UserCheck,
   Wrench,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,6 +40,7 @@ export default function OverviewTab({
   holders: IAssetHolder[];
   stocks: IAssetStock[];
 }>) {
+  const t = useTranslations("page_physical_assets.overview");
   const { mutate: updateAsset, pending: updatePending } = useMutation();
 
   return (
@@ -49,34 +51,34 @@ export default function OverviewTab({
           <div className="grid grid-cols-2 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
             <StatItem
               icon={<Box className="w-4 h-4 text-slate-400" />}
-              label="Registered"
+              label={t("stats.registered")}
               value={asset.total_quantity}
             />
             <StatItem
               icon={<ShieldCheck className="w-4 h-4 text-emerald-500" />}
-              label="In stock"
+              label={t("stats.in_stock")}
               value={asset.in_stock_quantity}
               valueColor="text-emerald-600"
             />
             <StatItem
               icon={<UserCheck className="w-4 h-4 text-blue-500" />}
-              label="Allocation"
+              label={t("stats.allocation")}
               value={asset.allocated_quantity}
               valueColor="text-blue-600"
             />
             <StatItem
               icon={<Clock className="w-4 h-4 text-amber-500" />}
-              label="Rented"
+              label={t("stats.rented")}
               value={asset.rented_quantity}
             />
             <StatItem
               icon={<Wrench className="w-4 h-4 text-rose-400" />}
-              label="Maintenance"
+              label={t("stats.maintenance")}
               value={asset.maintenance_quantity}
             />
             <StatItem
               icon={<Trash2 className="w-4 h-4 text-red-500" />}
-              label="Liquidated"
+              label={t("stats.liquidated")}
               value={asset.liquidated_quantity}
             />
           </div>
@@ -91,18 +93,18 @@ export default function OverviewTab({
                 <CardHeader className="py-3 px-4 border-b border-border/40 bg-muted/10">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground/80">
                     <Info className="w-4 h-4" />
-                    Management info
+                    {t("management_info")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-3 flex flex-col gap-3">
                   <InfoRow
                     icon="📦"
-                    label="Asset category"
+                    label={t("fields.category")}
                     value={asset.category?.name || "-"}
                   />
                   <InfoRow
                     icon="🗂️"
-                    label="Catalog group"
+                    label={t("fields.catalog_group")}
                     value={
                       (asset as unknown as { catalog_group_name?: string })
                         .catalog_group_name || "-"
@@ -110,7 +112,7 @@ export default function OverviewTab({
                   />
                   <InfoRow
                     icon="🏷️"
-                    label="Asset group"
+                    label={t("fields.asset_group")}
                     value={
                       (asset as unknown as { group_name?: string })
                         .group_name || "-"
@@ -118,33 +120,33 @@ export default function OverviewTab({
                   />
                   <InfoRow
                     icon="🛡️"
-                    label="Importance level"
+                    label={t("fields.importance")}
                     value={asset.importance_obj?.name || "-"}
                   />
                   <InfoRow
                     icon="⚡"
-                    label="Usage mode"
+                    label={t("fields.usage_mode")}
                     value={asset.usage_mode?.name || "-"}
                   />
                   <InfoRow
                     icon="🏷️"
-                    label="Old asset code"
+                    label={t("fields.old_code")}
                     value={asset.old_code || "-"}
                     highlight
                   />
                   <InfoRow
                     icon="🏢"
-                    label="Managing unit"
+                    label={t("fields.unit")}
                     value={asset.unit?.name || "-"}
                   />
                   <InfoRow
                     icon="👤"
-                    label="Current holder"
+                    label={t("fields.holder")}
                     value={asset.holder_name || "-"}
                   />
                   <InfoRow
                     icon="📍"
-                    label="Current location"
+                    label={t("fields.location")}
                     value={asset.location_obj?.name || "-"}
                   />
                   {(holders.length > 0 || stocks.length > 0) &&
@@ -161,7 +163,7 @@ export default function OverviewTab({
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <UserCheck className="w-3.5 h-3.5 text-blue-500" />
-                                Current users
+                                {t("holders.current_users")}
                               </div>
                               <div className="flex flex-col gap-1">
                                 {userHolders.map((h, i) => (
@@ -184,7 +186,7 @@ export default function OverviewTab({
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <Clock className="w-3.5 h-3.5 text-amber-500" />
-                                Currently rented
+                                {t("holders.currently_rented")}
                               </div>
                               <div className="flex flex-col gap-1">
                                 {customerHolders.map((h, i) => (
@@ -207,7 +209,7 @@ export default function OverviewTab({
                             <div className="flex flex-col gap-1.5">
                               <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground tracking-wider">
                                 <MapPin className="w-3.5 h-3.5 text-emerald-500" />
-                                Current locations
+                                {t("holders.current_locations")}
                               </div>
                               <div className="flex flex-col gap-1">
                                 {stocks.map((s, i) => (
@@ -237,49 +239,51 @@ export default function OverviewTab({
                 <CardHeader className="py-3 px-4 border-b border-border/40 bg-muted/10">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground/80">
                     <DollarSign className="w-4 h-4" />
-                    Finance & warranty
+                    {t("finance.title")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-3 flex flex-col gap-3">
                   <InfoRow
                     icon="📅"
-                    label="Purchase date"
+                    label={t("finance.purchase_date")}
                     value={formatDate(asset.purchase_date)}
                   />
                   <InfoRow
                     icon="🗓️"
-                    label="Declaration date"
+                    label={t("finance.declaration_date")}
                     value={formatDate(asset.system_declaration_date)}
                   />
                   <InfoRow
                     icon="💵"
-                    label="Original cost"
+                    label={t("finance.cost")}
                     value={formatNumberWithCommas(asset.cost)}
                     bold
                   />
                   <InfoRow
                     icon="📉"
-                    label="Depreciation period"
+                    label={t("finance.depreciation")}
                     value={
                       asset.depreciation_period
-                        ? `${asset.depreciation_period} months`
+                        ? t("finance.months", {
+                            count: asset.depreciation_period,
+                          })
                         : "N/A"
                     }
                   />
                   <InfoRow
                     icon="✅"
-                    label="Warranty expiration"
+                    label={t("finance.warranty")}
                     value={formatDate(asset.warranty_expiration)}
                   />
                   <InfoRow
                     icon="🏢"
-                    label="Supplier"
+                    label={t("finance.supplier")}
                     value={asset.supplier?.name || "-"}
                   />
 
                   <InfoRow
                     icon="🔗"
-                    label="Purchase ticket"
+                    label={t("finance.purchase_ticket")}
                     type="link"
                     value={asset.purchase_ticket || "-"}
                   />
@@ -293,7 +297,7 @@ export default function OverviewTab({
                 <CardHeader className="py-3 px-4 border-b border-border/40 bg-muted/10">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground/80">
                     <Info className="w-4 h-4" />
-                    Notes
+                    {t("notes")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-3">
@@ -306,7 +310,7 @@ export default function OverviewTab({
 
             {/* Attachments Section */}
             <RecordAttachmentsCard
-              title="Asset documents & images"
+              title={t("attachments")}
               initialAttachments={asset.attachments}
               isPending={updatePending}
               onSave={async (newAttachments) => {

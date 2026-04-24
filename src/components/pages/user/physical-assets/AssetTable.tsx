@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import {
   Building2,
@@ -64,6 +65,7 @@ import AssetFormModal from "./AssetFormModal";
 
 export default function AssetTable() {
   const router = useRouter();
+  const t = useTranslations("page_physical_assets");
   const { hasPermission } = usePermissions();
   const hasHydrated = useHasHydrated();
   const canEdit = hasPermission("asset:edit") && hasHydrated;
@@ -158,7 +160,7 @@ export default function AssetTable() {
             size={16}
           />
           <Input
-            placeholder="Search asset code, serial..."
+            placeholder={t("filters.search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -186,12 +188,12 @@ export default function AssetTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="Organization" />
+                  <SelectValue placeholder={t("filters.unit")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Organization</SelectItem>
+              <SelectItem value="all">{t("filters.all_units")}</SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
@@ -205,12 +207,12 @@ export default function AssetTable() {
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Tag size={16} className="text-muted-foreground/70 shrink-0" />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All asset types" />
+                  <SelectValue placeholder={t("filters.category")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Asset Types</SelectItem>
+              <SelectItem value="all">{t("filters.all_categories")}</SelectItem>
               {categories.map((c) => (
                 <SelectItem key={c.id} value={c.id.toString()}>
                   {c.name}
@@ -227,12 +229,12 @@ export default function AssetTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All statuses" />
+                  <SelectValue placeholder={t("filters.status")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="all">{t("filters.all_statuses")}</SelectItem>
               {statuses.map((s) => (
                 <SelectItem key={s.id} value={s.code}>
                   {s.name}
@@ -256,7 +258,7 @@ export default function AssetTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("filters.searching") : t("filters.search")}
           </Button>
 
           <Button
@@ -276,7 +278,7 @@ export default function AssetTable() {
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            title={t("filters.clear")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -286,7 +288,7 @@ export default function AssetTable() {
               onClick={() => setIsCreating(true)}
               className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
             >
-              Create
+              {t("modals.create_title")}
             </Button>
           )}
         </div>
@@ -297,27 +299,27 @@ export default function AssetTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Asset</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Ownership
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Location
+                {t("table.ownership")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Purchase Info
+                {t("table.location")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.purchase_info")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Management type
+                {t("table.management_type")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("table.status")}
               </TableHead>
               {canEdit && (
                 <TableHead className="font-semibold h-10 px-4 text-right">
-                  Actions
+                  {t("table.actions")}
                 </TableHead>
               )}
             </TableRow>
@@ -329,8 +331,8 @@ export default function AssetTable() {
               <TableEmptyRow
                 colSpan={canEdit ? 8 : 7}
                 icon={Laptop}
-                message="No assets declared yet"
-                description="Declare your first asset using the button above to get started."
+                message={t("table.no_assets_found")}
+                description={t("table.add_first_asset")}
               />
             ) : (
               assets.map((asset, index) => {
@@ -368,13 +370,13 @@ export default function AssetTable() {
                             {asset.holder_name?.substring(0, 2) || "NA"}
                           </div>
                           <span className="font-medium text-foreground/80">
-                            {asset.holder_name || "Unassigned"}
+                            {asset.holder_name || t("table.unassigned")}
                           </span>
                         </div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
-                          <span className="opacity-60 italic">Unit:</span>
+                          <span className="opacity-60 italic">{t("table.unit")}</span>
                           <span>
-                            {getOrgUnitLabel(asset.unit_id) || "None"}
+                            {getOrgUnitLabel(asset.unit_id) || t("table.none")}
                           </span>
                         </div>
                       </div>
@@ -384,7 +386,7 @@ export default function AssetTable() {
                         <div className="flex items-center gap-2 px-2 py-1 bg-secondary/30 rounded-md w-fit">
                           <MapPin size={12} className="text-primary/70" />
                           <span className="text-xs font-medium">
-                            {asset.location || "Floating"}
+                            {asset.location || t("table.floating")}
                           </span>
                         </div>
                         {usageMode && (
@@ -422,8 +424,8 @@ export default function AssetTable() {
                         )}
                       >
                         {asset.management_type === "bulk"
-                          ? "By quantity"
-                          : "By code"}
+                          ? t("table.by_quantity")
+                          : t("table.by_code")}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center">
@@ -435,17 +437,17 @@ export default function AssetTable() {
                           <div className="flex items-center gap-1 flex-wrap justify-center">
                             {(asset.in_stock_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
-                                Stock: {asset.in_stock_quantity}
+                                {t("table.stock")}: {asset.in_stock_quantity}
                               </span>
                             )}
                             {(asset.allocated_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 whitespace-nowrap">
-                                In use: {asset.allocated_quantity}
+                                {t("table.in_use")}: {asset.allocated_quantity}
                               </span>
                             )}
                             {(asset.rented_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 border border-purple-500/20 whitespace-nowrap">
-                                Rented: {asset.rented_quantity}
+                                {t("table.rented")}: {asset.rented_quantity}
                               </span>
                             )}
                           </div>
@@ -483,7 +485,7 @@ export default function AssetTable() {
                               e.stopPropagation();
                               setAssetToEdit(asset);
                             }}
-                            title="Edit Asset"
+                            title={t("table.edit_asset")}
                           >
                             <EditIcon size={14} />
                           </Button>
