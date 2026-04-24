@@ -630,7 +630,7 @@
     }
   },
   "page_admin_dashboard": {
-    "title": "Admin Dashboard",
+    "title": "Admin dashboard",
     "welcome": "Welcome to the admin page!"
   }
 }
