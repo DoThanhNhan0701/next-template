@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 
+import { useTranslations } from "next-intl";
+
 import {
   Clock,
   FileText,
@@ -23,7 +25,6 @@ import {
   RentalReturnDocument,
   StockAdjustmentDocument,
   TransferDocument,
-  getDocumentTitle,
   isAllocationDocument,
   isLiquidationDocument,
   isMaintenanceDocument,
@@ -45,6 +46,9 @@ interface DocumentInfoProps {
 }
 
 export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
+  const t = useTranslations("page_my_tasks.detail.document_info");
+  const tFields = useTranslations("page_my_tasks.detail.document_info.fields");
+
   const formattedData = useMemo(() => {
     if (!detail) return null;
 
@@ -72,7 +76,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         User,
         "bg-primary/10 text-primary",
-        "Allocated to",
+        tFields("allocated_to"),
         allocation.allocated_to_name || allocation.staff?.full_name || "N/A",
         {
           label: allocation.allocated_to_type === "user" ? "User" : "Unit",
@@ -84,7 +88,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-blue-500/10 text-blue-500",
-          "Unit",
+          tFields("unit"),
           allocation.unit.name,
         );
       }
@@ -92,7 +96,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Allocation date",
+        tFields("allocation_date"),
         formatDate(allocation.allocation_date),
       );
 
@@ -100,7 +104,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-indigo-500/10 text-indigo-500",
-          "Issuer",
+          tFields("issuer"),
           allocation.issuer_name,
         );
       }
@@ -109,7 +113,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-amber-500/10 text-amber-500",
-          "Staff code",
+          tFields("staff_code"),
           allocation.staff.staff_code,
         );
       }
@@ -117,7 +121,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         Package,
         "bg-purple-500/10 text-purple-500",
-        "Total quantity",
+        tFields("total_quantity"),
         allocation.total_quantity,
       );
     } else if (
@@ -129,13 +133,13 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Adjustment date",
+        tFields("adjustment_date"),
         formatDate(adjustment.adjustment_date),
       );
       addField(
         Package,
         "bg-purple-500/10 text-purple-500",
-        "Total quantity",
+        tFields("total_quantity"),
         adjustment.total_quantity,
       );
 
@@ -143,14 +147,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-cyan-500/10 text-cyan-500",
-          "External link",
+          tFields("external_link"),
           <a
             href={adjustment.external_link}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
           >
-            View link
+            {tFields("view_link")}
           </a>,
         );
       }
@@ -159,7 +163,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         User,
         "bg-rose-500/10 text-rose-500",
-        "Recovered from",
+        tFields("recovered_from"),
         recovery.recovered_from_name || recovery.staff?.full_name || "N/A",
         {
           label: recovery.recovered_from_type === "user" ? "User" : "Unit",
@@ -171,7 +175,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-blue-500/10 text-blue-500",
-          "Unit",
+          tFields("unit"),
           recovery.unit.name,
         );
       }
@@ -179,13 +183,13 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Recovery date",
+        tFields("recovery_date"),
         formatDate(recovery.recovery_date),
       );
       addField(
         Package,
         "bg-purple-500/10 text-purple-500",
-        "Total quantity",
+        tFields("total_quantity"),
         recovery.total_quantity,
       );
 
@@ -193,7 +197,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-amber-500/10 text-amber-500",
-          "Notes",
+          tFields("notes"),
           <span className="text-sm font-medium text-muted-foreground italic">
             {recovery.notes}
           </span>,
@@ -204,14 +208,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-cyan-500/10 text-cyan-500",
-          "External link",
+          tFields("external_link"),
           <a
             href={recovery.external_link}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
           >
-            View link
+            {tFields("view_link")}
           </a>,
         );
       }
@@ -220,7 +224,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         User,
         "bg-primary/10 text-primary",
-        "Customer",
+        tFields("customer"),
         rental.customer?.name || "N/A",
       );
 
@@ -228,7 +232,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-blue-500/10 text-blue-500",
-          "Organization",
+          tFields("unit"),
           rental.unit.name,
         );
       }
@@ -236,19 +240,19 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Lease date",
+        tFields("lease_date"),
         formatDate(rental.lease_date),
       );
       addField(
         Clock,
         "bg-amber-500/10 text-amber-500",
-        "Duration",
+        tFields("duration"),
         `${rental.duration_days} days`,
       );
       addField(
         Package,
         "bg-purple-500/10 text-purple-500",
-        "Total revenue",
+        tFields("total_revenue"),
         formatNumberWithCommas(rental.total_revenue),
       );
 
@@ -256,7 +260,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-indigo-500/10 text-indigo-500",
-          "Contract number",
+          tFields("contract_number"),
           rental.contract_number,
         );
       }
@@ -265,14 +269,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-cyan-500/10 text-cyan-500",
-          "External link",
+          tFields("external_link"),
           <a
             href={rental.external_link}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
           >
-            View link
+            {tFields("view_link")}
           </a>,
         );
       }
@@ -285,7 +289,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-blue-500/10 text-blue-500",
-          "Record number",
+          tFields("record_number"),
           rReturn.record_number,
         );
       }
@@ -293,7 +297,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           History,
           "bg-emerald-500/10 text-emerald-600",
-          "Return date",
+          tFields("return_date"),
           formatDate(rReturn.return_date),
         );
       }
@@ -302,14 +306,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-purple-500/10 text-purple-500",
-          "Lease record",
+          tFields("lease_record"),
           leaseRecord,
         );
       }
       addField(
         FileText,
         "bg-amber-500/10 text-amber-500",
-        "Notes",
+        tFields("notes"),
         <span className="text-sm font-medium text-muted-foreground italic">
           {rReturn.notes || "-"}
         </span>,
@@ -325,27 +329,27 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         Package,
         "bg-cyan-500/10 text-cyan-500",
-        "Transfer type",
+        tFields("transfer_type"),
         transferTypeLabel,
         { label: transferTypeLabel, variant: "secondary" },
       );
       addField(
         User,
         "bg-orange-500/10 text-orange-500",
-        "From",
+        tFields("from"),
         transfer.from_name,
       );
-      addField(User, "bg-green-500/10 text-green-500", "To", transfer.to_name);
+      addField(User, "bg-green-500/10 text-green-500", tFields("to"), transfer.to_name);
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Transfer date",
+        tFields("transfer_date"),
         formatDate(transfer.transfer_date),
       );
       addField(
         Package,
         "bg-purple-500/10 text-purple-500",
-        "Total assets",
+        tFields("total_assets"),
         transfer.total_assets,
       );
 
@@ -353,14 +357,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-cyan-500/10 text-cyan-500",
-          "External link",
+          tFields("external_link"),
           <a
             href={transfer.external_link}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
           >
-            View link
+            {tFields("view_link")}
           </a>,
         );
       }
@@ -372,19 +376,19 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         FileText,
         "bg-blue-500/10 text-blue-500",
-        "Ticket number",
+        tFields("ticket_number"),
         maintenance.ticket_number,
       );
       addField(
         User,
         "bg-indigo-500/10 text-indigo-500",
-        "Service provider",
+        tFields("service_provider"),
         maintenance.service_provider_name,
       );
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Outing date",
+        tFields("outing_date"),
         formatDate(maintenance.outing_date),
       );
 
@@ -392,7 +396,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           History,
           "bg-amber-500/10 text-amber-500",
-          "Return date",
+          tFields("return_date"),
           formatDate(maintenance.return_date),
         );
       }
@@ -400,7 +404,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         Package,
         "bg-purple-500/10 text-purple-500",
-        "Expected cost",
+        tFields("expected_cost"),
         formatNumberWithCommas(maintenance.expected_cost),
       );
 
@@ -408,7 +412,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           Package,
           "bg-emerald-500/10 text-emerald-500",
-          "Actual cost",
+          tFields("actual_cost"),
           formatNumberWithCommas(maintenance.actual_cost),
         );
       }
@@ -417,7 +421,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-blue-500/10 text-blue-500",
-          "Handover person",
+          tFields("handover_person"),
           maintenance.handover_person,
         );
       }
@@ -426,32 +430,32 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-orange-500/10 text-orange-500",
-          "Taker person",
+          tFields("taker_person"),
           maintenance.taker_person_name,
         );
       }
 
-      if (maintenance.external_link) {
-        addField(
-          FileText,
-          "bg-cyan-500/10 text-cyan-500",
-          "External link",
-          <a
-            href={maintenance.external_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            View link
-          </a>,
-        );
-      }
+        if (maintenance.external_link) {
+          addField(
+            FileText,
+            "bg-cyan-500/10 text-cyan-500",
+            tFields("external_link"),
+            <a
+              href={maintenance.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {tFields("view_link")}
+            </a>,
+          );
+        }
 
       if (maintenance.notes) {
         addField(
           FileText,
           "bg-orange-500/10 text-orange-500",
-          "Notes",
+          tFields("notes"),
           <span className="text-sm font-medium text-muted-foreground italic">
             {maintenance.notes}
           </span>,
@@ -465,7 +469,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         FileText,
         "bg-orange-500/10 text-orange-500",
-        "Reason",
+        tFields("reason"),
         <span className="text-sm font-medium text-muted-foreground italic">
           {commonDetail.reason}
         </span>,
@@ -478,20 +482,20 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
-        "Liquidation date",
+        tFields("liquidation_date"),
         formatDate(liquidation.liquidation_date),
       );
       addField(
         FileText,
         "bg-violet-500/10 text-violet-500",
-        "Type",
+        tFields("type"),
         liquidation.liquidation_type.charAt(0).toUpperCase() +
           liquidation.liquidation_type.slice(1),
       );
       addField(
         Package,
         "bg-amber-500/10 text-amber-500",
-        "Total value",
+        tFields("total_value"),
         formatNumberWithCommas(liquidation.total_value),
       );
 
@@ -499,7 +503,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-blue-500/10 text-blue-500",
-          "Buyer",
+          tFields("buyer"),
           liquidation.buyer_name,
         );
       }
@@ -507,7 +511,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           User,
           "bg-indigo-500/10 text-indigo-500",
-          "Committee",
+          tFields("committee"),
           liquidation.committee,
         );
       }
@@ -515,26 +519,26 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         addField(
           FileText,
           "bg-slate-500/10 text-slate-500",
-          "Notes",
+          tFields("notes"),
           <span className="text-sm font-medium text-muted-foreground italic">
             {liquidation.notes}
           </span>,
         );
       }
       if (liquidation.external_link) {
-        addField(
-          FileText,
-          "bg-cyan-500/10 text-cyan-500",
-          "External link",
-          <a
-            href={liquidation.external_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            View link
-          </a>,
-        );
+          addField(
+            FileText,
+            "bg-cyan-500/10 text-cyan-500",
+            tFields("external_link"),
+            <a
+              href={liquidation.external_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {tFields("view_link")}
+            </a>,
+          );
       }
     }
 
@@ -547,14 +551,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as AllocationDocument;
       detailItems = {
-        title: "Allocated asset list",
+        title: t("tables.allocated_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "location", label: "Location" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "no", label: t("tables.allocated_assets.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.allocated_assets.cols.asset") },
+          { key: "asset_code", label: t("tables.allocated_assets.cols.asset_code") },
+          { key: "location", label: t("tables.allocated_assets.cols.location") },
+          { key: "quantity", label: t("tables.allocated_assets.cols.quantity"), align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -573,15 +577,15 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as StockAdjustmentDocument;
       detailItems = {
-        title: "Stock adjustment list",
+        title: t("tables.stock_adjustment.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "location", label: "Location" },
-          { key: "type", label: "Type", align: "center" as const },
-          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "no", label: t("tables.stock_adjustment.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.stock_adjustment.cols.asset") },
+          { key: "asset_code", label: t("tables.stock_adjustment.cols.asset_code") },
+          { key: "location", label: t("tables.stock_adjustment.cols.location") },
+          { key: "type", label: t("tables.stock_adjustment.cols.type"), align: "center" as const },
+          { key: "quantity", label: t("tables.stock_adjustment.cols.quantity"), align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -599,14 +603,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as RecoveryDocument;
       detailItems = {
-        title: "Recovered asset list",
+        title: t("tables.recovered_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "location", label: "Location" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "no", label: t("tables.recovered_assets.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.recovered_assets.cols.asset") },
+          { key: "asset_code", label: t("tables.recovered_assets.cols.asset_code") },
+          { key: "location", label: t("tables.recovered_assets.cols.location") },
+          { key: "quantity", label: t("tables.recovered_assets.cols.quantity"), align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -623,15 +627,15 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as RentalDocument;
       detailItems = {
-        title: "Rental asset list",
+        title: t("tables.rental_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "location", label: "From Location" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
-          { key: "rental_revenue", label: "Revenue", align: "center" as const },
+          { key: "no", label: t("tables.rental_assets.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.rental_assets.cols.asset") },
+          { key: "asset_code", label: t("tables.rental_assets.cols.asset_code") },
+          { key: "location", label: t("tables.rental_assets.cols.from_location") },
+          { key: "quantity", label: t("tables.rental_assets.cols.quantity"), align: "center" as const },
+          { key: "rental_revenue", label: t("tables.rental_assets.cols.revenue"), align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -649,14 +653,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as RentalReturnDocument;
       detailItems = {
-        title: "Returned asset list",
+        title: t("tables.returned_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
-          { key: "condition", label: "Condition", align: "center" as const },
+          { key: "no", label: t("tables.returned_assets.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.returned_assets.cols.asset") },
+          { key: "asset_code", label: t("tables.returned_assets.cols.asset_code") },
+          { key: "quantity", label: t("tables.returned_assets.cols.quantity"), align: "center" as const },
+          { key: "condition", label: t("tables.returned_assets.cols.condition"), align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -673,14 +677,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as TransferDocument;
       detailItems = {
-        title: "Transferred asset list",
+        title: t("tables.transferred_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset_name", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "from_location_name", label: "From Location" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
+          { key: "no", label: t("tables.transferred_assets.cols.no"), align: "center" as const },
+          { key: "asset_name", label: t("tables.transferred_assets.cols.asset") },
+          { key: "asset_code", label: t("tables.transferred_assets.cols.asset_code") },
+          { key: "from_location_name", label: t("tables.transferred_assets.cols.from_location") },
+          { key: "quantity", label: t("tables.transferred_assets.cols.quantity"), align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -697,14 +701,14 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as MaintenanceDocument;
       detailItems = {
-        title: "Maintenance asset list",
+        title: t("tables.maintenance_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
-          { key: "notes", label: "Notes" },
+          { key: "no", label: t("tables.maintenance_assets.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.maintenance_assets.cols.asset") },
+          { key: "asset_code", label: t("tables.maintenance_assets.cols.asset_code") },
+          { key: "quantity", label: t("tables.maintenance_assets.cols.quantity"), align: "center" as const },
+          { key: "notes", label: t("tables.maintenance_assets.cols.notes") },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -721,18 +725,18 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     ) {
       const d = detail as LiquidationDocument;
       detailItems = {
-        title: "Disposal items",
+        title: t("tables.disposal_items.title"),
         icon: Package,
         columns: [
-          { key: "no", label: "No", align: "center" as const },
-          { key: "asset", label: "Asset" },
-          { key: "asset_code", label: "Asset Code" },
-          { key: "from_location", label: "From Location" },
-          { key: "quantity", label: "Quantity", align: "center" as const },
-          { key: "unit_value", label: "Unit Value", align: "center" as const },
+          { key: "no", label: t("tables.disposal_items.cols.no"), align: "center" as const },
+          { key: "asset", label: t("tables.disposal_items.cols.asset") },
+          { key: "asset_code", label: t("tables.disposal_items.cols.asset_code") },
+          { key: "from_location", label: t("tables.disposal_items.cols.from_location") },
+          { key: "quantity", label: t("tables.disposal_items.cols.quantity"), align: "center" as const },
+          { key: "unit_value", label: t("tables.disposal_items.cols.unit_value"), align: "center" as const },
           {
             key: "remaining_value",
-            label: "Remaining Value",
+            label: t("tables.disposal_items.cols.remaining_value"),
             align: "center" as const,
           },
         ],
@@ -752,9 +756,11 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
     return {
       fields,
       detailItems,
-      documentTitle: getDocumentTitle(documentType),
+      documentTitle: t(`titles.${documentType}`, {
+        fallback: t("titles.default"),
+      }),
     };
-  }, [detail, documentType]);
+  }, [detail, documentType, t, tFields]);
 
   if (!formattedData) return null;
 

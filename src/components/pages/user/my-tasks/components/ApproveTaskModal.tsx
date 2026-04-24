@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ export function ApproveTaskModal({
   onConfirm,
   isSubmitting = false,
 }: ApproveTaskModalProps) {
+  const t = useTranslations("page_my_tasks.modals.approve_task");
   const [comment, setComment] = useState("");
 
   if (!task) return null;
@@ -43,12 +45,11 @@ export function ApproveTaskModal({
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             <DialogTitle className="text-xl font-semibold">
-              Approve request
+              {t("title")}
             </DialogTitle>
           </div>
           <DialogDescription className="text-xs text-muted-foreground mt-1">
-            You are approving the request for record{" "}
-            {task.document_record_number}.
+            {t("description", { recordNumber: task.document_record_number })}
           </DialogDescription>
         </DialogHeader>
 
@@ -56,7 +57,7 @@ export function ApproveTaskModal({
           <div className="grid grid-cols-1 gap-3 mb-1">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-muted-foreground">
-                Record number
+                {t("record_number")}
               </span>
               <span className="text-sm font-semibold">
                 {task.document_record_number}
@@ -65,7 +66,7 @@ export function ApproveTaskModal({
 
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-muted-foreground">
-                Current step
+                {t("current_step")}
               </span>
               <span className="text-sm font-bold text-blue-600">
                 {task.step_name}
@@ -74,10 +75,10 @@ export function ApproveTaskModal({
 
             <div className="flex flex-col gap-2 mt-2">
               <Label className="text-xs font-semibold text-muted-foreground tracking-wider">
-                Processing note
+                {t("processing_note")}
               </Label>
               <Textarea
-                placeholder="Enter your comments or reason here..."
+                placeholder={t("placeholder")}
                 className="min-h-[120px] bg-background border-border/60 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500/50 resize-none rounded-md text-sm transition-all shadow-sm"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -93,14 +94,14 @@ export function ApproveTaskModal({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
             onClick={() => onConfirm(comment)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : "Approve"}
+            {isSubmitting ? t("submitting") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

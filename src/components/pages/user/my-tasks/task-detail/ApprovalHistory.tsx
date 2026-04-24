@@ -2,6 +2,8 @@
 
 import { CheckCircle2, Clock, History, XCircle } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,12 +21,13 @@ export const ApprovalHistory = ({
   historyList,
   getStatusInfo,
 }: ApprovalHistoryProps) => {
+  const t = useTranslations("page_my_tasks.detail.approval_history");
   return (
     <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md mt-3">
       <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
         <History className="w-4 h-4 text-amber-500" />
         <CardTitle className="text-sm font-semibold text-primary leading-none">
-          Approval history
+          {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 bg-muted/10">
@@ -39,8 +42,7 @@ export const ApprovalHistory = ({
               <Clock className="w-8 h-8 text-muted-foreground/30 animate-pulse" />
             </div>
             <p className="text-sm text-muted-foreground italic max-w-xs text-center leading-relaxed">
-              The record is in the initialization stage or has no approval
-              updates yet.
+              {t("no_history")}
             </p>
           </div>
         ) : (
@@ -69,7 +71,7 @@ export const ApprovalHistory = ({
                     </span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    By{" "}
+                    {t("by")}{" "}
                     <span className="font-semibold text-foreground">
                       {hist.requester_name}
                     </span>

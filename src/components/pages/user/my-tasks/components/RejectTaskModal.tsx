@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ export function RejectTaskModal({
   onConfirm,
   isSubmitting = false,
 }: RejectTaskModalProps) {
+  const t = useTranslations("page_my_tasks.modals.reject_task");
   const [comment, setComment] = useState("");
 
   if (!task) return null;
@@ -43,12 +45,11 @@ export function RejectTaskModal({
           <div className="flex items-center gap-2">
             <XCircle className="w-5 h-5 text-destructive" />
             <DialogTitle className="text-xl font-semibold">
-              Reject request
+              {t("title")}
             </DialogTitle>
           </div>
           <DialogDescription className="text-xs text-muted-foreground mt-1">
-            You are rejecting the request for record{" "}
-            {task.document_record_number}.
+            {t("description", { recordNumber: task.document_record_number })}
           </DialogDescription>
         </DialogHeader>
 
@@ -56,7 +57,7 @@ export function RejectTaskModal({
           <div className="grid grid-cols-1 gap-3 mb-1">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-muted-foreground">
-                Record number
+                {t("record_number", { fallback: "Record number" })}
               </span>
               <span className="text-sm font-semibold">
                 {task.document_record_number}
@@ -65,7 +66,7 @@ export function RejectTaskModal({
 
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-muted-foreground">
-                Current step
+                {t("current_step", { fallback: "Current step" })}
               </span>
               <span className="text-sm font-bold text-blue-600">
                 {task.step_name}
@@ -74,10 +75,10 @@ export function RejectTaskModal({
 
             <div className="flex flex-col gap-2 mt-2">
               <Label className="text-xs font-semibold text-muted-foreground tracking-wider">
-                Rejection reason
+                {t("reason_note")}
               </Label>
               <Textarea
-                placeholder="Enter the reason for rejection here..."
+                placeholder={t("placeholder")}
                 className="min-h-[120px] bg-background border-border/60 focus-visible:ring-destructive/20 focus-visible:border-destructive/50 resize-none rounded-md text-sm transition-all shadow-sm"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -93,7 +94,7 @@ export function RejectTaskModal({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
@@ -101,7 +102,7 @@ export function RejectTaskModal({
             onClick={() => onConfirm(comment)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : "Confirm"}
+            {isSubmitting ? t("submitting") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -669,5 +669,267 @@
       "liquidation": "Liquidation",
       "workflow_approval": "Workflow approval"
     }
+  },
+  "page_my_tasks": {
+    "title": "My Tasks",
+    "summary": {
+      "pending": "Pending",
+      "pending_desc": "Need priority processing",
+      "completed": "Completed",
+      "completed_desc": "Good performance",
+      "rejected": "Rejected",
+      "rejected_desc": "Review reason"
+    },
+    "tabs": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    },
+    "filters": {
+      "search_placeholder": "Search record number, requester...",
+      "all_processes": "All processes",
+      "clear_filters": "Clear all filters"
+    },
+    "table": {
+      "no": "No",
+      "record_number": "Record number",
+      "process_type": "Process type",
+      "current_step": "Current step",
+      "requester": "Requester",
+      "created_date": "Created date",
+      "status": "Status",
+      "actions": "Actions",
+      "no_tasks": "No tasks found",
+      "everything_caught_up": "Everything is caught up! No tasks match your filters."
+    },
+    "detail": {
+      "vouchers_documents": "Vouchers & documents",
+      "action_header": {
+        "back_to_list": "Back to list",
+        "task_detail": "Task Detail"
+      },
+      "approval_form": {
+        "request_title": "Approve request",
+        "step_description": "You are performing the <b>{step}</b> step for this record.",
+        "approve": "Approve",
+        "reject": "Reject",
+        "comment_placeholder": "Enter feedback...",
+        "submit_approval": "Submit approval",
+        "submit_rejection": "Submit rejection",
+        "processing": "Processing..."
+      },
+      "document_info": {
+        "titles": {
+          "allocation": "Allocation information",
+          "stock_in": "Stock in information",
+          "stock_out": "Stock out information",
+          "recovery": "Recovery information",
+          "rental_return": "Rental return information",
+          "transfer": "Transfer information",
+          "maintenance": "Maintenance information",
+          "liquidation": "Liquidation information",
+          "rental": "Rental information",
+          "default": "Document information"
+        },
+        "fields": {
+          "allocated_to": "Allocated to",
+          "unit": "Unit",
+          "allocation_date": "Allocation date",
+          "issuer": "Issuer",
+          "staff_code": "Staff code",
+          "total_quantity": "Total quantity",
+          "adjustment_date": "Adjustment date",
+          "external_link": "External link",
+          "view_link": "View link",
+          "recovered_from": "Recovered from",
+          "recovery_date": "Recovery date",
+          "notes": "Notes",
+          "customer": "Customer",
+          "lease_date": "Lease date",
+          "duration": "Duration",
+          "total_revenue": "Total revenue",
+          "contract_number": "Contract number",
+          "return_date": "Return date",
+          "lease_record": "Lease record",
+          "transfer_type": "Transfer type",
+          "from": "From",
+          "to": "To",
+          "transfer_date": "Transfer date",
+          "total_assets": "Total assets",
+          "ticket_number": "Ticket number",
+          "service_provider": "Service provider",
+          "outing_date": "Outing date",
+          "expected_cost": "Expected cost",
+          "actual_cost": "Actual cost",
+          "handover_person": "Handover person",
+          "taker_person": "Taker person",
+          "reason": "Reason",
+          "liquidation_date": "Liquidation date",
+          "type": "Type",
+          "total_value": "Total value",
+          "buyer": "Buyer",
+          "committee": "Committee",
+          "disposal_items": "Disposal items",
+          "record_number": "Record number"
+        },
+        "tables": {
+          "allocated_assets": {
+            "title": "Allocated asset list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "location": "Location",
+              "quantity": "Quantity"
+            }
+          },
+          "stock_adjustment": {
+            "title": "Stock adjustment list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "location": "Location",
+              "type": "Type",
+              "quantity": "Quantity"
+            }
+          },
+          "recovered_assets": {
+            "title": "Recovered asset list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "location": "Location",
+              "quantity": "Quantity"
+            }
+          },
+          "rental_assets": {
+            "title": "Rental asset list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "from_location": "From Location",
+              "quantity": "Quantity",
+              "revenue": "Revenue"
+            }
+          },
+          "returned_assets": {
+            "title": "Returned asset list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "quantity": "Quantity",
+              "condition": "Condition"
+            }
+          },
+          "transferred_assets": {
+            "title": "Transferred asset list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "from_location": "From Location",
+              "quantity": "Quantity"
+            }
+          },
+          "maintenance_assets": {
+            "title": "Maintenance asset list",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "quantity": "Quantity",
+              "notes": "Notes"
+            }
+          },
+          "disposal_items": {
+            "title": "Disposal items",
+            "cols": {
+              "no": "No",
+              "asset": "Asset",
+              "asset_code": "Asset code",
+              "from_location": "From Location",
+              "quantity": "Quantity",
+              "unit_value": "Unit Value",
+              "remaining_value": "Remaining Value"
+            }
+          }
+        }
+      },
+      "sidebar_info": {
+        "title": "Additional information",
+        "creator": "Creator",
+        "created_time": "Created time",
+        "issuer_details": "Issuer details",
+        "system_notes": "System notes",
+        "system_notes_description": "All approval information is saved in the process history and cannot be deleted."
+      },
+      "approval_history": {
+        "title": "Approval History",
+        "no_history": "The record is in the initialization stage or has no approval updates yet.",
+        "by": "By"
+      }
+    },
+    "modals": {
+      "approve_task": {
+        "title": "Approve request",
+        "description": "You are approving the request for record {recordNumber}.",
+        "record_number": "Record number",
+        "current_step": "Current step",
+        "processing_note": "Processing note",
+        "placeholder": "Enter your comments or reason here...",
+        "cancel": "Cancel",
+        "submitting": "Processing...",
+        "confirm": "Approve"
+      },
+      "reject_task": {
+        "title": "Reject request",
+        "description": "You are rejecting the request for record {recordNumber}.",
+        "record_number": "Record number",
+        "current_step": "Current step",
+        "reason_note": "Reason for rejection",
+        "placeholder": "Enter your reason for rejection here...",
+        "cancel": "Cancel",
+        "submitting": "Processing...",
+        "confirm": "Reject"
+      },
+      "approve_audit": {
+        "title": "Approve audit",
+        "description": "Finalize and approve this audit record.",
+        "record_label": "Audit record",
+        "note_label": "Approval note",
+        "placeholder": "Add any final observations or notes here...",
+        "alert": "Upon approval, this audit will be officially recorded as finished and moved to the history logs.",
+        "cancel": "Cancel",
+        "submitting": "Approving...",
+        "confirm": "Approve"
+      },
+      "complete_audit": {
+        "title": "Complete audit",
+        "description": "Are you sure you want to mark this audit as complete?",
+        "audit_title": "Audit title",
+        "process_type": "Process type",
+        "alert": "Once completed, this audit will be moved to the <status /> status and can no longer be edited.",
+        "status_complete": "COMPLETE",
+        "cancel": "Cancel",
+        "submitting": "Completing...",
+        "confirm": "Confirm"
+      },
+      "reject_audit": {
+        "title": "Reject audit",
+        "description": "Please provide a reason for rejecting this audit record.",
+        "record_label": "Audit record",
+        "reason_label": "Rejection reason",
+        "placeholder": "Explain why this audit is being rejected...",
+        "alert": "Rejecting this audit will notify the assignee and return it to a pending state for correction.",
+        "cancel": "Cancel",
+        "submitting": "Rejecting...",
+        "confirm": "Confirm"
+      }
+    }
   }
 }

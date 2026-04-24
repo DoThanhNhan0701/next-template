@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
@@ -92,6 +93,11 @@ export default function MyTasksTable() {
   const dispatch = useDispatch<AppDispatch>();
 
   if (appliedQ) queryParams.append("q", appliedQ);
+
+  const tTabs = useTranslations("page_my_tasks.tabs");
+  const tFilters = useTranslations("page_my_tasks.filters");
+  const tTable = useTranslations("page_my_tasks.table");
+  const tDocTypes = useTranslations("page_workflow_templates.table.doc_types");
 
   const { response, pending, reFetch } = useGet<ITask[]>(
     { url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}` },
@@ -361,8 +367,8 @@ export default function MyTasksTable() {
               className="flex items-center justify-center gap-0.5 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               <Clock size={14} />
-              <span className="text-[10px] font-bold uppercase tracking-tight">
-                Pending
+              <span className="text-[10px] font-bold tracking-tight">
+                {tTabs("pending")}
               </span>
             </TabsTrigger>
             <TabsTrigger
@@ -370,8 +376,8 @@ export default function MyTasksTable() {
               className="flex items-center justify-center gap-0.5 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               <CheckCircle2 size={14} />
-              <span className="text-[10px] font-bold uppercase tracking-tight">
-                Approved
+              <span className="text-[10px] font-bold tracking-tight">
+                {tTabs("approved")}
               </span>
             </TabsTrigger>
             <TabsTrigger
@@ -379,8 +385,8 @@ export default function MyTasksTable() {
               className="flex items-center justify-center gap-0.5 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
             >
               <XCircle size={14} />
-              <span className="text-[10px] font-bold uppercase tracking-tight">
-                Rejected
+              <span className="text-[10px] font-bold tracking-tight">
+                {tTabs("rejected")}
               </span>
             </TabsTrigger>
           </TabsList>
@@ -393,7 +399,7 @@ export default function MyTasksTable() {
             size={16}
           />
           <Input
-            placeholder="Search record number, requester..."
+            placeholder={tFilters("search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -427,26 +433,37 @@ export default function MyTasksTable() {
               setLocalCurrentPage(1);
             }}
           >
-            <SelectTrigger className="h-10 px-4 bg-background/50 border-border/50 text-xs font-semibold hover:bg-background/80 transition-all w-[150px]">
+            <SelectTrigger className="h-10 px-4 bg-background/50 border-border/50 text-xs font-semibold hover:bg-background/80 transition-all min-w-[150px]">
               <div className="flex items-center gap-2">
                 <Filter
                   size={14}
                   className="text-muted-foreground/70 shrink-0"
                 />
-                <SelectValue placeholder="All processes" />
+                <SelectValue placeholder={tFilters("all_processes")} />
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Processes</SelectItem>
-              <SelectItem value="allocation">Allocation</SelectItem>
-              <SelectItem value="audit">Audit</SelectItem>
-              <SelectItem value="liquidation">Liquidation</SelectItem>
-              <SelectItem value="maintenance">Maintenance</SelectItem>
-              <SelectItem value="recovery">Recovery</SelectItem>
-              <SelectItem value="rental">Rental</SelectItem>
-              <SelectItem value="stock_in">Stock In</SelectItem>
-              <SelectItem value="stock_out">Stock Out</SelectItem>
-              <SelectItem value="transfer">Transfer</SelectItem>
+              <SelectItem value="all">{tFilters("all_processes")}</SelectItem>
+              <SelectItem value="allocation">
+                {tDocTypes("allocation")}
+              </SelectItem>
+              <SelectItem value="audit">{tDocTypes("audit")}</SelectItem>
+              <SelectItem value="liquidation">
+                {tDocTypes("liquidation")}
+              </SelectItem>
+              <SelectItem value="maintenance">
+                {tDocTypes("maintenance")}
+              </SelectItem>
+              <SelectItem value="recovery">{tDocTypes("recovery")}</SelectItem>
+              <SelectItem value="rental">{tDocTypes("rental")}</SelectItem>
+              <SelectItem value="rental_return">
+                {tDocTypes("rental_return")}
+              </SelectItem>
+              <SelectItem value="stock_in">{tDocTypes("stock_in")}</SelectItem>
+              <SelectItem value="stock_out">
+                {tDocTypes("stock_out")}
+              </SelectItem>
+              <SelectItem value="transfer">{tDocTypes("transfer")}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -459,8 +476,8 @@ export default function MyTasksTable() {
               setLocalCurrentPage(1);
               setSelectedProcessType("all");
             }}
-            className="order-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            className="order-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-90 shrink-0"
+            title={tFilters("clear_filters")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -472,28 +489,28 @@ export default function MyTasksTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {tTable("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider">
-                Record Number
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+                {tTable("record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider">
-                Process Type
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+                {tTable("process_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider">
-                Current Step
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+                {tTable("current_step")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider">
-                Requester
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+                {tTable("requester")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider">
-                Created Date
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+                {tTable("created_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider text-center">
-                Status
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider text-center">
+                {tTable("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] uppercase tracking-wider text-right">
-                Actions
+              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider text-right">
+                {tTable("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -504,8 +521,8 @@ export default function MyTasksTable() {
               <TableEmptyRow
                 colSpan={8}
                 icon={FileText}
-                message="No tasks found"
-                description="Everything is caught up! No tasks match your filters."
+                message={tTable("no_tasks")}
+                description={tTable("everything_caught_up")}
               />
             ) : (
               paginatedTasks.map((task, index) => (
@@ -535,22 +552,24 @@ export default function MyTasksTable() {
                       <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
                         {getProcessIcon(task.document_type)}
                       </div>
-                      <span className="text-xs font-bold text-foreground/80 capitalize">
-                        {task.document_type}
+                      <span className="text-xs font-bold text-foreground/80">
+                        {tDocTypes(
+                          task.document_type as Parameters<typeof tDocTypes>[0],
+                        )}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-2">
                     <Badge
                       variant="outline"
-                      className="px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70 uppercase"
+                      className="px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70"
                     >
                       {task.step_name}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-2">
                     <div className="flex items-center gap-2 text-sm">
-                      <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-bold uppercase text-secondary-foreground">
+                      <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-bold text-secondary-foreground">
                         {task.requester_name.charAt(0)}
                       </div>
                       <span className="font-medium text-foreground/80">
@@ -577,7 +596,11 @@ export default function MyTasksTable() {
                         getStatusBadge(task.status),
                       )}
                     >
-                      {task.status}
+                      {tTabs(
+                        task.status.toLowerCase() as Parameters<
+                          typeof tTabs
+                        >[0],
+                      )}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right">
@@ -592,25 +615,25 @@ export default function MyTasksTable() {
                               handleApprove(task);
                             }}
                             className="rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
-                            title="Approve"
+                            title={tTable("actions")}
                           >
                             <Check size={16} />
                           </Button>
                           {(task.document_type !== "audit" ||
                             task.status === "COMPLETED") && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleReject(task);
-                                }}
-                                className="rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
-                                title="Reject"
-                              >
-                                <CloseIcon size={16} />
-                              </Button>
-                            )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReject(task);
+                              }}
+                              className="rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
+                              title={tTable("actions")}
+                            >
+                              <CloseIcon size={16} />
+                            </Button>
+                          )}
                         </>
                       )}
                     </div>

@@ -669,5 +669,267 @@
       "liquidation": "Thanh lý",
       "workflow_approval": "Phê duyệt quy trình"
     }
+  },
+  "page_my_tasks": {
+    "title": "Công việc của tôi",
+    "summary": {
+      "pending": "Chờ xử lý",
+      "pending_desc": "Cần ưu tiên xử lý",
+      "completed": "Đã hoàn thành",
+      "completed_desc": "Hiệu suất tốt",
+      "rejected": "Đã từ chối",
+      "rejected_desc": "Xem lý do"
+    },
+    "tabs": {
+      "pending": "Chờ xử lý",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối",
+      "completed": "Hoàn tất"
+    },
+    "filters": {
+      "search_placeholder": "Tìm mã chứng từ, người yêu cầu...",
+      "all_processes": "Tất cả quy trình",
+      "clear_filters": "Xóa bộ lọc"
+    },
+    "table": {
+      "no": "STT",
+      "record_number": "Mã chứng từ",
+      "process_type": "Loại quy trình",
+      "current_step": "Bước hiện tại",
+      "requester": "Người yêu cầu",
+      "created_date": "Ngày tạo",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "no_tasks": "Không tìm thấy công việc",
+      "everything_caught_up": "Mọi thứ đã hoàn tất! Không có công việc nào khớp với bộ lọc."
+    },
+    "detail": {
+      "vouchers_documents": "Chứng từ & tài liệu",
+      "action_header": {
+        "back_to_list": "Quay lại danh sách",
+        "task_detail": "Chi tiết công việc"
+      },
+      "approval_form": {
+        "request_title": "Duyệt yêu cầu",
+        "step_description": "Bạn đang thực hiện bước <b>{step}</b> cho chứng từ này.",
+        "approve": "Duyệt",
+        "reject": "Từ chối",
+        "comment_placeholder": "Nhập ý kiến phản hồi...",
+        "submit_approval": "Xác nhận Duyệt",
+        "submit_rejection": "Xác nhận Từ chối",
+        "processing": "Đang xử lý..."
+      },
+      "document_info": {
+        "titles": {
+          "allocation": "Thông tin cấp phát",
+          "stock_in": "Thông tin nhập kho",
+          "stock_out": "Thông tin xuất kho",
+          "recovery": "Thông tin thu hồi",
+          "rental_return": "Thông tin trả thuê",
+          "transfer": "Thông tin điều chuyển",
+          "maintenance": "Thông tin bảo trì",
+          "liquidation": "Thông tin thanh lý",
+          "rental": "Thông tin cho thuê",
+          "default": "Thông tin chứng từ"
+        },
+        "fields": {
+          "allocated_to": "Cấp phát cho",
+          "unit": "Đơn vị",
+          "allocation_date": "Ngày cấp phát",
+          "issuer": "Người cấp",
+          "staff_code": "Mã nhân viên",
+          "total_quantity": "Tổng số lượng",
+          "adjustment_date": "Ngày điều chỉnh",
+          "external_link": "Liên kết ngoài",
+          "view_link": "Xem liên kết",
+          "recovered_from": "Thu hồi từ",
+          "recovery_date": "Ngày thu hồi",
+          "notes": "Ghi chú",
+          "customer": "Khách hàng",
+          "lease_date": "Ngày cho thuê",
+          "duration": "Thời gian",
+          "total_revenue": "Tổng doanh thu",
+          "contract_number": "Số hợp đồng",
+          "return_date": "Ngày trả",
+          "lease_record": "Chứng từ gốc",
+          "transfer_type": "Loại điều chuyển",
+          "from": "Từ",
+          "to": "Đến",
+          "transfer_date": "Ngày điều chuyển",
+          "total_assets": "Tổng tài sản",
+          "ticket_number": "Số phiếu",
+          "service_provider": "Nhà cung cấp dịch vụ",
+          "outing_date": "Ngày đi",
+          "expected_cost": "Chi phí dự kiến",
+          "actual_cost": "Chi phí thực tế",
+          "handover_person": "Người bàn giao",
+          "taker_person": "Người tiếp nhận",
+          "reason": "Lý do",
+          "liquidation_date": "Ngày thanh lý",
+          "type": "Loại",
+          "total_value": "Tổng giá trị",
+          "buyer": "Người mua",
+          "committee": "Hội đồng",
+          "disposal_items": "Danh sách thanh lý",
+          "record_number": "Số chứng từ"
+        },
+        "tables": {
+          "allocated_assets": {
+            "title": "Danh sách tài sản cấp phát",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "location": "Vị trí",
+              "quantity": "Số lượng"
+            }
+          },
+          "stock_adjustment": {
+            "title": "Danh sách điều chỉnh kho",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "location": "Vị trí",
+              "type": "Loại",
+              "quantity": "Số lượng"
+            }
+          },
+          "recovered_assets": {
+            "title": "Danh sách tài sản thu hồi",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "location": "Vị trí",
+              "quantity": "Số lượng"
+            }
+          },
+          "rental_assets": {
+            "title": "Danh sách tài sản cho thuê",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "from_location": "Vị trí xuất",
+              "quantity": "Số lượng",
+              "revenue": "Doanh thu"
+            }
+          },
+          "returned_assets": {
+            "title": "Danh sách tài sản trả lại",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "quantity": "Số lượng",
+              "condition": "Tình trạng"
+            }
+          },
+          "transferred_assets": {
+            "title": "Danh sách tài sản điều chuyển",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "from_location": "Vị trí xuất",
+              "quantity": "Số lượng"
+            }
+          },
+          "maintenance_assets": {
+            "title": "Danh sách tài sản bảo trì",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "quantity": "Số lượng",
+              "notes": "Ghi chú"
+            }
+          },
+          "disposal_items": {
+            "title": "Danh sách thanh lý",
+            "cols": {
+              "no": "STT",
+              "asset": "Tài sản",
+              "asset_code": "Mã tài sản",
+              "from_location": "Vị trí xuất",
+              "quantity": "Số lượng",
+              "unit_value": "Đơn giá",
+              "remaining_value": "Giá trị còn lại"
+            }
+          }
+        }
+      },
+      "sidebar_info": {
+        "title": "Thông tin bổ sung",
+        "creator": "Người tạo",
+        "created_time": "Thời gian tạo",
+        "issuer_details": "Chi tiết người cấp",
+        "system_notes": "Ghi chú hệ thống",
+        "system_notes_description": "Tất cả thông tin phê duyệt được lưu trong lịch sử quy trình và không thể xóa."
+      },
+      "approval_history": {
+        "title": "Lịch sử phê duyệt",
+        "no_history": "Chứng từ đang ở giai đoạn khởi tạo hoặc chưa có cập nhật phê duyệt.",
+        "by": "Bởi"
+      }
+    },
+    "modals": {
+      "approve_task": {
+        "title": "Duyệt yêu cầu",
+        "description": "Bạn đang duyệt yêu cầu cho chứng từ {recordNumber}.",
+        "record_number": "Số chứng từ",
+        "current_step": "Bước hiện tại",
+        "processing_note": "Ghi chú xử lý",
+        "placeholder": "Nhập nhận xét hoặc lý do của bạn tại đây...",
+        "cancel": "Hủy",
+        "submitting": "Đang xử lý...",
+        "confirm": "Duyệt"
+      },
+      "reject_task": {
+        "title": "Từ chối yêu cầu",
+        "description": "Bạn đang từ chối yêu cầu cho chứng từ {recordNumber}.",
+        "record_number": "Số chứng từ",
+        "current_step": "Bước hiện tại",
+        "reason_note": "Lý do từ chối",
+        "placeholder": "Nhập lý do từ chối tại đây...",
+        "cancel": "Hủy",
+        "submitting": "Đang xử lý...",
+        "confirm": "Từ chối"
+      },
+      "approve_audit": {
+        "title": "Duyệt kiểm kê",
+        "description": "Hoàn tất và phê duyệt phiếu kiểm kê này.",
+        "record_label": "Phiếu kiểm kê",
+        "note_label": "Ghi chú phê duyệt",
+        "placeholder": "Thêm bất kỳ quan sát hoặc ghi chú cuối cùng nào tại đây...",
+        "alert": "Sau khi phê duyệt, cuộc kiểm kê này sẽ chính thức được ghi nhận là đã kết thúc và chuyển vào nhật ký lịch sử.",
+        "cancel": "Hủy",
+        "submitting": "Đang duyệt...",
+        "confirm": "Duyệt"
+      },
+      "complete_audit": {
+        "title": "Hoàn tất kiểm kê",
+        "description": "Bạn có chắc chắn muốn đánh dấu cuộc kiểm kê này là hoàn tất không?",
+        "audit_title": "Tiêu đề kiểm kê",
+        "process_type": "Loại quy trình",
+        "alert": "Khi đã hoàn tất, cuộc kiểm kê này sẽ được chuyển sang trạng thái <status /> và không còn có thể chỉnh sửa được nữa.",
+        "status_complete": "HOÀN TẤT",
+        "cancel": "Hủy",
+        "submitting": "Đang hoàn tất...",
+        "confirm": "Xác nhận"
+      },
+      "reject_audit": {
+        "title": "Từ chối kiểm kê",
+        "description": "Vui lòng cung cấp lý do từ chối phiếu kiểm kê này.",
+        "record_label": "Phiếu kiểm kê",
+        "reason_label": "Lý do từ chối",
+        "placeholder": "Giải thích lý do tại sao phiếu kiểm kê này bị từ chối...",
+        "alert": "Từ chối cuộc kiểm kê này sẽ thông báo cho người được phân công và đưa nó trở lại trạng thái chờ để sửa đổi.",
+        "cancel": "Hủy",
+        "submitting": "Đang từ chối...",
+        "confirm": "Xác nhận"
+      }
+    }
   }
 }

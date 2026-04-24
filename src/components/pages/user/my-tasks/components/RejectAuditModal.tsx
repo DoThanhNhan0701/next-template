@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { AlertCircle, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ export function RejectAuditModal({
   onConfirm,
   isSubmitting = false,
 }: RejectAuditModalProps) {
+  const t = useTranslations("page_my_tasks.modals.reject_audit");
   const [reason, setReason] = useState("");
 
   if (!task) return null;
@@ -43,11 +45,11 @@ export function RejectAuditModal({
           <div className="flex items-center gap-2">
             <XCircle className="w-5 h-5 text-destructive" />
             <DialogTitle className="text-lg font-bold tracking-tight text-destructive/90">
-              Reject Audit
+              {t("title")}
             </DialogTitle>
           </div>
           <DialogDescription className="text-[10px] text-muted-foreground mt-0.5 tracking-wide">
-            Please provide a reason for rejecting this audit record.
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -55,7 +57,7 @@ export function RejectAuditModal({
           <div className="bg-background/40 backdrop-blur-sm rounded-lg p-3 border border-border/40 shadow-inner mb-4">
             <div className="flex flex-col gap-1">
               <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70">
-                Audit Record
+                {t("record_label")}
               </span>
               <span className="text-sm font-bold text-foreground/90 leading-tight">
                 {task.document_record_number}
@@ -65,10 +67,10 @@ export function RejectAuditModal({
 
           <div className="flex flex-col gap-2">
             <Label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">
-              Rejection Reason
+              {t("reason_label")}
             </Label>
             <Textarea
-              placeholder="Explain why this audit is being rejected..."
+              placeholder={t("placeholder")}
               className="min-h-[100px] bg-background/50 border-border/60 focus-visible:ring-destructive/20 focus-visible:border-destructive/50 resize-none rounded-lg text-sm transition-all shadow-sm"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -81,8 +83,7 @@ export function RejectAuditModal({
               className="mt-0.5 shrink-0 text-orange-500"
             />
             <p className="text-[10px] font-medium leading-relaxed">
-              Rejecting this audit will notify the assignee and return it to a
-              pending state for correction.
+              {t("alert")}
             </p>
           </div>
         </div>
@@ -94,7 +95,7 @@ export function RejectAuditModal({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
@@ -102,7 +103,7 @@ export function RejectAuditModal({
             onClick={() => onConfirm(reason)}
             disabled={isSubmitting || !reason.trim()}
           >
-            {isSubmitting ? "Rejecting..." : "Confirm"}
+            {isSubmitting ? t("submitting") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

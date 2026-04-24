@@ -2,6 +2,8 @@
 
 import { Clock, History, User } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AllocationDocument,
@@ -15,12 +17,13 @@ interface SidebarInfoProps {
 }
 
 export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
+  const t = useTranslations("page_my_tasks.detail.sidebar_info");
   return (
     <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group h-full">
       <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
         <History className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
         <CardTitle className="text-sm font-semibold text-primary">
-          Additional information
+          {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-3">
@@ -31,7 +34,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
                 <User className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                Creator
+                {t("creator")}
               </span>
             </div>
             <span className="text-sm font-semibold text-foreground">
@@ -48,7 +51,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
                 <Clock className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                Created time
+                {t("created_time")}
               </span>
             </div>
             <div className="flex flex-col items-end">
@@ -66,7 +69,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
                     <User className="w-4 h-4" />
                   </div>
                   <span className="text-sm font-bold text-muted-foreground tracking-wider">
-                    Issuer details
+                    {t("issuer_details")}
                   </span>
                 </div>
                 <div className="flex flex-col items-end">
@@ -82,11 +85,10 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
 
           <div className="mt-3 p-3 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-2">
             <span className="text-sm font-black text-muted-foreground tracking-[0.2em] text-center">
-              System notes
+              {t("system_notes")}
             </span>
             <p className="text-sm text-muted-foreground italic text-center leading-relaxed">
-              All approval information is saved in the process history and
-              cannot be deleted.
+              {t("system_notes_description")}
             </p>
           </div>
         </div>

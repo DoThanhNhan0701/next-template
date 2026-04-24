@@ -2,6 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -115,27 +117,29 @@ export function SummarySection({
   const displayApproved = isClient ? approvedCount : 0;
   const displayRejected = isClient ? rejectedCount : 0;
 
+  const t = useTranslations("page_my_tasks.summary");
+
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <SummaryCard
-          label="Pending"
+          label={t("pending")}
           value={displayPending}
-          description="Need priority processing"
+          description={t("pending_desc")}
           icon={Clock}
           color="orange"
         />
         <SummaryCard
-          label="Completed"
+          label={t("completed")}
           value={displayApproved}
-          description="Good performance"
+          description={t("completed_desc")}
           icon={CheckCircle2}
           color="green"
         />
         <SummaryCard
-          label="Rejected"
+          label={t("rejected")}
           value={displayRejected}
-          description="Review reason"
+          description={t("rejected_desc")}
           icon={XCircle}
           color="red"
         />

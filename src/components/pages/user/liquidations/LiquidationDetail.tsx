@@ -267,9 +267,7 @@ export default function LiquidationDetail({ id }: Props) {
                     Type
                   </span>
                 </div>
-                <Badge variant="secondary" className="capitalize">
-                  {detail.liquidation_type}
-                </Badge>
+                <Badge variant="secondary">{detail.liquidation_type}</Badge>
               </div>
               <Separator className="bg-border/40" />
               <div className="flex items-center justify-between">

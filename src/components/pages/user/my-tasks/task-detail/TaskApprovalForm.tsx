@@ -2,6 +2,8 @@
 
 import { CheckCircle2, MessageSquare, XCircle } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +26,7 @@ export const TaskApprovalForm = ({
   mutatePending,
   onAction,
 }: TaskApprovalFormProps) => {
+  const t = useTranslations("page_my_tasks.detail.approval_form");
   return (
     <Card className="border border-border/50 shadow-sm overflow-hidden bg-card/60 backdrop-blur-md relative mt-2">
       <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/80" />
@@ -37,14 +40,15 @@ export const TaskApprovalForm = ({
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-primary">
-                  Approval request
+                  {t("request_title")}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  You are at step{" "}
-                  <span className="font-bold text-primary">
-                    {activeTask?.step_name ?? "Processing"}
-                  </span>
-                  . Please review the details and take action.
+                  {t.rich("step_description", {
+                    step: activeTask?.step_name ?? t("processing"),
+                    b: (chunks) => (
+                      <span className="font-bold text-primary">{chunks}</span>
+                    ),
+                  })}
                 </p>
               </div>
             </div>
@@ -56,7 +60,7 @@ export const TaskApprovalForm = ({
               <div className="relative group">
                 <MessageSquare className="absolute top-3 left-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-all duration-200" />
                 <Textarea
-                  placeholder="Enter approval notes (optional)..."
+                  placeholder={t("comment_placeholder")}
                   className="pl-10 min-h-[80px] bg-background border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all resize-none shadow-sm text-sm"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
@@ -69,7 +73,7 @@ export const TaskApprovalForm = ({
                   disabled={mutatePending}
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  {mutatePending ? "Processing..." : "Approve"}
+                  {mutatePending ? t("processing") : t("approve")}
                 </Button>
                 <Button
                   variant="outline"
@@ -78,7 +82,7 @@ export const TaskApprovalForm = ({
                   disabled={mutatePending}
                 >
                   <XCircle className="w-4 h-4" />
-                  Reject
+                  {t("reject")}
                 </Button>
               </div>
             </div>

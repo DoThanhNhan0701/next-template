@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,8 @@ export function CompleteAuditModal({
   onConfirm,
   isSubmitting = false,
 }: CompleteAuditModalProps) {
+  const t = useTranslations("page_my_tasks.modals.complete_audit");
+
   if (!task) return null;
 
   return (
@@ -37,11 +40,11 @@ export function CompleteAuditModal({
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             <DialogTitle className="text-lg font-bold tracking-tight">
-              Complete Audit
+              {t("title")}
             </DialogTitle>
           </div>
           <DialogDescription className="text-[10px] text-muted-foreground mt-0.5 tracking-wide">
-            Are you sure you want to mark this audit as complete?
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -50,7 +53,7 @@ export function CompleteAuditModal({
             <div className="grid grid-cols-1 gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70">
-                  Audit Title
+                  {t("audit_title")}
                 </span>
                 <span className="text-sm font-bold text-foreground/90 leading-tight">
                   {task.document_record_number}
@@ -59,7 +62,7 @@ export function CompleteAuditModal({
 
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70">
-                  Process Type
+                  {t("process_type")}
                 </span>
                 <span className="text-xs font-extrabold text-primary/80">
                   {task.step_name}
@@ -74,11 +77,13 @@ export function CompleteAuditModal({
               className="mt-0.5 shrink-0 text-orange-500"
             />
             <p className="text-[10px] font-medium leading-relaxed">
-              Once completed, this audit will be moved to the{" "}
-              <span className="text-emerald-400 font-bold uppercase tracking-wider">
-                complete
-              </span>{" "}
-              status and can no longer be edited.
+              {t.rich("alert", {
+                status: () => (
+                  <span className="text-emerald-400 font-bold uppercase tracking-wider">
+                    {t("status_complete")}
+                  </span>
+                ),
+              })}
             </p>
           </div>
         </div>
@@ -90,10 +95,10 @@ export function CompleteAuditModal({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button type="button" onClick={onConfirm} disabled={isSubmitting}>
-            {isSubmitting ? "Completing..." : "Confirm"}
+            {isSubmitting ? t("submitting") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { useSearchParams } from "next/navigation";
 
+import { useTranslations } from "next-intl";
+
 import { useDispatch } from "react-redux";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
@@ -33,6 +35,7 @@ interface TaskDetailProps {
 }
 
 export default function TaskDetail({ id }: TaskDetailProps) {
+  const t = useTranslations("page_my_tasks.detail");
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
   const documentType = searchParams.get("document_type") ?? "allocation";
@@ -140,7 +143,7 @@ export default function TaskDetail({ id }: TaskDetailProps) {
       </div>
 
       <RecordAttachmentsCard
-        title="Vouchers & documents"
+        title={t("vouchers_documents")}
         className="mt-3"
         initialAttachments={
           (detail.attachments || []).map(

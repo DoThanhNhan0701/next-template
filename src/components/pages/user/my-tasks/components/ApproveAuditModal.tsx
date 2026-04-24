@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ export function ApproveAuditModal({
   onConfirm,
   isSubmitting = false,
 }: ApproveAuditModalProps) {
+  const t = useTranslations("page_my_tasks.modals.approve_audit");
   const [comment, setComment] = useState("");
 
   if (!task) return null;
@@ -43,11 +45,11 @@ export function ApproveAuditModal({
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-500" />
             <DialogTitle className="text-lg font-bold tracking-tight text-emerald-500/90">
-              Approve Audit
+              {t("title")}
             </DialogTitle>
           </div>
           <DialogDescription className="text-[10px] text-muted-foreground mt-0.5 tracking-wide">
-            Finalize and approve this audit record.
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -55,7 +57,7 @@ export function ApproveAuditModal({
           <div className="bg-background/40 backdrop-blur-sm rounded-lg p-3 border border-border/40 shadow-inner mb-4">
             <div className="flex flex-col gap-1">
               <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70">
-                Audit Record
+                {t("record_label")}
               </span>
               <span className="text-sm font-bold text-foreground/90 leading-tight">
                 {task.document_record_number}
@@ -65,10 +67,10 @@ export function ApproveAuditModal({
 
           <div className="flex flex-col gap-2">
             <Label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">
-              Approval Note (Optional)
+              {t("note_label")}
             </Label>
             <Textarea
-              placeholder="Add any final observations or notes here..."
+              placeholder={t("placeholder")}
               className="min-h-[100px] bg-background/50 border-border/60 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500/50 resize-none rounded-lg text-sm transition-all shadow-sm"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
@@ -81,8 +83,7 @@ export function ApproveAuditModal({
               className="mt-0.5 shrink-0 text-emerald-500"
             />
             <p className="text-[10px] font-medium leading-relaxed">
-              Upon approval, this audit will be officially recorded as finished
-              and moved to the history logs.
+              {t("alert")}
             </p>
           </div>
         </div>
@@ -94,14 +95,14 @@ export function ApproveAuditModal({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
             onClick={() => onConfirm(comment)}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Approving..." : "Approve"}
+            {isSubmitting ? t("submitting") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

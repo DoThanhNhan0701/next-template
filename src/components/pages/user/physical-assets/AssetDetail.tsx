@@ -309,7 +309,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                         <span className="text-sm text-muted-foreground">
                           Management type
                         </span>
-                        <span className="text-sm font-medium text-foreground capitalize">
+                        <span className="text-sm font-medium text-foreground">
                           {asset.management_type || "—"}
                         </span>
                       </div>

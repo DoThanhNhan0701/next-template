@@ -182,7 +182,7 @@ export default function CatalogTypeTable() {
                     {type.catalog_group_name || type.catalog_group?.name}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
-                    <span className="capitalize">
+                    <span>
                       {tt.has(type.management_type)
                         ? tt(type.management_type)
                         : type.management_type.replace("_", " ")}
