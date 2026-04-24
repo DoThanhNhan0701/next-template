@@ -1,14 +1,14 @@
 {
   "layout_user": {
-    "dashboard": "Bảng điều khiển",
+    "dashboard": "Tổng quan",
     "my_tasks": "Công việc của tôi",
     "assets": "Tài sản",
-    "rentals": "Thuê/mượn tài sản",
-    "inventory": "Kiểm kê",
-    "transfers": "Điều chuyển",
-    "stock_in_out": "Nhập & Xuất kho",
-    "allocation_recovery": "Cấp phát & Thu hồi",
-    "audits": "Kiểm toán",
+    "rentals": "Thuê tài sản",
+    "inventory": "Tồn kho",
+    "transfers": "Điều chuyển tài sản",
+    "stock_in_out": "Nhập / Xuất kho",
+    "allocation_recovery": "Cấp phát / Thu hồi",
+    "audits": "Kiểm kê",
     "maintenance": "Bảo trì",
     "liquidations": "Thanh lý"
   },

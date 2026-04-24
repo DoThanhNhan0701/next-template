@@ -581,7 +581,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           { key: "asset_code", label: "Asset Code" },
           { key: "location", label: "Location" },
           { key: "type", label: "Type", align: "center" as const },
-          { key: "quantity", label: "Quantity Diff", align: "center" as const },
+          { key: "quantity", label: "Quantity", align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -630,7 +630,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
           { key: "location", label: "From Location" },
-          { key: "quantity", label: "Qty", align: "center" as const },
+          { key: "quantity", label: "Quantity", align: "center" as const },
           { key: "rental_revenue", label: "Revenue", align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
@@ -655,7 +655,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           { key: "no", label: "No", align: "center" as const },
           { key: "asset", label: "Asset" },
           { key: "asset_code", label: "Asset Code" },
-          { key: "quantity", label: "Qty", align: "center" as const },
+          { key: "quantity", label: "Quantity", align: "center" as const },
           { key: "condition", label: "Condition", align: "center" as const },
         ],
         rows: d.details.map((item, index) => ({
@@ -778,17 +778,20 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           {detail.record_number}
         </div>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-4">
+        <div className="grid grid-cols-1 gap-x-3 gap-y-3">
           {formattedData.fields.map((field, index) => {
             const IconComponent = field.icon;
             return (
-              <div key={index} className="flex items-start gap-3">
+              <div
+                key={index}
+                className="flex items-center gap-3 border-b border-border/50 pb-3"
+              >
                 <div
                   className={`w-10 h-10 rounded-full ${field.iconColor} flex items-center justify-center shrink-0`}
                 >
                   <IconComponent className="w-5 h-5" />
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="grid grid-cols-[140px_1fr] items-center gap-2 py-0.5">
                   <span className="text-sm font-bold text-muted-foreground tracking-wider">
                     {field.label}
                   </span>

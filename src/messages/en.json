@@ -1,14 +1,14 @@
 {
   "layout_user": {
-    "dashboard": "Dashboard",
+    "dashboard": "Overview",
     "my_tasks": "My tasks",
     "assets": "Assets",
-    "rentals": "Rentals",
+    "rentals": "Asset rentals",
     "inventory": "Inventory",
-    "transfers": "Transfers",
-    "stock_in_out": "Stock in & out",
-    "allocation_recovery": "Allocation & recovery",
-    "audits": "Audits",
+    "transfers": "Asset transfers",
+    "stock_in_out": "Stock in / out",
+    "allocation_recovery": "Allocation / recovery",
+    "audits": "Inventory audits",
     "maintenance": "Maintenance",
     "liquidations": "Liquidations"
   },

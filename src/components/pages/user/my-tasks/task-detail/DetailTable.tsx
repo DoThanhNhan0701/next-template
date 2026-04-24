@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+
 import { LucideIcon, Package } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -22,9 +23,9 @@ interface Column {
 interface DetailTableProps {
   detailItems: {
     title: string;
-    icon: LucideIcon | React.ElementType; // Use specific icon type
+    icon: LucideIcon | React.ElementType;
     columns: Column[];
-    rows: Array<Record<string, string | number | null | undefined>>; // Use specific row type
+    rows: Array<Record<string, string | number | null | undefined>>;
   };
 }
 
@@ -34,7 +35,7 @@ export const DetailTable = ({ detailItems }: DetailTableProps) => {
   return (
     <div className="mt-6">
       <div className="flex items-center gap-2 mb-3">
-        <h3 className="text-sm font-semibold text-primary border-b pb-1 w-full flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-primary w-full flex items-center gap-2">
           <IconComponent className="w-4 h-4" />
           {detailItems.title}
         </h3>
@@ -109,11 +110,7 @@ const renderCellContent = (
   }
 
   if (key === "rental_revenue") {
-    return (
-      <span className="text-sm font-bold text-foreground">
-        {value}
-      </span>
-    );
+    return <span className="text-sm font-bold text-foreground">{value}</span>;
   }
 
   if (key === "type") {
@@ -148,15 +145,11 @@ const renderCellContent = (
 
   if (key === "asset" || key === "asset_name") {
     return (
-      <span className="text-sm font-semibold text-foreground">
-        {value}
-      </span>
+      <span className="text-sm font-semibold text-foreground">{value}</span>
     );
   }
 
   return (
-    <span className="text-sm text-muted-foreground font-medium">
-      {value}
-    </span>
+    <span className="text-sm text-muted-foreground font-medium">{value}</span>
   );
 };
