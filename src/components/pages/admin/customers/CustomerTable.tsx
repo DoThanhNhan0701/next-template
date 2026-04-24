@@ -43,16 +43,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ICustomer } from "@/types/customer";
 
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import CustomerFormModal from "./CustomerFormModal";
 
 export default function CustomerTable() {
   const t = useTranslations("page_customers");
   const tt = useTranslations("page_customers.table");
+  const td = useTranslations("page_customers.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -352,8 +353,19 @@ export default function CustomerTable() {
       <ConfirmDeleteModal
         isOpen={customerToDelete !== null}
         onClose={() => setCustomerToDelete(null)}
-        customer={customerToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: customerToDelete?.name || "this customer",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          customerToDelete
+            ? dynamicEndpoints.CUSTOMER_DETAIL(customerToDelete.id)
+            : ""
+        }
+        method="delete"
+        translationGroup="page_customers.delete"
       />
     </div>
   );

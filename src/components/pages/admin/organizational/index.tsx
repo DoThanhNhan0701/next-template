@@ -10,14 +10,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tree, TreeNode, convertToTreeNodes } from "@/components/ui/tree";
 import { OrgUnit } from "@/components/ui/tree";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { IOrgUnit } from "@/types/org";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
-import OrgUnitDeleteDialog from "./OrgUnitDeleteDialog";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import OrgUnitDetailView from "./OrgUnitDetailView";
 import OrgUnitFormModal from "./OrgUnitFormModal";
 
@@ -29,6 +29,7 @@ const flattenOrgUnits = (units: OrgUnit[]): OrgUnit[] => {
 
 export default function OrganizationalStructurePage() {
   const t = useTranslations("page_organization");
+  const td = useTranslations("page_organization.delete");
   const {
     response: data,
     pending: loading,
@@ -343,14 +344,22 @@ export default function OrganizationalStructurePage() {
         }}
       />
 
-      <OrgUnitDeleteDialog
+      <ConfirmDeleteModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        unitId={unitToDelete?.id || null}
-        unitName={unitToDelete?.name || null}
         onSuccess={() => {
           if (unitToDelete) handleDeleteSuccess(unitToDelete.id);
         }}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: unitToDelete?.name || "",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          unitToDelete ? dynamicEndpoints.ORG_UNIT_DETAIL(unitToDelete.id) : ""
+        }
+        method="delete"
+        translationGroup="page_organization.delete"
       />
     </div>
   );

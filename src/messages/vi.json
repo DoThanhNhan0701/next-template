@@ -77,6 +77,13 @@
       "password_min_length": "Mật khẩu phải có ít nhất {min} ký tự",
       "confirm_password_required": "Xác nhận mật khẩu là bắt buộc",
       "passwords_dont_match": "Mật khẩu không trùng khớp"
+    },
+    "delete": {
+      "title": "Xác nhận Hủy kích hoạt",
+      "confirm_message": "Bạn có chắc chắn muốn hủy kích hoạt tài khoản <important>{name}</important>? Hành động này sẽ ngăn người dùng đăng nhập.",
+      "cancel": "Hủy",
+      "delete": "Hủy kích hoạt",
+      "deleting": "Đang hủy..."
     }
   },
   "page_staff": {
@@ -139,9 +146,13 @@
     "save": "Lưu",
     "saving": "Đang lưu...",
     "deactivate_role": "Hủy kích hoạt vai trò",
-    "deactivate_confirm_question": "Bạn có chắc chắn muốn hủy kích hoạt hoặc xóa vai trò {name}? Hành động này có thể ảnh hưởng đến những người dùng được gán vai trò này.",
-    "delete": "Xóa",
-    "deleting": "Đang xóa...",
+    "delete": {
+      "title": "Xác nhận Hủy kích hoạt",
+      "confirm_message": "Bạn có chắc chắn muốn hủy kích hoạt hoặc xóa vai trò <important>{name}</important>? Hành động này có thể ảnh hưởng đến những người dùng được gán vai trò này.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
     "validation": {
       "field_required": "Trường này là bắt buộc!"
     }
@@ -192,11 +203,13 @@
     "cancel": "Hủy",
     "save": "Lưu",
     "saving": "Đang lưu...",
-    "delete_unit": "Xóa Đơn vị Tổ chức",
-    "delete_confirm": "Bạn có chắc chắn muốn xóa đơn vị tổ chức {name} không?",
-    "delete_warning": "Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.",
-    "delete": "Xóa",
-    "deleting": "Đang xóa...",
+    "delete": {
+      "title": "Xóa Đơn vị Tổ chức",
+      "confirm_message": "Bạn có chắc chắn muốn xóa đơn vị tổ chức <important>{name}</important>? Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
     "invalid_move": "Di chuyển không hợp lệ: không thể di chuyển một đơn vị vào chính nhánh của nó.",
     "validation": {
       "field_required": "Trường này là bắt buộc!"

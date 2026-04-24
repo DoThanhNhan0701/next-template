@@ -96,7 +96,7 @@ export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
               size="sm"
               onClick={() => onDelete(unit)}
             >
-              {t("delete")}
+              {t("delete.delete")}
             </Button>
           </div>
         </div>

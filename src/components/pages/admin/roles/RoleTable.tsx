@@ -35,18 +35,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { AppDispatch, RootState } from "@/redux";
 import { actionSetUser } from "@/redux/slices/auth";
 import { IRoleObj } from "@/types/auth";
 import { IRole } from "@/types/rbac";
 
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import RoleFormModal from "./RoleFormModal";
 
 export default function RoleTable() {
   const t = useTranslations("page_roles");
+  const td = useTranslations("page_roles.delete");
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const [skip, setSkip] = useState(0);
@@ -332,8 +333,17 @@ export default function RoleTable() {
       <ConfirmDeleteModal
         isOpen={roleToDelete !== null}
         onClose={() => setRoleToDelete(null)}
-        role={roleToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: roleToDelete?.name || "this role",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          roleToDelete ? dynamicEndpoints.RBAC_ROLE_DETAIL(roleToDelete.id) : ""
+        }
+        method="delete"
+        translationGroup="page_roles.delete"
       />
     </div>
   );

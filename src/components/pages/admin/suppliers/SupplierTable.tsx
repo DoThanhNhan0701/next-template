@@ -42,16 +42,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ISupplier } from "@/types/supplier";
 
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import SupplierFormModal from "./SupplierFormModal";
 
 export default function SupplierTable() {
   const t = useTranslations("page_suppliers");
   const tt = useTranslations("page_suppliers.table");
+  const td = useTranslations("page_suppliers.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -342,8 +343,19 @@ export default function SupplierTable() {
       <ConfirmDeleteModal
         isOpen={supplierToDelete !== null}
         onClose={() => setSupplierToDelete(null)}
-        supplier={supplierToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: supplierToDelete?.name || "this supplier",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          supplierToDelete
+            ? dynamicEndpoints.SUPPLIER_DETAIL(supplierToDelete.id)
+            : ""
+        }
+        method="delete"
+        translationGroup="page_suppliers.delete"
       />
     </div>
   );

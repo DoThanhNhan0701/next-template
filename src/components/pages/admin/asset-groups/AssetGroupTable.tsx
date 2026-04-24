@@ -34,16 +34,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IAssetGroup } from "@/types/asset-group";
 
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import AssetGroupFormModal from "./AssetGroupFormModal";
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 export default function AssetGroupTable() {
   const t = useTranslations("page_asset_groups");
   const tt = useTranslations("page_asset_groups.table");
+  const td = useTranslations("page_asset_groups.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -330,8 +331,20 @@ export default function AssetGroupTable() {
       <ConfirmDeleteModal
         isOpen={assetGroupToDelete !== null}
         onClose={() => setAssetGroupToDelete(null)}
-        assetGroup={assetGroupToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: assetGroupToDelete?.name || "this item",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          assetGroupToDelete
+            ? dynamicEndpoints.ASSET_GROUP_DETAIL(assetGroupToDelete.id)
+            : ""
+        }
+        method="patch"
+        body={{ is_active: false }}
+        translationGroup="page_asset_groups.delete"
       />
     </div>
   );

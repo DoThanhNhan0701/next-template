@@ -35,20 +35,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { AppDispatch, RootState } from "@/redux";
 import { actionSetUser } from "@/redux/slices/auth";
 import { IUser } from "@/types/auth";
 
 import ChangePasswordModal from "./ChangePasswordModal";
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import UserFormModal from "./UserFormModal";
 
 export default function UserTable() {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const t = useTranslations("page_users");
+  const td = useTranslations("page_users.delete");
 
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
@@ -350,8 +351,16 @@ export default function UserTable() {
       <ConfirmDeleteModal
         isOpen={userToDelete !== null}
         onClose={() => setUserToDelete(null)}
-        user={userToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: userToDelete?.username || "this user",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={userToDelete ? dynamicEndpoints.USER_DETAIL(userToDelete.id) : ""}
+        method="patch"
+        body={{ is_active: false }}
+        translationGroup="page_users.delete"
       />
     </div>
   );

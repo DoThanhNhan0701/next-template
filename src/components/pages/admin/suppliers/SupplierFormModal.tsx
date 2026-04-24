@@ -2,12 +2,15 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { GetSupplierSchema, ISupplierFormValues } from "@/components/schemas/admin/supplier.schema";
-import { useTranslations } from "next-intl";
+import {
+  GetSupplierSchema,
+  ISupplierFormValues,
+} from "@/components/schemas/admin/supplier.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -157,7 +160,11 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("tax_code_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("tax_code_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("tax_code_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -171,7 +178,11 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("contact_name_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("contact_name_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("contact_name_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -185,7 +196,11 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("phone_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("phone_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("phone_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -199,7 +214,11 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("email_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("email_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("email_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -216,7 +235,11 @@ export default function SupplierFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>{t("address_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("address_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("address_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -233,7 +256,11 @@ export default function SupplierFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>{t("description_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("description_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("description_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

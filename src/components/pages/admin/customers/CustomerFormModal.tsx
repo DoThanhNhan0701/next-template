@@ -2,12 +2,15 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { GetCustomerSchema, ICustomerFormValues } from "@/components/schemas/admin/customer.schema";
-import { useTranslations } from "next-intl";
+import {
+  GetCustomerSchema,
+  ICustomerFormValues,
+} from "@/components/schemas/admin/customer.schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -175,7 +178,9 @@ export default function CustomerFormModal({
                         <SelectValue placeholder={t("type_placeholder")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Individual">{t("type_individual")}</SelectItem>
+                        <SelectItem value="Individual">
+                          {t("type_individual")}
+                        </SelectItem>
                         <SelectItem value="Organization">
                           {t("type_organization")}
                         </SelectItem>
@@ -194,7 +199,10 @@ export default function CustomerFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("identifier_label")}</FieldLabel>
-                    <Input {...field} placeholder={t("identifier_placeholder")} />
+                    <Input
+                      {...field}
+                      placeholder={t("identifier_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -208,7 +216,11 @@ export default function CustomerFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("phone_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("phone_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("phone_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -222,7 +234,11 @@ export default function CustomerFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("email_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("email_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("email_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -239,7 +255,11 @@ export default function CustomerFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>{t("address_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("address_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("address_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -256,7 +276,11 @@ export default function CustomerFormModal({
                     className="gap-1 col-span-2"
                   >
                     <FieldLabel>{t("description_label")}</FieldLabel>
-                    <Input {...field} value={field.value || ""} placeholder={t("description_placeholder")} />
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder={t("description_placeholder")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

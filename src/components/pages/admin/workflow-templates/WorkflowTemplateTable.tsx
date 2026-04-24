@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
-import { EditIcon, GitBranch, Lock, Trash2Icon, Unlock } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { EditIcon, GitBranch, Lock, Trash2Icon, Unlock } from "lucide-react";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -18,16 +20,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IWorkflowTemplate } from "@/types/workflow-template";
 
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import WorkflowTemplateFormModal from "./WorkflowTemplateFormModal";
 
 export default function WorkflowTemplateTable() {
   const t = useTranslations("page_workflow_templates");
   const tt = useTranslations("page_workflow_templates.table");
+  const td = useTranslations("page_workflow_templates.delete");
   const { response, pending, setResponse } = useGet<IWorkflowTemplate[]>({
     url: endpoints.TEMPLATES,
   });
@@ -131,8 +133,7 @@ export default function WorkflowTemplateTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm">
-                    {docTypeLabels[item.document_type] ??
-                      item.document_type}
+                    {docTypeLabels[item.document_type] ?? item.document_type}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center text-sm">
                     {item.steps?.length ?? 0}
@@ -200,8 +201,21 @@ export default function WorkflowTemplateTable() {
       <ConfirmDeleteModal
         isOpen={templateToDelete !== null}
         onClose={() => setTemplateToDelete(null)}
-        template={templateToDelete}
         onSuccess={handleDeleteSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: templateToDelete?.name || "",
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
+        })}
+        url={
+          templateToDelete
+            ? dynamicEndpoints.TEMPLATE_DETAIL(templateToDelete.id)
+            : ""
+        }
+        method="delete"
+        translationGroup="page_workflow_templates.delete"
       />
     </div>
   );

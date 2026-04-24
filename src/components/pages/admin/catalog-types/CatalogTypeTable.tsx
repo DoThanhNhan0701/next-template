@@ -34,16 +34,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ICatalogType } from "@/types/catalog-type";
 
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import CatalogTypeFormModal from "./CatalogTypeFormModal";
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 export default function CatalogTypeTable() {
   const t = useTranslations("page_catalog_types");
   const tt = useTranslations("page_catalog_types.table");
+  const td = useTranslations("page_catalog_types.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -336,8 +337,20 @@ export default function CatalogTypeTable() {
       <ConfirmDeleteModal
         isOpen={catalogTypeToDelete !== null}
         onClose={() => setCatalogTypeToDelete(null)}
-        catalogType={catalogTypeToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: catalogTypeToDelete?.name || "this item",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          catalogTypeToDelete
+            ? dynamicEndpoints.CATALOG_TYPE_DETAIL(catalogTypeToDelete.id)
+            : ""
+        }
+        method="patch"
+        body={{ is_active: false }}
+        translationGroup="page_catalog_types.delete"
       />
     </div>
   );

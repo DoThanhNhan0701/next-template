@@ -27,16 +27,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStatus } from "@/types/status";
 
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import StatusFormModal from "./StatusFormModal";
 
 export default function StatusTable() {
   const t = useTranslations("page_asset_statuses");
   const tt = useTranslations("page_asset_statuses.table");
+  const td = useTranslations("page_asset_statuses.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -282,8 +283,19 @@ export default function StatusTable() {
       <ConfirmDeleteModal
         isOpen={statusToDelete !== null}
         onClose={() => setStatusToDelete(null)}
-        status={statusToDelete}
         onSuccess={handleSuccess}
+        title={td("title")}
+        description={td.rich("confirm_message", {
+          name: statusToDelete?.name || "this item",
+          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+        })}
+        url={
+          statusToDelete
+            ? dynamicEndpoints.STATUS_DETAIL(statusToDelete.id)
+            : ""
+        }
+        method="delete"
+        translationGroup="page_asset_statuses.delete"
       />
     </div>
   );

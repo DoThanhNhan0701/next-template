@@ -34,16 +34,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
 
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import LocationFormModal from "./LocationFormModal";
 
 export default function LocationTable() {
   const t = useTranslations("page_locations");
   const tt = useTranslations("page_locations.table");
+  const td = useTranslations("page_locations.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActiveFilter, setIsActiveFilter] = useState("all");
@@ -334,8 +335,27 @@ export default function LocationTable() {
       <ConfirmDeleteModal
         isOpen={locationToDelete !== null}
         onClose={() => setLocationToDelete(null)}
-        location={locationToDelete}
-        onSuccess={handleSuccess}
+        onSuccess={() => handleSuccess(locationToDelete, "delete")}
+        title={td("title")}
+        description={
+          <>
+            {td.rich("confirm_message", {
+              name: locationToDelete?.name || "this item",
+              important: (chunks) => (
+                <span className="font-semibold">{chunks}</span>
+              ),
+            })}
+            {" "}
+            {td("warning")}
+          </>
+        }
+        url={
+          locationToDelete
+            ? dynamicEndpoints.LOCATION_DETAIL(locationToDelete.id)
+            : ""
+        }
+        method="delete"
+        translationGroup="page_locations.delete"
       />
     </div>
   );

@@ -77,6 +77,13 @@
       "password_min_length": "Password must be at least {min} characters",
       "confirm_password_required": "Confirm password is required",
       "passwords_dont_match": "Passwords don't match"
+    },
+    "delete": {
+      "title": "Confirm Deactivation",
+      "confirm_message": "Are you sure you want to deactivate the account <important>{name}</important>? This action will prevent the user from logging in.",
+      "cancel": "Cancel",
+      "delete": "Deactivate",
+      "deleting": "Deactivating..."
     }
   },
   "page_staff": {
@@ -139,9 +146,13 @@
     "save": "Save",
     "saving": "Saving...",
     "deactivate_role": "Deactivate role",
-    "deactivate_confirm_question": "Are you sure you want to deactivate or delete the role {name}? This action may affect users assigned to this role.",
-    "delete": "Delete",
-    "deleting": "Deleting...",
+    "delete": {
+      "title": "Confirm Deactivation",
+      "confirm_message": "Are you sure you want to deactivate or delete the role <important>{name}</important>? This action may affect users assigned to this role.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
     "validation": {
       "field_required": "Field is required!"
     }
@@ -192,11 +203,13 @@
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
-    "delete_unit": "Delete organization unit",
-    "delete_confirm": "Are you sure you want to delete the organizational unit {name}?",
-    "delete_warning": "This action cannot be undone and will remove all associated data.",
-    "delete": "Delete",
-    "deleting": "Deleting...",
+    "delete": {
+      "title": "Delete organization unit",
+      "confirm_message": "Are you sure you want to delete the organizational unit <important>{name}</important>? This action cannot be undone and will remove all associated data.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
     "invalid_move": "Invalid move: cannot move a unit to its own branch.",
     "validation": {
       "field_required": "Field is required!"
