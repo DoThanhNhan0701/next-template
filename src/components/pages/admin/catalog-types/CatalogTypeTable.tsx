@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
-import { EditIcon, PlusIcon, Tag, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { EditIcon, Tag, Trash2Icon } from "lucide-react";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -38,7 +40,6 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ICatalogType } from "@/types/catalog-type";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import CatalogTypeFormModal from "./CatalogTypeFormModal";
 
 export default function CatalogTypeTable() {
@@ -81,8 +82,8 @@ export default function CatalogTypeTable() {
         setResponse((prev: ICatalogType[] | null) =>
           prev
             ? prev.map((u: ICatalogType) =>
-              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-            )
+                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+              )
             : null,
         );
         return;
@@ -121,10 +122,7 @@ export default function CatalogTypeTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_type")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_type")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -341,7 +339,9 @@ export default function CatalogTypeTable() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: catalogTypeToDelete?.name || "this item",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={
           catalogTypeToDelete

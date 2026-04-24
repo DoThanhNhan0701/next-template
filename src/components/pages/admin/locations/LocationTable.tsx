@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
-import { EditIcon, MapPin, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { EditIcon, MapPin, Trash2Icon } from "lucide-react";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -38,7 +40,6 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import LocationFormModal from "./LocationFormModal";
 
 export default function LocationTable() {
@@ -82,8 +83,8 @@ export default function LocationTable() {
         setResponse((prev: ILocation[] | null) =>
           prev
             ? prev.map((loc: ILocation) =>
-              loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
-            )
+                loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
+              )
             : null,
         );
         return;
@@ -135,10 +136,7 @@ export default function LocationTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_location")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_location")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -344,8 +342,7 @@ export default function LocationTable() {
               important: (chunks) => (
                 <span className="font-semibold">{chunks}</span>
               ),
-            })}
-            {" "}
+            })}{" "}
             {td("warning")}
           </>
         }

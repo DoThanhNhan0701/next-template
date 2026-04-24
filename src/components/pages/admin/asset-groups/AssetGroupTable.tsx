@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
-import { EditIcon, Layers, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { EditIcon, Layers, Trash2Icon } from "lucide-react";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -38,7 +40,6 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IAssetGroup } from "@/types/asset-group";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import AssetGroupFormModal from "./AssetGroupFormModal";
 
 export default function AssetGroupTable() {
@@ -82,8 +83,8 @@ export default function AssetGroupTable() {
         setResponse((prev: IAssetGroup[] | null) =>
           prev
             ? prev.map((u: IAssetGroup) =>
-              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-            )
+                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+              )
             : null,
         );
         return;
@@ -122,10 +123,7 @@ export default function AssetGroupTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_group")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_group")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -335,7 +333,9 @@ export default function AssetGroupTable() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: assetGroupToDelete?.name || "this item",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={
           assetGroupToDelete

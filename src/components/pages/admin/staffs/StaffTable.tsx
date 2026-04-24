@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 
-import { Contact, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
+
+import { Contact, EditIcon, Trash2Icon } from "lucide-react";
 
 import {
   TableEmptyRow,
@@ -77,11 +78,11 @@ export default function StaffTable() {
         setResponse((prev: { items: IStaff[] } | null) =>
           prev
             ? {
-              ...prev,
-              items: prev.items.map((u: IStaff) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              ),
-            }
+                ...prev,
+                items: prev.items.map((u: IStaff) =>
+                  u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+                ),
+              }
             : null,
         );
         return;
@@ -93,9 +94,9 @@ export default function StaffTable() {
         setResponse((prev: { items: IStaff[] } | null) =>
           prev
             ? {
-              ...prev,
-              items: [newItem, ...prev.items],
-            }
+                ...prev,
+                items: [newItem, ...prev.items],
+              }
             : null,
         );
         return;
@@ -123,10 +124,7 @@ export default function StaffTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_staff")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_staff")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -209,7 +207,7 @@ export default function StaffTable() {
                           variant="ghost"
                           size="icon"
                           className="text-red-500 hover:bg-red-500/10"
-                          onClick={() => { }}
+                          onClick={() => {}}
                         >
                           <Trash2Icon size={14} />
                         </Button>

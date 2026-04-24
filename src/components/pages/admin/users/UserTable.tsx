@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 
-import { EditIcon, Key, PlusIcon, Trash2Icon, UserCog } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 
+import { EditIcon, Key, Trash2Icon, UserCog } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -42,7 +44,6 @@ import { actionSetUser } from "@/redux/slices/auth";
 import { IUser } from "@/types/auth";
 
 import ChangePasswordModal from "./ChangePasswordModal";
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import UserFormModal from "./UserFormModal";
 
 export default function UserTable() {
@@ -94,8 +95,8 @@ export default function UserTable() {
         setResponse((prev: IUser[] | null) =>
           prev
             ? prev.map((u: IUser) =>
-              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-            )
+                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+              )
             : null,
         );
         return;
@@ -132,10 +133,7 @@ export default function UserTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_user")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_user")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -355,7 +353,9 @@ export default function UserTable() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: userToDelete?.username || "this user",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={userToDelete ? dynamicEndpoints.USER_DETAIL(userToDelete.id) : ""}
         method="patch"

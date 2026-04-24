@@ -41,7 +41,7 @@
     "all_statuses": "Tất cả trạng thái",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động",
-    "add_user": "Thêm người dùng",
+    "add_user": "Tạo mới",
     "edit_user": "Sửa người dùng",
     "deactivate_user": "Hủy kích hoạt người dùng",
     "change_password": "Đổi mật khẩu",
@@ -89,7 +89,7 @@
   "page_staff": {
     "title": "Nhân viên",
     "description": "Quản lý nhân viên",
-    "add_staff": "Thêm nhân viên",
+    "add_staff": "Tạo mới",
     "edit_staff": "Sửa nhân viên",
     "staff_code": "Mã nhân viên",
     "code_placeholder": "e.g. ST001",
@@ -123,7 +123,7 @@
   "page_roles": {
     "title": "Vai trò",
     "description": "Quản lý vai trò và quyền hạn trong hệ thống",
-    "add_role": "Thêm vai trò",
+    "add_role": "Tạo mới",
     "edit_role": "Sửa vai trò",
     "create_role": "Tạo vai trò",
     "role_name": "Tên vai trò",
@@ -217,7 +217,7 @@
   },
   "page_locations": {
     "title": "Vị trí",
-    "add_location": "Thêm Vị trí",
+    "add_location": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
@@ -262,7 +262,7 @@
   },
   "page_asset_groups": {
     "title": "Nhóm Tài sản",
-    "add_group": "Thêm Nhóm Tài sản",
+    "add_group": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
@@ -309,7 +309,7 @@
   },
   "page_catalog_types": {
     "title": "Loại danh mục",
-    "add_type": "Thêm Loại danh mục",
+    "add_type": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
@@ -358,7 +358,7 @@
   },
   "page_asset_statuses": {
     "title": "Trạng thái tài sản",
-    "add_status": "Thêm Trạng thái tài sản",
+    "add_status": "Tạo mới",
     "table": {
       "no": "STT",
       "code": "Mã",
@@ -400,7 +400,7 @@
   },
   "page_usage_modes": {
     "title": "Chế độ sử dụng",
-    "add_mode": "Thêm Chế độ sử dụng",
+    "add_mode": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động",
@@ -447,7 +447,7 @@
   },
   "page_suppliers": {
     "title": "Nhà cung cấp",
-    "add_supplier": "Thêm nhà cung cấp",
+    "add_supplier": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động",
@@ -501,7 +501,7 @@
   },
   "page_customers": {
     "title": "Khách hàng",
-    "add_customer": "Thêm khách hàng",
+    "add_customer": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động",

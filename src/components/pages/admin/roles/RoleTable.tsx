@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 
-import { EditIcon, PlusIcon, Shield, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
+
+import { EditIcon, Shield, Trash2Icon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -42,7 +44,6 @@ import { actionSetUser } from "@/redux/slices/auth";
 import { IRoleObj } from "@/types/auth";
 import { IRole } from "@/types/rbac";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import RoleFormModal from "./RoleFormModal";
 
 export default function RoleTable() {
@@ -98,8 +99,8 @@ export default function RoleTable() {
         setResponse((prev: IRole[] | null) =>
           prev
             ? prev.map((r: IRole) =>
-              r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
-            )
+                r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
+              )
             : null,
         );
         return;
@@ -136,10 +137,7 @@ export default function RoleTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_role")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_role")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -337,7 +335,9 @@ export default function RoleTable() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: roleToDelete?.name || "this role",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={
           roleToDelete ? dynamicEndpoints.RBAC_ROLE_DETAIL(roleToDelete.id) : ""

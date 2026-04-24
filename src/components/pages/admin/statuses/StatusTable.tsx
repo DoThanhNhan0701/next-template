@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
-import { CircleDot, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { CircleDot, EditIcon, Trash2Icon } from "lucide-react";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -31,7 +33,6 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStatus } from "@/types/status";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import StatusFormModal from "./StatusFormModal";
 
 export default function StatusTable() {
@@ -75,10 +76,7 @@ export default function StatusTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-end w-full">
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_status")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_status")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -287,7 +285,9 @@ export default function StatusTable() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: statusToDelete?.name || "this item",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={
           statusToDelete

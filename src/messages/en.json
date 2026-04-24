@@ -41,7 +41,7 @@
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
-    "add_user": "Add user",
+    "add_user": "Create",
     "edit_user": "Edit user",
     "deactivate_user": "Deactivate user",
     "change_password": "Change password",
@@ -89,7 +89,7 @@
   "page_staff": {
     "title": "Staff",
     "description": "Manage staff",
-    "add_staff": "Add staff",
+    "add_staff": "Create",
     "edit_staff": "Edit staff",
     "staff_code": "Staff code",
     "code_placeholder": "e.g. ST001",
@@ -123,7 +123,7 @@
   "page_roles": {
     "title": "Roles",
     "description": "Manage roles and permissions in the system",
-    "add_role": "Add role",
+    "add_role": "Create",
     "edit_role": "Edit role",
     "create_role": "Create role",
     "role_name": "Role name",
@@ -217,7 +217,7 @@
   },
   "page_locations": {
     "title": "Locations",
-    "add_location": "Add location",
+    "add_location": "Create",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -262,7 +262,7 @@
   },
   "page_asset_groups": {
     "title": "Asset groups",
-    "add_group": "Add asset group",
+    "add_group": "Create",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -309,7 +309,7 @@
   },
   "page_catalog_types": {
     "title": "Catalog types",
-    "add_type": "Add catalog type",
+    "add_type": "Create",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -358,7 +358,7 @@
   },
   "page_asset_statuses": {
     "title": "Asset statuses",
-    "add_status": "Add asset status",
+    "add_status": "Create",
     "table": {
       "no": "No",
       "code": "Code",
@@ -400,7 +400,7 @@
   },
   "page_usage_modes": {
     "title": "Usage modes",
-    "add_mode": "Add usage mode",
+    "add_mode": "Create",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -447,7 +447,7 @@
   },
   "page_suppliers": {
     "title": "Suppliers",
-    "add_supplier": "Add supplier",
+    "add_supplier": "Create",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -501,7 +501,7 @@
   },
   "page_customers": {
     "title": "Customers",
-    "add_customer": "Add customer",
+    "add_customer": "Create",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",

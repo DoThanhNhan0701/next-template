@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { Search } from "lucide-react";
-import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
+import { Search } from "lucide-react";
+import { toast } from "sonner";
+
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tree, TreeNode, convertToTreeNodes } from "@/components/ui/tree";
@@ -17,7 +19,6 @@ import { IOrgUnit } from "@/types/org";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import OrgUnitDetailView from "./OrgUnitDetailView";
 import OrgUnitFormModal from "./OrgUnitFormModal";
 
@@ -276,14 +277,13 @@ export default function OrganizationalStructurePage() {
       <div className="flex items-center justify-end gap-2">
         <Button
           variant="outline"
-          size="sm"
           onClick={() => reFetch()}
           disabled={loading}
           className="shadow-sm"
         >
           {t("refresh")}
         </Button>
-        <Button size="sm" onClick={handleCreateRoot} className="shadow-sm">
+        <Button onClick={handleCreateRoot} className="shadow-sm">
           {t("create")}
         </Button>
       </div>
@@ -353,7 +353,9 @@ export default function OrganizationalStructurePage() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: unitToDelete?.name || "",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={
           unitToDelete ? dynamicEndpoints.ORG_UNIT_DETAIL(unitToDelete.id) : ""

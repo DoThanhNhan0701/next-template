@@ -2,18 +2,19 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import {
   Building2,
   EditIcon,
   Mail,
   Phone,
-  PlusIcon,
   Trash2Icon,
   User,
   Users,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -47,7 +48,6 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ICustomer } from "@/types/customer";
 
-import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import CustomerFormModal from "./CustomerFormModal";
 
 export default function CustomerTable() {
@@ -122,10 +122,7 @@ export default function CustomerTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>
-          <PlusIcon size={16} className="mr-2" />
-          {t("add_customer")}
-        </Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_customer")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -357,7 +354,9 @@ export default function CustomerTable() {
         title={td("title")}
         description={td.rich("confirm_message", {
           name: customerToDelete?.name || "this customer",
-          important: (chunks) => <span className="font-semibold">{chunks}</span>,
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
         })}
         url={
           customerToDelete
