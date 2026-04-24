@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { PlusIcon, Trash } from "lucide-react";
 import {
   type Control,
@@ -79,6 +80,7 @@ function RentalItemRow({
   locations,
   onRemove,
 }: RentalItemRowProps) {
+  const t = useTranslations("page_rentals");
   const locationId = useWatch({
     control,
     name: `items.${index}.from_location_id`,
@@ -116,7 +118,7 @@ function RentalItemRow({
 
       <div className="grid grid-cols-2 gap-2">
         <Field className="gap-1">
-          <FieldLabel>Location</FieldLabel>
+          <FieldLabel>{t("form.location")}</FieldLabel>
           <Select
             onValueChange={(val) => {
               setValue(`items.${index}.from_location_id`, Number(val));
@@ -125,7 +127,7 @@ function RentalItemRow({
             value={locationId ? locationId.toString() : ""}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select location" />
+              <SelectValue placeholder={t("form.placeholder_location")} />
             </SelectTrigger>
             <SelectContent>
               {locations.map((loc) => (
@@ -142,7 +144,7 @@ function RentalItemRow({
           control={control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Asset</FieldLabel>
+              <FieldLabel>{t("form.asset")}</FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
                 value={field.value ? field.value.toString() : ""}
@@ -152,10 +154,10 @@ function RentalItemRow({
                   <SelectValue
                     placeholder={
                       !locationId
-                        ? "Select location first"
+                        ? t("form.placeholder_select_location_first")
                         : assetsPending
-                          ? "Loading..."
-                          : "Select asset"
+                          ? t("form.placeholder_loading")
+                          : t("form.placeholder_select_asset")
                     }
                   />
                 </SelectTrigger>
@@ -181,12 +183,12 @@ function RentalItemRow({
           control={control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Quantity</FieldLabel>
+              <FieldLabel>{t("form.quantity")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value as number | string | null}
                 onChange={(val) => field.onChange(val ?? 0)}
-                placeholder="e.g. 1"
+                placeholder={t("form.placeholder_quantity")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -197,12 +199,12 @@ function RentalItemRow({
           control={control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Item revenue</FieldLabel>
+              <FieldLabel>{t("form.item_revenue")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value as number | string | null}
                 onChange={(val) => field.onChange(val ?? 0)}
-                placeholder="0.00"
+                placeholder={t("form.placeholder_item_revenue")}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -221,6 +223,7 @@ interface Props {
 }
 
 export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
+  const t = useTranslations("page_rentals");
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.rental);
@@ -350,9 +353,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Create Rental Record</DialogTitle>
+          <DialogTitle>{t("form.create_title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Fill in details to create a new rental record.
+            {t("form.create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -365,7 +368,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
               {/* General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  General Information
+                  {t("form.general_info")}
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -373,8 +376,8 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Contract number</FieldLabel>
-                        <Input {...field} placeholder="e.g. HD/123" />
+                        <FieldLabel>{t("form.contract_number")}</FieldLabel>
+                        <Input {...field} placeholder={t("form.placeholder_contract")} />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -386,11 +389,11 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field }) => (
                       <Field className="gap-1">
-                        <FieldLabel>External link</FieldLabel>
+                        <FieldLabel>{t("form.external_link")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. Jira/Helpdesk link"
+                          placeholder={t("form.placeholder_link")}
                         />
                       </Field>
                     )}
@@ -400,13 +403,13 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Organization</FieldLabel>
+                        <FieldLabel>{t("form.organization")}</FieldLabel>
                         <Select
                           onValueChange={(val) => field.onChange(Number(val))}
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select organization" />
+                            <SelectValue placeholder={t("form.placeholder_org")} />
                           </SelectTrigger>
                           <SelectContent>
                             {orgUnits.map((o) => (
@@ -427,13 +430,13 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Customer</FieldLabel>
+                        <FieldLabel>{t("form.customer")}</FieldLabel>
                         <Select
                           onValueChange={(val) => field.onChange(Number(val))}
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select customer" />
+                            <SelectValue placeholder={t("form.placeholder_customer")} />
                           </SelectTrigger>
                           <SelectContent>
                             {customers?.map((c) => (
@@ -454,7 +457,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Lease date</FieldLabel>
+                        <FieldLabel>{t("form.lease_date")}</FieldLabel>
                         <DatePickerField form={form} name="lease_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -467,12 +470,12 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Duration (days)</FieldLabel>
+                        <FieldLabel>{t("form.duration")}</FieldLabel>
                         <FormattedNumberInput
                           {...field}
                           value={field.value as number | string | null}
                           onChange={(val) => field.onChange(val ?? 0)}
-                          placeholder="e.g. 1"
+                          placeholder={t("form.placeholder_duration")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -485,12 +488,12 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Total revenue</FieldLabel>
+                        <FieldLabel>{t("form.total_revenue")}</FieldLabel>
                         <FormattedNumberInput
                           {...field}
                           value={field.value as number | string | null}
                           onChange={(val) => field.onChange(val ?? 0)}
-                          placeholder="0.00"
+                          placeholder={t("form.placeholder_revenue")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -503,10 +506,10 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Reason</FieldLabel>
+                        <FieldLabel>{t("form.reason")}</FieldLabel>
                         <Textarea
                           {...field}
-                          placeholder="e.g. For event"
+                          placeholder={t("form.placeholder_reason")}
                           className="min-h-[80px]"
                         />
                         {fieldState.invalid && (
@@ -519,9 +522,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
               </div>
 
               <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between border-b pb-1">
+                 <div className="flex items-center justify-between border-b pb-1">
                   <h3 className="text-sm font-semibold text-primary">
-                    Rental Assets
+                    {t("form.rental_assets")}
                   </h3>
                   <Button
                     type="button"
@@ -538,7 +541,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> Add Asset
+                    <PlusIcon size={12} className="mr-1" /> {t("form.btn_add_asset")}
                   </Button>
                 </div>
 
@@ -564,7 +567,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
 
               <FormAttachmentsSection
                 control={form.control}
-                title="Attachments"
+                title={t("form.attachments")}
               />
 
               <ApprovalProcessSection
@@ -572,17 +575,17 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                 control={form.control}
                 steps={activeRentalTemplate?.steps || []}
                 users={users}
-                title="Approval Process"
+                title={t("form.approval_process")}
               />
             </div>
           </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              {t("form.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Save"}
+              {pending ? t("form.saving") : t("form.save")}
             </Button>
           </DialogFooter>
         </form>

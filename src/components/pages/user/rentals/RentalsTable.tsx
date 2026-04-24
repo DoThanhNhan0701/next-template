@@ -14,6 +14,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -58,6 +59,8 @@ import { formatDate } from "@/utils/date";
 import RentalFormModal from "./RentalFormModal";
 
 export default function RentalsTable() {
+  const t = useTranslations("page_rentals");
+  const tCommon = useTranslations("page_customers");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen: rentalReduxOpen } = useSelector(
@@ -122,7 +125,7 @@ export default function RentalsTable() {
             size={16}
           />
           <Input
-            placeholder="Search record number, contract..."
+            placeholder={t("search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -150,12 +153,12 @@ export default function RentalsTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="Organization" />
+                  <SelectValue placeholder={t("organization")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Organization</SelectItem>
+              <SelectItem value="all">{t("organization")}</SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
@@ -172,12 +175,12 @@ export default function RentalsTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All customers" />
+                  <SelectValue placeholder={t("all_customers")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Customers</SelectItem>
+              <SelectItem value="all">{t("all_customers")}</SelectItem>
               {customers?.map((c) => (
                 <SelectItem key={c.id} value={c.id.toString()}>
                   {c.name}
@@ -200,7 +203,7 @@ export default function RentalsTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("btn_searching") : t("btn_search")}
           </Button>
 
           <Button
@@ -226,7 +229,7 @@ export default function RentalsTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Create
+            {t("btn_create")}
           </Button>
         </div>
       </div>
@@ -235,22 +238,22 @@ export default function RentalsTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Rental Record
+                {t("table.rental_record")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Customer
+                {t("table.customer")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Total Assets
+                {t("table.total_assets")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Lease Date
+                {t("table.lease_date")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("table.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -261,8 +264,8 @@ export default function RentalsTable() {
               <TableEmptyRow
                 colSpan={6}
                 icon={ClipboardList}
-                message="No rentals found"
-                description="No rental records match your current search or filter criteria."
+                message={t("table.no_rentals_found")}
+                description={t("table.no_rentals_description")}
               />
             ) : (
               rentals.map((rental, index) => (
@@ -297,8 +300,8 @@ export default function RentalsTable() {
                         className="w-fit text-[10px] px-1.5 py-0"
                       >
                         {rental.customer_type === "individual"
-                          ? "Individual"
-                          : "Organization"}
+                          ? tCommon("form.type_individual")
+                          : tCommon("form.type_organization")}
                       </Badge>
                     </div>
                   </TableCell>

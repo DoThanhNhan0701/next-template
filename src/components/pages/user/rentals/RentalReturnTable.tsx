@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import {
   Calendar,
@@ -51,6 +52,9 @@ import { IStatus } from "@/types/status";
 import { RentalReturnDocument } from "@/types/task";
 
 export default function RentalReturnTable() {
+  const t = useTranslations("page_rental_returns");
+  const tRentals = useTranslations("page_rentals");
+  const tCustomers = useTranslations("page_customers.form");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
@@ -100,7 +104,7 @@ export default function RentalReturnTable() {
             size={16}
           />
           <Input
-            placeholder="Search rental returns..."
+            placeholder={t("search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -128,12 +132,12 @@ export default function RentalReturnTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All statuses" />
+                  <SelectValue placeholder={t("all_statuses")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="all">{t("all_statuses")}</SelectItem>
               {statuses.map((s) => (
                 <SelectItem key={s.id} value={s.code}>
                   {s.name}
@@ -155,7 +159,7 @@ export default function RentalReturnTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? tRentals("btn_searching") : tRentals("btn_search")}
           </Button>
 
           <Button
@@ -183,25 +187,25 @@ export default function RentalReturnTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Record Number
+                {t("table.record_number")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Customer
+                {t("table.customer")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Contract
+                {t("table.contract")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Return Location
+                {t("table.return_location")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Return Date
+                {t("table.return_date")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("table.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -212,8 +216,8 @@ export default function RentalReturnTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={ClipboardList}
-                message="No rental returns found"
-                description="Adjust filters to find rental return records."
+                message={t("table.no_returns_found")}
+                description={t("table.no_returns_description")}
               />
             ) : (
               rentalReturns.map((rentalReturn, index) => {
@@ -252,8 +256,8 @@ export default function RentalReturnTable() {
                         >
                           {rentalReturn.rental.customer.customer_type ===
                             "individual"
-                            ? "Individual"
-                            : "Organization"}
+                            ? tCustomers("type_individual")
+                            : tCustomers("type_organization")}
                         </Badge>
                       </div>
                     </TableCell>

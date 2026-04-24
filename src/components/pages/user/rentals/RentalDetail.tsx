@@ -22,6 +22,8 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -52,6 +54,7 @@ interface Props {
 }
 
 export default function RentalDetail({ id }: Props) {
+  const t = useTranslations("page_rentals");
   const router = useRouter();
   const [showReturnModal, setShowReturnModal] = useState(false);
 
@@ -123,10 +126,10 @@ export default function RentalDetail({ id }: Props) {
           </Button>
           <div className="flex flex-col gap-0.5">
             <h1 className="text-lg font-semibold text-foreground">
-              Rental Detail
+              {t("detail.title")}
             </h1>
             <span className="text-xs text-muted-foreground">
-              Rental Management
+              {t("detail.subtitle")}
             </span>
           </div>
         </div>
@@ -136,7 +139,7 @@ export default function RentalDetail({ id }: Props) {
             onClick={() => setShowReturnModal(true)}
             className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all"
           >
-            Return assets
+            {t("detail.btn_return")}
           </Button>
         )}
       </div>
@@ -153,13 +156,13 @@ export default function RentalDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Record Number
+                  {t("detail.record_number")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Contract: {detail.contract_number || "—"}
+                  {t("detail.contract", { number: detail.contract_number || "—" })}
                 </span>
               </div>
             </div>
@@ -168,7 +171,7 @@ export default function RentalDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-20">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Total Assets
+                  {t("detail.total_assets")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
                   {totalAssets}
@@ -176,7 +179,7 @@ export default function RentalDetail({ id }: Props) {
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-amber-500/5 border border-amber-500/10 min-w-25">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Return Date
+                  {t("detail.return_date")}
                 </span>
                 <span className="text-2xl font-bold text-amber-600">
                   {formatDate(returnDate)}
@@ -206,7 +209,7 @@ export default function RentalDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Rental Items
+                {t("detail.rental_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -214,25 +217,25 @@ export default function RentalDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("table.no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("detail.col_asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      From Location
+                      {t("detail.col_from_location")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Lessee Location
+                      {t("form.location")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Quantity
+                      {t("table.total_assets")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Returned
+                      {t("detail.col_return_date")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-right">
-                      Revenue
+                      {t("form.item_revenue")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -298,13 +301,13 @@ export default function RentalDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Building2 className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Customer Information
+                {t("detail.customer_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Name
+                  {t("detail.customer_name")}
                 </span>
                 <span className="text-sm font-semibold text-foreground">
                   {detail.customer.name}
@@ -324,7 +327,7 @@ export default function RentalDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-1 pt-2 border-t border-border/50">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Identifier
+                  {t("detail.identifier")}
                 </span>
                 <code className="text-xs font-mono bg-muted px-2 py-1 rounded text-foreground">
                   {detail.customer.identifier}
@@ -338,7 +341,7 @@ export default function RentalDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <FileCheck className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Rental Information
+                {t("detail.rental_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -346,7 +349,7 @@ export default function RentalDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Lease Date
+                    {t("detail.lease_date")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -357,18 +360,18 @@ export default function RentalDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Clock size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Duration
+                    {t("detail.duration")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
-                  {detail.duration_days} days
+                  {t("detail.duration_days", { days: detail.duration_days })}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Return Date
+                    {t("detail.return_date")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -379,7 +382,7 @@ export default function RentalDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <DollarSign size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Total Revenue
+                    {t("detail.total_revenue")}
                   </span>
                 </div>
                 <span className="text-sm font-bold text-emerald-600">
@@ -391,7 +394,7 @@ export default function RentalDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Link2 size={15} />
                     <span className="text-xs font-semibold tracking-wider">
-                      Link
+                      {t("form.external_link")}
                     </span>
                   </div>
                   <a
@@ -407,7 +410,7 @@ export default function RentalDetail({ id }: Props) {
               {detail.notes && (
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                   <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                    Notes
+                    {t("detail.notes")}
                   </span>
                   <p className="text-sm text-foreground/80 leading-relaxed italic">
                     {detail.notes}
@@ -420,14 +423,14 @@ export default function RentalDetail({ id }: Props) {
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
               {isActive
-                ? "Rental is currently active."
-                : "Rental has been completed."}
+                ? t("detail.active_msg")
+                : t("detail.completed_msg")}
             </p>
           </div>
         </div>
       </div>
       <RecordAttachmentsCard
-        title="Rental Documents"
+        title={t("detail.attachments")}
         initialAttachments={detail.attachments}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -456,7 +459,7 @@ export default function RentalDetail({ id }: Props) {
         <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
           <History className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm font-semibold text-primary">
-            Approval History
+            {t("detail.approval_history")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -469,7 +472,7 @@ export default function RentalDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">No approval history yet.</p>
+              <p className="text-sm italic">{t("detail.no_history")}</p>
             </div>
           ) : (
             <Table>

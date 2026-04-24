@@ -1,6 +1,7 @@
 "use client";
 
 import { UseFormRegister, UseFormSetValue, useWatch, Control } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +25,7 @@ export function ReturnItemRow({
   control,
   field,
 }: ReturnItemRowProps) {
+  const t = useTranslations("page_rental_returns");
   const selected = useWatch({ control, name: `items.${index}.selected` });
 
   return (
@@ -65,7 +67,7 @@ export function ReturnItemRow({
       <TableCell className="py-2">
         <Input
           {...register(`items.${index}.condition` as const)}
-          placeholder="Normal"
+          placeholder={t("form.placeholder_condition")}
           disabled={!selected}
           className="h-8 text-sm"
         />

@@ -19,6 +19,7 @@ import {
   User,
   XCircle,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ interface Props {
 }
 
 export default function RentalReturnDetail({ id }: Props) {
+  const t = useTranslations("page_rental_returns");
   const router = useRouter();
 
   const { response: detail, pending } = useGet<RentalReturnDocument>({
@@ -86,10 +88,10 @@ export default function RentalReturnDetail({ id }: Props) {
         </Button>
         <div className="flex flex-col gap-0.5">
           <h1 className="text-lg font-semibold text-foreground">
-            Rental Return Detail
+            {t("detail.title")}
           </h1>
           <span className="text-xs text-muted-foreground">
-            Return Management
+            {t("detail.subtitle")}
           </span>
         </div>
       </div>
@@ -106,13 +108,13 @@ export default function RentalReturnDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                  Record Number
+                  {t("table.record_number")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Rental: {detail.rental?.record_number || "—"}
+                  {t("detail.rental", { number: detail.rental?.record_number || "—" })}
                 </span>
               </div>
             </div>
@@ -121,7 +123,7 @@ export default function RentalReturnDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-20">
                 <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                  Total Assets
+                  {t("detail.total_assets")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
                   {totalAssets}
@@ -129,7 +131,7 @@ export default function RentalReturnDetail({ id }: Props) {
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-muted/40 border border-border/50 min-w-20">
                 <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                  Items
+                  {t("detail.items_count")}
                 </span>
                 <span className="text-2xl font-bold text-foreground">
                   {detail.details.length}
@@ -159,7 +161,7 @@ export default function RentalReturnDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Return Items
+                {t("detail.return_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -167,16 +169,16 @@ export default function RentalReturnDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("table.no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("detail.col_asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Quantity
+                      {t("detail.col_quantity")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Condition
+                      {t("detail.col_condition")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -225,13 +227,13 @@ export default function RentalReturnDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Building2 className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Customer Information
+                {t("detail.customer_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Name
+                  {t("detail.name")}
                 </span>
                 <span className="text-sm font-semibold text-foreground">
                   {detail.rental.customer.name}
@@ -251,7 +253,7 @@ export default function RentalReturnDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-1 pt-2 border-t border-border/50">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Identifier
+                  {t("detail.identifier")}
                 </span>
                 <code className="text-xs font-mono bg-muted px-2 py-1 rounded text-foreground">
                   {detail.rental.customer.identifier}
@@ -265,7 +267,7 @@ export default function RentalReturnDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <FileCheck className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Return Information
+                {t("detail.return_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -273,7 +275,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold uppercase tracking-wider">
-                    Lease Date
+                    {t("detail.lease_date")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -284,7 +286,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold uppercase tracking-wider">
-                    Return Date
+                    {t("detail.return_date")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -295,7 +297,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <MapPin size={15} />
                   <span className="text-xs font-semibold uppercase tracking-wider">
-                    To Location
+                    {t("detail.to_location")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -306,7 +308,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <FileText size={15} />
                   <span className="text-xs font-semibold uppercase tracking-wider">
-                    Contract
+                    {t("detail.contract")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -317,7 +319,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <FileText size={15} />
                   <span className="text-xs font-semibold uppercase tracking-wider">
-                    Rental Record
+                    {t("detail.rental_record")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -329,7 +331,7 @@ export default function RentalReturnDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <User size={15} />
                     <span className="text-xs font-semibold uppercase tracking-wider">
-                      Creator
+                      {t("detail.creator")}
                     </span>
                   </div>
                   <span className="text-sm font-semibold text-foreground">
@@ -342,7 +344,7 @@ export default function RentalReturnDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock size={15} />
                     <span className="text-xs font-semibold uppercase tracking-wider">
-                      Created
+                      {t("detail.created_at")}
                     </span>
                   </div>
                   <div className="flex flex-col items-end">
@@ -355,7 +357,7 @@ export default function RentalReturnDetail({ id }: Props) {
               {detail.notes && (
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Notes
+                    {t("detail.notes")}
                   </span>
                   <p className="text-sm text-foreground/80 leading-relaxed italic">
                     {detail.notes}
@@ -365,7 +367,7 @@ export default function RentalReturnDetail({ id }: Props) {
               {detail.attachments && detail.attachments.length > 0 && (
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Attachments
+                    {t("detail.attachments")}
                   </span>
                   <div className="flex flex-col gap-1">
                     {detail.attachments.map((attachment, index) => {
@@ -398,7 +400,7 @@ export default function RentalReturnDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              Return document has been processed.
+              {t("detail.processed_msg")}
             </p>
           </div>
         </div>
@@ -409,7 +411,7 @@ export default function RentalReturnDetail({ id }: Props) {
         <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
           <History className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm font-semibold text-primary">
-            Approval History
+            {t("detail.approval_history")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -422,26 +424,26 @@ export default function RentalReturnDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">Chưa có lịch sử phê duyệt.</p>
+              <p className="text-sm italic">{t("detail.no_history")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-sidebar-accent border-b border-border/50">
                 <TableRow>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Step
+                    {t("table.step")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Approver
+                    {t("table.approver")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    Status
+                    {t("table.status")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Comment
+                    {t("table.comment")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Date
+                    {t("table.date")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -465,15 +467,15 @@ export default function RentalReturnDetail({ id }: Props) {
                     <TableCell className="px-4 py-3 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> Approved
+                          <CheckCircle2 size={12} /> {t("detail.status_approved")}
                         </span>
                       ) : hist.status === "REJECTED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> Rejected
+                          <XCircle size={12} /> {t("detail.status_rejected")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> Pending
+                          <Clock size={12} /> {t("detail.status_pending")}
                         </span>
                       )}
                     </TableCell>

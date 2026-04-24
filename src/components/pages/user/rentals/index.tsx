@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -10,6 +11,8 @@ import RentalsTable from "./RentalsTable";
 export default function RentalsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const tRentals = useTranslations("page_rentals");
+  const tReturns = useTranslations("page_rental_returns");
 
   const urlTab = searchParams.get("tab");
   const activeTab = urlTab ?? "rentals";
@@ -32,13 +35,13 @@ export default function RentalsPage() {
             value="rentals"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Rental vouchers
+            {tRentals("title")}
           </TabsTrigger>
           <TabsTrigger
             value="returns"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Return records
+            {tReturns("title")}
           </TabsTrigger>
         </TabsList>
 

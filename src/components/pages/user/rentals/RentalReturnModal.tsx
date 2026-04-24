@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, Resolver, useFieldArray, useForm } from "react-hook-form";
@@ -65,6 +66,7 @@ export default function RentalReturnModal({
   pending,
   rentalDetail,
 }: RentalReturnModalProps) {
+  const t = useTranslations("page_rental_returns");
   const form = useForm<RentalReturnFormValues>({
     resolver: zodResolver(
       RentalReturnSchema,
@@ -185,10 +187,11 @@ export default function RentalReturnModal({
     <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Return rented assets</DialogTitle>
+          <DialogTitle>{t("modal.title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Create a return record for assets from customer — voucher{" "}
-            {rentalDetail.record_number}
+            {t("modal.description", {
+              number: rentalDetail.record_number,
+            })}
           </DialogDescription>
         </DialogHeader>
 
@@ -200,7 +203,7 @@ export default function RentalReturnModal({
             {/* General Information */}
             <div className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold text-primary flex justify-between items-center">
-                General Information
+                {t("modal.general_info")}
                 {hasGeneralErrors && (
                   <span className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                 )}
@@ -212,7 +215,7 @@ export default function RentalReturnModal({
                   render={({ fieldState }) => (
                     <Field className="gap-1.5">
                       <FieldLabel className="text-xs">
-                        Actual return date
+                        {t("modal.actual_return_date")}
                       </FieldLabel>
                       <DatePickerField form={form} name="return_date" />
                       {fieldState.invalid && (
@@ -228,7 +231,7 @@ export default function RentalReturnModal({
                   render={({ field, fieldState }) => (
                     <Field className="gap-1.5">
                       <FieldLabel className="text-xs">
-                        Return warehouse
+                        {t("modal.return_warehouse")}
                       </FieldLabel>
                       <Select
                         value={field.value}
@@ -238,7 +241,7 @@ export default function RentalReturnModal({
                           className="h-9"
                           data-invalid={fieldState.invalid}
                         >
-                          <SelectValue placeholder="Select warehouse" />
+                          <SelectValue placeholder={t("modal.placeholder_warehouse")} />
                         </SelectTrigger>
                         <SelectContent>
                           {locations.map((loc) => (
@@ -260,10 +263,10 @@ export default function RentalReturnModal({
                   control={form.control}
                   render={({ field }) => (
                     <Field className="gap-1.5 col-span-1 sm:col-span-2">
-                      <FieldLabel className="text-xs">General notes</FieldLabel>
+                      <FieldLabel className="text-xs">{t("modal.general_notes")}</FieldLabel>
                       <Textarea
                         id="notes"
-                        placeholder="e.g. Customer returned at warehouse, device in good condition..."
+                        placeholder={t("modal.placeholder_notes")}
                         {...field}
                         value={field.value ?? ""}
                         className="min-h-[80px] text-sm"
@@ -277,7 +280,7 @@ export default function RentalReturnModal({
             {/* Asset selection */}
             <div className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold text-primary flex justify-between items-center">
-                Asset list
+                {t("modal.asset_list")}
                 {hasAssetsErrors && (
                   <span className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                 )}
@@ -288,16 +291,16 @@ export default function RentalReturnModal({
                     <TableRow>
                       <TableHead className="py-2.5 w-10" />
                       <TableHead className="py-2.5 text-xs font-bold text-muted-foreground tracking-wider">
-                        Asset Info
+                        {t("modal.col_asset_info")}
                       </TableHead>
                       <TableHead className="py-2.5 text-center text-xs font-bold text-muted-foreground tracking-wider w-[10%]">
-                        Renting
+                        {t("modal.col_renting")}
                       </TableHead>
                       <TableHead className="py-2.5 text-center text-xs font-bold text-muted-foreground tracking-wider w-[15%]">
-                        Quantity
+                        {t("modal.col_quantity")}
                       </TableHead>
                       <TableHead className="py-2.5 text-xs font-bold text-muted-foreground tracking-wider">
-                        Condition
+                        {t("modal.col_condition")}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -319,14 +322,14 @@ export default function RentalReturnModal({
 
             <FormAttachmentsSection
               control={form.control}
-              title="Attachments"
+              title={t("modal.attachments")}
             />
 
             <ApprovalProcessSection
               control={form.control}
               steps={activeTemplate?.steps || []}
               users={users}
-              title="Approval Process"
+              title={t("modal.approval_process")}
               triggerClassName="h-10 bg-white"
             />
 
@@ -344,10 +347,10 @@ export default function RentalReturnModal({
               onClick={onClose}
               disabled={pending}
             >
-              Cancel
+              {t("modal.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Processing..." : "Confirm"}
+              {pending ? t("modal.processing") : t("modal.confirm")}
             </Button>
           </DialogFooter>
         </form>
