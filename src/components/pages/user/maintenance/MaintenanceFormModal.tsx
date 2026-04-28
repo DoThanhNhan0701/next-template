@@ -4,13 +4,14 @@ import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
   type MaintenanceFormValues,
-  MaintenanceSchema,
+  GetMaintenanceSchema,
 } from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,11 +52,12 @@ export default function MaintenanceFormModal({
   onSuccess,
   maintenanceToEdit,
 }: MaintenanceFormModalProps) {
+  const t = useTranslations("page_maintenance.form");
   const isEditing = !!maintenanceToEdit;
   const { mutate, pending } = useMutation();
 
   const form = useForm<MaintenanceFormValues>({
-    resolver: zodResolver(MaintenanceSchema) as Resolver<MaintenanceFormValues>,
+    resolver: zodResolver(GetMaintenanceSchema(t)) as Resolver<MaintenanceFormValues>,
     defaultValues: {
       record_number: "",
       ticket_number: "",
@@ -292,14 +294,10 @@ export default function MaintenanceFormModal({
       <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing
-              ? "Edit maintenance record"
-              : "Create maintenance record"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            {isEditing
-              ? "Update the maintenance details and asset allocations."
-              : "Register a new maintenance record with detailed tracking and approval workflow."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -317,7 +315,7 @@ export default function MaintenanceFormModal({
                   value="assets"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <Package size={16} /> Asset selection
+                  <Package size={16} /> {t("tab_assets")}
                   {hasAssetsErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -326,7 +324,7 @@ export default function MaintenanceFormModal({
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <ClipboardList size={16} /> General information
+                  <ClipboardList size={16} /> {t("tab_general")}
                   {hasGeneralErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -335,7 +333,7 @@ export default function MaintenanceFormModal({
                   value="service"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <Wrench size={16} /> Repair service
+                  <Wrench size={16} /> {t("tab_service")}
                   {hasServiceErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -344,7 +342,7 @@ export default function MaintenanceFormModal({
                   value="approval"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <UserCheck size={16} /> Approval process
+                  <UserCheck size={16} /> {t("tab_approval")}
                   {hasApprovalErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -360,7 +358,7 @@ export default function MaintenanceFormModal({
                 <GeneralInfoSection form={form} />
                 <FormAttachmentsSection
                   control={form.control}
-                  title="Attachments"
+                  title={t("attachments")}
                 />
               </TabsContent>
               <TabsContent
@@ -397,7 +395,7 @@ export default function MaintenanceFormModal({
                   title={null}
                   useApproverSelect={false}
                   showStepNumber={true}
-                  fallbackMessage="No approval workflow configured for this process type."
+                  fallbackMessage={t("approval_workflow_fallback")}
                 />
               </TabsContent>
             </div>
@@ -405,14 +403,14 @@ export default function MaintenanceFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
               {pending
-                ? "Processing..."
+                ? t("creating")
                 : isEditing
-                  ? "Save changes"
-                  : "Confirm"}
+                  ? t("save_changes")
+                  : t("confirm")}
             </Button>
           </DialogFooter>
         </form>

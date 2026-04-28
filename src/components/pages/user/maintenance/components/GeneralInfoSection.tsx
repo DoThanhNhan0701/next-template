@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
@@ -18,6 +19,8 @@ interface GeneralInfoSectionProps {
 }
 
 export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
+  const t = useTranslations("page_maintenance.form");
+
   return (
     <div className="flex flex-col gap-3">
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -26,12 +29,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="record_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Record number</FieldLabel>
+              <FieldLabel>{t("record_number")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="e.g. BT20240001"
+                placeholder={t("placeholder_record")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -42,12 +45,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="ticket_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Ticket number</FieldLabel>
+              <FieldLabel>{t("ticket_number")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="e.g. TKT-10293"
+                placeholder={t("placeholder_ticket")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -61,7 +64,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="outing_date"
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Outing date</FieldLabel>
+              <FieldLabel>{t("outing_date")}</FieldLabel>
               <DatePickerField form={form} name="outing_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -72,12 +75,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="handover_person"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Handover person</FieldLabel>
+              <FieldLabel>{t("handover_person")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="Who handed over the asset?"
+                placeholder={t("placeholder_handover")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -90,12 +93,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         name="reason"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>Reason</FieldLabel>
+            <FieldLabel>{t("reason")}</FieldLabel>
             <Textarea
               {...field}
               value={field.value ?? ""}
               className="min-h-[100px] bg-white"
-              placeholder="Why is this asset being maintained?"
+              placeholder={t("placeholder_reason")}
             />
             <FieldError errors={[fieldState.error]} />
           </Field>
@@ -108,12 +111,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           name="external_link"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>External link</FieldLabel>
+              <FieldLabel>{t("external_link")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value || ""}
                 className="bg-white"
-                placeholder="https://..."
+                placeholder={t("placeholder_link")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -126,12 +129,12 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
         name="notes"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>Notes</FieldLabel>
+            <FieldLabel>{t("notes")}</FieldLabel>
             <Textarea
               {...field}
               value={field.value || ""}
               className="min-h-[80px] bg-white"
-              placeholder="Additional notes..."
+              placeholder={t("placeholder_notes")}
             />
             <FieldError errors={[fieldState.error]} />
           </Field>

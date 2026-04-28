@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
@@ -18,6 +19,8 @@ interface ServiceInfoSectionProps {
 }
 
 export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
+  const t = useTranslations("page_maintenance.form");
+
   return (
     <div className="flex flex-col gap-3">
       <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -26,12 +29,12 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Service provider name</FieldLabel>
+              <FieldLabel>{t("service_provider")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="e.g. Dell Warranty Center"
+                placeholder={t("placeholder_provider")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -42,12 +45,12 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="service_provider_address"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Service provider address</FieldLabel>
+              <FieldLabel>{t("service_provider_address")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value || ""}
                 className="bg-white"
-                placeholder="Where is it located?"
+                placeholder={t("placeholder_address")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -61,12 +64,12 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_person_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Taker name</FieldLabel>
+              <FieldLabel>{t("taker_person")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="Who received the asset?"
+                placeholder={t("placeholder_taker")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -77,12 +80,12 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="taker_phone"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Taker phone</FieldLabel>
+              <FieldLabel>{t("taker_phone")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value || ""}
                 className="bg-white"
-                placeholder="Phone number"
+                placeholder={t("placeholder_phone")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -96,7 +99,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="expected_cost"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Expected cost</FieldLabel>
+              <FieldLabel>{t("expected_cost")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value as number | string | null}
@@ -113,7 +116,7 @@ export function ServiceInfoSection({ form }: ServiceInfoSectionProps) {
           name="actual_cost"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Actual cost</FieldLabel>
+              <FieldLabel>{t("actual_cost")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value as number | string | null}

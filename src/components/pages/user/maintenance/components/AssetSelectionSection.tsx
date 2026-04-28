@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { PlusIcon, RefreshCcw, Trash } from "lucide-react";
-import { CheckCircle2, User, Warehouse } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { CheckCircle2, PlusIcon, RefreshCcw, Trash, User, Warehouse } from "lucide-react";
 import {
   Controller,
   FieldArrayWithId,
@@ -38,6 +38,7 @@ interface AssetStockSelectorProps {
 }
 
 function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
+  const t = useTranslations("page_maintenance.form");
   const [sourceType, setSourceType] = useState<"stock" | "holder">("stock");
 
   const { response: stockRes, pending: stockPending } = useGet<IAssetStock[]>(
@@ -76,7 +77,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
       <div className="space-y-3">
         <label className="text-xs font-semibold text-primary flex items-center gap-2">
           <CheckCircle2 size={12} className="text-primary" />
-          Asset source
+          {t("asset_source")}
         </label>
 
         {/* Source Pills Container */}
@@ -166,7 +167,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 : "border-primary/20 text-muted-foreground bg-white",
             )}
           >
-            <Warehouse size={16} /> From warehouse
+            <Warehouse size={16} /> {t("source_warehouse")}
           </Button>
           <Button
             type="button"
@@ -180,7 +181,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                 : "border-primary/20 text-muted-foreground bg-white",
             )}
           >
-            <User size={16} /> From holder
+            <User size={16} /> {t("source_holder")}
           </Button>
         </div>
 
@@ -192,8 +193,8 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
             )}
           >
             {sourceType === "stock"
-              ? "Select source warehouse"
-              : "Select source holder"}
+              ? t("select_source_warehouse")
+              : t("select_source_holder")}
           </FieldLabel>
           <Controller
             name={
@@ -236,8 +237,8 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                   <SelectValue
                     placeholder={
                       sourceType === "stock"
-                        ? "-- Select warehouse --"
-                        : "-- Select holder --"
+                        ? t("placeholder_warehouse")
+                        : t("placeholder_holder")
                     }
                   />
                 </SelectTrigger>
@@ -248,7 +249,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                           key={`s-opt-${i}`}
                           value={s.location_id.toString()}
                         >
-                          [{s.location_code}] {s.location_name} - Quantity:{" "}
+                          [{s.location_code}] {s.location_name} - {t("quantity")}:{" "}
                           {s.quantity}
                         </SelectItem>
                       ))
@@ -256,7 +257,7 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                         const id = h.staff_id || h.unit_id || 0;
                         return (
                           <SelectItem key={`h-opt-${i}`} value={id.toString()}>
-                            {h.name} ({h.type}) - Quantity: {h.quantity}
+                            {h.name} ({h.type}) - {t("quantity")}: {h.quantity}
                           </SelectItem>
                         );
                       })}
@@ -291,11 +292,13 @@ export function AssetSelectionSection({
   reFetchAssets,
   locations,
 }: AssetSelectionSectionProps) {
+  const t = useTranslations("page_maintenance.form");
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between border-b border-dashed pb-3">
         <label className="text-xs font-semibold text-primary">
-          Asset selection & inventory
+          {t("asset_selection_title")}
         </label>
         <div className="flex items-center gap-2">
           <Button
@@ -310,7 +313,7 @@ export function AssetSelectionSection({
               size={12}
               className={assetsPending ? "animate-spin" : ""}
             />
-            Reload
+            {t("reload")}
           </Button>
           <Button
             type="button"
@@ -329,7 +332,7 @@ export function AssetSelectionSection({
               })
             }
           >
-            <PlusIcon size={10} className="mr-1" /> Add Asset
+            <PlusIcon size={10} className="mr-1" /> {t("add_asset")}
           </Button>
         </div>
       </div>
@@ -358,7 +361,7 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: detailField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>Select asset</FieldLabel>
+                      <FieldLabel>{t("select_asset")}</FieldLabel>
                       <Select
                         onValueChange={(val) => {
                           const assetId = Number(val);
@@ -375,7 +378,9 @@ export function AssetSelectionSection({
                             statusName === "Đang cho thuê";
 
                           if (isRestricted) {
-                            const noteText = `${statusName} - cannot be maintained`;
+                            const noteText = t("restricted_maintenance", {
+                              status: statusName,
+                            });
                             form.setValue(`items.${index}.notes`, noteText);
                           }
 
@@ -396,10 +401,10 @@ export function AssetSelectionSection({
                           <SelectValue
                             placeholder={
                               assetsPending
-                                ? "Loading assets..."
+                                ? t("loading_assets")
                                 : assets.length === 0
-                                  ? "No assets available"
-                                  : "Choose an asset to maintain"
+                                  ? t("no_assets")
+                                  : t("placeholder_select_asset")
                             }
                           />
                         </SelectTrigger>
@@ -431,7 +436,9 @@ export function AssetSelectionSection({
                                     {a.holder_name || "N/A"}
                                     {isUniqueRestricted && (
                                       <span className="ml-2 text-destructive font-medium italic">
-                                        - {sName} - cannot be maintained
+                                        - {t("restricted_maintenance", {
+                                          status: sName,
+                                        })}
                                       </span>
                                     )}
                                   </span>
@@ -459,7 +466,7 @@ export function AssetSelectionSection({
                               Note:
                             </span>
                             <span className="text-[11px] text-amber-600 font-medium italic">
-                              {sName} - cannot be maintained
+                              {t("restricted_maintenance", { status: sName })}
                             </span>
                           </div>
                         );
@@ -484,12 +491,12 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: qtyField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>Quantity</FieldLabel>
+                      <FieldLabel>{t("quantity")}</FieldLabel>
                       <FormattedNumberInput
                         {...qtyField}
                         value={qtyField.value as number | string | null}
                         onChange={(val) => qtyField.onChange(val ?? 0)}
-                        placeholder="e.g. 1"
+                        placeholder={t("placeholder_quantity")}
                       />
                       <FieldError errors={[fieldState.error]} />
                     </Field>
@@ -504,9 +511,9 @@ export function AssetSelectionSection({
                 control={form.control}
                 render={({ field: locField, fieldState }) => (
                   <Field className="gap-1">
-                    <FieldLabel>Return location</FieldLabel>
+                    <FieldLabel>{t("return_location")}</FieldLabel>
                     <p className="text-[10px] text-muted-foreground/70 italic -mt-0.5 mb-1">
-                      Leave empty to return to original source
+                      {t("return_location_hint")}
                     </p>
                     <Select
                       onValueChange={(val) =>
@@ -517,14 +524,16 @@ export function AssetSelectionSection({
                       }
                     >
                       <SelectTrigger className="bg-white rounded-md border-border/60 text-xs shadow-none">
-                        <SelectValue placeholder="Select return location" />
+                        <SelectValue
+                          placeholder={t("return_location")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem
                           value="none"
                           className="text-muted-foreground italic text-xs"
                         >
-                          (None) - Return to original source
+                          {t("none_return")}
                         </SelectItem>
                         {locations.map((l) => (
                           <SelectItem
@@ -546,10 +555,10 @@ export function AssetSelectionSection({
                 control={form.control}
                 render={({ field: notesField, fieldState }) => (
                   <Field className="gap-1 justify-end">
-                    <FieldLabel>Item notes</FieldLabel>
+                    <FieldLabel>{t("item_notes")}</FieldLabel>
                     <Input
                       {...notesField}
-                      placeholder="Maintenance detail for this asset..."
+                      placeholder={t("placeholder_item_notes")}
                       className="bg-white/50 rounded-md border-muted-foreground/10 text-xs"
                       value={notesField.value || ""}
                     />

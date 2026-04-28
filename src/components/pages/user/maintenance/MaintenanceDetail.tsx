@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import {
   CalendarDays,
@@ -51,6 +52,7 @@ interface Props {
 
 export default function MaintenanceDetail({ id }: Props) {
   const router = useRouter();
+  const t = useTranslations("page_maintenance.detail");
 
   const {
     response: detail,
@@ -96,10 +98,10 @@ export default function MaintenanceDetail({ id }: Props) {
         </Button>
         <div className="flex flex-col gap-0.5">
           <h1 className="text-lg font-semibold text-foreground">
-            Maintenance Detail
+            {t("title")}
           </h1>
           <span className="text-xs text-muted-foreground font-medium">
-            Equipment Service Record
+            {t("subtitle")}
           </span>
         </div>
       </div>
@@ -116,14 +118,14 @@ export default function MaintenanceDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Ticket Number
+                  {t("ticket_number")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.ticket_number}
                 </span>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <CalendarDays size={12} />
-                  <span>Created: {formatDate(detail.create_date)}</span>
+                  <span>{t("created_at", { date: formatDate(detail.create_date) })}</span>
                 </div>
               </div>
             </div>
@@ -132,7 +134,7 @@ export default function MaintenanceDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-4 py-2 rounded-xl bg-muted/30 border border-border/50 min-w-[120px]">
                 <span className="text-[10px] text-muted-foreground font-semibold tracking-wider">
-                  Expected Cost
+                  {t("expected_cost")}
                 </span>
                 <span className="text-base font-bold text-muted-foreground">
                   {formatNumberWithCommas(detail.expected_cost)}
@@ -140,7 +142,7 @@ export default function MaintenanceDetail({ id }: Props) {
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-emerald-500/5 border border-emerald-510/10 min-w-[140px]">
                 <span className="text-xs text-emerald-600 font-semibold tracking-wider">
-                  Actual Cost
+                  {t("actual_cost")}
                 </span>
                 <span className="text-xl font-bold text-emerald-600">
                   {formatNumberWithCommas(detail.actual_cost)}
@@ -170,7 +172,7 @@ export default function MaintenanceDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Maintenance Items
+                {t("maintenance_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -178,16 +180,16 @@ export default function MaintenanceDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Quantity
+                      {t("quantity")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Issue / Notes
+                      {t("issue_notes")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -234,13 +236,13 @@ export default function MaintenanceDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Clock className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Timeline
+                {t("timeline")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Outing Date
+                  {t("outing_date")}
                 </div>
                 <span className="text-sm font-medium">
                   {formatDate(detail.outing_date)}
@@ -248,7 +250,7 @@ export default function MaintenanceDetail({ id }: Props) {
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Return Date
+                  {t("return_date")}
                 </div>
                 <span className="text-sm font-medium text-emerald-600">
                   {formatDate(detail.return_date)}
@@ -262,7 +264,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] font-bold text-muted-foreground tracking-tight">
-                      Outing Handover
+                      {t("outing_handover")}
                     </span>
                     <span className="text-sm font-semibold">
                       {detail.handover_person || "—"}
@@ -275,7 +277,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] font-bold text-muted-foreground tracking-tight">
-                      Return Receiver
+                      {t("return_receiver")}
                     </span>
                     <span className="text-sm font-semibold">
                       {detail.return_handover_person || "—"}
@@ -291,16 +293,16 @@ export default function MaintenanceDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Store className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Service Provider
+                {t("service_provider")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Vendor Name
+                  {t("vendor_name")}
                 </span>
                 <span className="text-sm font-semibold text-foreground">
-                  {detail.service_provider_name || "Internal / Not Specified"}
+                  {detail.service_provider_name || t("internal_service")}
                 </span>
               </div>
               {detail.service_provider_address && (
@@ -315,7 +317,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <User size={14} />
                     <span className="text-xs font-semibold tracking-wider">
-                      Taker
+                      {t("taker")}
                     </span>
                   </div>
                   <span className="text-sm font-medium">
@@ -327,7 +329,7 @@ export default function MaintenanceDetail({ id }: Props) {
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Phone size={14} />
                       <span className="text-xs font-semibold tracking-wider">
-                        Phone
+                        {t("phone")}
                       </span>
                     </div>
                     <span className="text-sm font-medium">
@@ -344,7 +346,7 @@ export default function MaintenanceDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Info className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Additional Info
+                {t("additional_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -352,7 +354,7 @@ export default function MaintenanceDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground mb-1">
                   <Wallet size={14} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Reason
+                    {t("reason")}
                   </span>
                 </div>
                 <p className="text-sm text-foreground/80 leading-relaxed italic">
@@ -364,7 +366,7 @@ export default function MaintenanceDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground mb-1">
                     <StickyNote size={14} />
                     <span className="text-xs font-semibold tracking-wider">
-                      Notes
+                      {t("notes")}
                     </span>
                   </div>
                   <p className="text-sm text-foreground/80 leading-relaxed">
@@ -375,7 +377,7 @@ export default function MaintenanceDetail({ id }: Props) {
               {detail.external_link && (
                 <div className="flex items-center justify-between pt-2 border-t border-border/50">
                   <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                    External Link
+                    {t("external_link")}
                   </span>
                   <a
                     href={detail.external_link}
@@ -383,7 +385,7 @@ export default function MaintenanceDetail({ id }: Props) {
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline flex items-center gap-1 truncate max-w-36"
                   >
-                    View Link <ExternalLink size={12} />
+                    {t("view_link")} <ExternalLink size={12} />
                   </a>
                 </div>
               )}
@@ -393,15 +395,15 @@ export default function MaintenanceDetail({ id }: Props) {
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
               {isCompleted
-                ? "Maintenance record is archived and completed."
-                : "Maintenance process is ongoing."}
+                ? t("status_completed_desc")
+                : t("status_ongoing_desc")}
             </p>
           </div>
         </div>
       </div>
 
       <RecordAttachmentsCard
-        title="Maintenance Documents"
+        title={t("maintenance_documents")}
         initialAttachments={detail.attachments || []}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -433,7 +435,7 @@ export default function MaintenanceDetail({ id }: Props) {
         <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
           <History className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm font-semibold text-primary">
-            Approval History
+            {t("approval_history")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -446,26 +448,26 @@ export default function MaintenanceDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">No approval history available.</p>
+              <p className="text-sm italic">{t("no_approval_history")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-sidebar-accent border-b border-border/50">
                 <TableRow>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Step
+                    {t("approver_step")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Approver
+                    {t("approver")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    Status
+                    {t("approver_status")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Comment
+                    {t("approver_comment")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Date
+                    {t("approver_date")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -489,15 +491,15 @@ export default function MaintenanceDetail({ id }: Props) {
                     <TableCell className="px-4 py-3 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> Approved
+                          <CheckCircle2 size={12} /> {t("status_approved")}
                         </span>
                       ) : hist.status === "REJECTED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> Rejected
+                          <XCircle size={12} /> {t("status_rejected")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> Pending
+                          <Clock size={12} /> {t("status_pending")}
                         </span>
                       )}
                     </TableCell>

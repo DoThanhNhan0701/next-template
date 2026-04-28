@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import {
   Calendar,
@@ -45,6 +46,7 @@ import MaintenanceFormModal from "./MaintenanceFormModal";
 
 export default function MaintenanceTable() {
   const router = useRouter();
+  const t = useTranslations("page_maintenance.table");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -82,7 +84,7 @@ export default function MaintenanceTable() {
             size={16}
           />
           <Input
-            placeholder="Search record number, asset..."
+            placeholder={t("search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -111,7 +113,7 @@ export default function MaintenanceTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("searching") : t("btn_search")}
           </Button>
 
           <Button
@@ -125,7 +127,7 @@ export default function MaintenanceTable() {
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            title={t("btn_clear_filters")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -133,7 +135,7 @@ export default function MaintenanceTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Create
+            {t("btn_create")}
           </Button>
         </div>
       </div>
@@ -143,25 +145,29 @@ export default function MaintenanceTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Maintenance info
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Asset details
+                {t("maintenance_info")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Service provider
+                {t("date")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Quantity
+                {t("asset_details")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("service_provider")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("quantity")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("reason")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
@@ -171,8 +177,8 @@ export default function MaintenanceTable() {
               <TableEmptyRow
                 colSpan={8}
                 icon={Wrench}
-                message="No maintenance records found"
-                description="No records match your search."
+                message={t("empty_title")}
+                description={t("empty_desc")}
               />
             ) : (
               maintenances.map((item, index) => (
@@ -191,10 +197,10 @@ export default function MaintenanceTable() {
                       </div>
                       <div className="flex flex-col gap-0.5">
                         <span className="font-semibold text-sm">
-                          {item.record_number}
+                          {t("record_number", { value: item.record_number })}
                         </span>
                         <span className="text-[10px] text-muted-foreground font-medium">
-                          Ticket: {item.ticket_number}
+                          {t("ticket_number", { value: item.ticket_number })}
                         </span>
                       </div>
                     </div>
@@ -207,7 +213,7 @@ export default function MaintenanceTable() {
                           className="text-muted-foreground/60"
                         />
                         <span className="text-[11px] font-medium text-muted-foreground">
-                          Out:
+                          {t("outing")}
                         </span>
 
                         <span>{formatDate(item.outing_date)}</span>
@@ -219,7 +225,7 @@ export default function MaintenanceTable() {
                             className="text-muted-foreground/60"
                           />
                           <span className="text-[11px] font-medium text-muted-foreground">
-                            In:
+                            {t("return")}
                           </span>
                           <span>{formatDate(item.return_date)}</span>
                         </div>
@@ -243,7 +249,7 @@ export default function MaintenanceTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm">
-                    {item.service_provider_name || "N/A"}
+                    {item.service_provider_name || t("none")}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-medium text-center">
                     {item.total_assets}
@@ -257,7 +263,7 @@ export default function MaintenanceTable() {
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason || "No reason"}
+                    {item.reason || t("no_reason")}
                   </TableCell>
                 </TableRow>
               ))
