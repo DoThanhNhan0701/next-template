@@ -1296,5 +1296,31 @@
     "form": {
       "placeholder_condition": "e.g. Good condition, minor scratches..."
     }
+  },
+  "page_inventory": {
+    "filters": {
+      "search_placeholder": "e.g. Search by asset code or name...",
+      "all_locations": "All locations",
+      "show_zero_quantity": "Stock = 0",
+      "search": "Search",
+      "searching": "Searching...",
+      "clear": "Clear all filters",
+      "none": "(None)"
+    },
+    "table": {
+      "no": "No",
+      "asset_information": "Asset Information",
+      "location": "Location",
+      "management_type": "Management type",
+      "quantity": "Quantity",
+      "actions": "Actions",
+      "no_items_found": "No inventory items found",
+      "no_items_description": "No stock records match your current filters. Try adjusting your search or location.",
+      "unknown_location": "Unknown Location",
+      "by_code": "By code",
+      "by_quantity": "By quantity",
+      "stock_in": "Stock In",
+      "stock_out": "Stock Out"
+    }
   }
 }

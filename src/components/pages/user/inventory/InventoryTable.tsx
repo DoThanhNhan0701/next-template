@@ -13,6 +13,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 
 import {
@@ -53,6 +54,7 @@ import { ILocation } from "@/types/location";
 import { IStock } from "@/types/stock";
 
 export default function InventoryTable() {
+  const t = useTranslations("page_inventory");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const dispatch = useDispatch<AppDispatch>();
@@ -60,13 +62,13 @@ export default function InventoryTable() {
 
   // Filter state
   const [q, setQ] = useState("");
-  const [locationId, setLocationId] = useState<string>("all");
+  const [locationId, setLocationId] = useState<string>("");
   const [showZero, setShowZero] = useState<boolean>(false);
 
   // Applied filter state to avoid re-fetching on every keystroke
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
-    location_id: "all",
+    location_id: "",
     show_zero: false,
   });
 
@@ -82,7 +84,7 @@ export default function InventoryTable() {
   });
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
-  if (appliedFilters.location_id !== "all")
+  if (appliedFilters.location_id)
     queryParams.append("location_id", appliedFilters.location_id);
 
   queryParams.append("show_zero", appliedFilters.show_zero.toString());
@@ -117,7 +119,7 @@ export default function InventoryTable() {
             size={16}
           />
           <Input
-            placeholder="Search by asset code or name..."
+            placeholder={t("filters.search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -137,7 +139,10 @@ export default function InventoryTable() {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-3">
-          <Select value={locationId} onValueChange={setLocationId}>
+          <Select
+            value={locationId}
+            onValueChange={(val) => setLocationId(val === "none" ? "" : val)}
+          >
             <SelectTrigger className="min-w-[140px] max-w-[240px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <MapPin
@@ -145,12 +150,14 @@ export default function InventoryTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All locations" />
+                  <SelectValue placeholder={t("filters.all_locations")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Locations</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("filters.none")}
+              </SelectItem>
               {locations.map((loc) => (
                 <SelectItem key={loc.id} value={loc.id.toString()}>
                   {loc.name}
@@ -169,7 +176,7 @@ export default function InventoryTable() {
               htmlFor="show-zero"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
             >
-              Show Zero Quantity
+              {t("filters.show_zero_quantity")}
             </label>
           </div>
         </div>
@@ -187,7 +194,7 @@ export default function InventoryTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("filters.searching") : t("filters.search")}
           </Button>
 
           <Button
@@ -195,17 +202,17 @@ export default function InventoryTable() {
             size="icon"
             onClick={() => {
               setQ("");
-              setLocationId("all");
+              setLocationId("");
               setShowZero(false);
               setAppliedFilters({
                 q: "",
-                location_id: "all",
+                location_id: "",
                 show_zero: false,
               });
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            title={t("filters.clear")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -217,22 +224,22 @@ export default function InventoryTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[35%]">
-                Asset Information
+                {t("table.asset_information")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%] text-center">
-                Location
+                {t("table.location")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
-                Management type
+                {t("table.management_type")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                Quantity
+                {t("table.quantity")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[20%]">
-                Actions
+                {t("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -243,8 +250,8 @@ export default function InventoryTable() {
               <TableEmptyRow
                 colSpan={6}
                 icon={Package}
-                message="No inventory items found"
-                description="No stock records match your current filters. Try adjusting your search or location."
+                message={t("table.no_items_found")}
+                description={t("table.no_items_description")}
               />
             ) : (
               stocks.map((stock, index) => (
@@ -274,18 +281,18 @@ export default function InventoryTable() {
                     <div className="flex items-center justify-center gap-2 px-2.5 py-1.5 bg-secondary/30 rounded-md w-fit mx-auto">
                       <MapPin size={14} className="text-primary/70 shrink-0" />
                       <span className="text-sm font-medium">
-                        {stock.location_name || "Unknown Location"}
+                        {stock.location_name || t("table.unknown_location")}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     {stock.management_type === "unique" ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-600">
-                        By code
+                        {t("table.by_code")}
                       </span>
                     ) : stock.management_type === "bulk" ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-600">
-                        By quantity
+                        {t("table.by_quantity")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-muted text-muted-foreground">
@@ -313,7 +320,7 @@ export default function InventoryTable() {
                         disabled={stock.management_type === "unique"}
                       >
                         <ArrowUpCircle size={13} />
-                        Stock In
+                        {t("table.stock_in")}
                       </Button>
                       <Button
                         variant="ghost"
@@ -323,7 +330,7 @@ export default function InventoryTable() {
                         disabled={stock.management_type === "unique"}
                       >
                         <ArrowDownCircle size={13} />
-                        Stock Out
+                        {t("table.stock_out")}
                       </Button>
                     </div>
                   </TableCell>

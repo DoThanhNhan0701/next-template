@@ -1296,5 +1296,31 @@
     "form": {
       "placeholder_condition": "e.g. Tình trạng tốt, có vài vết xước nhỏ..."
     }
+  },
+  "page_inventory": {
+    "filters": {
+      "search_placeholder": "e.g. Tìm theo mã tài sản hoặc tên...",
+      "all_locations": "Tất cả vị trí",
+      "show_zero_quantity": "Tồn kho = 0",
+      "search": "Tìm kiếm",
+      "searching": "Đang tìm...",
+      "clear": "Xóa bộ lọc",
+      "none": "(Không có)"
+    },
+    "table": {
+      "no": "STT",
+      "asset_information": "Thông tin tài sản",
+      "location": "Vị trí",
+      "management_type": "Loại quản lý",
+      "quantity": "Số lượng",
+      "actions": "Thao tác",
+      "no_items_found": "Không tìm thấy tồn kho",
+      "no_items_description": "Không có bản ghi tồn kho nào khớp với bộ lọc hiện tại. Hãy thử điều chỉnh tìm kiếm hoặc vị trí.",
+      "unknown_location": "Vị trí không xác định",
+      "by_code": "Theo mã",
+      "by_quantity": "Theo số lượng",
+      "stock_in": "Nhập kho",
+      "stock_out": "Xuất kho"
+    }
   }
 }
