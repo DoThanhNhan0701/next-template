@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { Controller, UseFormReturn, useWatch } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
@@ -45,6 +46,7 @@ export function GeneralLiquidationSection({
   form,
   users,
 }: GeneralLiquidationSectionProps) {
+  const t = useTranslations("page_liquidations.form");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -79,7 +81,7 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Record number
+                {t("record_number")}
               </FieldLabel>
               <Input
                 {...field}
@@ -97,7 +99,7 @@ export function GeneralLiquidationSection({
           render={({ fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Liquidation date
+                {t("liquidation_date")}
               </FieldLabel>
               <DatePickerField form={form} name="liquidation_date" />
               <FieldError errors={[fieldState.error]} />
@@ -113,17 +115,17 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Liquidation method
+                {t("liquidation_method")}
               </FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger className="bg-white shadow-sm">
-                  <SelectValue placeholder="Select method" />
+                  <SelectValue placeholder={t("placeholder_method")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sell">Sell</SelectItem>
-                  <SelectItem value="destroy">Destroy</SelectItem>
-                  <SelectItem value="give">Donate</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="sell">{t("method_sell")}</SelectItem>
+                  <SelectItem value="destroy">{t("method_destroy")}</SelectItem>
+                  <SelectItem value="give">{t("method_donate")}</SelectItem>
+                  <SelectItem value="other">{t("method_other")}</SelectItem>
                 </SelectContent>
               </Select>
               <FieldError errors={[fieldState.error]} />
@@ -136,7 +138,7 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Total value
+                {t("total_value")}
               </FieldLabel>
               <FormattedNumberInput
                 {...field}
@@ -151,7 +153,7 @@ export function GeneralLiquidationSection({
 
       <Field className="gap-1">
         <FieldLabel>
-          Liquidation committee
+          {t("committee")}
         </FieldLabel>
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>
@@ -162,7 +164,7 @@ export function GeneralLiquidationSection({
               <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
                 {selectedUserIds.length === 0 ? (
                   <span className="text-sm text-muted-foreground">
-                    Select committee members...
+                    {t("placeholder_committee")}
                   </span>
                 ) : (
                   selectedUserIds.map((id) => {
@@ -203,7 +205,7 @@ export function GeneralLiquidationSection({
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search member..."
+                  placeholder={t("search_member")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
@@ -213,7 +215,7 @@ export function GeneralLiquidationSection({
             <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
               {filteredUsers.length === 0 ? (
                 <div className="py-6 text-center text-xs text-muted-foreground">
-                  No members found
+                  {t("no_members")}
                 </div>
               ) : (
                 filteredUsers.map((u) => (
@@ -254,13 +256,13 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Buyer / organization
+                {t("buyer")}
               </FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="Buyer name or organization..."
+                placeholder={t("placeholder_buyer")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -272,13 +274,13 @@ export function GeneralLiquidationSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>
-                Document link
+                {t("doc_link")}
               </FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
                 className="bg-white"
-                placeholder="Drive/folder link..."
+                placeholder={t("placeholder_link")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -292,13 +294,13 @@ export function GeneralLiquidationSection({
         render={({ field, fieldState }) => (
           <Field className="gap-1">
             <FieldLabel>
-              Reason
+              {t("reason")}
             </FieldLabel>
             <Textarea
               {...field}
               value={field.value ?? ""}
               className="min-h-[80px] bg-white resize-none"
-              placeholder="Why is this asset being liquidated?"
+              placeholder={t("placeholder_reason")}
             />
             <FieldError errors={[fieldState.error]} />
           </Field>
@@ -311,13 +313,13 @@ export function GeneralLiquidationSection({
         render={({ field, fieldState }) => (
           <Field className="gap-1">
             <FieldLabel>
-              Notes
+              {t("notes")}
             </FieldLabel>
             <Textarea
               {...field}
               value={field.value || ""}
               className="min-h-[60px] bg-white resize-none"
-              placeholder="Additional notes if any..."
+              placeholder={t("placeholder_notes")}
             />
             <FieldError errors={[fieldState.error]} />
           </Field>

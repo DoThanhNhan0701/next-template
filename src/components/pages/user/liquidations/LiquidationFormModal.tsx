@@ -5,12 +5,13 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck } from "lucide-react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
   LiquidationFormValues,
-  LiquidationSchema,
+  GetLiquidationSchema,
 } from "@/components/schemas/user/liquidation.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,11 +51,14 @@ export default function LiquidationFormModal({
   onSuccess,
   liquidationToEdit,
 }: LiquidationFormModalProps) {
+  const t = useTranslations("page_liquidations.form");
   const isEditing = !!liquidationToEdit;
   const { mutate, pending } = useMutation();
 
   const form = useForm<LiquidationFormValues>({
-    resolver: zodResolver(LiquidationSchema) as Resolver<LiquidationFormValues>,
+    resolver: zodResolver(GetLiquidationSchema(t)) as Resolver<
+      LiquidationFormValues
+    >,
     defaultValues: {
       record_number: "",
       reason: "",
@@ -298,14 +302,10 @@ export default function LiquidationFormModal({
       <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing
-              ? "Edit liquidation record"
-              : "Create liquidation record"}
+            {isEditing ? t("edit_title") : t("create_title")}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            {isEditing
-              ? "Update the liquidation details and asset disposals."
-              : "Register a new liquidation record with disposal details and approval workflow."}
+            {isEditing ? t("edit_description") : t("create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -323,7 +323,7 @@ export default function LiquidationFormModal({
                   value="assets"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <Package size={16} /> Asset selection
+                  <Package size={16} /> {t("tab_assets")}
                   {hasAssetsErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -333,7 +333,7 @@ export default function LiquidationFormModal({
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <ClipboardList size={16} /> General information
+                  <ClipboardList size={16} /> {t("tab_general")}
                   {hasGeneralErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -343,7 +343,7 @@ export default function LiquidationFormModal({
                   value="approval"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <UserCheck size={16} /> Approval process
+                  <UserCheck size={16} /> {t("tab_approval")}
                   {hasApprovalErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -356,10 +356,13 @@ export default function LiquidationFormModal({
                 value="general"
                 className="focus-visible:outline-none flex flex-col gap-3"
               >
-                <GeneralLiquidationSection form={form} users={staffs} />
+                <GeneralLiquidationSection
+                  form={form}
+                  users={staffs}
+                />
                 <FormAttachmentsSection
                   control={form.control}
-                  title="Attachments"
+                  title={t("attachments")}
                 />
               </TabsContent>
               <TabsContent value="assets" className="mt-0 outline-none">
@@ -379,7 +382,7 @@ export default function LiquidationFormModal({
                   title={null}
                   useApproverSelect={false}
                   showStepNumber={true}
-                  fallbackMessage="No approval workflow configured for this process type."
+                  fallbackMessage={t("approval_workflow_fallback")}
                 />
               </TabsContent>
             </div>
@@ -387,14 +390,14 @@ export default function LiquidationFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
               {pending
-                ? "Processing..."
+                ? t("processing")
                 : isEditing
-                  ? "Save changes"
-                  : "Confirm"}
+                  ? t("save_changes")
+                  : t("confirm")}
             </Button>
           </DialogFooter>
         </form>

@@ -13,6 +13,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -44,6 +45,7 @@ import { formatDate } from "@/utils/date";
 import LiquidationFormModal from "./LiquidationFormModal";
 
 export default function LiquidationTable() {
+  const t = useTranslations("page_liquidations.table");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
@@ -81,7 +83,7 @@ export default function LiquidationTable() {
             size={16}
           />
           <Input
-            placeholder="Search record number, asset..."
+            placeholder={t("search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -109,7 +111,7 @@ export default function LiquidationTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("searching") : t("btn_search")}
           </Button>
 
           <Button
@@ -123,7 +125,7 @@ export default function LiquidationTable() {
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            title={t("btn_clear_filters")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -131,7 +133,7 @@ export default function LiquidationTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Create
+            {t("btn_create")}
           </Button>
         </div>
       </div>
@@ -141,20 +143,20 @@ export default function LiquidationTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Liquidation info
+                {t("liquidation_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("date")}</TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Asset details
+                {t("asset_details")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Quantity
+                {t("quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Status</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("status")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("reason")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
@@ -164,8 +166,8 @@ export default function LiquidationTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={Trash2}
-                message="No liquidation records found"
-                description="No records match your search."
+                message={t("empty_title")}
+                description={t("empty_desc")}
               />
             ) : (
               liquidations.map((item, index) => (
@@ -228,7 +230,7 @@ export default function LiquidationTable() {
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason || "No reason"}
+                    {item.reason || t("no_reason_placeholder", { fallback: "No reason" })}
                   </TableCell>
                 </TableRow>
               ))

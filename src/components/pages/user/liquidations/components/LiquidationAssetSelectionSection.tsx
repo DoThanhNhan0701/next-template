@@ -6,6 +6,7 @@ import {
   UseFieldArrayRemove,
   UseFormReturn,
 } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ function AssetListItem({
   isOnlyItem,
   locations,
 }: AssetListItemProps) {
+  const t = useTranslations("page_liquidations.form");
   const selectedLocationId = form.watch(`items.${index}.from_location_id`);
 
   const { response: assetRes, pending: assetsPending } = useGet<{
@@ -72,7 +74,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Locations</FieldLabel>
+              <FieldLabel>{t("location")}</FieldLabel>
               <Select
                 onValueChange={(val) => {
                   field.onChange(Number(val));
@@ -81,7 +83,7 @@ function AssetListItem({
                 value={field.value ? field.value.toString() : ""}
               >
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Select location" />
+                  <SelectValue placeholder={t("placeholder_location")} />
                 </SelectTrigger>
                 <SelectContent>
                   {locations.map((loc) => (
@@ -101,7 +103,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Select asset</FieldLabel>
+              <FieldLabel>{t("asset")}</FieldLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
                 value={field.value ? field.value.toString() : ""}
@@ -110,7 +112,7 @@ function AssetListItem({
                 <SelectTrigger className="bg-white">
                   <SelectValue
                     placeholder={
-                      assetsPending ? "Loading assets..." : "Select asset"
+                      assetsPending ? t("loading_assets") : t("placeholder_asset")
                     }
                   />
                 </SelectTrigger>
@@ -135,7 +137,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Quantity</FieldLabel>
+              <FieldLabel>{t("quantity")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
@@ -150,7 +152,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Unit price</FieldLabel>
+              <FieldLabel>{t("unit_price")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
@@ -165,7 +167,7 @@ function AssetListItem({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Remaining value</FieldLabel>
+              <FieldLabel>{t("remaining_value")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
@@ -182,10 +184,10 @@ function AssetListItem({
         control={form.control}
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>Item notes</FieldLabel>
+            <FieldLabel>{t("item_notes")}</FieldLabel>
             <Input
               {...field}
-              placeholder="Detailed notes for this asset..."
+              placeholder={t("placeholder_item_notes")}
               className="bg-white"
               value={field.value || ""}
             />
@@ -212,11 +214,12 @@ export function LiquidationAssetSelectionSection({
   remove,
   locations,
 }: LiquidationAssetSelectionSectionProps) {
+  const t = useTranslations("page_liquidations.form");
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between border-b border-dashed pb-3">
         <label className="text-xs font-semibold text-primary">
-          Select assets for liquidation
+          {t("asset_selection_title")}
         </label>
         <div className="flex items-center gap-2">
           <Button
@@ -237,7 +240,7 @@ export function LiquidationAssetSelectionSection({
               })
             }
           >
-            <PlusIcon size={12} className="mr-1" /> Add asset
+            <PlusIcon size={12} className="mr-1" /> {t("add_asset")}
           </Button>
         </div>
       </div>

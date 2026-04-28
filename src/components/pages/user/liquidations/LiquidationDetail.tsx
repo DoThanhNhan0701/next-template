@@ -19,6 +19,7 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +50,7 @@ interface Props {
 }
 
 export default function LiquidationDetail({ id }: Props) {
+  const t = useTranslations("page_liquidations.detail");
   const router = useRouter();
 
   const {
@@ -95,10 +97,10 @@ export default function LiquidationDetail({ id }: Props) {
         </Button>
         <div className="flex flex-col gap-0.5">
           <h1 className="text-lg font-semibold text-foreground">
-            Liquidation Detail
+            {t("title")}
           </h1>
           <span className="text-xs text-muted-foreground font-medium">
-            Asset Disposal Record
+            {t("subtitle")}
           </span>
         </div>
       </div>
@@ -115,7 +117,7 @@ export default function LiquidationDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Record Number
+                  {t("record_number")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.record_number}
@@ -130,7 +132,7 @@ export default function LiquidationDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[100px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Total Value
+                  {t("total_value")}
                 </span>
                 <span className="text-xl font-bold text-primary">
                   {formatNumberWithCommas(detail.total_value ?? 0)}
@@ -138,7 +140,7 @@ export default function LiquidationDetail({ id }: Props) {
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-muted/40 border border-border/50 min-w-[80px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Items
+                  {t("items_count")}
                 </span>
                 <span className="text-xl font-bold text-foreground">
                   {detail.details?.length || 0}
@@ -168,7 +170,7 @@ export default function LiquidationDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Disposal Items
+                {t("disposal_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -176,25 +178,25 @@ export default function LiquidationDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      From Location
+                      {t("from_location")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Quantity
+                      {t("quantity")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-right">
-                      Unit Value
+                      {t("unit_value")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-right">
-                      Remaining Value
+                      {t("remaining_value")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Notes
+                      {t("notes")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -256,7 +258,7 @@ export default function LiquidationDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Info className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                General Information
+                {t("general_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -264,7 +266,7 @@ export default function LiquidationDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <ClipboardList size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Type
+                    {t("type")}
                   </span>
                 </div>
                 <Badge variant="secondary">{detail.liquidation_type}</Badge>
@@ -274,7 +276,7 @@ export default function LiquidationDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <CreditCard size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Buyer
+                    {t("buyer")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -285,7 +287,7 @@ export default function LiquidationDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Creator
+                    {t("creator")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -297,7 +299,7 @@ export default function LiquidationDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Link2 size={15} />
                     <span className="text-xs font-semibold tracking-wider">
-                      Link
+                      {t("link")}
                     </span>
                   </div>
                   <a
@@ -306,13 +308,13 @@ export default function LiquidationDetail({ id }: Props) {
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline flex items-center gap-1 truncate max-w-36"
                   >
-                    View Link <ExternalLink size={12} />
+                    {t("view_link")} <ExternalLink size={12} />
                   </a>
                 </div>
               )}
               <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Reason
+                  {t("reason")}
                 </span>
                 <p className="text-sm text-foreground/80 leading-relaxed italic">
                   {detail.reason || "—"}
@@ -321,7 +323,7 @@ export default function LiquidationDetail({ id }: Props) {
               {detail.notes && (
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                   <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                    Notes
+                    {t("notes")}
                   </span>
                   <p className="text-sm text-foreground/80 leading-relaxed">
                     {detail.notes}
@@ -336,7 +338,7 @@ export default function LiquidationDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Users className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Disposal Committee
+                {t("committee")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3">
@@ -352,7 +354,7 @@ export default function LiquidationDetail({ id }: Props) {
                 ))}
                 {!detail.committee && (
                   <span className="text-xs text-muted-foreground italic">
-                    No committee members assigned.
+                    {t("no_committee")}
                   </span>
                 )}
               </div>
@@ -361,16 +363,14 @@ export default function LiquidationDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {isPending
-                ? "The record is currently awaiting review."
-                : "Disposal record has been processed."}
+              {isPending ? t("status_pending_desc") : t("status_processed_desc")}
             </p>
           </div>
         </div>
       </div>
 
       <RecordAttachmentsCard
-        title="Disposal Documents"
+        title={t("disposal_documents")}
         initialAttachments={detail.attachments || []}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -402,7 +402,7 @@ export default function LiquidationDetail({ id }: Props) {
         <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
           <History className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm font-semibold text-primary">
-            Approval History
+            {t("approval_history")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -415,26 +415,26 @@ export default function LiquidationDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">No approval history available.</p>
+              <p className="text-sm italic">{t("no_approval_history")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-sidebar-accent border-b border-border/50">
                 <TableRow>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Step
+                    {t("history_step")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Approver
+                    {t("history_approver")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    Status
+                    {t("history_status")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Comment
+                    {t("history_comment")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Date
+                    {t("history_date")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -458,15 +458,15 @@ export default function LiquidationDetail({ id }: Props) {
                     <TableCell className="px-4 py-3 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> Approved
+                          <CheckCircle2 size={12} /> {t("status_approved")}
                         </span>
                       ) : hist.status === "REJECTED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> Rejected
+                          <XCircle size={12} /> {t("status_rejected")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> Pending
+                          <Clock size={12} /> {t("status_pending")}
                         </span>
                       )}
                     </TableCell>
