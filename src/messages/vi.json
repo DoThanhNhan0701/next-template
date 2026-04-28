@@ -1571,5 +1571,117 @@
       "placeholder_quantity_value": "VD: 1",
       "none": "(Không có)"
     }
+  },
+  "page_audits": {
+    "tabs": {
+      "my_tasks": "Nhiệm vụ của tôi",
+      "manage_all": "Quản lý tất cả"
+    },
+    "table": {
+      "no": "STT",
+      "title": "Tiêu đề",
+      "type_target": "Loại / Đối tượng",
+      "assignee": "Người thực hiện",
+      "due_date": "Hạn hoàn thành",
+      "status": "Trạng thái",
+      "current_state": "Trạng thái hiện tại",
+      "audit_result": "Kết quả kiểm kê",
+      "action_target": "Xử lý & Đối tượng",
+      "notes": "Ghi chú",
+      "verified": "Xác nhận",
+      "no_audits_found": "Không tìm thấy đợt kiểm kê nào",
+      "no_audits_description": "Không có đợt kiểm kê nào khớp với tiêu chí tìm kiếm của bạn.",
+      "created_at": "Đã tạo {date}",
+      "audited_assets": "Tài sản kiểm kê",
+      "asset": "Tài sản",
+      "current_holder": "Người nắm giữ hiện tại",
+      "audit_information": "Thông tin kiểm kê",
+      "assignment_leader": "(Để trống để tự động giao cho trưởng bộ phận)",
+      "audit_batch_title": "Tạo đợt kiểm kê",
+      "audit_batch_description": "Tạo đợt kiểm kê tài sản mới theo đơn vị hoặc vị trí.",
+      "enter_batch_title": "Nhập tiêu đề đợt kiểm kê...",
+      "no_items_found": "Không tìm thấy tài sản nào trong đợt kiểm kê này.",
+      "status_note": "Ghi chú trạng thái",
+      "finalized_note": "Đợt kiểm kê này đã được hoàn tất và phê duyệt. Không thể thay đổi thêm.",
+      "active_note": "Đợt kiểm kê này đang hoạt động. Tiến độ xác minh đang được theo dõi.",
+      "no_action_required": "Không yêu cầu xử lý",
+      "system_update": "Cập nhật hệ thống",
+      "quantity": "Số lượng: {value}"
+    },
+    "filters": {
+      "search_placeholder": "Tìm kiếm đợt kiểm kê...",
+      "all_types": "Tất cả loại",
+      "organization": "Đơn vị",
+      "location": "Vị trí",
+      "btn_search": "Tìm kiếm",
+      "btn_create": "Tạo mới",
+      "search_unit": "Tìm kiếm đơn vị...",
+      "search_location": "Tìm kiếm vị trí...",
+      "select_unit": "Chọn đơn vị...",
+      "select_location": "Chọn vị trí...",
+      "no_unit_found": "Không tìm thấy đơn vị",
+      "no_location_found": "Không tìm thấy vị trí"
+    },
+    "form": {
+      "title": "Tiêu đề",
+      "audit_type": "Loại kiểm kê",
+      "by_unit": "Theo đơn vị",
+      "by_location": "Theo vị trí",
+      "due_date": "Hạn hoàn thành",
+      "assignee": "Người thực hiện",
+      "cancel": "Huỷ",
+      "create": "Tạo mới",
+      "creating": "Đang tạo...",
+      "placeholder_assignee": "Để trống — tự động giao...",
+      "unit_required": "Vui lòng chọn ít nhất một đơn vị",
+      "location_required": "Vui lòng chọn ít nhất một vị trí",
+      "title_required": "Vui lòng nhập tiêu đề",
+      "due_date_required": "Vui lòng chọn hạn hoàn thành",
+      "none": "(Không có)"
+    },
+    "results": {
+      "matched": "Khớp",
+      "matched_sub": "Tài sản đúng vị trí",
+      "lost": "Mất",
+      "lost_sub": "Không tìm thấy",
+      "damaged": "Hư hỏng",
+      "damaged_sub": "Tài sản bị hỏng",
+      "unknown": "Không xác định",
+      "unknown_sub": "Không có trong danh sách"
+    },
+    "actions": {
+      "none": "Không có",
+      "none_sub": "Giữ nguyên",
+      "transfer": "Điều chuyển",
+      "transfer_sub": "Chuyển sang đơn vị/người khác",
+      "recall": "Thu hồi",
+      "recall_sub": "Thu hồi về kho"
+    },
+    "detail_modal": {
+      "title": "Kiểm kê tài sản",
+      "view_mode_notice": "Chế độ xem — bạn không có quyền chỉnh sửa kết quả kiểm kê này.",
+      "current_info": "Thông tin hiện tại",
+      "asset_code": "Mã tài sản",
+      "asset_name": "Tên tài sản",
+      "holder": "Người nắm giữ",
+      "quantity": "Số lượng",
+      "system_status": "Trạng thái hệ thống",
+      "audit_result": "Kết quả kiểm kê",
+      "proposed_action": "Xử lý đề xuất",
+      "recall_info": "Thông tin thu hồi",
+      "transfer_info": "Thông tin điều chuyển",
+      "receiving_warehouse": "Kho tiếp nhận",
+      "recipient_unit": "Người nhận / đơn vị",
+      "auto_assigned": "Tự động phân bổ",
+      "quantity_label": "Số lượng: {value}",
+      "condition_notes": "Ghi chú tình trạng",
+      "no_notes": "Không có ghi chú nào cho kết quả kiểm kê này.",
+      "close": "Đóng"
+    },
+    "detail": {
+      "inventory_verification": "Xác minh kho",
+      "total_items": "Tổng số tài sản",
+      "audit_target": "Đối tượng kiểm kê"
+    }
   }
 }

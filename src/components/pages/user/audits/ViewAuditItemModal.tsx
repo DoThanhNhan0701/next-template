@@ -27,6 +27,8 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { IAuditDetailItem } from "@/types/audit";
 
+import { useTranslations } from "next-intl";
+
 interface Props {
   item: IAuditDetailItem | null;
   isOpen: boolean;
@@ -34,13 +36,15 @@ interface Props {
 }
 
 export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
+  const t = useTranslations("page_audits");
+
   if (!item) return null;
 
   const auditResults = [
     {
       code: "MATCHED",
-      label: "Matched",
-      sub: "Asset in correct location",
+      label: t("results.matched"),
+      sub: t("results.matched_sub"),
       icon: CheckCircle2,
       color: "text-emerald-600",
       border: "border-emerald-500",
@@ -50,8 +54,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     },
     {
       code: "LOST",
-      label: "Lost",
-      sub: "Not found",
+      label: t("results.lost"),
+      sub: t("results.lost_sub"),
       icon: XCircle,
       color: "text-red-600",
       border: "border-red-500",
@@ -61,8 +65,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     },
     {
       code: "DAMAGED",
-      label: "Damaged",
-      sub: "Asset is broken",
+      label: t("results.damaged"),
+      sub: t("results.damaged_sub"),
       icon: AlertTriangle,
       color: "text-amber-600",
       border: "border-amber-500",
@@ -73,8 +77,8 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     {
       code: "UNKNOWN",
       aliasCodes: ["MISMATCHED", "EXTRA", "COMPLETED"],
-      label: "Unknown asset",
-      sub: "Not in list",
+      label: t("results.unknown"),
+      sub: t("results.unknown_sub"),
       icon: HelpCircle,
       color: "text-blue-600",
       border: "border-blue-500",
@@ -85,18 +89,23 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
   ];
 
   const proposedActions = [
-    { key: null, label: "None", sub: "Keep as is", icon: Package },
+    {
+      key: null,
+      label: t("actions.none"),
+      sub: t("actions.none_sub"),
+      icon: Package,
+    },
     {
       key: "TRANSFER",
-      label: "Transfer",
-      sub: "Move to unit/person",
+      label: t("actions.transfer"),
+      sub: t("actions.transfer_sub"),
       icon: ArrowRightLeft,
     },
     {
       key: "RECALL",
       aliasKeys: ["RECOVER"],
-      label: "Recall",
-      sub: "Return to warehouse",
+      label: t("actions.recall"),
+      sub: t("actions.recall_sub"),
       icon: RotateCcw,
     },
   ];
@@ -105,7 +114,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[560px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Asset audit</DialogTitle>
+          <DialogTitle>{t("detail_modal.title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {item.asset.asset_code} — {item.asset.name}
           </DialogDescription>
@@ -116,9 +125,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
           <div className="bg-amber-50/50 border border-amber-200/50 text-amber-700 p-3 rounded-lg flex items-start gap-3 shadow-none">
             <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
             <div className="text-[12px] font-medium leading-relaxed">
-              <span>
-                View mode — you do not have permission to edit this audit result.
-              </span>
+              <span>{t("detail_modal.view_mode_notice")}</span>
             </div>
           </div>
 
@@ -127,12 +134,12 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <div className="p-5 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-5">
               <h3 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                 <Info size={14} className="text-primary/60" />
-                Current information
+                {t("detail_modal.current_info")}
               </h3>
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Asset code
+                    {t("detail_modal.asset_code")}
                   </span>
                   <span className="text-sm font-bold text-foreground">
                     {item.asset.asset_code}
@@ -140,7 +147,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Asset name
+                    {t("detail_modal.asset_name")}
                   </span>
                   <p className="text-sm font-bold text-foreground line-clamp-1">
                     {item.asset.name}
@@ -148,7 +155,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Holder
+                    {t("detail_modal.holder")}
                   </span>
                   <div className="flex items-center gap-1.5">
                     <User size={13} className="text-primary/60" />
@@ -159,7 +166,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    Quantity
+                    {t("detail_modal.quantity")}
                   </span>
                   <span className="text-sm font-bold text-primary">
                     {item.transfer_quantity ?? item.unit_quantity ?? 0}
@@ -167,7 +174,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-1 col-span-2">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest">
-                    System status
+                    {t("detail_modal.system_status")}
                   </span>
                   <Badge
                     variant="secondary"
@@ -183,7 +190,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <Field className="gap-3">
               <FieldLabel>
                 <span className="h-1 w-4 bg-primary rounded-full" />
-                Audit result
+                {t("detail_modal.audit_result")}
               </FieldLabel>
               <div className="grid grid-cols-2 gap-3">
                 {auditResults.map((res) => {
@@ -252,7 +259,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             <Field className="gap-3">
               <FieldLabel>
                 <span className="h-1 w-4 bg-primary rounded-full" />
-                Proposed action
+                {t("detail_modal.proposed_action")}
               </FieldLabel>
               <div className="grid grid-cols-3 gap-3">
                 {proposedActions.map((action) => {
@@ -318,14 +325,14 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
               <Field className="p-3 rounded-xl bg-muted/20 border border-border/50 flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-200">
                 <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
                   {item.proposed_action === "RECALL"
-                    ? "Recall information"
-                    : "Transfer information"}
+                    ? t("detail_modal.recall_info")
+                    : t("detail_modal.transfer_info")}
                 </h4>
                 <div className="flex flex-col gap-1.5">
                   <span className="text-[10px] text-muted-foreground font-extrabold uppercase tracking-widest flex items-center gap-1">
                     {item.proposed_action === "RECALL"
-                      ? "Receiving warehouse"
-                      : "Recipient / unit"}
+                      ? t("detail_modal.receiving_warehouse")
+                      : t("detail_modal.recipient_unit")}
                     <span className="text-red-500">*</span>
                   </span>
                   <div className="p-2.5 rounded-md border border-border/50 bg-background shadow-sm flex items-center gap-2 font-bold text-sm">
@@ -337,12 +344,14 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
                     <span>
                       {item.target_holder_name ||
                         item.target_staff?.full_name ||
-                        "Auto-assigned"}
+                        t("detail_modal.auto_assigned")}
                     </span>
                     {(item.transfer_quantity !== null ||
                       item.unit_quantity !== null) && (
                         <span className="ml-auto text-primary">
-                          Quantity: {item.transfer_quantity ?? item.unit_quantity}
+                          {t("detail_modal.quantity_label", {
+                            value: item.transfer_quantity ?? item.unit_quantity,
+                          })}
                         </span>
                       )}
                   </div>
@@ -353,10 +362,10 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
             {/* Notes */}
             <Field className="gap-2">
               <FieldLabel>
-                Condition notes
+                {t("detail_modal.condition_notes")}
               </FieldLabel>
               <div className="p-3 rounded-xl border border-border bg-muted/5 min-h-[100px] text-sm text-foreground/80 leading-relaxed italic whitespace-pre-wrap">
-                {item.notes || "No notes for this audit result."}
+                {item.notes || t("detail_modal.no_notes")}
               </div>
             </Field>
           </FieldGroup>
@@ -364,7 +373,7 @@ export default function ViewAuditItemModal({ item, isOpen, onClose }: Props) {
 
         <DialogFooter className="p-3 shrink-0 border-t">
           <Button type="button" variant="outline" onClick={onClose}>
-            Close
+            {t("detail_modal.close")}
           </Button>
         </DialogFooter>
       </DialogContent>

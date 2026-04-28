@@ -16,6 +16,8 @@ import {
   X,
 } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -54,16 +56,17 @@ import { formatDate } from "@/utils/date";
 import AuditFormModal from "./AuditFormModal";
 
 export default function AllAuditsTable() {
+  const t = useTranslations("page_audits");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [searchInput, setSearchInput] = useState("");
-  const [auditTypeInput, setAuditTypeInput] = useState<string>("all");
+  const [auditTypeInput, setAuditTypeInput] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Applied filters (only updated when Search button is clicked)
   const [q, setQ] = useState("");
-  const [auditType, setAuditType] = useState<string>("all");
+  const [auditType, setAuditType] = useState<string>("");
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
@@ -80,7 +83,7 @@ export default function AllAuditsTable() {
 
   // Filter locally by audit_type
   const audits =
-    auditType === "all"
+    !auditType
       ? allAudits
       : allAudits.filter((audit) => audit.audit_type === auditType);
 
@@ -103,7 +106,7 @@ export default function AllAuditsTable() {
             size={16}
           />
           <Input
-            placeholder="Search audits..."
+            placeholder={t("filters.search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -123,7 +126,10 @@ export default function AllAuditsTable() {
 
         {/* Filter Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={auditTypeInput} onValueChange={setAuditTypeInput}>
+          <Select
+            value={auditTypeInput}
+            onValueChange={(val) => setAuditTypeInput(val === "all" ? "" : val)}
+          >
             <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Filter
@@ -131,14 +137,14 @@ export default function AllAuditsTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All types" />
+                  <SelectValue placeholder={t("filters.all_types")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="unit">Organization</SelectItem>
-              <SelectItem value="location">Location</SelectItem>
+              <SelectItem value="all">{t("filters.all_types")}</SelectItem>
+              <SelectItem value="unit">{t("filters.organization")}</SelectItem>
+              <SelectItem value="location">{t("filters.location")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -150,16 +156,16 @@ export default function AllAuditsTable() {
             onClick={handleSearch}
             className="transition-all active:scale-95 shrink-0"
           >
-            Search
+            {t("filters.btn_search")}
           </Button>
           <Button
             variant="outline"
             size="icon"
             onClick={() => {
               setSearchInput("");
-              setAuditTypeInput("all");
+              setAuditTypeInput("");
               setQ("");
-              setAuditType("all");
+              setAuditType("");
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
@@ -172,7 +178,7 @@ export default function AllAuditsTable() {
             onClick={() => setIsCreateModalOpen(true)}
             className="transition-all active:scale-95 shrink-0"
           >
-            Create
+            {t("filters.btn_create")}
           </Button>
         </div>
       </div>
@@ -182,20 +188,22 @@ export default function AllAuditsTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Title</TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                Type / Target
+                {t("table.no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Assignee
+                {t("table.title")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Due Date
+                {t("table.type_target")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.assignee")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.due_date")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("table.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -206,8 +214,8 @@ export default function AllAuditsTable() {
               <TableEmptyRow
                 colSpan={6}
                 icon={ClipboardList}
-                message="No audits found"
-                description="No audit sessions match your current search criteria."
+                message={t("table.no_audits_found")}
+                description={t("table.no_audits_description")}
               />
             ) : (
               audits.map((audit, index) => (
@@ -224,8 +232,10 @@ export default function AllAuditsTable() {
                       <span className="font-semibold text-sm">
                         {audit.title}
                       </span>
-                      <span className="text-[10px] text-muted-foreground">
-                        Created {formatDate(audit.created_at)}
+                      <span className="text-[10px] text-muted-foreground text-nowrap">
+                        {t("table.created_at", {
+                          date: formatDate(audit.created_at),
+                        })}
                       </span>
                     </div>
                   </TableCell>
@@ -236,8 +246,8 @@ export default function AllAuditsTable() {
                         className="w-fit text-[10px] px-1.5 py-0"
                       >
                         {audit.audit_type === "unit"
-                          ? "Organization"
-                          : "Location"}
+                          ? t("filters.organization")
+                          : t("filters.location")}
                       </Badge>
                       <div className="flex items-center gap-1.5 text-sm">
                         {audit.audit_type === "unit" ? (
@@ -268,7 +278,7 @@ export default function AllAuditsTable() {
                     <div className="flex items-center gap-2">
                       <User size={12} className="text-muted-foreground" />
                       <span className="text-sm font-medium text-foreground/80">
-                        {audit.assignee.full_name}
+                        {audit.assignee?.full_name || "—"}
                       </span>
                     </div>
                   </TableCell>

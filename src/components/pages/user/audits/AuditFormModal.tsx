@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
@@ -55,28 +56,14 @@ import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-const AuditSchema = z
-  .object({
-    title: z.string().min(1, "Title is required"),
-    audit_type: z.enum(["unit", "location"]),
-    unit_ids: z.array(z.number()),
-    location_ids: z.array(z.number()),
-    assignee_id: z.number().nullable(),
-    due_date: z.string().min(1, "Due date is required"),
-  })
-  .refine(
-    (data) => {
-      if (data.audit_type === "unit") return data.unit_ids.length > 0;
-      if (data.audit_type === "location") return data.location_ids.length > 0;
-      return true;
-    },
-    {
-      message: "Please select at least one item",
-      path: ["unit_ids"],
-    },
-  );
-
-type AuditFormValues = z.infer<typeof AuditSchema>;
+type AuditFormValues = {
+  title: string;
+  audit_type: "unit" | "location";
+  unit_ids: number[];
+  location_ids: number[];
+  assignee_id: number | null;
+  due_date: string;
+};
 
 interface AuditFormModalProps {
   isOpen: boolean;
@@ -89,7 +76,34 @@ export default function AuditFormModal({
   onClose,
   onSuccess,
 }: AuditFormModalProps) {
-  const { mutate, pending } = useMutation();
+  const t = useTranslations("page_audits");
+
+  const AuditSchema = z
+    .object({
+      title: z.string().min(1, t("form.title_required")),
+      audit_type: z.enum(["unit", "location"]),
+      unit_ids: z.array(z.number()),
+      location_ids: z.array(z.number()),
+      assignee_id: z.number().nullable(),
+      due_date: z.string().min(1, t("form.due_date_required")),
+    })
+    .superRefine((data, ctx) => {
+      if (data.audit_type === "unit" && data.unit_ids.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t("form.unit_required"),
+          path: ["unit_ids"],
+        });
+      }
+      if (data.audit_type === "location" && data.location_ids.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t("form.location_required"),
+          path: ["location_ids"],
+        });
+      }
+    });
+
   const [unitDropdownOpen, setUnitDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [unitSearch, setUnitSearch] = useState("");
@@ -112,10 +126,10 @@ export default function AuditFormModal({
   const orgUnits = orgRes || [];
   const users = userRes || [];
 
-  const filteredUnits = orgUnits.filter((u) =>
+  const filteredUnits = orgUnits.filter((u: IOrgUnit) =>
     u.name.toLowerCase().includes(unitSearch.toLowerCase()),
   );
-  const filteredLocations = locations.filter((l) =>
+  const filteredLocations = locations.filter((l: ILocation) =>
     l.name.toLowerCase().includes(locationSearch.toLowerCase()),
   );
 
@@ -130,6 +144,8 @@ export default function AuditFormModal({
       due_date: getTodayISO(),
     },
   });
+
+  const { mutate, pending } = useMutation();
 
   const auditType = useWatch({ control: form.control, name: "audit_type" });
   const selectedUnitIds =
@@ -151,18 +167,18 @@ export default function AuditFormModal({
   }, [isOpen, form]);
 
   const toggleUnit = (id: number) => {
-    const current = form.getValues("unit_ids");
+    const current = form.getValues("unit_ids") || [];
     form.setValue(
       "unit_ids",
-      current.includes(id) ? current.filter((v) => v !== id) : [...current, id],
+      current.includes(id) ? current.filter((v: number) => v !== id) : [...current, id],
     );
   };
 
   const toggleLocation = (id: number) => {
-    const current = form.getValues("location_ids");
+    const current = form.getValues("location_ids") || [];
     form.setValue(
       "location_ids",
-      current.includes(id) ? current.filter((v) => v !== id) : [...current, id],
+      current.includes(id) ? current.filter((v: number) => v !== id) : [...current, id],
     );
   };
 
@@ -199,9 +215,9 @@ export default function AuditFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[560px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Create audit batch</DialogTitle>
+          <DialogTitle>{t("table.audit_batch_title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Create a new asset audit batch by unit or location.
+            {t("table.audit_batch_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -214,10 +230,10 @@ export default function AuditFormModal({
               <FieldGroup className="grid grid-cols-2 gap-3">
                 <Field className="col-span-2 gap-1">
                   <FieldLabel>
-                    Title
+                    {t("form.title")}
                   </FieldLabel>
                   <Input
-                    placeholder="Enter audit batch title..."
+                    placeholder={t("table.enter_batch_title")}
                     {...form.register("title")}
                     className="bg-background rounded-md border-muted-foreground/20 shadow-sm"
                   />
@@ -230,7 +246,7 @@ export default function AuditFormModal({
                   render={({ field }) => (
                     <Field className="col-span-2 gap-1 mb-3">
                       <FieldLabel>
-                        Audit type
+                        {t("form.audit_type")}
                       </FieldLabel>
                       <Tabs
                         value={field.value}
@@ -247,7 +263,7 @@ export default function AuditFormModal({
                             className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm w-full"
                           >
                             <Building2 className="w-4 h-4" />
-                            <span className="text-xs font-medium">By unit</span>
+                            <span className="text-xs font-medium">{t("form.by_unit")}</span>
                           </TabsTrigger>
                           <TabsTrigger
                             value="location"
@@ -255,7 +271,7 @@ export default function AuditFormModal({
                           >
                             <MapPin className="w-4 h-4" />
                             <span className="text-xs font-medium">
-                              By location
+                              {t("form.by_location")}
                             </span>
                           </TabsTrigger>
                         </TabsList>
@@ -268,7 +284,7 @@ export default function AuditFormModal({
                 {auditType === "unit" && (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>
-                      Select unit
+                      {t("filters.select_unit")}
                     </FieldLabel>
                     <DropdownMenu
                       open={unitDropdownOpen}
@@ -282,10 +298,10 @@ export default function AuditFormModal({
                           <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
                             {selectedUnitIds.length === 0 ? (
                               <span className="text-sm text-muted-foreground">
-                                Select unit...
+                                {t("filters.select_unit")}
                               </span>
                             ) : (
-                              selectedUnitIds.map((id) => {
+                              selectedUnitIds.map((id: number) => {
                                 const unit = orgUnits.find((u) => u.id === id);
                                 return (
                                   <Badge
@@ -323,7 +339,7 @@ export default function AuditFormModal({
                           <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
-                              placeholder="Search unit..."
+                              placeholder={t("filters.search_unit")}
                               value={unitSearch}
                               onChange={(e) => setUnitSearch(e.target.value)}
                               className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
@@ -333,7 +349,7 @@ export default function AuditFormModal({
                         <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
                           {filteredUnits.length === 0 ? (
                             <div className="py-6 text-center text-xs text-muted-foreground">
-                              No unit found
+                              {t("filters.no_unit_found")}
                             </div>
                           ) : (
                             filteredUnits.map((u) => (
@@ -378,7 +394,7 @@ export default function AuditFormModal({
                 {auditType === "location" && (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>
-                      Select location
+                      {t("filters.select_location")}
                     </FieldLabel>
                     <DropdownMenu
                       open={locationDropdownOpen}
@@ -392,7 +408,7 @@ export default function AuditFormModal({
                           <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
                             {selectedLocationIds.length === 0 ? (
                               <span className="text-sm text-muted-foreground">
-                                Select location...
+                                {t("filters.select_location")}
                               </span>
                             ) : (
                               selectedLocationIds.map((id) => {
@@ -433,7 +449,7 @@ export default function AuditFormModal({
                           <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
-                              placeholder="Search location..."
+                              placeholder={t("filters.search_location")}
                               value={locationSearch}
                               onChange={(e) =>
                                 setLocationSearch(e.target.value)
@@ -445,7 +461,7 @@ export default function AuditFormModal({
                         <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
                           {filteredLocations.length === 0 ? (
                             <div className="py-6 text-center text-xs text-muted-foreground">
-                              No location found
+                              {t("filters.no_location_found")}
                             </div>
                           ) : (
                             filteredLocations.map((l) => (
@@ -503,22 +519,28 @@ export default function AuditFormModal({
                     <Field className="gap-1">
                       <div className="flex flex-col gap-1 mb-1">
                         <FieldLabel>
-                          Assignee
+                          {t("form.assignee")}
                         </FieldLabel>
                         <span className="text-[10px] text-muted-foreground/60 leading-none">
-                          (Leave empty to auto-assign to leader)
+                          {t("table.assignment_leader")}
                         </span>
                       </div>
                       <Select
-                        value={field.value ? field.value.toString() : ""}
+                        value={field.value?.toString() || ""}
                         onValueChange={(val) =>
-                          field.onChange(val ? Number(val) : null)
+                          field.onChange(val === "none" ? null : Number(val))
                         }
                       >
                         <SelectTrigger className="bg-background rounded-md border-muted-foreground/20 shadow-sm">
-                          <SelectValue placeholder="Leave empty — auto-assign..." />
+                          <SelectValue placeholder={t("form.placeholder_assignee")} />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem
+                            value="none"
+                            className="text-muted-foreground italic"
+                          >
+                            {t("form.none")}
+                          </SelectItem>
                           {users.map((u) => (
                             <SelectItem key={u.id} value={u.id.toString()}>
                               {u.full_name} ({u.username})
@@ -536,7 +558,7 @@ export default function AuditFormModal({
                   render={({ fieldState }) => (
                     <Field className="gap-1">
                       <FieldLabel>
-                        Due date
+                        {t("form.due_date")}
                       </FieldLabel>
                       <DatePickerField form={form} name="due_date" />
                       <FieldError errors={[fieldState.error]} />
@@ -549,10 +571,10 @@ export default function AuditFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("form.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Creating..." : "Create"}
+              {pending ? t("form.creating") : t("form.create")}
             </Button>
           </DialogFooter>
         </form>

@@ -16,6 +16,7 @@ import {
   Package,
   User,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ interface Props {
 }
 
 export default function AuditDetail({ id }: Props) {
+  const t = useTranslations("page_audits");
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<IAuditDetailItem | null>(
     null,
@@ -90,10 +92,10 @@ export default function AuditDetail({ id }: Props) {
         </Button>
         <div className="flex flex-col gap-0.5">
           <h1 className="text-lg font-semibold text-foreground">
-            Audit Session Detail
+            {t("table.audit_batch_title")}
           </h1>
           <span className="text-xs text-muted-foreground">
-            Inventory & Verification
+            {t("detail.inventory_verification")}
           </span>
         </div>
       </div>
@@ -110,14 +112,14 @@ export default function AuditDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Audit Session
+                  {t("table.audit_information")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {session.title}
                 </span>
                 <span className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <Clock size={12} className="opacity-70" />
-                  Created: {formatDate(session.created_at)}
+                  {t("table.created_at", { date: formatDate(session.created_at) })}
                 </span>
               </div>
             </div>
@@ -126,7 +128,7 @@ export default function AuditDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[80px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Total Items
+                  {t("detail.total_items")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
                   {items?.length || 0}
@@ -156,7 +158,7 @@ export default function AuditDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Audited Assets
+                {t("table.audited_assets")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -164,25 +166,25 @@ export default function AuditDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("table.no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("table.asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Current State
+                      {t("table.current_state")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Audit Result
+                      {t("table.audit_result")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Action & Target
+                      {t("table.action_target")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Notes
+                      {t("table.notes")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Verified
+                      {t("table.verified")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -201,7 +203,7 @@ export default function AuditDetail({ id }: Props) {
                         colSpan={6}
                         className="h-40 text-center text-muted-foreground italic"
                       >
-                        No items found in this audit session.
+                        {t("table.no_items_found")}
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -291,21 +293,21 @@ export default function AuditDetail({ id }: Props) {
                                   <span className="truncate">
                                     {item.target_staff?.full_name ||
                                       item.target_holder_name ||
-                                      "System update"}
+                                      t("table.system_update")}
                                   </span>
                                   {(item.transfer_quantity !== null ||
                                     item.unit_quantity !== null) && (
                                       <span className="ml-auto font-bold text-primary">
-                                        Quantity:{" "}
-                                        {item.transfer_quantity ??
-                                          item.unit_quantity}
+                                        {t("table.quantity", {
+                                          value: item.transfer_quantity ?? item.unit_quantity,
+                                        })}
                                       </span>
                                     )}
                                 </div>
                               </>
                             ) : (
                               <span className="text-[11px] text-muted-foreground italic">
-                                No action required
+                                {t("table.no_action_required")}
                               </span>
                             )}
                           </div>
@@ -354,7 +356,7 @@ export default function AuditDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <Info className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Audit Information
+                {t("table.audit_information")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -362,7 +364,7 @@ export default function AuditDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User size={15} className="shrink-0" />
                   <span className="text-xs font-semibold tracking-wider">
-                    Assignee
+                    {t("table.assignee")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -373,7 +375,7 @@ export default function AuditDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} className="shrink-0" />
                   <span className="text-xs font-semibold tracking-wider">
-                    Due Date
+                    {t("table.due_date")}
                   </span>
                 </div>
                 <span className="text-sm font-bold text-red-500/80">
@@ -389,14 +391,14 @@ export default function AuditDetail({ id }: Props) {
                       <MapPin size={15} />
                     )}
                     <span className="text-xs font-semibold tracking-wider">
-                      Audit Target
+                      {t("detail.audit_target")}
                     </span>
                   </div>
                   <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
                     <span className="text-xs text-muted-foreground block mb-0.5">
                       {session.audit_type === "unit"
-                        ? "Organization Unit"
-                        : "Location"}
+                        ? t("filters.organization")
+                        : t("filters.location")}
                     </span>
                     <span className="text-sm font-bold text-foreground">
                       {session.audit_type === "unit"
@@ -418,12 +420,12 @@ export default function AuditDetail({ id }: Props) {
               )}
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-bold tracking-tight">
-                  Status Note
+                  {t("table.status_note")}
                 </span>
                 <p className="text-[11px] text-muted-foreground leading-relaxed italic">
                   {isCompleted
-                    ? "This audit session has been finalized and approved. No further changes can be made."
-                    : "This audit session is currently active. Verification progress is being tracked."}
+                    ? t("table.finalized_note")
+                    : t("table.active_note")}
                 </p>
               </div>
             </div>
