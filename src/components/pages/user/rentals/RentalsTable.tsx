@@ -72,13 +72,13 @@ export default function RentalsTable() {
 
   // Filter state
   const [q, setQ] = useState("");
-  const [unitId, setUnitId] = useState<string>("all");
-  const [customerId, setCustomerId] = useState<string>("all");
+  const [unitId, setUnitId] = useState<string>("");
+  const [customerId, setCustomerId] = useState<string>("");
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
-    unit_id: "all",
-    customer_id: "all",
+    unit_id: "",
+    customer_id: "",
   });
 
   const [isCreating, setIsCreating] = useState(false);
@@ -102,9 +102,9 @@ export default function RentalsTable() {
   });
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
-  if (appliedFilters.unit_id !== "all")
+  if (appliedFilters.unit_id)
     queryParams.append("unit_id", appliedFilters.unit_id);
-  if (appliedFilters.customer_id !== "all")
+  if (appliedFilters.customer_id)
     queryParams.append("customer_id", appliedFilters.customer_id);
 
   const { response, pending, reFetch } = useGet<{ items: IRentalSummary[] }>({
@@ -145,8 +145,11 @@ export default function RentalsTable() {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={unitId} onValueChange={setUnitId}>
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+          <Select
+            value={unitId}
+            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Building2
                   size={16}
@@ -158,7 +161,9 @@ export default function RentalsTable() {
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("organization")}</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("none")}
+              </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
@@ -167,8 +172,11 @@ export default function RentalsTable() {
             </SelectContent>
           </Select>
 
-          <Select value={customerId} onValueChange={setCustomerId}>
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+          <Select
+            value={customerId}
+            onValueChange={(val) => setCustomerId(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Users
                   size={16}
@@ -180,7 +188,9 @@ export default function RentalsTable() {
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("all_customers")}</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("none")}
+              </SelectItem>
               {customers?.map((c) => (
                 <SelectItem key={c.id} value={c.id.toString()}>
                   {c.name}
@@ -211,12 +221,12 @@ export default function RentalsTable() {
             size="icon"
             onClick={() => {
               setQ("");
-              setUnitId("all");
-              setCustomerId("all");
+              setUnitId("");
+              setCustomerId("");
               setAppliedFilters({
                 q: "",
-                unit_id: "all",
-                customer_id: "all",
+                unit_id: "",
+                customer_id: "",
               });
               setSkip(0);
             }}

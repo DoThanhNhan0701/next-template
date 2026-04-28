@@ -61,11 +61,11 @@ export default function RentalReturnTable() {
 
   // Filter state
   const [q, setQ] = useState("");
-  const [statusCode, setStatusCode] = useState<string>("all");
+  const [statusCode, setStatusCode] = useState<string>("");
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
-    status_code: "all",
+    status_code: "",
   });
 
   const { response: statusRes } = useGet<IStatus[]>({
@@ -80,7 +80,7 @@ export default function RentalReturnTable() {
   });
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
-  if (appliedFilters.status_code !== "all")
+  if (appliedFilters.status_code)
     queryParams.append("status_code", appliedFilters.status_code);
 
   const { response, pending } = useGet<{
@@ -124,8 +124,11 @@ export default function RentalReturnTable() {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={statusCode} onValueChange={setStatusCode}>
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+          <Select
+            value={statusCode}
+            onValueChange={(val) => setStatusCode(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Filter
                   size={16}
@@ -137,7 +140,9 @@ export default function RentalReturnTable() {
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("all_statuses")}</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {tRentals("none")}
+              </SelectItem>
               {statuses.map((s) => (
                 <SelectItem key={s.id} value={s.code}>
                   {s.name}
@@ -167,10 +172,10 @@ export default function RentalReturnTable() {
             size="icon"
             onClick={() => {
               setQ("");
-              setStatusCode("all");
+              setStatusCode("");
               setAppliedFilters({
                 q: "",
-                status_code: "all",
+                status_code: "",
               });
               setSkip(0);
             }}

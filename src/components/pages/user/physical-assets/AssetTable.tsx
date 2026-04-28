@@ -184,14 +184,14 @@ export default function AssetTable() {
             value={unitId}
             onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
           >
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Building2
                   size={16}
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.unit")} />
+                  <SelectValue placeholder={t("filters.organization")} />
                 </div>
               </div>
             </SelectTrigger>
@@ -211,7 +211,7 @@ export default function AssetTable() {
             value={categoryId}
             onValueChange={(val) => setCategoryId(val === "none" ? "" : val)}
           >
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Tag size={16} className="text-muted-foreground/70 shrink-0" />
                 <div className="truncate flex-1 min-w-0">
@@ -235,7 +235,7 @@ export default function AssetTable() {
             value={statusCode}
             onValueChange={(val) => setStatusCode(val === "none" ? "" : val)}
           >
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Filter
                   size={16}

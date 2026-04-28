@@ -122,7 +122,7 @@ export default function MyAuditsTable() {
         {/* Filter Group */}
         <div className="flex flex-wrap items-center gap-2">
           <Select value={auditTypeInput} onValueChange={setAuditTypeInput}>
-            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Filter
                   size={16}
