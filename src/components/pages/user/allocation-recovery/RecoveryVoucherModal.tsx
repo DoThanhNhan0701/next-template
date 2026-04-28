@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -65,6 +67,7 @@ export default function RecoveryVoucherModal({
   onClose,
   onSuccess,
 }: Props) {
+  const t = useTranslations("page_allocation_recovery");
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.recovery);
@@ -210,9 +213,9 @@ export default function RecoveryVoucherModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>Create Recovery Voucher</DialogTitle>
+          <DialogTitle>{t("form.create_recovery_title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Fill in details to create a new recovery voucher.
+            {t("form.create_recovery_desc")}
           </DialogDescription>
         </DialogHeader>
 
@@ -225,7 +228,7 @@ export default function RecoveryVoucherModal({
               {/* General Information */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary">
-                  1. General Information
+                  {t("form.general_info")}
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -233,15 +236,21 @@ export default function RecoveryVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Organization</FieldLabel>
+                        <FieldLabel>{t("form.organization")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(Number(val))}
+                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Select unit" />
+                            <SelectValue placeholder={t("form.placeholder_unit")} />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              {t("form.none")}
+                            </SelectItem>
                             {orgUnits.map((o) => (
                               <SelectItem key={o.id} value={o.id.toString()}>
                                 {o.name}
@@ -261,7 +270,7 @@ export default function RecoveryVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Recovered from (staff)</FieldLabel>
+                        <FieldLabel>{t("form.recovered_from_staff")}</FieldLabel>
                         <Select
                           onValueChange={(val: string) =>
                             field.onChange(val === "none" ? null : Number(val))
@@ -279,8 +288,8 @@ export default function RecoveryVoucherModal({
                             <SelectValue
                               placeholder={
                                 !watchedUnitId || Number(watchedUnitId) === 0
-                                  ? "Select unit first"
-                                  : "Select staff"
+                                  ? t("form.placeholder_unit_first")
+                                  : t("form.placeholder_staff")
                               }
                             />
                           </SelectTrigger>
@@ -289,7 +298,7 @@ export default function RecoveryVoucherModal({
                               value="none"
                               className="text-muted-foreground italic"
                             >
-                              (None)
+                              {t("form.none")}
                             </SelectItem>
                             {(watchedUnitId && Number(watchedUnitId) !== 0
                               ? staffs.filter(
@@ -315,7 +324,7 @@ export default function RecoveryVoucherModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Recovery date</FieldLabel>
+                        <FieldLabel>{t("form.recovery_date")}</FieldLabel>
                         <DatePickerField form={form} name="recovery_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -329,11 +338,11 @@ export default function RecoveryVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>External ticket link</FieldLabel>
+                        <FieldLabel>{t("form.external_link")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. Jira/Helpdesk link"
+                          placeholder={t("form.placeholder_link")}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -347,11 +356,11 @@ export default function RecoveryVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Recovery reason</FieldLabel>
+                        <FieldLabel>{t("form.recovery_reason")}</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="Reason for recovery"
+                          placeholder={t("form.placeholder_recovery_reason")}
                           className="min-h-[80px]"
                         />
                         {fieldState.invalid && (
@@ -367,7 +376,7 @@ export default function RecoveryVoucherModal({
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-primary">
-                    2. Assets Selection
+                    {t("form.assets_selection")}
                   </h3>
                   <Button
                     type="button"
@@ -378,7 +387,7 @@ export default function RecoveryVoucherModal({
                       append({ location_id: 0, asset_id: 0, quantity: 1 })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> Add Asset
+                    <PlusIcon size={12} className="mr-1" /> {t("form.add_asset")}
                   </Button>
                 </div>
 
@@ -410,17 +419,17 @@ export default function RecoveryVoucherModal({
 
               <FormAttachmentsSection
                 control={form.control}
-                title="Attachments"
+                title={t("form.attachments")}
               />
             </div>
           </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              {t("form.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Create"}
+              {pending ? t("form.saving") : t("form.create_btn")}
             </Button>
           </DialogFooter>
         </form>

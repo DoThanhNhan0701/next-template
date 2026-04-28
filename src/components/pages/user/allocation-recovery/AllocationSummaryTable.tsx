@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import {
   Building2,
   Calendar,
@@ -54,14 +56,14 @@ import { formatDate } from "@/utils/date";
 import AllocationVoucherModal from "./AllocationVoucherModal";
 
 export default function AllocationSummaryTable() {
+  const t = useTranslations("page_allocation_recovery");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
   // Filter state
   const [q, setQ] = useState("");
-  const [unitId, setUnitId] = useState<string>("all");
-  const [statusCode, setStatusCode] = useState<string>("all");
-
+  const [unitId, setUnitId] = useState<string>("");
+  const [statusCode, setStatusCode] = useState<string>("");
   const [isManualOpen, setIsManualOpen] = useState(false);
   const { isOpen: isReduxOpen } = useSelector(
     (state: RootState) => state.allocation,
@@ -70,8 +72,8 @@ export default function AllocationSummaryTable() {
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
-    unit_id: "all",
-    status_code: "all",
+    unit_id: "",
+    status_code: "",
   });
 
   const { response: orgRes } = useGet<IOrgUnit[]>({
@@ -90,9 +92,9 @@ export default function AllocationSummaryTable() {
   });
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
-  if (appliedFilters.unit_id !== "all")
+  if (appliedFilters.unit_id)
     queryParams.append("unit_id", appliedFilters.unit_id);
-  if (appliedFilters.status_code !== "all")
+  if (appliedFilters.status_code)
     queryParams.append("status_code", appliedFilters.status_code);
 
   const { response, pending, reFetch } = useGet<{
@@ -114,7 +116,7 @@ export default function AllocationSummaryTable() {
             size={16}
           />
           <Input
-            placeholder="Search allocations..."
+            placeholder={t("table.search_allocation_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -134,7 +136,10 @@ export default function AllocationSummaryTable() {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={unitId} onValueChange={setUnitId}>
+          <Select
+            value={unitId}
+            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
+          >
             <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Building2
@@ -142,12 +147,14 @@ export default function AllocationSummaryTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="Organization" />
+                  <SelectValue placeholder={t("form.organization")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Organization</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("form.none")}
+              </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
@@ -156,7 +163,10 @@ export default function AllocationSummaryTable() {
             </SelectContent>
           </Select>
 
-          <Select value={statusCode} onValueChange={setStatusCode}>
+          <Select
+            value={statusCode}
+            onValueChange={(val) => setStatusCode(val === "none" ? "" : val)}
+          >
             <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Filter
@@ -164,12 +174,14 @@ export default function AllocationSummaryTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All statuses" />
+                  <SelectValue placeholder={t("table.all_statuses")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("form.none")}
+              </SelectItem>
               {statuses.map((s) => (
                 <SelectItem key={s.id} value={s.code}>
                   {s.name}
@@ -192,7 +204,7 @@ export default function AllocationSummaryTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("table.searching") : t("table.search")}
           </Button>
 
           <Button
@@ -200,17 +212,17 @@ export default function AllocationSummaryTable() {
             size="icon"
             onClick={() => {
               setQ("");
-              setUnitId("all");
-              setStatusCode("all");
+              setUnitId("");
+              setStatusCode("");
               setAppliedFilters({
                 q: "",
-                unit_id: "all",
-                status_code: "all",
+                unit_id: "",
+                status_code: "",
               });
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            title={t("table.clear_filters")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -219,7 +231,7 @@ export default function AllocationSummaryTable() {
             onClick={() => setIsManualOpen(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Create
+            {t("table.create")}
           </Button>
         </div>
       </div>
@@ -229,19 +241,19 @@ export default function AllocationSummaryTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Asset</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Allocated To
+                {t("table.allocated_to")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Quantity
+                {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.reason")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("table.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -252,8 +264,8 @@ export default function AllocationSummaryTable() {
               <TableEmptyRow
                 colSpan={7}
                 icon={ClipboardList}
-                message="No allocations found"
-                description="Adjust filters to find allocation records."
+                message={t("table.empty_allocation_title")}
+                description={t("table.empty_allocation_desc")}
               />
             ) : (
               allocations.map((alloc, index) => {
@@ -278,7 +290,7 @@ export default function AllocationSummaryTable() {
                     <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1 text-sm">
                         <span className="font-medium text-foreground/80">
-                          {alloc.allocated_to_name || "Unassigned"}
+                          {alloc.allocated_to_name || t("table.unassigned")}
                         </span>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1">
                           <span>{alloc.unit_name || "-"}</span>

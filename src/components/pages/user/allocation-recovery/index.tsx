@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSelector } from "react-redux";
@@ -11,6 +12,7 @@ import AllocationSummaryTable from "./AllocationSummaryTable";
 import RecoverySummaryTable from "./RecoverySummaryTable";
 
 export default function AllocationRecoveryPage() {
+  const t = useTranslations("page_allocation_recovery");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -39,13 +41,13 @@ export default function AllocationRecoveryPage() {
             value="allocations"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Allocation
+            {t("tabs.allocation")}
           </TabsTrigger>
           <TabsTrigger
             value="recoveries"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Recovery
+            {t("tabs.recovery")}
           </TabsTrigger>
         </TabsList>
 

@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { Trash } from "lucide-react";
 import { Control, Controller, UseFormSetValue } from "react-hook-form";
 import { z } from "zod";
@@ -47,6 +49,7 @@ export function RecoveryItemRow({
   onRemove,
   prefillAssetId,
 }: RecoveryItemRowProps) {
+  const t = useTranslations("page_allocation_recovery");
   const { response: assetRes, pending: assetsPending } = useGet<{
     items: IPhysicalAsset[];
   }>(
@@ -87,17 +90,19 @@ export function RecoveryItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>Asset</FieldLabel>
+            <FieldLabel>{t("form.asset")}</FieldLabel>
             <Select
               onValueChange={(val) => {
-                const aid = Number(val);
+                const aid = val === "none" ? 0 : Number(val);
                 field.onChange(aid);
-                const selectedAsset = assets.find((a) => a.id === aid);
-                if (selectedAsset?.location_id) {
-                  setValue(
-                    `items.${index}.location_id`,
-                    selectedAsset.location_id,
-                  );
+                if (aid !== 0) {
+                  const selectedAsset = assets.find((a) => a.id === aid);
+                  if (selectedAsset?.location_id) {
+                    setValue(
+                      `items.${index}.location_id`,
+                      selectedAsset.location_id,
+                    );
+                  }
                 }
               }}
               value={field.value ? field.value.toString() : ""}
@@ -107,17 +112,20 @@ export function RecoveryItemRow({
                 <SelectValue
                   placeholder={
                     !unitId
-                      ? "Select unit first"
+                      ? t("form.placeholder_unit_first")
                       : assetsPending
-                        ? "Loading..."
-                        : "Select asset"
+                        ? t("form.placeholder_loading")
+                        : t("form.placeholder_asset")
                   }
                 />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none" className="text-muted-foreground italic">
+                  {t("form.none")}
+                </SelectItem>
                 {assets.map((a: IPhysicalAsset) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.holding_qty ?? 0}
+                    {a.name} ({a.asset_code}) {t("form.quantity_label")} {a?.holding_qty ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -133,15 +141,18 @@ export function RecoveryItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>Location</FieldLabel>
+            <FieldLabel>{t("form.location")}</FieldLabel>
             <Select
-              onValueChange={(val) => field.onChange(Number(val))}
+              onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
               value={field.value ? field.value.toString() : ""}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select location" />
+                <SelectValue placeholder={t("form.placeholder_location")} />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none" className="text-muted-foreground italic">
+                  {t("form.none")}
+                </SelectItem>
                 {locations.map((loc) => (
                   <SelectItem key={loc.id} value={loc.id.toString()}>
                     {loc.name}
@@ -160,12 +171,12 @@ export function RecoveryItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-32">
-            <FieldLabel>Quantity</FieldLabel>
+            <FieldLabel>{t("form.quantity")}</FieldLabel>
             <FormattedNumberInput
               {...field}
               value={field.value as number | string | null}
               onChange={(val) => field.onChange(val ?? 0)}
-              placeholder="e.g. 1"
+              placeholder={t("form.placeholder_quantity_value")}
               className="h-9 text-xs font-medium"
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

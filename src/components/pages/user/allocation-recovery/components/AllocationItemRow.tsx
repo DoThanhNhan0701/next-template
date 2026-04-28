@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { Trash } from "lucide-react";
 import {
   Control,
@@ -49,6 +51,7 @@ export function AllocationItemRow({
   onRemove,
   prefillAssetId,
 }: AllocationItemRowProps) {
+  const t = useTranslations("page_allocation_recovery");
   const warehouseId = useWatch({
     control,
     name: `items.${index}.location_id`,
@@ -93,19 +96,22 @@ export function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>Location</FieldLabel>
+            <FieldLabel>{t("form.location")}</FieldLabel>
             <Select
               onValueChange={(val) => {
-                const vid = Number(val);
+                const vid = val === "none" ? 0 : Number(val);
                 field.onChange(vid);
                 setValue(`items.${index}.asset_id`, 0);
               }}
               value={field.value ? field.value.toString() : ""}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select location" />
+                <SelectValue placeholder={t("form.placeholder_location")} />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none" className="text-muted-foreground italic">
+                  {t("form.none")}
+                </SelectItem>
                 {locations.map((loc) => (
                   <SelectItem key={loc.id} value={loc.id.toString()}>
                     {loc.name}
@@ -124,9 +130,9 @@ export function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
-            <FieldLabel>Asset</FieldLabel>
+            <FieldLabel>{t("form.asset")}</FieldLabel>
             <Select
-              onValueChange={(val) => field.onChange(Number(val))}
+              onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
               value={field.value ? field.value.toString() : ""}
               disabled={!warehouseId}
             >
@@ -134,17 +140,20 @@ export function AllocationItemRow({
                 <SelectValue
                   placeholder={
                     !warehouseId
-                      ? "Select unit first"
+                      ? t("form.placeholder_unit_first")
                       : assetsPending
-                        ? "Loading..."
-                        : "Select asset"
+                        ? t("form.placeholder_loading")
+                        : t("form.placeholder_asset")
                   }
                 />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none" className="text-muted-foreground italic">
+                  {t("form.none")}
+                </SelectItem>
                 {assets.map((a: IPhysicalAsset) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.in_stock_quantity ?? 0}
+                    {a.name} ({a.asset_code}) {t("form.quantity_label")} {a?.in_stock_quantity ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -160,12 +169,12 @@ export function AllocationItemRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-32">
-            <FieldLabel>Quantity</FieldLabel>
+            <FieldLabel>{t("form.quantity")}</FieldLabel>
             <FormattedNumberInput
               {...field}
               value={field.value as number | string | null}
               onChange={(val) => field.onChange(val ?? 0)}
-              placeholder="e.g. 1"
+              placeholder={t("form.placeholder_quantity_value")}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
