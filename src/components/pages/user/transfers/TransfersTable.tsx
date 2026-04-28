@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -53,16 +54,17 @@ import TransferFormModal from "./TransferFormModal";
 
 export default function TransfersTable() {
   const router = useRouter();
+  const t = useTranslations("page_transfers");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
   // Filter state
   const [q, setQ] = useState("");
-  const [unitId, setUnitId] = useState<string>("all");
+  const [unitId, setUnitId] = useState<string>("");
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
-    unit_id: "all",
+    unit_id: "",
   });
 
   // Fetch metadata for filters
@@ -78,7 +80,7 @@ export default function TransfersTable() {
   });
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
-  if (appliedFilters.unit_id !== "all")
+  if (appliedFilters.unit_id)
     queryParams.append("unit_id", appliedFilters.unit_id);
 
   const { response, pending, reFetch } = useGet<{ items: ITransfer[] }>({
@@ -101,7 +103,7 @@ export default function TransfersTable() {
             size={16}
           />
           <Input
-            placeholder="Search record number, asset..."
+            placeholder={t("filters.search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -121,7 +123,10 @@ export default function TransfersTable() {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={unitId} onValueChange={setUnitId}>
+          <Select
+            value={unitId}
+            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
+          >
             <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Building2
@@ -129,12 +134,14 @@ export default function TransfersTable() {
                   className="text-muted-foreground/70 shrink-0"
                 />
                 <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder="All units" />
+                  <SelectValue placeholder={t("filters.all_units")} />
                 </div>
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Units</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("filters.none")}
+              </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
@@ -156,7 +163,7 @@ export default function TransfersTable() {
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("filters.searching") : t("filters.search")}
           </Button>
 
           <Button
@@ -164,15 +171,15 @@ export default function TransfersTable() {
             size="icon"
             onClick={() => {
               setQ("");
-              setUnitId("all");
+              setUnitId("");
               setAppliedFilters({
                 q: "",
-                unit_id: "all",
+                unit_id: "",
               });
               setSkip(0);
             }}
             className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
+            title={t("filters.clear_all")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -181,7 +188,7 @@ export default function TransfersTable() {
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
           >
-            Create
+            {t("filters.create")}
           </Button>
         </div>
       </div>
@@ -191,19 +198,19 @@ export default function TransfersTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Transfer Info
+                {t("table.transfer_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Asset Details
+                {t("table.asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">From/To</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Quantity</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Status</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.from_to")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.quantity")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.status")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.reason")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
@@ -213,8 +220,8 @@ export default function TransfersTable() {
               <TableEmptyRow
                 colSpan={8}
                 icon={FileText}
-                message="No transfers found"
-                description="No transfer records match your search."
+                message={t("table.no_transfers_found")}
+                description={t("table.no_transfers_description")}
               />
             ) : (
               transfers.map((item, index) => (
@@ -236,7 +243,7 @@ export default function TransfersTable() {
                           {item.record_number}
                         </span>
                         <span className="text-[10px] text-muted-foreground font-medium">
-                          Type: {item.transfer_type}
+                          {t("detail.type")}: {item.transfer_type}
                         </span>
                       </div>
                     </div>
@@ -269,7 +276,7 @@ export default function TransfersTable() {
                             : "italic text-muted-foreground"
                         }
                       >
-                        {item.from_name || "N/A"}
+                        {item.from_name || "—"}
                       </span>
                       <ArrowRight
                         size={12}
@@ -282,7 +289,7 @@ export default function TransfersTable() {
                             : "italic text-muted-foreground"
                         }
                       >
-                        {item.to_name || "N/A"}
+                        {item.to_name || "—"}
                       </span>
                     </div>
                   </TableCell>
@@ -298,7 +305,7 @@ export default function TransfersTable() {
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason || "No reason"}
+                    {item.reason || t("detail.no_reason")}
                   </TableCell>
                 </TableRow>
               ))

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { PlusIcon, RefreshCcw, Trash } from "lucide-react";
 import {
   Controller,
@@ -48,11 +50,12 @@ export function AssetSelectionSection({
   reFetchAssets,
   watchedType,
 }: AssetSelectionSectionProps) {
+  const t = useTranslations("page_transfers");
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wider">
-          <span>2. Assets Selection</span>
+          <span>{t("form.assets_selection")}</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -67,7 +70,7 @@ export function AssetSelectionSection({
               size={14}
               className={assetsPending ? "animate-spin" : ""}
             />
-            Reload assets
+            {t("form.reload_assets")}
           </Button>
           <Button
             type="button"
@@ -76,7 +79,7 @@ export function AssetSelectionSection({
             className="h-7 text-xs"
             onClick={() => append({ asset_id: 0, quantity: 1 })}
           >
-            <PlusIcon size={12} className="mr-1" /> Add Asset
+            <PlusIcon size={12} className="mr-1" /> {t("form.add_asset")}
           </Button>
         </div>
       </div>
@@ -105,13 +108,13 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field: detailField, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>Select asset</FieldLabel>
+                      <FieldLabel>{t("form.select_asset")}</FieldLabel>
                       <Select
                         onValueChange={(val) =>
-                          detailField.onChange(Number(val))
+                          detailField.onChange(val === "none" ? 0 : Number(val))
                         }
                         value={
-                          detailField.value ? detailField.value.toString() : ""
+                          detailField.value ? detailField.value.toString() : undefined
                         }
                         disabled={
                           assetsPending ||
@@ -122,20 +125,23 @@ export function AssetSelectionSection({
                           <SelectValue
                             placeholder={
                               assetsPending
-                                ? "Loading..."
+                                ? t("form.loading")
                                 : assets.length === 0
-                                  ? "No assets available"
-                                  : "Select asset"
+                                  ? t("form.no_assets")
+                                  : t("form.select_asset")
                             }
                           />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value="none" className="text-muted-foreground italic">
+                            {t("filters.none")}
+                          </SelectItem>
                           {assets.map((a) => (
                             <SelectItem
                               key={`asset-${a.id}`}
                               value={a.id.toString()}
                             >
-                              {a.name} ({a.asset_code}) Quantity:{" "}
+                              {a.name} ({a.asset_code}) {t("form.quantity")}:{" "}
                               {watchedType === "holder"
                                 ? (a?.holding_qty ?? 0)
                                 : (a?.current_stock ?? 0)}
@@ -157,12 +163,12 @@ export function AssetSelectionSection({
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>Quantity</FieldLabel>
+                      <FieldLabel>{t("form.quantity")}</FieldLabel>
                       <FormattedNumberInput
                         {...field}
                         value={field.value as number | string | null}
                         onChange={(val) => field.onChange(val ?? 0)}
-                        placeholder="e.g. 1"
+                        placeholder={t("form.placeholder_quantity")}
                       />
                       <FieldError errors={[fieldState.error]} />
                     </Field>

@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
@@ -71,6 +73,7 @@ export default function TransferFormModal({
   onSuccess,
   transferToEdit,
 }: TransferFormModalProps) {
+  const t = useTranslations("page_transfers");
   const isEditing = !!transferToEdit;
   const { mutate, pending } = useMutation();
 
@@ -259,12 +262,12 @@ export default function TransferFormModal({
       <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
-            {isEditing ? "Edit transfer" : "Create transfer"}
+            {isEditing ? t("form.edit_title") : t("form.create_title")}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
-              ? "Modify the information of the selected asset transfer."
-              : "Register a new asset transfer by specifying source, selection, and destination."}
+              ? t("form.edit_description")
+              : t("form.create_description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -315,14 +318,14 @@ export default function TransferFormModal({
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t("form.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
               {pending
-                ? "Processing..."
+                ? t("form.processing")
                 : isEditing
-                  ? "Save Changes"
-                  : "Create"}
+                  ? t("form.save_changes")
+                  : t("form.create")}
             </Button>
           </DialogFooter>
         </form>

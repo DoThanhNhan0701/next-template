@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -45,6 +46,7 @@ interface Props {
 
 export default function TransferDetail({ id }: Props) {
   const router = useRouter();
+  const t = useTranslations("page_transfers");
 
   const {
     response: detail,
@@ -103,10 +105,10 @@ export default function TransferDetail({ id }: Props) {
           </Button>
           <div className="flex flex-col gap-0.5">
             <h1 className="text-lg font-semibold text-foreground">
-              Transfer Detail
+              {t("detail.title")}
             </h1>
             <span className="text-xs text-muted-foreground">
-              Transfer Management
+              {t("detail.subtitle")}
             </span>
           </div>
         </div>
@@ -124,13 +126,13 @@ export default function TransferDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Record Number
+                  {t("detail.record_number")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Type:{" "}
+                  {t("detail.type")}:{" "}
                   {detail.transfer_type.charAt(0).toUpperCase() +
                     detail.transfer_type.slice(1)}
                 </span>
@@ -141,7 +143,7 @@ export default function TransferDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-20">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Total Assets
+                  {t("detail.total_assets")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
                   {totalAssets}
@@ -171,7 +173,7 @@ export default function TransferDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Transferred Items
+                {t("detail.transferred_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -179,19 +181,19 @@ export default function TransferDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("table.no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("detail.asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      From Location
+                      {t("detail.from_location")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      To Location
+                      {t("detail.to_location")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Quantity
+                      {t("detail.quantity")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -253,7 +255,7 @@ export default function TransferDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <FileCheck className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Transfer Information
+                {t("detail.transfer_information")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -261,7 +263,7 @@ export default function TransferDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Transfer Date
+                    {t("detail.transfer_date")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -272,7 +274,7 @@ export default function TransferDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Info size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Type
+                    {t("detail.type")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -284,7 +286,7 @@ export default function TransferDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Link2 size={15} />
                     <span className="text-xs font-semibold tracking-wider">
-                      Link
+                      {t("detail.link")}
                     </span>
                   </div>
                   <a
@@ -299,10 +301,10 @@ export default function TransferDetail({ id }: Props) {
               )}
               <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Reason
+                  {t("detail.reason")}
                 </span>
                 <p className="text-sm text-foreground/80 leading-relaxed italic">
-                  {detail.reason || "No reason provided."}
+                  {detail.reason || t("detail.no_reason")}
                 </p>
               </div>
             </CardContent>
@@ -313,13 +315,13 @@ export default function TransferDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <ArrowRightLeft className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Route Information
+                {t("detail.route_information")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  From
+                  {t("detail.from")}
                 </span>
                 <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <MapPin size={14} className="text-muted-foreground" />
@@ -328,7 +330,7 @@ export default function TransferDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  To
+                  {t("detail.to")}
                 </span>
                 <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <MapPin size={14} className="text-emerald-500" />
@@ -340,13 +342,13 @@ export default function TransferDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              Transfer record is {detail.status_obj?.name.toLowerCase()}.
+              {t("detail.transfer_record_is", { status: detail.status_obj?.name.toLowerCase() })}
             </p>
           </div>
         </div>
       </div>
       <RecordAttachmentsCard
-        title="Transfer Documents"
+        title={t("detail.transfer_documents")}
         initialAttachments={detail.attachments}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -375,7 +377,7 @@ export default function TransferDetail({ id }: Props) {
         <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
           <History className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm font-semibold text-primary">
-            Approval History
+            {t("detail.approval_history")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -388,26 +390,26 @@ export default function TransferDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">Chưa có lịch sử phê duyệt.</p>
+              <p className="text-sm italic">{t("detail.no_history")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-sidebar-accent border-b border-border/50">
                 <TableRow>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Step
+                    {t("detail.step")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Approver
+                    {t("detail.approver")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    Status
+                    {t("detail.status")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Comment
+                    {t("detail.comment")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Date
+                    {t("detail.date")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -431,15 +433,15 @@ export default function TransferDetail({ id }: Props) {
                     <TableCell className="px-4 py-3 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> Approved
+                          <CheckCircle2 size={12} /> {t("detail.approved")}
                         </span>
                       ) : hist.status === "REJECTED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> Rejected
+                          <XCircle size={12} /> {t("detail.rejected")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> Pending
+                          <Clock size={12} /> {t("detail.pending")}
                         </span>
                       )}
                     </TableCell>

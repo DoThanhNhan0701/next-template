@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { MapPin } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
@@ -32,10 +34,11 @@ export function TargetDestinationSection({
   locations,
   watchedType,
 }: TargetDestinationSectionProps) {
+  const t = useTranslations("page_transfers");
   return (
     <div className="flex flex-col gap-3 pt-3">
       <h3 className="text-sm font-semibold text-primary flex items-center gap-2 tracking-tight">
-        <span>3. Target Destination</span>
+        <span>{t("form.target_destination")}</span>
       </h3>
 
       <div className="bg-muted/20 border rounded-md p-3 space-y-3">
@@ -46,15 +49,18 @@ export function TargetDestinationSection({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field className="gap-1">
-                  <FieldLabel>Select specific personnel</FieldLabel>
+                  <FieldLabel>{t("form.select_specific_personnel")}</FieldLabel>
                   <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={field.value ? field.value.toString() : ""}
+                    onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                    value={field.value ? field.value.toString() : undefined}
                   >
                     <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                      <SelectValue placeholder="Select specific personnel..." />
+                      <SelectValue placeholder={t("form.select_specific_personnel")} />
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px]">
+                      <SelectItem value="none" className="text-muted-foreground italic">
+                        {t("filters.none")}
+                      </SelectItem>
                       {staffs.map((s) => (
                         <SelectItem
                           key={`target-staff-${s.id}`}
@@ -80,19 +86,22 @@ export function TargetDestinationSection({
               render={({ field, fieldState }) => (
                 <Field className="gap-1">
                   <FieldLabel>
-                    Select new target location / warehouse
+                    {t("form.select_target_location")}
                   </FieldLabel>
                   <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={field.value ? field.value.toString() : ""}
+                    onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
+                    value={field.value ? field.value.toString() : undefined}
                   >
                     <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <SelectValue placeholder="Select target location..." />
+                        <SelectValue placeholder={t("form.select_target_location")} />
                       </div>
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px]">
+                      <SelectItem value="none" className="text-muted-foreground italic">
+                        {t("filters.none")}
+                      </SelectItem>
                       {locations.map((l) => (
                         <SelectItem
                           key={`target-location-entity-${l.id}`}
@@ -117,7 +126,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>New geographical location (optional)</FieldLabel>
+              <FieldLabel>{t("form.new_geographical_location")}</FieldLabel>
               <Select
                 onValueChange={(val) =>
                   field.onChange(val === "none" ? null : Number(val))
@@ -125,11 +134,11 @@ export function TargetDestinationSection({
                 value={field.value ? field.value.toString() : "none"}
               >
                 <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-2 focus:ring-primary/20 hover:border-primary/50">
-                  <SelectValue placeholder="Keep current location (No warehouse change)" />
+                  <SelectValue placeholder={t("form.keep_current_location")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">
-                    Keep current location (No warehouse change)
+                    {t("form.keep_current_location")}
                   </SelectItem>
                   {locations.map((l) => (
                     <SelectItem
@@ -153,7 +162,7 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>Transfer date</FieldLabel>
+              <FieldLabel>{t("form.transfer_date")}</FieldLabel>
               <DatePickerField form={form} name="transfer_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -165,9 +174,9 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-2 gap-1">
-              <FieldLabel>External link (Jira/Helpdesk)</FieldLabel>
+              <FieldLabel>{t("form.external_link")}</FieldLabel>
               <Input
-                placeholder="https://..."
+                placeholder={t("form.placeholder_link")}
                 {...field}
                 value={field.value || ""}
                 className="bg-white rounded-md border-muted-foreground/20"
@@ -182,9 +191,9 @@ export function TargetDestinationSection({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field className="col-span-3 gap-1">
-              <FieldLabel>Reason & internal notes</FieldLabel>
+              <FieldLabel>{t("form.reason_notes")}</FieldLabel>
               <Textarea
-                placeholder="Enter detailed transfer reason..."
+                placeholder={t("form.enter_reason")}
                 {...field}
                 value={field.value || ""}
                 className="bg-white rounded-md border-muted-foreground/20 min-h-[100px] resize-none"
