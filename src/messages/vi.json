@@ -79,7 +79,7 @@
       "passwords_dont_match": "Mật khẩu không trùng khớp"
     },
     "delete": {
-      "title": "Xác nhận Hủy kích hoạt",
+      "title": "Xác nhận hủy kích hoạt",
       "confirm_message": "Bạn có chắc chắn muốn hủy kích hoạt tài khoản <important>{name}</important>? Hành động này sẽ ngăn người dùng đăng nhập.",
       "cancel": "Hủy",
       "delete": "Hủy kích hoạt",
@@ -147,7 +147,7 @@
     "saving": "Đang lưu...",
     "deactivate_role": "Hủy kích hoạt vai trò",
     "delete": {
-      "title": "Xác nhận Hủy kích hoạt",
+      "title": "Xác nhận hủy kích hoạt",
       "confirm_message": "Bạn có chắc chắn muốn hủy kích hoạt hoặc xóa vai trò <important>{name}</important>? Hành động này có thể ảnh hưởng đến những người dùng được gán vai trò này.",
       "cancel": "Hủy",
       "delete": "Xóa",
@@ -186,7 +186,7 @@
     "select_type": "Chọn loại",
     "select_parent": "Chọn đơn vị cha",
     "select_leader": "Chọn người đứng đầu",
-    "none_root": "(Không có - Đơn vị gốc)",
+    "none_root": "(Không có - đơn vị gốc)",
     "none": "(Không có)",
     "company": "Công ty",
     "branch": "Chi nhánh",
@@ -195,7 +195,7 @@
     "status": "Trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
-    "no_unit_selected_title": "Chưa chọn Đơn vị",
+    "no_unit_selected_title": "Chưa chọn đơn vị",
     "no_unit_selected_description": "Chọn một đơn vị tổ chức từ cây thư mục để xem chi tiết.",
     "no_leader_assigned": "Chưa gán người đứng đầu",
     "address_not_specified": "Địa chỉ chưa được xác định",
@@ -204,7 +204,7 @@
     "save": "Lưu",
     "saving": "Đang lưu...",
     "delete": {
-      "title": "Xóa Đơn vị Tổ chức",
+      "title": "Xóa đơn vị tổ chức",
       "confirm_message": "Bạn có chắc chắn muốn xóa đơn vị tổ chức <important>{name}</important>? Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.",
       "cancel": "Hủy",
       "delete": "Xóa",
@@ -224,7 +224,7 @@
     "table": {
       "no": "STT",
       "code": "Mã",
-      "name": "Tên Vị trí",
+      "name": "Tên vị trí",
       "description": "Mô tả",
       "status": "Trạng thái",
       "actions": "Hành động",
@@ -232,8 +232,8 @@
       "add_first_location": "Thêm vị trí đầu tiên của bạn bằng nút phía trên."
     },
     "form": {
-      "create_title": "Tạo mới Vị trí",
-      "edit_title": "Chỉnh sửa Vị trí",
+      "create_title": "Tạo mới vị trí",
+      "edit_title": "Chỉnh sửa vị trí",
       "create_description": "Thiết lập một vị trí vật lý mới cho tài sản.",
       "edit_description": "Cập nhật thông tin chi tiết vị trí.",
       "code_label": "Mã vị trí",
@@ -249,7 +249,7 @@
       "no_changes": "Không có thay đổi nào được thực hiện."
     },
     "delete": {
-      "title": "Xác nhận Xóa",
+      "title": "Xác nhận xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa vị trí <important>{name}</important>?",
       "warning": "Hành động này không thể hoàn tác.",
       "cancel": "Hủy",
@@ -261,7 +261,7 @@
     }
   },
   "page_asset_groups": {
-    "title": "Nhóm Tài sản",
+    "title": "Nhóm tài sản",
     "add_group": "Tạo mới",
     "all_statuses": "Tất cả trạng thái",
     "active": "Đang hoạt động",
@@ -278,8 +278,8 @@
       "add_first_group": "Thêm nhóm tài sản đầu tiên của bạn bằng nút phía trên."
     },
     "form": {
-      "create_title": "Tạo Nhóm Tài sản",
-      "edit_title": "Sửa Nhóm Tài sản",
+      "create_title": "Tạo nhóm tài sản",
+      "edit_title": "Sửa nhóm tài sản",
       "create_description": "Phân loại tài sản bằng cách tạo nhóm mới.",
       "edit_description": "Chỉnh sửa các thuộc tính của nhóm tài sản.",
       "name_label": "Tên",
@@ -297,7 +297,7 @@
       "no_changes": "Không có thay đổi nào được thực hiện."
     },
     "delete": {
-      "title": "Xác nhận Xóa",
+      "title": "Xác nhận xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa nhóm tài sản <important>{name}</important>? Hành động này sẽ hủy kích hoạt nhóm.",
       "cancel": "Hủy",
       "delete": "Xóa",
@@ -346,7 +346,7 @@
       "no_changes": "Không có thay đổi nào được thực hiện."
     },
     "delete": {
-      "title": "Xác nhận Xóa",
+      "title": "Xác nhận xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa loại danh mục <important>{name}</important>? Hành động này sẽ hủy kích hoạt mục.",
       "cancel": "Hủy",
       "delete": "Xóa",
@@ -387,7 +387,7 @@
       "no_changes": "Không có thay đổi nào được thực hiện."
     },
     "delete": {
-      "title": "Xác nhận Xóa",
+      "title": "Xác nhận xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa trạng thái <important>{name}</important>? Hành động này không thể hoàn tác.",
       "cancel": "Hủy",
       "delete": "Xóa",
@@ -416,8 +416,8 @@
       "add_first_mode": "Thêm chế độ sử dụng đầu tiên của bạn bằng nút phía trên."
     },
     "form": {
-      "create_title": "Thêm Chế độ sử dụng",
-      "edit_title": "Sửa Chế độ sử dụng",
+      "create_title": "Thêm chế độ sử dụng",
+      "edit_title": "Sửa chế độ sử dụng",
       "create_description": "Tạo một chế độ sử dụng mới cho tài sản.",
       "edit_description": "Cập nhật thông tin chi tiết của chế độ sử dụng này.",
       "code_label": "Mã",
@@ -434,7 +434,7 @@
       "no_changes": "Không có thay đổi nào được thực hiện."
     },
     "delete": {
-      "title": "Xác nhận Xóa",
+      "title": "Xác nhận xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa chế độ sử dụng <important>{name}</important>? Hành động này không thể hoàn tác.",
       "cancel": "Hủy",
       "delete": "Xóa",
@@ -715,8 +715,8 @@
         "approve": "Duyệt",
         "reject": "Từ chối",
         "comment_placeholder": "e.g. Duyệt có điều kiện",
-        "submit_approval": "Xác nhận Duyệt",
-        "submit_rejection": "Xác nhận Từ chối",
+        "submit_approval": "Xác nhận duyệt",
+        "submit_rejection": "Xác nhận từ chối",
         "processing": "Đang xử lý..."
       },
       "document_info": {
@@ -1416,7 +1416,7 @@
     }
   },
   "page_stock_in_out": {
-    "title": "Nhập / Xuất Kho",
+    "title": "Nhập / Xuất kho",
     "stock_in": "Nhập kho",
     "stock_out": "Xuất kho",
     "table": {
@@ -1554,7 +1554,7 @@
       "recovery_reason": "Lý do thu hồi",
       "placeholder_reason": "e.g. Cấp mới cho nhân viên",
       "placeholder_recovery_reason": "e.g. Nhân viên nghỉ việc",
-      "assets_selection": "2. Chọn Tài sản",
+      "assets_selection": "2. Chọn tài sản",
       "add_asset": "Thêm tài sản",
       "attachments": "Tệp đính kèm",
       "approval_process": "Quy trình phê duyệt",
