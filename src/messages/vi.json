@@ -945,7 +945,8 @@
       "all_statuses": "Tất cả trạng thái",
       "search": "Tìm kiếm",
       "searching": "Đang tìm...",
-      "clear": "Xóa bộ lọc"
+      "clear": "Xóa bộ lọc",
+      "none": "(Không có)"
     },
     "table": {
       "no": "STT",

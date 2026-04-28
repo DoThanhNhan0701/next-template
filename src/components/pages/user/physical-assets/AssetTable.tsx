@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import {
   Building2,
@@ -76,16 +76,16 @@ export default function AssetTable() {
 
   // Filter state
   const [q, setQ] = useState("");
-  const [unitId, setUnitId] = useState<string>("all");
-  const [categoryId, setCategoryId] = useState<string>("all");
-  const [statusCode, setStatusCode] = useState<string>("all");
+  const [unitId, setUnitId] = useState<string>("");
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [statusCode, setStatusCode] = useState<string>("");
 
   // Applied filter state to avoid re-fetching on every keystroke
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
-    unit_id: "all",
-    category_id: "all",
-    status_code: "all",
+    unit_id: "",
+    category_id: "",
+    status_code: "",
   });
 
   // Fetch metadata for filters
@@ -132,11 +132,11 @@ export default function AssetTable() {
   });
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
-  if (appliedFilters.unit_id !== "all")
+  if (appliedFilters.unit_id)
     queryParams.append("unit_id", appliedFilters.unit_id);
-  if (appliedFilters.category_id !== "all")
+  if (appliedFilters.category_id)
     queryParams.append("category_id", appliedFilters.category_id);
-  if (appliedFilters.status_code !== "all")
+  if (appliedFilters.status_code)
     queryParams.append("status_code", appliedFilters.status_code);
 
   const { response, pending, reFetch } = useGet<{ items: IPhysicalAsset[] }>({
@@ -180,8 +180,11 @@ export default function AssetTable() {
 
         {/* Filters Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={unitId} onValueChange={setUnitId}>
-            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+          <Select
+            value={unitId}
+            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Building2
                   size={16}
@@ -193,7 +196,9 @@ export default function AssetTable() {
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("filters.all_units")}</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("filters.none")}
+              </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
                   {o.name}
@@ -202,8 +207,11 @@ export default function AssetTable() {
             </SelectContent>
           </Select>
 
-          <Select value={categoryId} onValueChange={setCategoryId}>
-            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+          <Select
+            value={categoryId}
+            onValueChange={(val) => setCategoryId(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Tag size={16} className="text-muted-foreground/70 shrink-0" />
                 <div className="truncate flex-1 min-w-0">
@@ -212,7 +220,9 @@ export default function AssetTable() {
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("filters.all_categories")}</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("filters.none")}
+              </SelectItem>
               {categories.map((c) => (
                 <SelectItem key={c.id} value={c.id.toString()}>
                   {c.name}
@@ -221,8 +231,11 @@ export default function AssetTable() {
             </SelectContent>
           </Select>
 
-          <Select value={statusCode} onValueChange={setStatusCode}>
-            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+          <Select
+            value={statusCode}
+            onValueChange={(val) => setStatusCode(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-55 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
                 <Filter
                   size={16}
@@ -234,7 +247,9 @@ export default function AssetTable() {
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("filters.all_statuses")}</SelectItem>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("filters.none")}
+              </SelectItem>
               {statuses.map((s) => (
                 <SelectItem key={s.id} value={s.code}>
                   {s.name}
@@ -266,14 +281,14 @@ export default function AssetTable() {
             size="icon"
             onClick={() => {
               setQ("");
-              setUnitId("all");
-              setCategoryId("all");
-              setStatusCode("all");
+              setUnitId("");
+              setCategoryId("");
+              setStatusCode("");
               setAppliedFilters({
                 q: "",
-                unit_id: "all",
-                category_id: "all",
-                status_code: "all",
+                unit_id: "",
+                category_id: "",
+                status_code: "",
               });
               setSkip(0);
             }}
@@ -301,7 +316,9 @@ export default function AssetTable() {
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.asset")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.ownership")}
               </TableHead>
@@ -374,7 +391,9 @@ export default function AssetTable() {
                           </span>
                         </div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
-                          <span className="opacity-60 italic">{t("table.unit")}</span>
+                          <span className="opacity-60 italic">
+                            {t("table.unit")}
+                          </span>
                           <span>
                             {getOrgUnitLabel(asset.unit_id) || t("table.none")}
                           </span>

@@ -945,7 +945,8 @@
       "all_statuses": "All statuses",
       "search": "Search",
       "searching": "Searching...",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "none": "(None)"
     },
     "table": {
       "no": "No",
