@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -173,14 +174,6 @@ export default function RentalReturnModal({
     onConfirm(payload);
   };
 
-  const errors = form.formState.errors;
-  const hasGeneralErrors = !!(
-    errors.return_date ||
-    errors.to_location_id ||
-    errors.notes
-  );
-  const hasAssetsErrors = !!errors.items;
-
   if (!rentalDetail) return null;
 
   return (
@@ -204,9 +197,6 @@ export default function RentalReturnModal({
             <div className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold text-primary flex justify-between items-center">
                 {t("modal.general_info")}
-                {hasGeneralErrors && (
-                  <span className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                )}
               </h3>
               <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Controller
@@ -235,15 +225,25 @@ export default function RentalReturnModal({
                       </FieldLabel>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(val) =>
+                          field.onChange(val === "none" ? "" : val)
+                        }
                       >
                         <SelectTrigger
                           className="h-9"
                           data-invalid={fieldState.invalid}
                         >
-                          <SelectValue placeholder={t("modal.placeholder_warehouse")} />
+                          <SelectValue
+                            placeholder={t("modal.placeholder_warehouse")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem
+                            value="none"
+                            className="text-muted-foreground italic"
+                          >
+                            {t("modal.none")}
+                          </SelectItem>
                           {locations.map((loc) => (
                             <SelectItem key={loc.id} value={loc.id.toString()}>
                               {loc.name} ({loc.code})
@@ -263,7 +263,9 @@ export default function RentalReturnModal({
                   control={form.control}
                   render={({ field }) => (
                     <Field className="gap-1.5 col-span-1 sm:col-span-2">
-                      <FieldLabel className="text-xs">{t("modal.general_notes")}</FieldLabel>
+                      <FieldLabel className="text-xs">
+                        {t("modal.general_notes")}
+                      </FieldLabel>
                       <Textarea
                         id="notes"
                         placeholder={t("modal.placeholder_notes")}
@@ -281,9 +283,6 @@ export default function RentalReturnModal({
             <div className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold text-primary flex justify-between items-center">
                 {t("modal.asset_list")}
-                {hasAssetsErrors && (
-                  <span className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                )}
               </h3>
               <div className="border rounded-lg overflow-hidden border-border/60 shadow-sm">
                 <Table>
@@ -332,12 +331,6 @@ export default function RentalReturnModal({
               title={t("modal.approval_process")}
               triggerClassName="h-10 bg-white"
             />
-
-            {/* <ApprovalWorkflow
-              control={form.control}
-              template={activeTemplate}
-              users={users}
-            /> */}
           </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">

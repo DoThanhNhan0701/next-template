@@ -1218,7 +1218,8 @@
       "approval_process": "Approval process",
       "cancel": "Cancel",
       "save": "Save",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "none": "(None)"
     }
   },
   "page_rental_returns": {
@@ -1289,7 +1290,8 @@
       "approval_process": "Approval process",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "processing": "Processing..."
+      "processing": "Processing...",
+      "none": "(None)"
     },
     "form": {
       "placeholder_condition": "e.g. Good condition, minor scratches..."

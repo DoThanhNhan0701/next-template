@@ -83,10 +83,11 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
                       <ApproverSelect
                         step={step}
                         allUsers={users}
-                        value={field.value != null ? field.value.toString() : ""}
+                        value={field.value ? field.value.toString() : ""}
                         onChange={(val) =>
                           field.onChange(val === "none" ? null : Number(val))
                         }
+                        placeholder={`e.g. ${step.name}`}
                         triggerClassName={cn(
                           "h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all hover:border-primary/50 focus:ring-4 focus:ring-primary/5",
                           triggerClassName

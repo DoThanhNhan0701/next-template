@@ -1218,7 +1218,8 @@
       "approval_process": "Quy trình phê duyệt",
       "cancel": "Hủy",
       "save": "Lưu",
-      "saving": "Đang lưu..."
+      "saving": "Đang lưu...",
+      "none": "(Không có)"
     }
   },
   "page_rental_returns": {
@@ -1289,7 +1290,8 @@
       "approval_process": "Quy trình phê duyệt",
       "cancel": "Hủy",
       "confirm": "Xác nhận",
-      "processing": "Đang xử lý..."
+      "processing": "Đang xử lý...",
+      "none": "(Không có)"
     },
     "form": {
       "placeholder_condition": "e.g. Tình trạng tốt, có vài vết xước nhỏ..."

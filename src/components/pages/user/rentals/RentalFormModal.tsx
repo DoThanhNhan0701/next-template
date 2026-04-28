@@ -122,7 +122,7 @@ function RentalItemRow({
           <FieldLabel>{t("form.location")}</FieldLabel>
           <Select
             onValueChange={(val) => {
-              setValue(`items.${index}.from_location_id`, Number(val));
+              setValue(`items.${index}.from_location_id`, val === "none" ? 0 : Number(val));
               setValue(`items.${index}.asset_id`, 0);
             }}
             value={locationId ? locationId.toString() : ""}
@@ -131,6 +131,12 @@ function RentalItemRow({
               <SelectValue placeholder={t("form.placeholder_location")} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem
+                value="none"
+                className="text-muted-foreground italic"
+              >
+                {t("form.none")}
+              </SelectItem>
               {locations.map((loc) => (
                 <SelectItem key={loc.id} value={loc.id.toString()}>
                   {loc.name}
@@ -147,7 +153,7 @@ function RentalItemRow({
             <Field className="gap-1">
               <FieldLabel>{t("form.asset")}</FieldLabel>
               <Select
-                onValueChange={(val) => field.onChange(Number(val))}
+                onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
                 value={field.value ? field.value.toString() : ""}
                 disabled={!locationId}
               >
@@ -163,6 +169,12 @@ function RentalItemRow({
                   />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem
+                    value="none"
+                    className="text-muted-foreground italic"
+                  >
+                    {t("form.none")}
+                  </SelectItem>
                   {assets.map((a) => (
                     <SelectItem key={a.id} value={a.id.toString()}>
                       {a.name} ({a.asset_code}) Quantity:{" "}
@@ -409,7 +421,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       <Field className="gap-1">
                         <FieldLabel>{t("form.organization")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(Number(val))}
+                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
@@ -418,6 +430,12 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                             />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              {t("form.none")}
+                            </SelectItem>
                             {orgUnits.map((o) => (
                               <SelectItem key={o.id} value={o.id.toString()}>
                                 {o.name}
@@ -438,7 +456,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       <Field className="gap-1">
                         <FieldLabel>{t("form.customer")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(Number(val))}
+                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
@@ -447,6 +465,12 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                             />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              {t("form.none")}
+                            </SelectItem>
                             {customers?.map((c) => (
                               <SelectItem key={c.id} value={c.id.toString()}>
                                 {c.name}

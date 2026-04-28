@@ -16,9 +16,10 @@ interface Props {
   value: string;
   onChange: (val: string) => void;
   triggerClassName?: string;
+  placeholder?: string;
 }
 
-export function ApproverSelect({ step, allUsers, value, onChange, triggerClassName }: Props) {
+export function ApproverSelect({ step, allUsers, value, onChange, triggerClassName, placeholder }: Props) {
   const options = step.default_assignee_role_id
     ? allUsers.filter((u) => u.is_active && u.role_id === step.default_assignee_role_id)
     : allUsers.filter((u) => u.is_active);
@@ -26,7 +27,7 @@ export function ApproverSelect({ step, allUsers, value, onChange, triggerClassNa
   return (
     <Select onValueChange={onChange} value={value}>
       <SelectTrigger className={triggerClassName ?? "h-9"}>
-        <SelectValue placeholder="Select approver" />
+        <SelectValue placeholder={placeholder ?? "Select approver"} />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="none" className="text-muted-foreground italic">
