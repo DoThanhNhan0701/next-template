@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -45,6 +46,7 @@ interface Props {
 
 export default function StockAdjustmentDetail({ id }: Props) {
   const router = useRouter();
+  const t = useTranslations("page_stock_in_out");
 
   const {
     response: detail,
@@ -98,10 +100,10 @@ export default function StockAdjustmentDetail({ id }: Props) {
         </Button>
         <div className="flex flex-col gap-0.5">
           <h1 className="text-lg font-semibold text-foreground">
-            Stock Adjustment Detail
+            {t("detail.title")}
           </h1>
           <span className="text-xs text-muted-foreground">
-            Stock In / Stock Out
+            {t("detail.subtitle")}
           </span>
         </div>
       </div>
@@ -116,7 +118,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Record Number
+                  {t("detail.record_no")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.record_number}
@@ -131,7 +133,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[80px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Total Quantity
+                  {t("detail.total_qty")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
                   {detail.total_quantity}
@@ -139,7 +141,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-muted/40 border border-border/50 min-w-[80px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  Items
+                  {t("detail.items")}
                 </span>
                 <span className="text-2xl font-bold text-foreground">
                   {detail.details.length}
@@ -169,7 +171,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                Adjustment Items
+                {t("detail.adjustment_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -177,22 +179,22 @@ export default function StockAdjustmentDetail({ id }: Props) {
                 <TableHeader className="bg-sidebar-accent border-b border-border/50">
                   <TableRow>
                     <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      No
+                      {t("detail.no")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Asset
+                      {t("detail.asset")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Location
+                      {t("detail.location")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Type
+                      {t("detail.type")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      Quantity
+                      {t("detail.quantity")}
                     </TableHead>
                     <TableHead className="px-4 h-10 text-xs font-semibold">
-                      Notes
+                      {t("detail.notes")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -228,11 +230,11 @@ export default function StockAdjustmentDetail({ id }: Props) {
                       <TableCell className="px-4 py-3 text-center">
                         {item.adjustment_type === "INCREASE" ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                            <ArrowUpCircle size={12} /> Stock In
+                            <ArrowUpCircle size={12} /> {t("detail.stock_in")}
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                            <ArrowDownCircle size={12} /> Stock Out
+                            <ArrowDownCircle size={12} /> {t("detail.stock_out")}
                           </span>
                         )}
                       </TableCell>
@@ -242,7 +244,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                         </span>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
-                        {item.notes || "—"}
+                        {item.notes || t("detail.no_reason")}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -258,7 +260,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
               <FileText className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                General Information
+                {t("detail.general_info")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
@@ -266,7 +268,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Creator
+                    {t("detail.creator")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
@@ -277,7 +279,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Clock size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    Created
+                    {t("detail.created")}
                   </span>
                 </div>
                 <div className="flex flex-col items-end">
@@ -294,7 +296,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Link2 size={15} />
                     <span className="text-xs font-semibold tracking-wider">
-                      Link
+                      {t("detail.link")}
                     </span>
                   </div>
                   <a
@@ -309,10 +311,10 @@ export default function StockAdjustmentDetail({ id }: Props) {
               )}
               <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
                 <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  Reason
+                  {t("detail.reason")}
                 </span>
                 <p className="text-sm text-foreground/80 leading-relaxed italic">
-                  {detail.reason || "—"}
+                  {detail.reason || t("detail.no_reason")}
                 </p>
               </div>
             </CardContent>
@@ -321,15 +323,15 @@ export default function StockAdjustmentDetail({ id }: Props) {
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
               {isCompleted
-                ? "Record is finalized and cannot be edited."
-                : "Record is being processed."}
+                ? t("detail.finalized_desc")
+                : t("detail.processing_desc")}
             </p>
           </div>
         </div>
       </div>
 
       <RecordAttachmentsCard
-        title="Adjustment Documents"
+        title={t("detail.documents")}
         initialAttachments={detail.attachments}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -361,7 +363,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
         <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
           <History className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm font-semibold text-primary">
-            Approval History
+            {t("detail.approval_history")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -374,26 +376,26 @@ export default function StockAdjustmentDetail({ id }: Props) {
           ) : !historyList || historyList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
               <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">No approval history yet.</p>
+              <p className="text-sm italic">{t("detail.no_history")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader className="bg-sidebar-accent border-b border-border/50">
                 <TableRow>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Step
+                    {t("detail.step")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Approver
+                    {t("detail.approver")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    Status
+                    {t("detail.status")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Comment
+                    {t("detail.comment")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Date
+                    {t("detail.date")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -417,20 +419,20 @@ export default function StockAdjustmentDetail({ id }: Props) {
                     <TableCell className="px-4 py-3 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> Approved
+                          <CheckCircle2 size={12} /> {t("detail.approved")}
                         </span>
                       ) : hist.status === "REJECTED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> Rejected
+                          <XCircle size={12} /> {t("detail.rejected")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> Pending
+                          <Clock size={12} /> {t("detail.pending")}
                         </span>
                       )}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
-                      {hist.comment || "—"}
+                      {hist.comment || t("detail.no_reason")}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-xs text-muted-foreground">
                       {formatDate(hist.action_date)}

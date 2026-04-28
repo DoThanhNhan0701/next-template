@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -9,6 +11,7 @@ export default function StockAdjustmentsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const t = useTranslations("page_stock_in_out");
 
   const activeTab = searchParams.get("tab") || "increase";
 
@@ -30,13 +33,13 @@ export default function StockAdjustmentsPage() {
             value="increase"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Stock In
+            {t("stock_in")}
           </TabsTrigger>
           <TabsTrigger
             value="decrease"
             className="px-6 py-2 rounded-[6px] text-sm font-medium transition-all data-[state=active]:bg-primary/95 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
           >
-            Stock Out
+            {t("stock_out")}
           </TabsTrigger>
         </TabsList>
 

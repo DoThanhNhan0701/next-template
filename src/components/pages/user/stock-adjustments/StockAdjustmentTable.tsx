@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -56,6 +57,7 @@ export default function StockAdjustmentTable({
   const [q, setQ] = useState("");
   const [isManualOpen, setIsManualOpen] = useState(false);
   const router = useRouter();
+  const t = useTranslations("page_stock_in_out");
 
   // Also open when Redux prefill is set (from Inventory page)
   const { isOpen: isReduxOpen } = useSelector(
@@ -93,7 +95,7 @@ export default function StockAdjustmentTable({
             size={16}
           />
           <Input
-            placeholder="Search by asset, record number..."
+            placeholder={t("table.search_placeholder")}
             className="pl-9 pr-10 bg-background/50 border-border/50 w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -120,7 +122,7 @@ export default function StockAdjustmentTable({
               setAppliedFilters({ q });
             }}
           >
-            {pending ? "Searching..." : "Search"}
+            {pending ? t("table.searching") : t("table.search")}
           </Button>
           <Button
             variant="outline"
@@ -130,7 +132,7 @@ export default function StockAdjustmentTable({
               setAppliedFilters({ q: "" });
               setSkip(0);
             }}
-            title="Clear filters"
+            title={t("table.clear_filters")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
@@ -138,7 +140,7 @@ export default function StockAdjustmentTable({
             onClick={() => setIsManualOpen(true)}
             className="bg-primary/95 hover:bg-primary"
           >
-            Create
+            {t("table.create")}
           </Button>
         </div>
       </div>
@@ -158,22 +160,22 @@ export default function StockAdjustmentTable({
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                No
+                {t("table.no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
-                Record No.
+                {t("table.record_no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Asset</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Type
+                {t("table.type")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Quantity
+                {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">Reason</TableHead>
-              <TableHead className="font-semibold h-10 px-4">Date</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.reason")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
-                Status
+                {t("table.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -184,8 +186,8 @@ export default function StockAdjustmentTable({
               <TableEmptyRow
                 colSpan={8}
                 icon={PackageSearch}
-                message="No stock in/out records found"
-                description="Create a new adjustment using the button above."
+                message={t("table.empty_title")}
+                description={t("table.empty_desc")}
               />
             ) : (
               items.map((item, index) => (
@@ -208,11 +210,11 @@ export default function StockAdjustmentTable({
                   <TableCell className="px-4 py-2 text-center">
                     {item.adjustment_type === "INCREASE" ? (
                       <span className="inline-flex items-center gap-1 text-green-600 text-xs font-semibold">
-                        <ArrowUpCircle size={14} /> Increase
+                        <ArrowUpCircle size={14} /> {t("table.increase")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-red-500 text-xs font-semibold">
-                        <ArrowDownCircle size={14} /> Decrease
+                        <ArrowDownCircle size={14} /> {t("table.decrease")}
                       </span>
                     )}
                   </TableCell>

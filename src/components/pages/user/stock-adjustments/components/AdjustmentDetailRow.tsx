@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Trash } from "lucide-react";
 import {
   Control,
@@ -42,6 +44,8 @@ export function AdjustmentDetailRow({
   locations,
   onRemove,
 }: AdjustmentDetailRowProps) {
+  const t = useTranslations("page_stock_in_out");
+
   const locationId = useWatch({
     control,
     name: `details.${index}.location_id`,
@@ -79,18 +83,24 @@ export function AdjustmentDetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1 min-w-[140px]">
-            <FieldLabel>Location</FieldLabel>
+            <FieldLabel>{t("form.location")}</FieldLabel>
             <Select
-              onValueChange={(v) => {
-                field.onChange(Number(v));
+              onValueChange={(val) => {
+                field.onChange(val === "none" ? 0 : Number(val));
                 setValue(`details.${index}.asset_id`, 0);
               }}
               value={field.value ? field.value.toString() : ""}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select location" />
+                <SelectValue placeholder={t("form.select_location")} />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem
+                  value="none"
+                  className="text-muted-foreground italic"
+                >
+                  {t("form.none")}
+                </SelectItem>
                 {locations.map((l) => (
                   <SelectItem key={l.id} value={l.id.toString()}>
                     {l.name}
@@ -108,9 +118,9 @@ export function AdjustmentDetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1 min-w-[160px]">
-            <FieldLabel>Asset</FieldLabel>
+            <FieldLabel>{t("form.asset")}</FieldLabel>
             <Select
-              onValueChange={(v) => field.onChange(Number(v))}
+              onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
               value={field.value ? field.value.toString() : ""}
               disabled={!locationId || locationId === 0}
             >
@@ -118,19 +128,25 @@ export function AdjustmentDetailRow({
                 <SelectValue
                   placeholder={
                     !locationId || locationId === 0
-                      ? "Select location"
+                      ? t("form.select_location")
                       : assetsPending
-                        ? "Loading..."
+                        ? t("form.loading")
                         : assets.length === 0
-                          ? "No assets found"
-                          : "Select asset"
+                          ? t("form.no_assets")
+                          : t("form.select_asset")
                   }
                 />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem
+                  value="none"
+                  className="text-muted-foreground italic"
+                >
+                  {t("form.none")}
+                </SelectItem>
                 {assets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) Quantity: {a?.current_stock ?? 0}
+                    {a.name} ({a.asset_code}) {t("form.quantity")}: {a?.current_stock ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -144,7 +160,7 @@ export function AdjustmentDetailRow({
         control={control}
         render={({ field }) => (
           <Field className="gap-1 w-32">
-            <FieldLabel>Type</FieldLabel>
+            <FieldLabel>{t("form.type")}</FieldLabel>
             <Select
               onValueChange={field.onChange}
               value={field.value}
@@ -155,10 +171,10 @@ export function AdjustmentDetailRow({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="INCREASE">
-                  <span className="text-green-600 font-medium">↑ Increase</span>
+                  <span className="text-green-600 font-medium">↑ {t("table.increase")}</span>
                 </SelectItem>
                 <SelectItem value="DECREASE">
-                  <span className="text-red-500 font-medium">↓ Decrease</span>
+                  <span className="text-red-500 font-medium">↓ {t("table.decrease")}</span>
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -171,12 +187,12 @@ export function AdjustmentDetailRow({
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 w-32">
-            <FieldLabel>Quantity</FieldLabel>
+            <FieldLabel>{t("form.quantity")}</FieldLabel>
             <FormattedNumberInput
               {...field}
               value={field.value as number | string | null}
               onChange={(val) => field.onChange(val ?? 0)}
-              placeholder="e.g. 1"
+              placeholder={t("form.placeholder_quantity")}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -188,11 +204,11 @@ export function AdjustmentDetailRow({
         control={control}
         render={({ field }) => (
           <Field className="gap-1 w-full">
-            <FieldLabel>Notes</FieldLabel>
+            <FieldLabel>{t("form.notes")}</FieldLabel>
             <Input
               {...field}
               value={field.value ?? ""}
-              placeholder="Optional"
+              placeholder={t("form.optional")}
             />
           </Field>
         )}

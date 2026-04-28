@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -63,6 +64,7 @@ export default function StockAdjustmentModal({
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.stockAdjustment);
+  const t = useTranslations("page_stock_in_out");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(StockAdjustmentSchema),
@@ -179,13 +181,13 @@ export default function StockAdjustmentModal({
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {defaultType === "DECREASE"
-              ? "Create Stock Out"
-              : "Create Stock In"}
+              ? t("form.create_stock_out")
+              : t("form.create_stock_in")}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {defaultType === "DECREASE"
-              ? "Create a new stock decrease record."
-              : "Create a new stock increase record."}
+              ? t("form.create_stock_out_desc")
+              : t("form.create_stock_in_desc")}
           </DialogDescription>
         </DialogHeader>
 
@@ -197,7 +199,7 @@ export default function StockAdjustmentModal({
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary">
-                  1. General information
+                  {t("form.general_info")}
                 </h3>
                 <FieldGroup className="grid grid-cols-2 gap-3">
                   <Controller
@@ -205,7 +207,7 @@ export default function StockAdjustmentModal({
                     control={form.control}
                     render={({ fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>Adjustment date</FieldLabel>
+                        <FieldLabel>{t("form.adjustment_date")}</FieldLabel>
                         <DatePickerField form={form} name="adjustment_date" />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -219,11 +221,11 @@ export default function StockAdjustmentModal({
                     control={form.control}
                     render={({ field }) => (
                       <Field className="gap-1">
-                        <FieldLabel>External link</FieldLabel>
+                        <FieldLabel>{t("form.external_link")}</FieldLabel>
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="e.g. Jira/Helpdesk link"
+                          placeholder={t("form.placeholder_link")}
                         />
                       </Field>
                     )}
@@ -234,11 +236,11 @@ export default function StockAdjustmentModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
-                        <FieldLabel>Reason</FieldLabel>
+                        <FieldLabel>{t("form.reason")}</FieldLabel>
                         <Textarea
                           {...field}
                           value={field.value ?? ""}
-                          placeholder="Reason for adjustment"
+                          placeholder={t("form.placeholder_reason")}
                           className="min-h-[80px]"
                         />
                         {fieldState.invalid && (
@@ -254,7 +256,7 @@ export default function StockAdjustmentModal({
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-primary">
-                    2. Adjustment items
+                    {t("form.adjustment_items")}
                   </h3>
                   <Button
                     type="button"
@@ -271,13 +273,13 @@ export default function StockAdjustmentModal({
                       })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> Add item
+                    <PlusIcon size={12} className="mr-1" /> {t("form.add_item")}
                   </Button>
                 </div>
 
                 {fields.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-md">
-                    No items yet. Click &quot;Add Item&quot; to get started.
+                    {t("form.empty_items")}
                   </p>
                 ) : (
                   <div className="flex flex-col gap-3">
@@ -300,22 +302,22 @@ export default function StockAdjustmentModal({
                 control={form.control}
                 steps={activeTemplate?.steps || []}
                 users={users}
-                title="3. Approval process"
+                title={t("form.approval_process")}
               />
 
               <FormAttachmentsSection
                 control={form.control}
-                title="Attachments"
+                title={t("form.attachments")}
               />
             </div>
           </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              {t("form.cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Saving..." : "Create"}
+              {pending ? t("form.saving") : t("form.create")}
             </Button>
           </DialogFooter>
         </form>
