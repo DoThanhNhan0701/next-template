@@ -953,7 +953,7 @@
       "asset": "Asset",
       "ownership": "Ownership",
       "location": "Location",
-      "purchase_info": "Purchase Info",
+      "purchase_info": "Purchase info",
       "management_type": "Management type",
       "status": "Status",
       "actions": "Actions",
@@ -1290,6 +1290,9 @@
       "cancel": "Cancel",
       "confirm": "Confirm",
       "processing": "Processing..."
+    },
+    "form": {
+      "placeholder_condition": "e.g. Good condition, minor scratches..."
     }
   }
 }

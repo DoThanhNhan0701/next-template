@@ -309,33 +309,33 @@ export default function AssetTable() {
         </div>
       </div>
 
-      <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+      <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-auto rounded-md">
+        <Table className="min-w-[1200px]">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-3 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-3 w-[200px]">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-3 w-[180px]">
                 {t("table.ownership")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-3 w-[150px]">
                 {t("table.location")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-3 w-[140px]">
                 {t("table.purchase_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-3 w-[130px] text-center">
                 {t("table.management_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-3 w-[200px] text-center">
                 {t("table.status")}
               </TableHead>
               {canEdit && (
-                <TableHead className="font-semibold h-10 px-4 text-right">
+                <TableHead className="font-semibold h-10 px-3 w-[80px] text-right sticky right-0 bg-sidebar-accent">
                   {t("table.actions")}
                 </TableHead>
               )}
@@ -365,13 +365,13 @@ export default function AssetTable() {
                     <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {skip + index + 1}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 relative overflow-hidden">
-                      <div className="flex items-center gap-2">
-                        <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10">
+                    <TableCell className="px-4 py-1.5">
+                      <div className="flex items-center gap-2 max-w-[200px]">
+                        <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
                           <Laptop size={16} />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-sm group-hover:text-primary transition-colors">
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="font-semibold text-sm group-hover:text-primary transition-colors truncate" title={asset.name}>
                             {asset.name}
                           </span>
                           <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">

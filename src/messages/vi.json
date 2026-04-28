@@ -953,7 +953,7 @@
       "asset": "Tài sản",
       "ownership": "Sở hữu",
       "location": "Vị trí",
-      "purchase_info": "Thông tin mua sắm",
+      "purchase_info": "Mua hàng",
       "management_type": "Loại quản lý",
       "status": "Trạng thái",
       "actions": "Hành động",
@@ -1290,6 +1290,9 @@
       "cancel": "Hủy",
       "confirm": "Xác nhận",
       "processing": "Đang xử lý..."
+    },
+    "form": {
+      "placeholder_condition": "e.g. Tình trạng tốt, có vài vết xước nhỏ..."
     }
   }
 }
