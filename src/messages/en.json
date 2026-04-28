@@ -1069,7 +1069,7 @@
       }
     },
     "modals": {
-      "create_title": "Create asset",
+      "create_title": "Create",
       "edit_title": "Edit asset",
       "create_description": "Fill in the required details to register a new asset in the system.",
       "edit_description": "Modify the information of the selected asset.",
@@ -1231,6 +1231,10 @@
       "return_location": "Return location",
       "return_date": "Return date",
       "status": "Status",
+      "step": "Step",
+      "approver": "Approver",
+      "comment": "Comment",
+      "date": "Date",
       "no_returns_found": "No rental returns found",
       "no_returns_description": "Adjust filters to find rental return records."
     },

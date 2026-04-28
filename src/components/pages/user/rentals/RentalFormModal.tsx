@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { PlusIcon, Trash } from "lucide-react";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash } from "lucide-react";
 import {
   type Control,
   Controller,
@@ -377,7 +378,10 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>{t("form.contract_number")}</FieldLabel>
-                        <Input {...field} placeholder={t("form.placeholder_contract")} />
+                        <Input
+                          {...field}
+                          placeholder={t("form.placeholder_contract")}
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -409,7 +413,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("form.placeholder_org")} />
+                            <SelectValue
+                              placeholder={t("form.placeholder_org")}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {orgUnits.map((o) => (
@@ -436,7 +442,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("form.placeholder_customer")} />
+                            <SelectValue
+                              placeholder={t("form.placeholder_customer")}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {customers?.map((c) => (
@@ -522,7 +530,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
               </div>
 
               <div className="flex flex-col gap-3">
-                 <div className="flex items-center justify-between border-b pb-1">
+                <div className="flex items-center justify-between border-b pb-1">
                   <h3 className="text-sm font-semibold text-primary">
                     {t("form.rental_assets")}
                   </h3>
@@ -541,7 +549,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> {t("form.btn_add_asset")}
+                    {t("form.btn_add_asset")}
                   </Button>
                 </div>
 

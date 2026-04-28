@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -19,7 +20,6 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -107,14 +107,16 @@ export default function RentalReturnDetail({ id }: Props) {
                 <FileText className="w-6 h-6 text-primary" />
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
                   {t("table.record_number")}
                 </span>
                 <span className="text-xl font-bold text-foreground tracking-tight">
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {t("detail.rental", { number: detail.rental?.record_number || "—" })}
+                  {t("detail.rental", {
+                    number: detail.rental?.record_number || "—",
+                  })}
                 </span>
               </div>
             </div>
@@ -122,7 +124,7 @@ export default function RentalReturnDetail({ id }: Props) {
             {/* Right: stats */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-20">
-                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
                   {t("detail.total_assets")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
@@ -130,7 +132,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 </span>
               </div>
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-muted/40 border border-border/50 min-w-20">
-                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
                   {t("detail.items_count")}
                 </span>
                 <span className="text-2xl font-bold text-foreground">
@@ -232,7 +234,7 @@ export default function RentalReturnDetail({ id }: Props) {
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                   {t("detail.name")}
                 </span>
                 <span className="text-sm font-semibold text-foreground">
@@ -252,7 +254,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <span>{detail.rental.customer.address || "—"}</span>
               </div>
               <div className="flex flex-col gap-1 pt-2 border-t border-border/50">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                   {t("detail.identifier")}
                 </span>
                 <code className="text-xs font-mono bg-muted px-2 py-1 rounded text-foreground">
@@ -274,7 +276,7 @@ export default function RentalReturnDetail({ id }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">
+                  <span className="text-xs font-semibold tracking-wider">
                     {t("detail.lease_date")}
                   </span>
                 </div>
@@ -285,7 +287,7 @@ export default function RentalReturnDetail({ id }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">
+                  <span className="text-xs font-semibold tracking-wider">
                     {t("detail.return_date")}
                   </span>
                 </div>
@@ -296,7 +298,7 @@ export default function RentalReturnDetail({ id }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <MapPin size={15} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">
+                  <span className="text-xs font-semibold tracking-wider">
                     {t("detail.to_location")}
                   </span>
                 </div>
@@ -307,7 +309,7 @@ export default function RentalReturnDetail({ id }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <FileText size={15} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">
+                  <span className="text-xs font-semibold tracking-wider">
                     {t("detail.contract")}
                   </span>
                 </div>
@@ -318,7 +320,7 @@ export default function RentalReturnDetail({ id }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <FileText size={15} />
-                  <span className="text-xs font-semibold uppercase tracking-wider">
+                  <span className="text-xs font-semibold tracking-wider">
                     {t("detail.rental_record")}
                   </span>
                 </div>
@@ -330,7 +332,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <User size={15} />
-                    <span className="text-xs font-semibold uppercase tracking-wider">
+                    <span className="text-xs font-semibold tracking-wider">
                       {t("detail.creator")}
                     </span>
                   </div>
@@ -343,7 +345,7 @@ export default function RentalReturnDetail({ id }: Props) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock size={15} />
-                    <span className="text-xs font-semibold uppercase tracking-wider">
+                    <span className="text-xs font-semibold tracking-wider">
                       {t("detail.created_at")}
                     </span>
                   </div>
@@ -356,7 +358,7 @@ export default function RentalReturnDetail({ id }: Props) {
               )}
               {detail.notes && (
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                     {t("detail.notes")}
                   </span>
                   <p className="text-sm text-foreground/80 leading-relaxed italic">
@@ -366,7 +368,7 @@ export default function RentalReturnDetail({ id }: Props) {
               )}
               {detail.attachments && detail.attachments.length > 0 && (
                 <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-xs font-semibold tracking-wider text-muted-foreground">
                     {t("detail.attachments")}
                   </span>
                   <div className="flex flex-col gap-1">
@@ -458,7 +460,7 @@ export default function RentalReturnDetail({ id }: Props) {
                     </TableCell>
                     <TableCell className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold uppercase">
+                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
                           {hist.requester_name?.charAt(0)}
                         </div>
                         <span className="text-sm">{hist.requester_name}</span>
@@ -467,7 +469,8 @@ export default function RentalReturnDetail({ id }: Props) {
                     <TableCell className="px-4 py-3 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> {t("detail.status_approved")}
+                          <CheckCircle2 size={12} />{" "}
+                          {t("detail.status_approved")}
                         </span>
                       ) : hist.status === "REJECTED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">

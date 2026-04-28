@@ -1069,7 +1069,7 @@
       }
     },
     "modals": {
-      "create_title": "Thêm tài sản",
+      "create_title": "Tạo mới",
       "edit_title": "Sửa tài sản",
       "create_description": "Điền các thông tin cần thiết để đăng ký tài sản mới vào hệ thống.",
       "edit_description": "Chỉnh sửa thông tin của tài sản đã chọn.",
@@ -1231,6 +1231,10 @@
       "return_location": "Vị trí trả",
       "return_date": "Ngày trả",
       "status": "Trạng thái",
+      "step": "Bước",
+      "approver": "Người duyệt",
+      "comment": "Ý kiến",
+      "date": "Thời gian",
       "no_returns_found": "Không tìm thấy hồ sơ trả tài sản nào",
       "no_returns_description": "Điều chỉnh bộ lọc để tìm kiếm hồ sơ trả tài sản."
     },
