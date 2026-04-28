@@ -1004,7 +1004,7 @@
         "preview": {
           "code": "Code",
           "owner": "Owner",
-          "importance": "Importance Level"
+          "importance": "Importance level"
         }
       }
     },
@@ -1319,8 +1319,8 @@
       "unknown_location": "Unknown location",
       "by_code": "By code",
       "by_quantity": "By quantity",
-      "stock_in": "Stock In",
-      "stock_out": "Stock Out"
+      "stock_in": "Stock in",
+      "stock_out": "Stock out"
     }
   },
   "page_transfers": {
@@ -1417,8 +1417,8 @@
   },
   "page_stock_in_out": {
     "title": "Stock in / stock out",
-    "stock_in": "Stock In",
-    "stock_out": "Stock Out",
+    "stock_in": "Stock in",
+    "stock_out": "Stock out",
     "table": {
       "search_placeholder": "e.g. MacBook, STK2024",
       "searching": "Searching...",
@@ -1473,8 +1473,8 @@
     "detail": {
       "title": "Stock adjustment detail",
       "subtitle": "Stock in / stock out",
-      "record_no": "Record Number",
-      "total_qty": "Total Quantity",
+      "record_no": "Record No",
+      "total_qty": "Total quantity",
       "items": "Items",
       "adjustment_items": "Adjustment items",
       "no": "No",
@@ -1568,7 +1568,8 @@
       "placeholder_asset": "e.g. MacBook Pro",
       "quantity_label": "Quantity: ",
       "quantity": "Quantity",
-      "placeholder_quantity_value": "e.g. 1"
+      "placeholder_quantity_value": "e.g. 1",
+      "none": "(None)"
     }
   },
   "page_audits": {
@@ -1799,11 +1800,11 @@
       "maintenance_documents": "Maintenance documents",
       "approval_history": "Approval history",
       "no_approval_history": "No approval history available.",
-      "maintenance_items": "Maintenance Items",
+      "maintenance_items": "Maintenance items",
       "no": "No",
       "asset": "Asset",
       "quantity": "Quantity",
-      "issue_notes": "Issue / Notes",
+      "issue_notes": "Issue / notes",
       "approver_step": "Step",
       "approver": "Approver",
       "approver_status": "Status",
@@ -1901,7 +1902,7 @@
       "buyer": "Buyer",
       "creator": "Creator",
       "link": "Link",
-      "view_link": "View Link",
+      "view_link": "View link",
       "reason": "Reason",
       "committee": "Disposal committee",
       "no_committee": "No committee members assigned.",
