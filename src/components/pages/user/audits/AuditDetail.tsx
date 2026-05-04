@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -18,8 +19,8 @@ import {
   User,
   X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
+import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,7 +33,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
@@ -41,7 +41,7 @@ import {
   IAuditDetailsResponse,
   IAuditSession,
 } from "@/types/audit";
-import { ApprovalHistory, ITask } from "@/types/task";
+import { ApprovalHistory, ITask, TaskStatus } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
@@ -68,7 +68,11 @@ export default function AuditDetail({ id }: Props) {
   const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
   const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
-  const { response: session, pending: sessionPending, reFetch: sessionReFetch } = useGet<IAuditSession>({
+  const {
+    response: session,
+    pending: sessionPending,
+    reFetch: sessionReFetch,
+  } = useGet<IAuditSession>({
     url: dynamicEndpoints.AUDIT_SESSION_DETAIL(Number(id)),
   });
 
@@ -154,22 +158,24 @@ export default function AuditDetail({ id }: Props) {
   };
 
   // Create a mock task object for modals
-  const mockTask: ITask | null = isMyAudit && session
-    ? {
-      id: Number(id) + 1000000,
-      instance_id: Number(id),
-      step_id: 0,
-      user_id: session.assignee_id || 0,
-      status: session.status_obj?.code as any,
-      created_at: session.created_at || "",
-      document_id: Number(id),
-      document_record_number: session.title || "",
-      document_type: "audit",
-      requester_name: session.assignee?.full_name || "",
-      step_name: session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
-      reason: "",
-    }
-    : null;
+  const mockTask: ITask | null =
+    isMyAudit && session
+      ? {
+          id: Number(id) + 1000000,
+          instance_id: Number(id),
+          step_id: 0,
+          user_id: session.assignee_id || 0,
+          status: session.status_obj?.code as TaskStatus,
+          created_at: session.created_at || "",
+          document_id: Number(id),
+          document_record_number: session.title || "",
+          document_type: "audit",
+          requester_name: session.assignee?.full_name || "",
+          step_name:
+            session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+          reason: "",
+        }
+      : null;
 
   if (sessionPending && !session) {
     return (
@@ -211,38 +217,41 @@ export default function AuditDetail({ id }: Props) {
         </div>
 
         {/* Action Buttons */}
-        {isMyAudit && ["PENDING", "COMPLETED"].includes(session?.status_obj?.code || "") && (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => {
-                if (session?.status_obj?.code === "COMPLETED") {
-                  setIsAuditApproveModalOpen(true);
-                } else {
-                  setIsAuditCompleteModalOpen(true);
-                }
-              }}
-              disabled={mutatePending}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-            >
-              <Check size={16} />
-              {tMyTasks("detail.approval_form.approve")}
-            </Button>
-            {session?.status_obj?.code === "COMPLETED" && (
+        {isMyAudit &&
+          ["PENDING", "COMPLETED"].includes(
+            session?.status_obj?.code || "",
+          ) && (
+            <div className="flex items-center gap-2">
               <Button
-                variant="outline"
+                variant="default"
                 size="sm"
-                onClick={() => setIsAuditRejectModalOpen(true)}
+                onClick={() => {
+                  if (session?.status_obj?.code === "COMPLETED") {
+                    setIsAuditApproveModalOpen(true);
+                  } else {
+                    setIsAuditCompleteModalOpen(true);
+                  }
+                }}
                 disabled={mutatePending}
-                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
               >
-                <X size={16} />
-                {tMyTasks("detail.approval_form.reject")}
+                <Check size={16} />
+                {tMyTasks("detail.approval_form.approve")}
               </Button>
-            )}
-          </div>
-        )}
+              {session?.status_obj?.code === "COMPLETED" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAuditRejectModalOpen(true)}
+                  disabled={mutatePending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                >
+                  <X size={16} />
+                  {tMyTasks("detail.approval_form.reject")}
+                </Button>
+              )}
+            </div>
+          )}
       </div>
 
       {/* Summary Card */}
@@ -264,7 +273,9 @@ export default function AuditDetail({ id }: Props) {
                 </span>
                 <span className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <Clock size={12} className="opacity-70" />
-                  {t("table.created_at", { date: formatDate(session.created_at) })}
+                  {t("table.created_at", {
+                    date: formatDate(session.created_at),
+                  })}
                 </span>
               </div>
             </div>
@@ -442,12 +453,14 @@ export default function AuditDetail({ id }: Props) {
                                   </span>
                                   {(item.transfer_quantity !== null ||
                                     item.unit_quantity !== null) && (
-                                      <span className="ml-auto font-bold text-primary">
-                                        {t("table.quantity", {
-                                          value: item.transfer_quantity ?? item.unit_quantity,
-                                        })}
-                                      </span>
-                                    )}
+                                    <span className="ml-auto font-bold text-primary">
+                                      {t("table.quantity", {
+                                        value:
+                                          item.transfer_quantity ??
+                                          item.unit_quantity,
+                                      })}
+                                    </span>
+                                  )}
                                 </div>
                               </>
                             ) : (
@@ -585,10 +598,7 @@ export default function AuditDetail({ id }: Props) {
       />
 
       {/* Workflow History */}
-      <WorkflowHistory
-        historyList={historyList}
-        pending={historyPending}
-      />
+      <WorkflowHistory historyList={historyList} pending={historyPending} />
 
       <CompleteAuditModal
         task={mockTask}
