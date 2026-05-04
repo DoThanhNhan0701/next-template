@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
+
+import { useTranslations } from "next-intl";
 
 import { Printer } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -14,9 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useTranslations } from "next-intl";
-import { dynamicEndpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
 
 interface IHolder {
   name: string;
@@ -30,35 +29,21 @@ interface Props {
   onClose: () => void;
   assetCode: string;
   assetId: number;
-  owner?: string | null;
   importanceLevel?: { code: string; name: string; color: string } | null;
+  holders: IHolder[];
 }
 
 export default function PrintQRModal({
   isOpen,
   onClose,
   assetCode,
-  assetId,
-  owner,
+  holders,
   importanceLevel,
 }: Props) {
   const t = useTranslations("page_physical_assets");
-  const [selectedName, setSelectedName] = useState("");
-
-  const { response: holdersRes } = useGet<IHolder[]>(
-    { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(assetId) },
-    { disabled: !isOpen, deps: [assetId] },
+  const [selectedName, setSelectedName] = useState(
+    holders.length > 0 ? holders[0].name : "",
   );
-  const holders = useMemo(() => holdersRes ?? [], [holdersRes]);
-
-  // Auto-select first holder when data loads
-  useEffect(() => {
-    if (holders.length > 0) {
-      setSelectedName(holders[0].name);
-    } else {
-      setSelectedName("");
-    }
-  }, [holders]);
 
   const doPrint = () => {
     const svg =
@@ -138,9 +123,6 @@ export default function PrintQRModal({
           border: 1px solid;
         }
         .footer {
-          margin-top: 16px;
-          padding-top: 12px;
-          border-top: 1px solid #e5e5e5;
           text-align: center;
           font-size: 10px;
           color: #999;
@@ -160,7 +142,7 @@ export default function PrintQRModal({
             </div>
             <div class="info-row">
               <div class="label">${t("detail.docs.preview.owner")}</div>
-              <div class="value-small">${owner || "—"}</div>
+              <div class="value-small">${selectedName || "—"}</div>
             </div>
             <div class="info-row">
               <div class="label">${t("detail.docs.preview.importance")}</div>
@@ -216,7 +198,7 @@ export default function PrintQRModal({
                   {t("detail.docs.preview.owner")}
                 </span>
                 <span className="text-sm font-semibold text-gray-800">
-                  {owner || "—"}
+                  {selectedName || "—"}
                 </span>
               </div>
               <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
@@ -243,7 +225,9 @@ export default function PrintQRModal({
           {/* Select recipient name */}
           {holders.length > 0 && (
             <div className="w-full flex flex-col gap-1.5">
-              <span className="text-sm font-medium">{t("modals.print_qr.recipient")}</span>
+              <span className="text-sm font-medium">
+                {t("modals.print_qr.recipient")}
+              </span>
               <div className="flex flex-wrap gap-1.5">
                 {holders.map((h: IHolder, i: number) => (
                   <button
@@ -252,10 +236,11 @@ export default function PrintQRModal({
                     onClick={() =>
                       setSelectedName(selectedName === h.name ? "" : h.name)
                     }
-                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${selectedName === h.name
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                      }`}
+                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
+                      selectedName === h.name
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                   >
                     {h.name}
                   </button>

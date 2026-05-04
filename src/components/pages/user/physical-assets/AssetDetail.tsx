@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   ArrowLeft,
@@ -100,16 +100,18 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
     response: asset,
     pending,
     reFetch,
-  } = useGet<IPhysicalAssetDetail>({
-    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
-  }, {
-    staleTime: 0
-  });
+  } = useGet<IPhysicalAssetDetail>(
+    {
+      url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
+    },
+    {
+      staleTime: 0,
+    },
+  );
 
   const { response: holders } = useGet<IAssetHolder[]>(
     { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(Number(id)) },
     { deps: [Number(id)] },
-
   );
 
   const { response: stocks } = useGet<IAssetStock[]>(
@@ -194,7 +196,9 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               {t("detail.recovery")}
             </Button>
             {canEdit && (
-              <Button onClick={() => setIsEditOpen(true)}>{t("detail.edit")}</Button>
+              <Button onClick={() => setIsEditOpen(true)}>
+                {t("detail.edit")}
+              </Button>
             )}
           </div>
         </div>
@@ -212,28 +216,36 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Info className="w-4 h-4" />
-                <span className="text-sm font-medium">{t("detail.tabs.overview")}</span>
+                <span className="text-sm font-medium">
+                  {t("detail.tabs.overview")}
+                </span>
               </TabsTrigger>
               <TabsTrigger
                 value="history"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Clock className="w-4 h-4" />
-                <span className="text-sm font-medium">{t("detail.tabs.history")}</span>
+                <span className="text-sm font-medium">
+                  {t("detail.tabs.history")}
+                </span>
               </TabsTrigger>
               <TabsTrigger
                 value="specs"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Wrench className="w-4 h-4" />
-                <span className="text-sm font-medium">{t("detail.tabs.specs")}</span>
+                <span className="text-sm font-medium">
+                  {t("detail.tabs.specs")}
+                </span>
               </TabsTrigger>
               <TabsTrigger
                 value="docs"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <QrCode className="w-4 h-4" />
-                <span className="text-sm font-medium">{t("detail.tabs.docs")}</span>
+                <span className="text-sm font-medium">
+                  {t("detail.tabs.docs")}
+                </span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -369,7 +381,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                       {t("detail.docs.preview.owner")}
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
-                      {asset.owner || "—"}
+                      {holders?.[0]?.name || "—"}
                     </span>
                   </div>
                   <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
@@ -428,7 +440,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           onClose={() => setIsPrintModalOpen(false)}
           assetCode={asset.asset_code}
           assetId={asset.id}
-          owner={asset.owner}
+          holders={holders ?? []}
           importanceLevel={asset.importance_obj}
         />
       )}
