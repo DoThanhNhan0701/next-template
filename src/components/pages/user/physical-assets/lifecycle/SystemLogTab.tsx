@@ -1,7 +1,4 @@
-import Link from "next/link";
 import { useTranslations } from "next-intl";
-
-import { ExternalLink } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -88,18 +85,17 @@ export default function SystemLogTab({
                   {log.action_type || "-"}
                 </Badge>
               </TableCell>
-              <TableCell className="px-4 py-2">
+              <TableCell
+                className="px-4 py-2 max-w-72 truncate"
+                title={log.status_name || log.notes || "-"}
+              >
                 {log.status_name || log.notes || "-"}
               </TableCell>
               <TableCell className="px-4 py-1.5 text-center">
                 {log.document_number ? (
-                  <Link
-
-                    href={"#"}
-                    className="inline-flex items-center gap-1.5 text-primary hover:underline font-bold tracking-wide text-sm"
-                  >
-                    {log.document_number} <ExternalLink className="w-3 h-3" />
-                  </Link>
+                  <div className="inline-flex items-center gap-1.5 text-primary font-bold tracking-wide text-sm">
+                    {log.document_number}
+                  </div>
                 ) : (
                   <span className="text-muted-foreground text-xs italic">
                     {t("table.log_entry")}

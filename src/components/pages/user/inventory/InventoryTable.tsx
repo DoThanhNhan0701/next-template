@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -13,7 +14,6 @@ import {
   Search,
   X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 
 import {
@@ -268,7 +268,10 @@ export default function InventoryTable() {
                         <Package size={18} />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-sm group-hover:text-primary transition-colors">
+                        <span
+                          className="font-semibold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]"
+                          title={stock.asset_name}
+                        >
                           {stock.asset_name}
                         </span>
                         <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
@@ -302,10 +305,11 @@ export default function InventoryTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
-                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                        : "bg-red-500/10 text-red-600 border border-red-500/20"
-                        }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
+                        stock.quantity > 0
+                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                          : "bg-red-500/10 text-red-600 border border-red-500/20"
+                      }`}
                     >
                       {stock.quantity}
                     </div>

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import {
   Calendar,
@@ -239,7 +239,10 @@ export default function MaintenanceTable() {
                           size={14}
                           className="text-muted-foreground/60"
                         />
-                        <span className="font-semibold text-sm">
+                        <span
+                          className="font-semibold text-sm truncate max-w-[200px]"
+                          title={item.asset_name}
+                        >
                           {item.asset_name}
                         </span>
                       </div>
@@ -248,7 +251,10 @@ export default function MaintenanceTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
+                  <TableCell
+                    className="px-4 py-3 text-sm truncate max-w-[200px]"
+                    title={item.service_provider_name}
+                  >
                     {item.service_provider_name || t("none")}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-medium text-center">

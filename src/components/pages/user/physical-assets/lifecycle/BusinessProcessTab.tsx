@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { ArrowRight, ExternalLink } from "lucide-react";
 
@@ -39,7 +39,9 @@ export default function BusinessProcessTab({
             <TableHead className="font-semibold h-10 px-4 w-16 text-center">
               {t("table.no")}
             </TableHead>
-            <TableHead className="font-semibold h-10 px-4 w-40">{t("table.date")}</TableHead>
+            <TableHead className="font-semibold h-10 px-4 w-40">
+              {t("table.date")}
+            </TableHead>
             <TableHead className="font-semibold h-10 px-4 min-w-37.5">
               {t("table.process")}
             </TableHead>
@@ -101,7 +103,10 @@ export default function BusinessProcessTab({
                     </span>
                     <ArrowRight className="w-3 h-3 shrink-0" />
                   </div>
-                  <strong className="text-foreground text-sm font-bold tracking-wide whitespace-nowrap">
+                  <strong
+                    className="text-foreground text-sm font-bold tracking-wide whitespace-nowrap truncate max-w-[200px]"
+                    title={log.user_name || log.location_name || "—"}
+                  >
                     {log.user_name || log.location_name || "—"}
                   </strong>
                 </div>

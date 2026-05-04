@@ -23,10 +23,10 @@ export const getDocumentDetailUrl = (actionType: string, refId: number): string 
     // Map action types to routes (supports both English and Vietnamese)
     const routeMap: Record<string, string> = {
         // Allocation & Recovery
-        allocation: `/allocation-recovery?tab=allocation&id=${refId}`,
-        "cấp phát": `/allocation-recovery?tab=allocation&id=${refId}`,
-        recovery: `/allocation-recovery?tab=recovery&id=${refId}`,
-        "thu hồi": `/allocation-recovery?tab=recovery&id=${refId}`,
+        // allocation: `/allocation-recovery?tab=allocation&id=${refId}`,
+        // "cấp phát": `/allocation-recovery?tab=allocation&id=${refId}`,
+        // recovery: `/allocation-recovery?tab=recovery&id=${refId}`,
+        // "thu hồi": `/allocation-recovery?tab=recovery&id=${refId}`,
 
         // Stock In/Out
         "stock in": `/stock-in-out/${refId}`,
@@ -45,6 +45,7 @@ export const getDocumentDetailUrl = (actionType: string, refId: number): string 
         "trả thuê": `/rentals/returns/${refId}`,
         "rental_return": `/rentals/returns/${refId}`,
         "return": `/rentals/returns/${refId}`,
+        "hoàn trả tài sản thuê": `/rentals/returns/${refId}`,
 
         // Transfers
         transfer: `/transfers/${refId}`,

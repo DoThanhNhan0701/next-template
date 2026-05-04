@@ -543,7 +543,10 @@ export default function MyTasksTable() {
                     {(localCurrentPage - 1) * 20 + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-2 relative overflow-hidden">
-                    <span className="font-semibold text-sm group-hover:text-primary transition-colors">
+                    <span
+                      className="block font-semibold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]"
+                      title={task.document_record_number}
+                    >
                       {task.document_record_number}
                     </span>
                   </TableCell>

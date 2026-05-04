@@ -248,15 +248,21 @@ export default function RecoverySummaryTable() {
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.asset")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.recovered_from")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.notes")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.notes")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.date")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.status")}
               </TableHead>
@@ -284,7 +290,10 @@ export default function RecoverySummaryTable() {
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-sm">
+                        <span
+                          className="font-semibold text-sm truncate max-w-[200px]"
+                          title={recovery.asset_name}
+                        >
                           {recovery.asset_name || "-"}
                         </span>
                         <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
@@ -295,7 +304,8 @@ export default function RecoverySummaryTable() {
                     <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1 text-sm">
                         <span className="font-medium text-foreground/80">
-                          {recovery.recovered_from_name || t("table.unassigned")}
+                          {recovery.recovered_from_name ||
+                            t("table.unassigned")}
                         </span>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1">
                           <span>{recovery.unit_name || "-"}</span>

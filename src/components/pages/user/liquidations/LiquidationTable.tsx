@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -13,7 +14,6 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -148,15 +148,21 @@ export default function LiquidationTable() {
               <TableHead className="font-semibold h-10 px-4">
                 {t("liquidation_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("date")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("date")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("asset_details")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("status")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("reason")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("status")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("reason")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
@@ -209,7 +215,10 @@ export default function LiquidationTable() {
                           size={14}
                           className="text-muted-foreground/60"
                         />
-                        <span className="font-semibold text-sm">
+                        <span
+                          className="font-semibold text-sm truncate max-w-[200px]"
+                          title={item.asset_name}
+                        >
                           {item.asset_name}
                         </span>
                       </div>
@@ -230,7 +239,8 @@ export default function LiquidationTable() {
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason || t("no_reason_placeholder", { fallback: "No reason" })}
+                    {item.reason ||
+                      t("no_reason_placeholder", { fallback: "No reason" })}
                   </TableCell>
                 </TableRow>
               ))

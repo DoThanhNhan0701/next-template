@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -15,8 +16,6 @@ import {
   User,
   X,
 } from "lucide-react";
-
-import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -82,10 +81,9 @@ export default function AllAuditsTable() {
   const allAudits = response || [];
 
   // Filter locally by audit_type
-  const audits =
-    !auditType
-      ? allAudits
-      : allAudits.filter((audit) => audit.audit_type === auditType);
+  const audits = !auditType
+    ? allAudits
+    : allAudits.filter((audit) => audit.audit_type === auditType);
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = allAudits.length === limit;
@@ -229,7 +227,10 @@ export default function AllAuditsTable() {
                   </TableCell>
                   <TableCell className="px-4 py-1.5">
                     <div className="flex flex-col">
-                      <span className="font-semibold text-sm">
+                      <span
+                        className="font-semibold text-sm truncate max-w-[200px]"
+                        title={audit.title}
+                      >
                         {audit.title}
                       </span>
                       <span className="text-[10px] text-muted-foreground text-nowrap">

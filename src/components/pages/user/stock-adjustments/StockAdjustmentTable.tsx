@@ -165,15 +165,21 @@ export default function StockAdjustmentTable({
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.record_no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.asset")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.type")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.reason")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.reason")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.date")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.status")}
               </TableHead>
@@ -204,7 +210,10 @@ export default function StockAdjustmentTable({
                       {item.record_number}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-2 font-medium text-sm">
+                  <TableCell
+                    className="px-4 py-2 font-medium text-sm truncate max-w-[200px]"
+                    title={item.asset_names}
+                  >
                     {item.asset_names}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-center">

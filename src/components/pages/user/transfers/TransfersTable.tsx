@@ -203,14 +203,24 @@ export default function TransfersTable() {
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.transfer_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.date")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.from_to")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.quantity")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.status")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.reason")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.from_to")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.quantity")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.status")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.reason")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
@@ -259,7 +269,10 @@ export default function TransfersTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3">
                     <div className="flex flex-col gap-1">
-                      <span className="font-semibold text-sm">
+                      <span
+                        className="font-semibold text-sm truncate max-w-[200px]"
+                        title={item.asset_name}
+                      >
                         {item.asset_name}
                       </span>
                       <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">

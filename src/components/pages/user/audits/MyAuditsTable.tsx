@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -13,8 +14,6 @@ import {
   User,
   X,
 } from "lucide-react";
-
-import { useTranslations } from "next-intl";
 
 import {
   TableEmptyRow,
@@ -80,10 +79,9 @@ export default function MyAuditsTable() {
   const allAudits = response || [];
 
   // Filter locally by audit_type
-  const audits =
-    !auditType
-      ? allAudits
-      : allAudits.filter((audit) => audit.audit_type === auditType);
+  const audits = !auditType
+    ? allAudits
+    : allAudits.filter((audit) => audit.audit_type === auditType);
 
   const currentPage = Math.floor(skip / limit) + 1;
   const hasMore = allAudits.length === limit;
@@ -188,19 +186,19 @@ export default function MyAuditsTable() {
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[30%]">
                 {t("table.title")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[20%]">
                 {t("table.type_target")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[15%]">
                 {t("table.assignee")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
                 {t("table.due_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -226,8 +224,11 @@ export default function MyAuditsTable() {
                     {skip + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm">
+                    <div className="flex flex-col min-w-0">
+                      <span
+                        className="font-semibold text-sm truncate w-full overflow-hidden"
+                        title={audit.title}
+                      >
                         {audit.title}
                       </span>
                       <span className="text-[10px] text-muted-foreground text-nowrap">
@@ -275,13 +276,13 @@ export default function MyAuditsTable() {
                   <TableCell className="px-4 py-1.5">
                     <div className="flex items-center gap-2">
                       <User size={12} className="text-muted-foreground" />
-                      <span className="text-sm font-medium text-foreground/80">
+                      <span className="text-sm font-medium text-foreground/80 truncate">
                         {audit.assignee?.full_name || "—"}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex items-center gap-1.5">
+                  <TableCell className="px-4 py-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}
                         className="text-muted-foreground/60"

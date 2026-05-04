@@ -243,15 +243,21 @@ export default function AllocationSummaryTable() {
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.asset")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.asset")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.allocated_to")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.reason")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("table.date")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.reason")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.date")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.status")}
               </TableHead>
@@ -279,7 +285,10 @@ export default function AllocationSummaryTable() {
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-sm">
+                        <span
+                          className="font-semibold text-sm truncate max-w-[200px]"
+                          title={alloc.asset_name}
+                        >
                           {alloc.asset_name || "-"}
                         </span>
                         <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
