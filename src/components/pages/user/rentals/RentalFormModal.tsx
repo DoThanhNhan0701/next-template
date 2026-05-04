@@ -106,19 +106,9 @@ function RentalItemRow({
   const assets = assetRes?.items || [];
 
   return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 flex flex-col gap-2">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        disabled={disabled}
-        className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
-        onClick={onRemove}
-      >
-        <Trash size={12} />
-      </Button>
-
-      <div className="grid grid-cols-2 gap-2">
+    <div className="bg-muted/30 border rounded-lg p-3 flex items-end gap-2">
+      <div className="grid grid-cols-[1fr_1fr_110px_110px] gap-2 flex-1">
+        {/* Location */}
         <Field className="gap-1">
           <FieldLabel>{t("form.location")}</FieldLabel>
           <Select
@@ -147,6 +137,7 @@ function RentalItemRow({
           </Select>
         </Field>
 
+        {/* Asset */}
         <Controller
           name={`items.${index}.asset_id`}
           control={control}
@@ -190,10 +181,8 @@ function RentalItemRow({
             </Field>
           )}
         />
-      </div>
 
-      {/* Row 2: Quantity + Revenue */}
-      <div className="grid grid-cols-2 gap-2">
+        {/* Quantity */}
         <Controller
           name={`items.${index}.quantity`}
           control={control}
@@ -210,6 +199,8 @@ function RentalItemRow({
             </Field>
           )}
         />
+
+        {/* Revenue */}
         <Controller
           name={`items.${index}.rental_revenue`}
           control={control}
@@ -227,6 +218,18 @@ function RentalItemRow({
           )}
         />
       </div>
+
+      {/* Delete */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        disabled={disabled}
+        className="h-9 w-9 shrink-0 text-red-500 hover:bg-red-50"
+        onClick={onRemove}
+      >
+        <Trash size={14} />
+      </Button>
     </div>
   );
 }
@@ -379,7 +382,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>{t("form.create_title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">

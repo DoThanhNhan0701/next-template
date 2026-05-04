@@ -9,13 +9,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { IUser } from "@/types/auth";
 import { ITemplateStep } from "@/types/template";
 import { cn } from "@/lib/utils";
@@ -79,37 +72,26 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
                       {showStepNumber ? `Step ${idx + 1}: ` : ""}
                       {step.name}
                     </FieldLabel>
-                    {useApproverSelect ? (
-                      <ApproverSelect
-                        step={step}
-                        allUsers={users}
-                        value={field.value ? field.value.toString() : ""}
-                        onChange={(val) =>
-                          field.onChange(val === "none" ? null : Number(val))
-                        }
-                        placeholder={`e.g. ${step.name}`}
-                        triggerClassName={cn(
-                          "h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all hover:border-primary/50 focus:ring-4 focus:ring-primary/5",
-                          triggerClassName
-                        )}
-                      />
-                    ) : (
-                      <Select
-                        onValueChange={(val) => field.onChange(Number(val))}
-                        value={field.value ? field.value.toString() : ""}
-                      >
-                        <SelectTrigger className={cn("h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-2 focus:ring-primary/20", triggerClassName)}>
-                          <SelectValue placeholder={`Select ${step.name}`} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {users.map((user) => (
-                            <SelectItem key={user.id} value={user.id.toString()}>
-                              {user.full_name} ({user.username})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                    <ApproverSelect
+                      step={step}
+                      allUsers={users}
+                      value={field.value ? field.value.toString() : ""}
+                      onChange={(val) =>
+                        field.onChange(val === "none" ? null : Number(val))
+                      }
+                      placeholder={
+                        useApproverSelect
+                          ? `e.g. ${step.name}`
+                          : `Select ${step.name}`
+                      }
+                      triggerClassName={cn(
+                        "bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-4 focus:ring-primary/5",
+                        useApproverSelect
+                          ? "h-12 hover:border-primary/50"
+                          : "h-12 focus:ring-primary/20",
+                        triggerClassName
+                      )}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
