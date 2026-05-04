@@ -43,6 +43,7 @@ import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { AppDispatch, RootState } from "@/redux";
 import { closeRecovery } from "@/redux/slices/recovery";
+import { updateCount } from "@/redux/slices/task";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
@@ -71,6 +72,8 @@ export default function RecoveryVoucherModal({
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.recovery);
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const handleClose = () => {
     dispatch(closeRecovery());
@@ -199,6 +202,16 @@ export default function RecoveryVoucherModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+
+          // If the current user is the first-step approver, increment their PENDING task count
+          const isCurrentUserApprover =
+            workflow_assignments[0]?.user_id === currentUser?.id;
+          if (isCurrentUserApprover) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
+            );
+          }
+
           onSuccess();
           handleClose();
         },

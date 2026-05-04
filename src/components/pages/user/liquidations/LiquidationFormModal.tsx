@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck } from "lucide-react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
@@ -26,6 +27,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { AppDispatch, RootState } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 import { IUser } from "@/types/auth";
 import { ILiquidationFull } from "@/types/liquidation";
 import { ILocation } from "@/types/location";
@@ -54,6 +57,9 @@ export default function LiquidationFormModal({
   const t = useTranslations("page_liquidations.form");
   const isEditing = !!liquidationToEdit;
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const form = useForm<LiquidationFormValues>({
     resolver: zodResolver(GetLiquidationSchema(t)) as Resolver<
@@ -272,6 +278,16 @@ export default function LiquidationFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+
+          // If the current user is the first-step approver, increment their PENDING task count
+          const isCurrentUserApprover =
+            workflow_assignments[0]?.user_id === currentUser?.id;
+          if (isCurrentUserApprover) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
+            );
+          }
+
           onSuccess(res, method);
           onClose();
         },

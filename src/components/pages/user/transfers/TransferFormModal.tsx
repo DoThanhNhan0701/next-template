@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import {
@@ -33,6 +34,8 @@ import { ITransfer } from "@/types/transfer";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
+import { AppDispatch, RootState } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 
 import { AssetSelectionSection } from "./components/AssetSelectionSection";
 import { SourceInfoSection } from "./components/SourceInfoSection";
@@ -76,6 +79,9 @@ export default function TransferFormModal({
   const t = useTranslations("page_transfers");
   const isEditing = !!transferToEdit;
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const form = useForm<TransferFormValues>({
     resolver: zodResolver(TransferSchema),
@@ -247,6 +253,16 @@ export default function TransferFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+
+          // If the current user is the first-step approver, increment their PENDING task count
+          const isCurrentUserApprover =
+            payload.workflow_assignments[0]?.user_id === currentUser?.id;
+          if (isCurrentUserApprover) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
+            );
+          }
+
           onSuccess(res, method);
           onClose();
         },

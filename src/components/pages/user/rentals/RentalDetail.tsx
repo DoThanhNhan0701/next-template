@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   Building2,
   Calendar,
@@ -40,6 +42,8 @@ import {
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { AppDispatch, RootState } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 import { IRentalFull } from "@/types/rental";
 import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -57,6 +61,10 @@ export default function RentalDetail({ id }: Props) {
   const t = useTranslations("page_rentals");
   const router = useRouter();
   const [showReturnModal, setShowReturnModal] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const {
     response: detail,
@@ -84,6 +92,15 @@ export default function RentalDetail({ id }: Props) {
       getApiErrorMessage(error);
     } else {
       getApiSuccessMessage(res);
+
+      // If the current user is the first-step approver, increment their PENDING task count
+      const assignments = data.workflow_assignments as
+        | Array<{ step_id: number; user_id: number }>
+        | undefined;
+      if (assignments?.[0]?.user_id === currentUser?.id) {
+        dispatch(updateCount({ status: "PENDING", count: counts.PENDING + 1 }));
+      }
+
       setShowReturnModal(false);
       reFetch();
     }

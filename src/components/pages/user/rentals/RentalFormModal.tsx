@@ -51,6 +51,7 @@ import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { AppDispatch, RootState } from "@/redux";
 import { closeRental } from "@/redux/slices/rental";
+import { updateCount } from "@/redux/slices/task";
 import { IUser } from "@/types/auth";
 import { ICustomer } from "@/types/customer";
 import { ILocation } from "@/types/location";
@@ -122,7 +123,10 @@ function RentalItemRow({
           <FieldLabel>{t("form.location")}</FieldLabel>
           <Select
             onValueChange={(val) => {
-              setValue(`items.${index}.from_location_id`, val === "none" ? 0 : Number(val));
+              setValue(
+                `items.${index}.from_location_id`,
+                val === "none" ? 0 : Number(val),
+              );
               setValue(`items.${index}.asset_id`, 0);
             }}
             value={locationId ? locationId.toString() : ""}
@@ -131,10 +135,7 @@ function RentalItemRow({
               <SelectValue placeholder={t("form.placeholder_location")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem
-                value="none"
-                className="text-muted-foreground italic"
-              >
+              <SelectItem value="none" className="text-muted-foreground italic">
                 {t("form.none")}
               </SelectItem>
               {locations.map((loc) => (
@@ -153,7 +154,9 @@ function RentalItemRow({
             <Field className="gap-1">
               <FieldLabel>{t("form.asset")}</FieldLabel>
               <Select
-                onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+                onValueChange={(val) =>
+                  field.onChange(val === "none" ? 0 : Number(val))
+                }
                 value={field.value ? field.value.toString() : ""}
                 disabled={!locationId}
               >
@@ -240,6 +243,8 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.rental);
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const handleClose = () => {
     dispatch(closeRental());
@@ -352,6 +357,16 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+
+          // If the current user is the first-step approver, increment their PENDING task count
+          const isCurrentUserApprover =
+            workflow_assignments[0]?.user_id === currentUser?.id;
+          if (isCurrentUserApprover) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
+            );
+          }
+
           onSuccess();
           handleClose();
         },
@@ -421,7 +436,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       <Field className="gap-1">
                         <FieldLabel>{t("form.organization")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? 0 : Number(val))
+                          }
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
@@ -456,7 +473,9 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
                       <Field className="gap-1">
                         <FieldLabel>{t("form.customer")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? 0 : Number(val))
+                          }
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">

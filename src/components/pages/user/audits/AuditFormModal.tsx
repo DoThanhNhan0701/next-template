@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 
@@ -49,6 +50,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { AppDispatch, RootState } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
@@ -146,6 +149,9 @@ export default function AuditFormModal({
   });
 
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const auditType = useWatch({ control: form.control, name: "audit_type" });
   const selectedUnitIds =
@@ -201,6 +207,14 @@ export default function AuditFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+
+          // If the current user is the assignee, increment their PENDING task count
+          if (data.assignee_id === currentUser?.id) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
+            );
+          }
+
           onSuccess();
           onClose();
         },

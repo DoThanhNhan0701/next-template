@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
@@ -26,6 +27,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { AppDispatch, RootState } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IMaintenance } from "@/types/maintenance";
@@ -55,6 +58,9 @@ export default function MaintenanceFormModal({
   const t = useTranslations("page_maintenance.form");
   const isEditing = !!maintenanceToEdit;
   const { mutate, pending } = useMutation();
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { counts } = useSelector((state: RootState) => state.task);
 
   const form = useForm<MaintenanceFormValues>({
     resolver: zodResolver(GetMaintenanceSchema(t)) as Resolver<MaintenanceFormValues>,
@@ -257,6 +263,16 @@ export default function MaintenanceFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
+
+          // If the current user is the first-step approver, increment their PENDING task count
+          const isCurrentUserApprover =
+            workflow_assignments[0]?.user_id === currentUser?.id;
+          if (isCurrentUserApprover) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
+            );
+          }
+
           onSuccess(res, method);
           onClose();
         },
