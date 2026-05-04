@@ -94,7 +94,8 @@ export default function SystemLogTab({
               <TableCell className="px-4 py-1.5 text-center">
                 {log.document_number ? (
                   <Link
-                    href={log.external_link || "#"}
+
+                    href={"#"}
                     className="inline-flex items-center gap-1.5 text-primary hover:underline font-bold tracking-wide text-sm"
                   >
                     {log.document_number} <ExternalLink className="w-3 h-3" />

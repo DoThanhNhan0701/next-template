@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Calendar,
+  Check,
   CheckCircle2,
   ChevronLeft,
   ClipboardList,
@@ -15,6 +16,7 @@ import {
   MapPin,
   Package,
   User,
+  X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -30,15 +32,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dynamicEndpoints } from "@/config/endpoints";
+import { WorkflowHistory } from "@/components/common/WorkflowHistory";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import {
   IAuditDetailItem,
   IAuditDetailsResponse,
   IAuditSession,
 } from "@/types/audit";
+import { ApprovalHistory, ITask } from "@/types/task";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
 
+import { ApproveAuditModal } from "../my-tasks/components/ApproveAuditModal";
+import { CompleteAuditModal } from "../my-tasks/components/CompleteAuditModal";
+import { RejectAuditModal } from "../my-tasks/components/RejectAuditModal";
 import ViewAuditItemModal from "./ViewAuditItemModal";
 
 interface Props {
@@ -47,13 +57,18 @@ interface Props {
 
 export default function AuditDetail({ id }: Props) {
   const t = useTranslations("page_audits");
+  const tMyTasks = useTranslations("page_my_tasks");
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<IAuditDetailItem | null>(
     null,
   );
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isAuditCompleteModalOpen, setIsAuditCompleteModalOpen] =
+    useState(false);
+  const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
+  const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
-  const { response: session, pending: sessionPending } = useGet<IAuditSession>({
+  const { response: session, pending: sessionPending, reFetch: sessionReFetch } = useGet<IAuditSession>({
     url: dynamicEndpoints.AUDIT_SESSION_DETAIL(Number(id)),
   });
 
@@ -61,6 +76,108 @@ export default function AuditDetail({ id }: Props) {
     useGet<IAuditDetailsResponse>({
       url: dynamicEndpoints.AUDIT_SESSION_DETAILS(Number(id)),
     });
+
+  // Fetch workflow history
+  const { response: historyList, pending: historyPending } = useGet<
+    ApprovalHistory[]
+  >({
+    url: dynamicEndpoints.WORKFLOW_HISTORY("audit", Number(id)),
+  });
+
+  // Check if current user has this audit assigned to them
+  const { response: myAudits } = useGet<IAuditSession[]>(
+    { url: endpoints.AUDIT_MY_AUDITS },
+    { staleTime: 0 },
+  );
+
+  const { mutate, pending: mutatePending } = useMutation();
+
+  // Check if this audit is assigned to current user
+  const isMyAudit = myAudits?.some((audit) => audit.id === Number(id));
+
+  // Debug: Log values to console
+  console.log("🔍 AuditDetail Debug:", {
+    auditId: Number(id),
+    myAudits: myAudits?.map(a => ({ id: a.id, title: a.title, status: a.status_obj?.code })),
+    isMyAudit,
+    sessionStatus: session?.status_obj?.code,
+  });
+
+  const onAuditCompleteConfirm = async () => {
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_COMPLETE(Number(id)),
+        method: "post",
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          setIsAuditCompleteModalOpen(false);
+          sessionReFetch();
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
+      },
+    );
+  };
+
+  const onAuditRejectConfirm = async (reason: string) => {
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_REJECT(Number(id), reason),
+        method: "post",
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          setIsAuditRejectModalOpen(false);
+          sessionReFetch();
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
+      },
+    );
+  };
+
+  const onAuditApproveConfirm = async (comment: string) => {
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_APPROVE(Number(id)),
+        method: "post",
+        body: { comment },
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          setIsAuditApproveModalOpen(false);
+          sessionReFetch();
+        },
+        onError: (error) => {
+          getApiErrorMessage(error);
+        },
+      },
+    );
+  };
+
+  // Create a mock task object for modals
+  const mockTask: ITask | null = isMyAudit && session
+    ? {
+      id: Number(id) + 1000000,
+      instance_id: Number(id),
+      step_id: 0,
+      user_id: session.assignee_id || 0,
+      status: session.status_obj?.code as any,
+      created_at: session.created_at || "",
+      document_id: Number(id),
+      document_record_number: session.title || "",
+      document_type: "audit",
+      requester_name: session.assignee?.full_name || "",
+      step_name: session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+      reason: "",
+    }
+    : null;
 
   if (sessionPending && !session) {
     return (
@@ -81,23 +198,59 @@ export default function AuditDetail({ id }: Props) {
   return (
     <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Back & Header */}
-      <div className="flex items-center gap-3">
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
-          onClick={() => router.back()}
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
-        <div className="flex flex-col gap-0.5">
-          <h1 className="text-lg font-semibold text-foreground">
-            {t("table.audit_batch_title")}
-          </h1>
-          <span className="text-xs text-muted-foreground">
-            {t("detail.inventory_verification")}
-          </span>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded shadow-sm shrink-0 border-border/50 w-8 h-8"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <div className="flex flex-col gap-0.5">
+            <h1 className="text-lg font-semibold text-foreground">
+              {t("table.audit_batch_title")}
+            </h1>
+            <span className="text-xs text-muted-foreground">
+              {t("detail.inventory_verification")}
+            </span>
+          </div>
         </div>
+
+        {/* Action Buttons */}
+        {isMyAudit && ["PENDING", "COMPLETED"].includes(session?.status_obj?.code || "") && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => {
+                if (session?.status_obj?.code === "COMPLETED") {
+                  setIsAuditApproveModalOpen(true);
+                } else {
+                  setIsAuditCompleteModalOpen(true);
+                }
+              }}
+              disabled={mutatePending}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+            >
+              <Check size={16} />
+              {tMyTasks("detail.approval_form.approve")}
+            </Button>
+            {session?.status_obj?.code === "COMPLETED" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAuditRejectModalOpen(true)}
+                disabled={mutatePending}
+                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+              >
+                <X size={16} />
+                {tMyTasks("detail.approval_form.reject")}
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Summary Card */}
@@ -437,6 +590,36 @@ export default function AuditDetail({ id }: Props) {
         item={selectedItem}
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
+      />
+
+      {/* Workflow History */}
+      <WorkflowHistory
+        historyList={historyList}
+        pending={historyPending}
+      />
+
+      <CompleteAuditModal
+        task={mockTask}
+        isOpen={isAuditCompleteModalOpen}
+        onClose={() => setIsAuditCompleteModalOpen(false)}
+        onConfirm={onAuditCompleteConfirm}
+        isSubmitting={mutatePending}
+      />
+
+      <RejectAuditModal
+        task={mockTask}
+        isOpen={isAuditRejectModalOpen}
+        onClose={() => setIsAuditRejectModalOpen(false)}
+        onConfirm={onAuditRejectConfirm}
+        isSubmitting={mutatePending}
+      />
+
+      <ApproveAuditModal
+        task={mockTask}
+        isOpen={isAuditApproveModalOpen}
+        onClose={() => setIsAuditApproveModalOpen(false)}
+        onConfirm={onAuditApproveConfirm}
+        isSubmitting={mutatePending}
       />
     </div>
   );

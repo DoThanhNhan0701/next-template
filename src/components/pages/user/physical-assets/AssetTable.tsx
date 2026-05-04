@@ -402,15 +402,10 @@ export default function AssetTable() {
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1 text-sm">
-                        <div className="flex items-center gap-2 px-2 py-1 bg-secondary/30 rounded-md w-fit">
-                          <MapPin size={12} className="text-primary/70" />
-                          <span className="text-xs font-medium">
-                            {asset.location || t("table.floating")}
-                          </span>
-                        </div>
+
                         {usageMode && (
                           <div className="text-[10px] text-muted-foreground pl-1 flex items-center gap-1">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                            <MapPin size={12} className="text-primary/70" />
                             <span>{usageMode}</span>
                           </div>
                         )}

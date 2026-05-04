@@ -872,7 +872,15 @@
       "approval_history": {
         "title": "Approval history",
         "no_history": "The record is in the initialization stage or has no approval updates yet.",
-        "by": "By"
+        "by": "By",
+        "step": "Step",
+        "approver": "Approver",
+        "status": "Status",
+        "comment": "Comment",
+        "date": "Date",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "pending": "Pending"
       }
     },
     "modals": {

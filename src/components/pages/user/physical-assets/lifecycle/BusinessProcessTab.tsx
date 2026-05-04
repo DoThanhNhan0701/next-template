@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { ILifecycleLog } from "@/types/physical-asset";
 import { formatDateTime } from "@/utils/date";
+import { getDocumentDetailUrl } from "@/utils/document-routes";
 
 export default function BusinessProcessTab({
   history,
@@ -79,7 +80,7 @@ export default function BusinessProcessTab({
               <TableCell className="px-4 py-1.5">
                 {log.document_number ? (
                   <Link
-                    href={log.external_link || "#"}
+                    href={getDocumentDetailUrl(log.action_type, log.ref_id)}
                     className="flex w-fit items-center gap-1.5 text-primary hover:underline font-bold tracking-wide text-sm"
                   >
                     {log.document_number} <ExternalLink className="w-3 h-3" />

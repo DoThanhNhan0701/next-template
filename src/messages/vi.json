@@ -872,7 +872,15 @@
       "approval_history": {
         "title": "Lịch sử",
         "no_history": "Chứng từ đang ở giai đoạn khởi tạo hoặc chưa có cập nhật phê duyệt.",
-        "by": "Bởi"
+        "by": "Bởi",
+        "step": "Bước",
+        "approver": "Người duyệt",
+        "status": "Trạng thái",
+        "comment": "Ghi chú",
+        "date": "Ngày",
+        "approved": "Đã duyệt",
+        "rejected": "Đã từ chối",
+        "pending": "Chờ duyệt"
       }
     },
     "modals": {
@@ -960,7 +968,7 @@
       "actions": "Hành động",
       "no_assets_found": "Chưa có tài sản nào được khai báo",
       "add_first_asset": "Khai báo tài sản đầu tiên của bạn bằng nút phía trên để bắt đầu.",
-      "unassigned": "Chưa giao",
+      "unassigned": "Sẵn dùng",
       "unit": "Đơn vị:",
       "none": "Không có",
       "floating": "Lưu động",
