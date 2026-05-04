@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import {
   Calendar,
   ClipboardList,
   Filter,
+  Mail,
   MapPin,
   RotateCcw,
   Search,
@@ -50,11 +51,11 @@ import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IStatus } from "@/types/status";
 import { RentalReturnDocument } from "@/types/task";
+import { formatDate } from "@/utils/date";
 
 export default function RentalReturnTable() {
   const t = useTranslations("page_rental_returns");
   const tRentals = useTranslations("page_rentals");
-  const tCustomers = useTranslations("page_customers.form");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
@@ -255,15 +256,14 @@ export default function RentalReturnTable() {
                             {rentalReturn.rental.customer.name}
                           </span>
                         </div>
-                        <Badge
-                          variant="outline"
-                          className="w-fit text-[10px] px-1.5 py-0"
-                        >
-                          {rentalReturn.rental.customer.customer_type ===
-                            "individual"
-                            ? tCustomers("type_individual")
-                            : tCustomers("type_organization")}
-                        </Badge>
+                        {rentalReturn.rental.customer.email && (
+                          <div className="flex items-center gap-1.5">
+                            <Mail size={12} className="text-muted-foreground" />
+                            <span className="text-xs">
+                              {rentalReturn.rental.customer.email}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
@@ -289,7 +289,7 @@ export default function RentalReturnTable() {
                           className="text-muted-foreground/60"
                         />
                         <span className="text-xs">
-                          {rentalReturn.return_date?.split("T")[0] || "N/A"}
+                          {formatDate(rentalReturn.return_date)}
                         </span>
                       </div>
                     </TableCell>

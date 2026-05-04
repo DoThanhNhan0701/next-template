@@ -1158,10 +1158,12 @@
     "table": {
       "no": "STT",
       "rental_record": "Chứng từ thuê",
+      "asset": "Tài sản",
       "customer": "Khách hàng",
       "total_assets": "Tổng tài sản",
       "lease_date": "Ngày cho thuê",
       "status": "Trạng thái",
+      "reason": "Lý do",
       "no_rentals_found": "Không tìm thấy phiếu thuê nào",
       "no_rentals_description": "Không có hồ sơ thuê nào khớp với tiêu chí tìm kiếm hoặc lọc của bạn."
     },

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -14,7 +15,6 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -60,7 +60,6 @@ import RentalFormModal from "./RentalFormModal";
 
 export default function RentalsTable() {
   const t = useTranslations("page_rentals");
-  const tCommon = useTranslations("page_customers");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen: rentalReduxOpen } = useSelector(
@@ -254,10 +253,16 @@ export default function RentalsTable() {
                 {t("table.rental_record")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
+                {t("table.asset")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
                 {t("table.customer")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.total_assets")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.reason")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.lease_date")}
@@ -269,10 +274,10 @@ export default function RentalsTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : rentals.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={8}
                 icon={ClipboardList}
                 message={t("table.no_rentals_found")}
                 description={t("table.no_rentals_description")}
@@ -288,35 +293,41 @@ export default function RentalsTable() {
                     {skip + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm">
-                        {rental.record_number}
+                    <span className="font-semibold text-sm">
+                      {rental.record_number}
+                    </span>
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5">
+                    <div className="flex flex-col max-w-[200px]">
+                      <span
+                        className="font-medium text-sm text-foreground/90 group-hover:text-primary transition-colors truncate"
+                        title={rental.asset_name}
+                      >
+                        {rental.asset_name}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
-                        {rental.contract_number}
+                        {rental.asset_code}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col gap-1 text-sm">
-                      <div className="flex items-center gap-2">
-                        <User size={12} className="text-muted-foreground" />
-                        <span className="font-medium text-foreground/80">
-                          {rental.customer_name}
-                        </span>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className="w-fit text-[10px] px-1.5 py-0"
-                      >
-                        {rental.customer_type === "individual"
-                          ? tCommon("form.type_individual")
-                          : tCommon("form.type_organization")}
-                      </Badge>
+                    <div className="flex items-center gap-2 text-sm">
+                      <User size={12} className="text-muted-foreground" />
+                      <span className="font-medium text-foreground/80">
+                        {rental.customer_name}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center font-medium">
                     {rental.total_assets || 0}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5">
+                    <span
+                      className="text-xs text-muted-foreground italic truncate max-w-[200px] block"
+                      title={rental.reason}
+                    >
+                      {rental.reason || "—"}
+                    </span>
                   </TableCell>
                   <TableCell className="px-4 py-1.5">
                     <div className="flex items-center gap-1.5">
@@ -324,7 +335,7 @@ export default function RentalsTable() {
                         size={12}
                         className="text-muted-foreground/60"
                       />
-                      <span className="text-xs">
+                      <span className="text-xs text-muted-foreground">
                         {formatDate(rental.lease_date)}
                       </span>
                     </div>

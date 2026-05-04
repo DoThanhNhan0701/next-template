@@ -1158,10 +1158,12 @@
     "table": {
       "no": "No",
       "rental_record": "Rental record",
+      "asset": "Asset",
       "customer": "Customer",
       "total_assets": "Total assets",
       "lease_date": "Lease date",
       "status": "Status",
+      "reason": "Reason",
       "no_rentals_found": "No rentals found",
       "no_rentals_description": "No rental records match your current search or filter criteria."
     },
