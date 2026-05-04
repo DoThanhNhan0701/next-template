@@ -18,7 +18,7 @@ export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
     process_history?: ILifecycleLog[];
   }>({
     url: dynamicEndpoints.PHYSICAL_ASSET_LIFECYCLE(assetId),
-  });
+  }, { staleTime: 0 });
 
   const processHistory = data?.process_history || [];
   const changeLog = data?.change_log || [];

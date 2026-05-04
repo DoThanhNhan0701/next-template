@@ -309,8 +309,8 @@ export default function AssetTable() {
         </div>
       </div>
 
-      <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-auto rounded-md">
-        <Table className="min-w-[1200px]">
+      <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-auto">
+        <Table className="min-w-300">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-3 w-[50px] text-center">

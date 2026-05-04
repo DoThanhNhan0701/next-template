@@ -301,6 +301,18 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           formatDate(rReturn.return_date),
         );
       }
+
+      // To Location - Vị trí trả về
+      if (rReturn.to_location?.name) {
+        addField(
+          Package,
+          "bg-cyan-500/10 text-cyan-500",
+          tFields("to_location"),
+          rReturn.to_location.name,
+        );
+      }
+
+      // Rental Information
       const leaseRecord = rReturn.rental?.record_number;
       if (leaseRecord) {
         addField(
@@ -310,6 +322,37 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           leaseRecord,
         );
       }
+
+      // Customer from rental
+      if (rReturn.rental?.customer?.name) {
+        addField(
+          User,
+          "bg-primary/10 text-primary",
+          tFields("customer"),
+          rReturn.rental.customer.name,
+        );
+      }
+
+      // Contract number from rental
+      if (rReturn.rental?.contract_number) {
+        addField(
+          FileText,
+          "bg-indigo-500/10 text-indigo-500",
+          tFields("contract_number"),
+          rReturn.rental.contract_number,
+        );
+      }
+
+      // Lease date from rental
+      if (rReturn.rental?.lease_date) {
+        addField(
+          History,
+          "bg-teal-500/10 text-teal-500",
+          tFields("lease_date"),
+          formatDate(rReturn.rental.lease_date),
+        );
+      }
+
       addField(
         FileText,
         "bg-amber-500/10 text-amber-500",
@@ -435,21 +478,21 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         );
       }
 
-        if (maintenance.external_link) {
-          addField(
-            FileText,
-            "bg-cyan-500/10 text-cyan-500",
-            tFields("external_link"),
-            <a
-              href={maintenance.external_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              {tFields("view_link")}
-            </a>,
-          );
-        }
+      if (maintenance.external_link) {
+        addField(
+          FileText,
+          "bg-cyan-500/10 text-cyan-500",
+          tFields("external_link"),
+          <a
+            href={maintenance.external_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            {tFields("view_link")}
+          </a>,
+        );
+      }
 
       if (maintenance.notes) {
         addField(
@@ -490,7 +533,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         "bg-violet-500/10 text-violet-500",
         tFields("type"),
         liquidation.liquidation_type.charAt(0).toUpperCase() +
-          liquidation.liquidation_type.slice(1),
+        liquidation.liquidation_type.slice(1),
       );
       addField(
         Package,
@@ -526,19 +569,19 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         );
       }
       if (liquidation.external_link) {
-          addField(
-            FileText,
-            "bg-cyan-500/10 text-cyan-500",
-            tFields("external_link"),
-            <a
-              href={liquidation.external_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              {tFields("view_link")}
-            </a>,
-          );
+        addField(
+          FileText,
+          "bg-cyan-500/10 text-cyan-500",
+          tFields("external_link"),
+          <a
+            href={liquidation.external_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            {tFields("view_link")}
+          </a>,
+        );
       }
     }
 
@@ -811,7 +854,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
                       </Badge>
                     )}
                     {typeof field.value === "string" ||
-                    typeof field.value === "number" ? (
+                      typeof field.value === "number" ? (
                       <span className="text-sm font-bold text-foreground">
                         {field.value}
                       </span>

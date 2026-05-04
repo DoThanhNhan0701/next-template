@@ -751,6 +751,7 @@
           "total_revenue": "Tổng doanh thu",
           "contract_number": "Số hợp đồng",
           "return_date": "Ngày trả",
+          "to_location": "Vị trí trả về",
           "lease_record": "Chứng từ gốc",
           "transfer_type": "Loại điều chuyển",
           "from": "Từ",

@@ -751,6 +751,7 @@
           "total_revenue": "Total revenue",
           "contract_number": "Contract number",
           "return_date": "Return date",
+          "to_location": "Return location",
           "lease_record": "Lease record",
           "transfer_type": "Transfer type",
           "from": "From",
