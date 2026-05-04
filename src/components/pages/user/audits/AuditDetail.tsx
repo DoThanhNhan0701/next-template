@@ -95,14 +95,6 @@ export default function AuditDetail({ id }: Props) {
   // Check if this audit is assigned to current user
   const isMyAudit = myAudits?.some((audit) => audit.id === Number(id));
 
-  // Debug: Log values to console
-  console.log("🔍 AuditDetail Debug:", {
-    auditId: Number(id),
-    myAudits: myAudits?.map(a => ({ id: a.id, title: a.title, status: a.status_obj?.code })),
-    isMyAudit,
-    sessionStatus: session?.status_obj?.code,
-  });
-
   const onAuditCompleteConfirm = async () => {
     await mutate(
       {
