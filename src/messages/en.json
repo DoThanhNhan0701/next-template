@@ -1699,14 +1699,16 @@
       "save": "Save Result",
       "view_mode": "View Mode",
       "not_assignee_notice": "You are not the assignee for this audit session, so you only have permission to view the details.",
-      "view_mode_notice": "You are viewing the audit results. Any changes (if applicable) must be made through the corresponding audit task."
+      "view_mode_notice": "You are viewing the audit results. Any changes (if applicable) must be made through the corresponding audit task.",
+      "locked_mode_notice": "This audit batch has been completed or is awaiting approval. You can only view the results."
     },
     "detail": {
       "inventory_verification": "Inventory verification",
       "total_items": "Total items",
       "audit_target": "Audit target",
       "audit_progress": "Audit progress",
-      "assets_count": "{verified} / {total} assets"
+      "assets_count": "{verified} / {total} assets",
+      "complete_audit": "Complete audit"
     }
   },
   "page_maintenance": {

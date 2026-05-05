@@ -23,6 +23,7 @@ import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -35,7 +36,6 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
-import { Progress } from "@/components/ui/progress";
 import {
   IAuditDetailItem,
   IAuditDetailsResponse,
@@ -90,10 +90,9 @@ export default function AuditDetail({ id }: Props) {
     url: dynamicEndpoints.WORKFLOW_HISTORY("audit", Number(id)),
   });
 
-  const { response: myAudits } = useGet<IAuditSession[]>(
-    { url: endpoints.AUDIT_MY_AUDITS },
-    { staleTime: 0 },
-  );
+  const { response: myAudits } = useGet<IAuditSession[]>({
+    url: endpoints.AUDIT_MY_AUDITS,
+  });
 
   const totalItems = items?.length || 0;
   const verifiedItems = items?.filter((item) => item.verified_at).length || 0;
@@ -219,38 +218,44 @@ export default function AuditDetail({ id }: Props) {
           </div>
         </div>
 
-        {isMyAudit &&
-          ["PENDING", "COMPLETED"].includes(
-            session?.status_obj?.code || "",
-          ) && (
+          {isMyAudit && (
             <div className="flex items-center gap-2">
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => {
-                  if (session?.status_obj?.code === "COMPLETED") {
-                    setIsAuditApproveModalOpen(true);
-                  } else {
-                    setIsAuditCompleteModalOpen(true);
-                  }
-                }}
-                disabled={mutatePending}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-              >
-                <Check size={16} />
-                {tMyTasks("detail.approval_form.approve")}
-              </Button>
-              {session?.status_obj?.code === "COMPLETED" && (
+              {session?.status_obj?.code === "PENDING" && (
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
-                  onClick={() => setIsAuditRejectModalOpen(true)}
-                  disabled={mutatePending}
-                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                  onClick={() => setIsAuditCompleteModalOpen(true)}
+                  disabled={mutatePending || progressPercentage < 100}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
                 >
-                  <X size={16} />
-                  {tMyTasks("detail.approval_form.reject")}
+                  <Check size={16} />
+                  {t("detail.complete_audit")}
                 </Button>
+              )}
+
+              {session?.status_obj?.code === "COMPLETED" && (
+                <>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => setIsAuditApproveModalOpen(true)}
+                    disabled={mutatePending}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                  >
+                    <Check size={16} />
+                    {tMyTasks("detail.approval_form.approve")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAuditRejectModalOpen(true)}
+                    disabled={mutatePending}
+                    className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                  >
+                    <X size={16} />
+                    {tMyTasks("detail.approval_form.reject")}
+                  </Button>
+                </>
               )}
             </div>
           )}
@@ -549,9 +554,7 @@ export default function AuditDetail({ id }: Props) {
                             </span>
                             <div className="flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded border border-border/40">
                               {item.target_staff && <User size={10} />}
-                              {item.target_location_id && (
-                                <MapPin size={10} />
-                              )}
+                              {item.target_location_id && <MapPin size={10} />}
                               <span className="truncate">
                                 {item.target_staff?.full_name ||
                                   item.target_holder_name ||
@@ -611,8 +614,8 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
                   </TableRow>
-                )))
-              }
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
@@ -625,6 +628,7 @@ export default function AuditDetail({ id }: Props) {
         onClose={() => setIsViewModalOpen(false)}
         assigneeUsername={session?.assignee?.username}
         onRefresh={itemsReFetch}
+        isLocked={session.status_obj?.code !== "PENDING"}
       />
 
       <WorkflowHistory historyList={historyList} pending={historyPending} />

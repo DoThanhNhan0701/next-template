@@ -57,6 +57,7 @@ interface Props {
   onClose: () => void;
   assigneeUsername?: string;
   onRefresh?: () => void;
+  isLocked?: boolean;
 }
 
 export default function ViewAuditItemModal({
@@ -65,6 +66,7 @@ export default function ViewAuditItemModal({
   onClose,
   assigneeUsername,
   onRefresh,
+  isLocked,
 }: Props) {
   const t = useTranslations("page_audits");
   const { user } = usePermissions();
@@ -112,6 +114,7 @@ export default function ViewAuditItemModal({
   const { mutate, pending: isSaving } = useMutation();
 
   const isAssignee = user?.username === assigneeUsername;
+  const canEdit = isAssignee && !isLocked;
 
   if (!item) return null;
 
@@ -264,6 +267,21 @@ export default function ViewAuditItemModal({
               </div>
             </div>
           )}
+          {isLocked && (
+            <div className="bg-emerald-500/5 border border-emerald-500/15 text-emerald-700 dark:text-emerald-300 py-2.5 px-3.5 rounded-xl flex items-center gap-3 transition-all hover:bg-emerald-500/10">
+              <div className="p-1.5 rounded-lg bg-emerald-500/10 shrink-0">
+                <CheckCircle2 className="h-4 w-4" />
+              </div>
+              <div className="flex flex-col gap-0.5 text-left">
+                <span className="text-xs font-bold tracking-tight">
+                  {t("detail_modal.view_mode")}
+                </span>
+                <p className="text-[10px] leading-relaxed opacity-70 font-medium">
+                  {t("detail_modal.locked_mode_notice")}
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -347,7 +365,7 @@ export default function ViewAuditItemModal({
                   <div className="h-1 w-4 bg-primary rounded-full" />
                   {t("detail_modal.condition_notes")}
                 </FieldLabel>
-                {isAssignee ? (
+                {canEdit ? (
                   <Textarea
                     value={localNotes}
                     onChange={(e) => setLocalNotes(e.target.value)}
@@ -379,7 +397,7 @@ export default function ViewAuditItemModal({
                         key={res.code}
                         className={cn(
                           "relative group p-4 rounded-xl border flex flex-col items-center justify-center gap-3 transition-all duration-300",
-                          isAssignee && "cursor-pointer active:scale-95",
+                          canEdit && "cursor-pointer active:scale-95",
                           isSelected
                             ? cn(
                                 res.border,
@@ -390,7 +408,7 @@ export default function ViewAuditItemModal({
                               )
                             : "border-border/30 bg-muted/5 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 hover:bg-muted/10",
                         )}
-                        onClick={() => isAssignee && setLocalStatus(res.code)}
+                        onClick={() => canEdit && setLocalStatus(res.code)}
                       >
                         {isSelected && (
                           <div
@@ -458,13 +476,13 @@ export default function ViewAuditItemModal({
                         key={action.label}
                         className={cn(
                           "p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all duration-300",
-                          isAssignee && "cursor-pointer active:scale-95",
+                          canEdit && "cursor-pointer active:scale-95",
                           isSelected
                             ? "border-primary/40 bg-primary/5 shadow-[0_0_15px_-5px_rgba(var(--primary),0.2)] ring-1 ring-primary/20"
                             : "border-border/30 bg-muted/5 opacity-50 grayscale hover:opacity-100 hover:grayscale-0",
                         )}
                         onClick={() => {
-                          if (isAssignee) {
+                          if (canEdit) {
                             setLocalAction(action.key);
                             setTargetUnitId(null);
                             setTargetStaffId(null);
@@ -529,7 +547,7 @@ export default function ViewAuditItemModal({
                             <MapPin size={12} className="text-primary/50" />
                             {t("detail_modal.receiving_warehouse")}
                           </span>
-                          {isAssignee ? (
+                          {canEdit ? (
                             <Select
                               value={targetLocationId?.toString() || ""}
                               onValueChange={(v) =>
@@ -582,7 +600,7 @@ export default function ViewAuditItemModal({
                               />
                               {t("detail_modal.recipient_unit")}
                             </span>
-                            {isAssignee ? (
+                            {canEdit ? (
                               <Select
                                 value={targetUnitId?.toString() || ""}
                                 onValueChange={(v) => {
@@ -625,7 +643,7 @@ export default function ViewAuditItemModal({
                               <User size={12} className="text-primary/50" />
                               {t("detail_modal.recipient_staff")}
                             </span>
-                            {isAssignee ? (
+                            {canEdit ? (
                               <Select
                                 value={targetStaffId?.toString() || ""}
                                 onValueChange={(v) =>
@@ -695,7 +713,7 @@ export default function ViewAuditItemModal({
             {t("detail_modal.close")}
           </Button>
 
-          {isAssignee && (
+          {canEdit && (
             <Button
               type="button"
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] px-10 shadow-xl shadow-primary/20 h-11 rounded-xl transition-all active:scale-95 disabled:opacity-50"

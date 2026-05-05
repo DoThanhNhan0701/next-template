@@ -1699,14 +1699,16 @@
       "save": "Lưu kết quả",
       "view_mode": "Chế độ xem",
       "not_assignee_notice": "Bạn không phải là người được giao thực hiện đợt kiểm kê này, do đó bạn chỉ có quyền xem chi tiết.",
-      "view_mode_notice": "Bạn đang xem chi tiết kết quả kiểm kê. Mọi thay đổi (nếu có) phải được thực hiện thông qua phiếu kiểm kê tương ứng."
+      "view_mode_notice": "Bạn đang xem chi tiết kết quả kiểm kê. Mọi thay đổi (nếu có) phải được thực hiện thông qua phiếu kiểm kê tương ứng.",
+      "locked_mode_notice": "Đợt kiểm kê này đã hoàn thành hoặc đang đợi duyêt. Bạn chỉ có quyền xem chi tiết kết quả."
     },
     "detail": {
       "inventory_verification": "Xác minh kho",
       "total_items": "Tổng số tài sản",
       "audit_target": "Đối tượng kiểm kê",
       "audit_progress": "Tiến độ kiểm kê",
-      "assets_count": "{verified} / {total} tài sản"
+      "assets_count": "{verified} / {total} tài sản",
+      "complete_audit": "Hoàn thành kiểm kê"
     }
   },
   "page_maintenance": {
