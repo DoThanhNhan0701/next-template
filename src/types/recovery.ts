@@ -45,4 +45,11 @@ export interface IRecoveryFull {
   created_at: string;
   attachments: string[];
   external_link: string | null;
+  staff?: {
+    full_name: string;
+    staff_code: string;
+    id: number;
+    unit?: IOrgUnit;
+  };
+  from_location_obj?: ILocation | null;
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import {
   Building2,
@@ -286,7 +286,11 @@ export default function RecoverySummaryTable() {
                   <TableRow
                     key={recovery.id}
                     className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
-                    onClick={() => router.push(`/allocation-recovery/${recovery.id}?type=recovery`)}
+                    onClick={() =>
+                      router.push(
+                        `/allocation-recovery/${recovery.id}?tab=recovery`,
+                      )
+                    }
                   >
                     <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {skip + index + 1}

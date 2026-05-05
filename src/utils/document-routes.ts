@@ -23,10 +23,10 @@ export const getDocumentDetailUrl = (actionType: string, refId: number): string 
     // Map action types to routes (supports both English and Vietnamese)
     const routeMap: Record<string, string> = {
         // Allocation & Recovery
-        // allocation: `/allocation-recovery?tab=allocation&id=${refId}`,
-        // "cấp phát": `/allocation-recovery?tab=allocation&id=${refId}`,
-        // recovery: `/allocation-recovery?tab=recovery&id=${refId}`,
-        // "thu hồi": `/allocation-recovery?tab=recovery&id=${refId}`,
+        allocation: `/allocation-recovery/${refId}?tab=allocation`,
+        "cấp phát": `/allocation-recovery/${refId}?tab=allocation`,
+        recovery: `/allocation-recovery/${refId}?tab=recovery`,
+        "thu hồi": `/allocation-recovery/${refId}?tab=recovery`,
 
         // Stock In/Out
         "stock in": `/stock-in-out/${refId}`,

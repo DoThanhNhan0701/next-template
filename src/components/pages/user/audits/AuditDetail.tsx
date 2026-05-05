@@ -18,6 +18,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,8 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { AppDispatch, RootState } from "@/redux";
+import { updateCount } from "@/redux/slices/task";
 import {
   IAuditDetailItem,
   IAuditDetailsResponse,
@@ -58,6 +61,8 @@ interface Props {
 export default function AuditDetail({ id }: Props) {
   const t = useTranslations("page_audits");
   const tMyTasks = useTranslations("page_my_tasks");
+  const dispatch = useDispatch<AppDispatch>();
+  const { counts } = useSelector((state: RootState) => state.task);
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<IAuditDetailItem | null>(
     null,
@@ -150,6 +155,9 @@ export default function AuditDetail({ id }: Props) {
       },
       {
         onSuccess: (response) => {
+          dispatch(
+            updateCount({ status: "PENDING", count: counts.PENDING - 1 }),
+          );
           getApiSuccessMessage(response);
           setIsAuditApproveModalOpen(false);
           sessionReFetch();

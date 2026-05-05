@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 
-import { useSearchParams } from "next/navigation";
-
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 
@@ -95,8 +94,13 @@ export default function TaskDetail({ id }: TaskDetailProps) {
       },
       {
         onSuccess: (res) => {
+          const isCompleted =
+            (res as { workflow_status: string }).workflow_status ===
+            "COMPLETED";
           getApiSuccessMessage(res);
-          dispatch(decrementPendingCount());
+          if (isCompleted) {
+            dispatch(decrementPendingCount());
+          }
           reFetchDetail();
           reFetchHistory();
           reFetchMyTasks();

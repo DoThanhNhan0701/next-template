@@ -248,9 +248,26 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
-                  {isAllocation ? allocation.allocated_to_name : recovery.recovered_from_name}
+                  {isAllocation 
+                    ? (allocation.allocated_to_name || allocation.staff?.full_name || "—")
+                    : (recovery.recovered_from_name || recovery.staff?.full_name || "—")
+                  }
                 </span>
               </div>
+
+              {detail.staff?.staff_code && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Info size={15} />
+                    <span className="text-xs font-semibold tracking-wider">
+                      {isAllocation ? "Mã nhân viên nhận" : "Mã nhân viên thu hồi"}
+                    </span>
+                  </div>
+                  <span className="text-sm font-mono text-foreground font-medium">
+                    {detail.staff?.staff_code}
+                  </span>
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -263,6 +280,20 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                   {detail.unit.name}
                 </span>
               </div>
+
+              {!isAllocation && (recovery as IRecoveryFull).from_location_obj && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin size={15} />
+                    <span className="text-xs font-semibold tracking-wider">
+                      Vị trí thu hồi
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">
+                    {(recovery as IRecoveryFull).from_location_obj?.name}
+                  </span>
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">

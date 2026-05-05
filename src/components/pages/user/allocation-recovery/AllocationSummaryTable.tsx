@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import {
   Building2,
@@ -281,7 +281,11 @@ export default function AllocationSummaryTable() {
                   <TableRow
                     key={`${alloc.id}-${index}`}
                     className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
-                    onClick={() => router.push(`/allocation-recovery/${alloc.id}?type=allocation`)}
+                    onClick={() =>
+                      router.push(
+                        `/allocation-recovery/${alloc.id}?tab=allocation`,
+                      )
+                    }
                   >
                     <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                       {skip + index + 1}
