@@ -4,10 +4,9 @@ import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import { REFRESH_TOKEN } from "@/config/constants";
 import { AppDispatch, RootState } from "@/redux";
 import { actionFetchUser } from "@/redux/slices/auth";
-
-import { REFRESH_TOKEN } from "@/config/constants";
 import { getClientCookie } from "@/utils/cookiesStore";
 
 export default function AppBootstrap({
@@ -16,7 +15,9 @@ export default function AppBootstrap({
   children: React.ReactNode;
 }) {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, loading, isInitialized } = useSelector((state: RootState) => state.auth);
+  const { user, loading, isInitialized } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
   useEffect(() => {
     // Only attempt to fetch if we have a refresh token (prevents infinite loop after logout)

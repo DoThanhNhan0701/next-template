@@ -40,7 +40,7 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { AppDispatch, RootState } from "@/redux";
-import { actionSetUser } from "@/redux/slices/auth";
+import { actionFetchUser, actionSetUser } from "@/redux/slices/auth";
 import { IRoleObj } from "@/types/auth";
 import { IRole } from "@/types/rbac";
 
@@ -95,6 +95,8 @@ export default function RoleTable() {
               role_obj: updatedItem as unknown as IRoleObj,
             }),
           );
+        } else {
+          dispatch(actionFetchUser());
         }
         setResponse((prev: IRole[] | null) =>
           prev

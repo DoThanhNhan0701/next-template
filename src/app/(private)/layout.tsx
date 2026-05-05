@@ -143,20 +143,25 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     isInitialized,
   ]);
 
-  const sidebarItems =
-    authLoading || !hasHydrated || !isInitialized
-      ? []
-      : allItems.filter(
-          (item) => !item.permission || hasPermission(item.permission),
-        );
+  const isLayoutLoading = authLoading || !isInitialized || !hasHydrated;
+
+  const sidebarItems = useMemo(
+    () =>
+      isLayoutLoading
+        ? []
+        : allItems.filter(
+            (item) => !item.permission || hasPermission(item.permission),
+          ),
+    [isLayoutLoading, allItems, hasPermission],
+  );
 
   return (
     <AppBootstrap>
       <div className="h-screen flex flex-col overflow-hidden">
-        <Header user={user} items={sidebarItems} loading={authLoading} />
+        <Header user={user} items={sidebarItems} loading={isLayoutLoading} />
         <div className="flex flex-1 overflow-hidden">
           <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
-            <Sidebar items={sidebarItems} loading={authLoading} />
+            <Sidebar items={sidebarItems} loading={isLayoutLoading} />
             <section className="relative flex-1 p-2 overflow-auto">
               {children}
             </section>
