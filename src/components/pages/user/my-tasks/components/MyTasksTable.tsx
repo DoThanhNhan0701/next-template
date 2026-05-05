@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -17,7 +17,6 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { useDispatch } from "react-redux";
 
 import {
   TableEmptyRow,
@@ -29,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -54,8 +54,6 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { cn } from "@/lib/utils";
-import { AppDispatch } from "@/redux";
-import { actionFetchPendingCount, updateCount } from "@/redux/slices/task";
 import { IAuditSession } from "@/types/audit";
 import { ITask, TaskStatus } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -87,12 +85,12 @@ export default function MyTasksTable() {
   const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
   const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
-  const queryParams = new URLSearchParams();
-  // Status filtering based on active tab
-  queryParams.append("status", activeTab);
-  const dispatch = useDispatch<AppDispatch>();
-
-  if (appliedQ) queryParams.append("q", appliedQ);
+  const queryParamsString = useMemo(() => {
+    const params = new URLSearchParams();
+    params.append("status", activeTab);
+    if (appliedQ) params.append("q", appliedQ);
+    return params.toString();
+  }, [activeTab, appliedQ]);
 
   const tTabs = useTranslations("page_my_tasks.tabs");
   const tFilters = useTranslations("page_my_tasks.filters");
@@ -100,7 +98,7 @@ export default function MyTasksTable() {
   const tDocTypes = useTranslations("page_workflow_templates.table.doc_types");
 
   const { response, pending, reFetch } = useGet<ITask[]>(
-    { url: `${endpoints.WORKFLOW_TASKS}me?${queryParams.toString()}` },
+    { url: `${endpoints.WORKFLOW_TASKS}me?${queryParamsString}` },
     { staleTime: 0 },
   );
 
@@ -115,80 +113,94 @@ export default function MyTasksTable() {
 
   const { mutate, pending: mutatePending } = useMutation();
 
-  const tasks = response || [];
+  const tasks = useMemo(() => response || [], [response]);
 
-  const filteredAudits = (auditResponse || []).filter((audit) => {
-    if (activeTab === "PENDING") {
-      return (
-        audit.status_obj.code === "PENDING" ||
-        audit.status_obj.code === "COMPLETED"
-      );
-    }
-    return audit.status_obj.code === activeTab;
-  });
-
-  const mappedAudits: ITask[] = filteredAudits.map((audit) => ({
-    id: audit.id + 1000000, // Offset ID to avoid collisions with workflow tasks
-    instance_id: audit.id,
-    step_id: 0,
-    user_id: audit.assignee_id,
-    status: audit.status_obj.code as TaskStatus,
-    created_at: audit.created_at,
-    document_id: audit.id,
-    document_record_number: audit.title,
-    document_type: "audit",
-    requester_name: audit?.assignee?.full_name || "",
-    step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
-    reason: "",
-  }));
-
-  const allTasks = [...tasks, ...mappedAudits]
-    .filter((task) => {
-      if (
-        selectedProcessType !== "all" &&
-        task.document_type !== selectedProcessType
-      ) {
-        return false;
+  const filteredAudits = useMemo(() => {
+    return (auditResponse || []).filter((audit) => {
+      if (activeTab === "PENDING") {
+        return (
+          audit.status_obj.code === "PENDING" ||
+          audit.status_obj.code === "COMPLETED"
+        );
       }
-      if (!appliedQ) return true;
-      const searchStr = appliedQ.toLowerCase();
-      return (
-        task.document_record_number.toLowerCase().includes(searchStr) ||
-        task.requester_name.toLowerCase().includes(searchStr) ||
-        task.step_name.toLowerCase().includes(searchStr)
+      return audit.status_obj.code === activeTab;
+    });
+  }, [auditResponse, activeTab]);
+
+  const mappedAudits: ITask[] = useMemo(() => {
+    return filteredAudits.map((audit) => ({
+      id: audit.id + 1000000,
+      instance_id: audit.id,
+      step_id: 0,
+      user_id: audit.assignee_id,
+      status: audit.status_obj.code as TaskStatus,
+      created_at: audit.created_at,
+      document_id: audit.id,
+      document_record_number: audit.title,
+      document_type: "audit",
+      requester_name: audit?.assignee?.full_name || "",
+      step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+      reason: "",
+    }));
+  }, [filteredAudits]);
+
+  const allTasks = useMemo(() => {
+    return [...tasks, ...mappedAudits]
+      .filter((task) => {
+        if (
+          selectedProcessType !== "all" &&
+          task.document_type !== selectedProcessType
+        ) {
+          return false;
+        }
+        if (!appliedQ) return true;
+        const searchStr = appliedQ.toLowerCase();
+        return (
+          task.document_record_number.toLowerCase().includes(searchStr) ||
+          task.requester_name.toLowerCase().includes(searchStr) ||
+          task.step_name.toLowerCase().includes(searchStr)
+        );
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
-    })
-    .sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    );
+  }, [tasks, mappedAudits, selectedProcessType, appliedQ]);
 
   const totalPages = Math.ceil(allTasks.length / 20);
-  const paginatedTasks = allTasks.slice(
-    (localCurrentPage - 1) * 20,
-    localCurrentPage * 20,
-  );
+  const paginatedTasks = useMemo(() => {
+    return allTasks.slice((localCurrentPage - 1) * 20, localCurrentPage * 20);
+  }, [allTasks, localCurrentPage]);
   const isPending = pending || auditPending;
 
-  // Sync current tab count to Redux
-  useEffect(() => {
-    if (response) {
-      dispatch(
-        updateCount({
-          status: activeTab,
-          count: response.length + (filteredAudits?.length || 0),
-        }),
-      );
-    }
-  }, [response, filteredAudits, activeTab, dispatch]);
+  const pageNumbers = useMemo(() => {
+    const pages: (number | string)[] = [];
+    const showSearch = 1;
 
-  // If we are on a non-pending tab, we still need to fetch the pending count
-  // because layout no longer fetches it when on /my-tasks
-  useEffect(() => {
-    if (activeTab !== "PENDING") {
-      dispatch(actionFetchPendingCount());
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+
+      if (localCurrentPage > showSearch + 2) {
+        pages.push("ellipsis-1");
+      }
+
+      const start = Math.max(2, localCurrentPage - showSearch);
+      const end = Math.min(totalPages - 1, localCurrentPage + showSearch);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (localCurrentPage < totalPages - (showSearch + 1)) {
+        pages.push("ellipsis-2");
+      }
+
+      pages.push(totalPages);
     }
-  }, [activeTab, dispatch]);
+    return pages;
+  }, [totalPages, localCurrentPage]);
 
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {
@@ -210,7 +222,7 @@ export default function MyTasksTable() {
     return <Check size={14} className="text-emerald-500" />;
   };
 
-  const handleApprove = (task: ITask) => {
+  const handleApprove = useCallback((task: ITask) => {
     setSelectedTask(task);
     if (task.document_type === "audit") {
       if (task.status === "COMPLETED") {
@@ -221,7 +233,7 @@ export default function MyTasksTable() {
     } else {
       setIsApproveModalOpen(true);
     }
-  };
+  }, []);
 
   const onAuditApproveConfirm = async (comment: string) => {
     if (!selectedTask) return;
@@ -291,14 +303,14 @@ export default function MyTasksTable() {
     );
   };
 
-  const handleReject = (task: ITask) => {
+  const handleReject = useCallback((task: ITask) => {
     setSelectedTask(task);
     if (task.document_type === "audit") {
       setIsAuditRejectModalOpen(true);
     } else {
       setIsRejectModalOpen(true);
     }
-  };
+  }, []);
 
   const onAuditRejectConfirm = async (reason: string) => {
     if (!selectedTask) return;
@@ -666,18 +678,22 @@ export default function MyTasksTable() {
                 }
               />
             </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, i) => (
+            {pageNumbers.map((page, i) => (
               <PaginationItem key={i}>
-                <PaginationLink
-                  href="#"
-                  isActive={localCurrentPage === i + 1}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setLocalCurrentPage(i + 1);
-                  }}
-                >
-                  {i + 1}
-                </PaginationLink>
+                {typeof page === "number" ? (
+                  <PaginationLink
+                    href="#"
+                    isActive={localCurrentPage === page}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setLocalCurrentPage(page);
+                    }}
+                  >
+                    {page}
+                  </PaginationLink>
+                ) : (
+                  <PaginationEllipsis />
+                )}
               </PaginationItem>
             ))}
             <PaginationItem>
