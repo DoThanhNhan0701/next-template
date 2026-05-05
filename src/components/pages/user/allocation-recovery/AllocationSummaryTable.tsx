@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { useTranslations } from "next-intl";
 
@@ -57,6 +58,7 @@ import AllocationVoucherModal from "./AllocationVoucherModal";
 
 export default function AllocationSummaryTable() {
   const t = useTranslations("page_allocation_recovery");
+  const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -278,7 +280,8 @@ export default function AllocationSummaryTable() {
                 return (
                   <TableRow
                     key={`${alloc.id}-${index}`}
-                    className="group hover:bg-primary/3 transition-colors relative"
+                    className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                    onClick={() => router.push(`/allocation-recovery/${alloc.id}?type=allocation`)}
                   >
                     <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                       {skip + index + 1}

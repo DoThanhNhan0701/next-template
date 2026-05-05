@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { useTranslations } from "next-intl";
 
@@ -57,6 +58,7 @@ import RecoveryVoucherModal from "./RecoveryVoucherModal";
 
 export default function RecoverySummaryTable() {
   const t = useTranslations("page_allocation_recovery");
+  const router = useRouter();
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
 
@@ -283,7 +285,8 @@ export default function RecoverySummaryTable() {
                 return (
                   <TableRow
                     key={recovery.id}
-                    className="group hover:bg-primary/3 transition-colors relative"
+                    className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
+                    onClick={() => router.push(`/allocation-recovery/${recovery.id}?type=recovery`)}
                   >
                     <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {skip + index + 1}
