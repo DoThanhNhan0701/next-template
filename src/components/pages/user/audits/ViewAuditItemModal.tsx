@@ -189,7 +189,7 @@ export default function ViewAuditItemModal({
     },
     {
       code: "UNEXPECTED",
-      aliasCodes: ["MISMATCHED", "EXTRA", "COMPLETED", "PENDING", "UNEXPECTED"],
+      aliasCodes: [],
       label: t("results.unknown"),
       sub: t("results.unknown_sub"),
       icon: HelpCircle,

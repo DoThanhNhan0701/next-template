@@ -218,47 +218,47 @@ export default function AuditDetail({ id }: Props) {
           </div>
         </div>
 
-          {isMyAudit && (
-            <div className="flex items-center gap-2">
-              {session?.status_obj?.code === "PENDING" && (
+        {isMyAudit && (
+          <div className="flex items-center gap-2">
+            {session?.status_obj?.code === "PENDING" && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsAuditCompleteModalOpen(true)}
+                disabled={mutatePending || progressPercentage < 100}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+              >
+                <Check size={16} />
+                {t("detail.complete_audit")}
+              </Button>
+            )}
+
+            {session?.status_obj?.code === "COMPLETED" && (
+              <>
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={() => setIsAuditCompleteModalOpen(true)}
-                  disabled={mutatePending || progressPercentage < 100}
+                  onClick={() => setIsAuditApproveModalOpen(true)}
+                  disabled={mutatePending}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
                 >
                   <Check size={16} />
-                  {t("detail.complete_audit")}
+                  {tMyTasks("detail.approval_form.approve")}
                 </Button>
-              )}
-
-              {session?.status_obj?.code === "COMPLETED" && (
-                <>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => setIsAuditApproveModalOpen(true)}
-                    disabled={mutatePending}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-                  >
-                    <Check size={16} />
-                    {tMyTasks("detail.approval_form.approve")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsAuditRejectModalOpen(true)}
-                    disabled={mutatePending}
-                    className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-                  >
-                    <X size={16} />
-                    {tMyTasks("detail.approval_form.reject")}
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAuditRejectModalOpen(true)}
+                  disabled={mutatePending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                >
+                  <X size={16} />
+                  {tMyTasks("detail.approval_form.reject")}
+                </Button>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">
