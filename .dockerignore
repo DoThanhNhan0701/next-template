@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+.env.local
+README.md
+.vscode
+.editorconfig
+tsconfig.tsbuildinfo

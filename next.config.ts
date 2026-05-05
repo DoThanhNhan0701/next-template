@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.2.21.177"],
+  output: "standalone",
   images: {
     remotePatterns: [
       {

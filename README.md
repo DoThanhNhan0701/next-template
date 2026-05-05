@@ -455,6 +455,47 @@ pnpm lint             # Chạy ESLint
 
 ---
 
+## 🐳 Docker Deployment
+
+Hệ thống hỗ trợ đóng gói và triển khai bằng Docker để đảm bảo môi trường đồng nhất.
+
+### 1. Build và Chạy với Docker Compose
+
+Đây là cách đơn giản nhất để chạy ứng dụng trong môi trường production locally hoặc trên server:
+
+```bash
+# Build và chạy container ở chế độ background
+docker compose up -d --build
+```
+
+Sau khi chạy, ứng dụng sẽ có sẵn tại: [http://localhost:3003](http://localhost:3003)
+
+### 2. Cập nhật Code (Update Code)
+
+Khi bạn có thay đổi code mới và muốn cập nhật ứng dụng đang chạy trong Docker, hãy chạy lệnh sau:
+
+```bash
+# Tự động build lại image mới và khởi động lại container
+docker compose up -d --build
+```
+
+Lệnh `--build` sẽ quét các thay đổi trong source code của bạn và xây dựng lại các lớp (layers) cần thiết trong Docker image trước khi khởi động lại dịch vụ.
+
+### 3. Các lệnh Docker hữu ích
+
+```bash
+# Xem logs của ứng dụng
+docker compose logs -f
+
+# Dừng ứng dụng
+docker compose down
+
+# Kiểm tra trạng thái container
+docker compose ps
+```
+
+---
+
 ## ⚙️ Cấu Hình
 
 ### Environment Variables
