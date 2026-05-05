@@ -52,7 +52,11 @@ axiosInstance.interceptors.response.use(
     const { config, response } = error;
 
     // Handle 401 Unauthorized errors
-    if (response?.status === 401 && config?.url !== endpoints.REFRESH) {
+    if (
+      response?.status === 401 &&
+      config?.url !== endpoints.REFRESH &&
+      config?.url !== endpoints.LOGIN
+    ) {
       const refreshToken = getClientCookie(REFRESH_TOKEN);
 
       if (!refreshToken) {
