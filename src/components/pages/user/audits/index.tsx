@@ -1,17 +1,34 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import AllAuditsTable from "./AllAuditsTable";
 import MyAuditsTable from "./MyAuditsTable";
 
 export default function AuditsPage() {
   const t = useTranslations("page_audits");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentTab = searchParams.get("tab") || "my-audits";
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", value);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <div className="h-full flex flex-col gap-3">
-      <Tabs defaultValue="my-audits" className="flex-1 flex flex-col min-h-0">
+      <Tabs
+        value={currentTab}
+        onValueChange={handleTabChange}
+        className="flex-1 flex flex-col min-h-0"
+      >
         <TabsList className="w-fit bg-card/60 backdrop-blur-md p-1 rounded-md border border-border/50 h-auto">
           <TabsTrigger
             value="my-audits"

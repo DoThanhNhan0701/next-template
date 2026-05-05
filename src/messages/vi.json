@@ -1704,7 +1704,9 @@
     "detail": {
       "inventory_verification": "Xác minh kho",
       "total_items": "Tổng số tài sản",
-      "audit_target": "Đối tượng kiểm kê"
+      "audit_target": "Đối tượng kiểm kê",
+      "audit_progress": "Tiến độ kiểm kê",
+      "assets_count": "{verified} / {total} tài sản"
     }
   },
   "page_maintenance": {

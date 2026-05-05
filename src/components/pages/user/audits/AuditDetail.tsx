@@ -35,6 +35,7 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { Progress } from "@/components/ui/progress";
 import {
   IAuditDetailItem,
   IAuditDetailsResponse,
@@ -93,6 +94,11 @@ export default function AuditDetail({ id }: Props) {
     { url: endpoints.AUDIT_MY_AUDITS },
     { staleTime: 0 },
   );
+
+  const totalItems = items?.length || 0;
+  const verifiedItems = items?.filter((item) => item.verified_at).length || 0;
+  const progressPercentage =
+    totalItems > 0 ? (verifiedItems / totalItems) * 100 : 0;
 
   const { mutate, pending: mutatePending } = useMutation();
 
@@ -318,6 +324,26 @@ export default function AuditDetail({ id }: Props) {
             </div>
           </div>
         </CardContent>
+      </Card>
+
+      <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative p-4">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-foreground">
+              {t("detail.audit_progress")}
+            </span>
+            <span className="text-sm font-bold text-primary">
+              {Math.round(progressPercentage)}%
+            </span>
+          </div>
+          <Progress value={progressPercentage} className="h-2 bg-muted/50" />
+          <span className="text-xs text-muted-foreground">
+            {t("detail.assets_count", {
+              verified: verifiedItems,
+              total: totalItems,
+            })}
+          </span>
+        </div>
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">

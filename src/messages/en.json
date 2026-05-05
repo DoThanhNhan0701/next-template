@@ -1704,7 +1704,9 @@
     "detail": {
       "inventory_verification": "Inventory verification",
       "total_items": "Total items",
-      "audit_target": "Audit target"
+      "audit_target": "Audit target",
+      "audit_progress": "Audit progress",
+      "assets_count": "{verified} / {total} assets"
     }
   },
   "page_maintenance": {
