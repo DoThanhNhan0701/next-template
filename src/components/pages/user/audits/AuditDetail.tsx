@@ -13,7 +13,6 @@ import {
   ChevronLeft,
   ClipboardList,
   Clock,
-  Info,
   MapPin,
   Package,
   User,
@@ -321,311 +320,277 @@ export default function AuditDetail({ id }: Props) {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
-        <div className="lg:col-span-2">
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col min-h-[400px]">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
-              <Package className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("table.audited_assets")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 flex-1 overflow-auto">
-              <Table className="whitespace-nowrap">
-                <TableHeader className="bg-sidebar-accent border-b border-border/50">
-                  <TableRow>
-                    <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      {t("table.no")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("table.asset")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("table.current_state")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      {t("table.audit_result")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("table.action_target")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("table.notes")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("table.verified")}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {itemsPending ? (
-                    Array.from({ length: 5 }).map((_, i) => (
-                      <TableRow key={i}>
-                        <TableCell colSpan={6} className="p-3">
-                          <Skeleton className="h-10 w-full" />
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : !items || items.length === 0 ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={6}
-                        className="h-40 text-center text-muted-foreground italic"
-                      >
-                        {t("table.no_items_found")}
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    items.map((item: IAuditDetailItem, index) => (
-                      <TableRow
-                        key={item.id}
-                        className="border-border/50 hover:bg-muted/30 group cursor-pointer"
-                        onClick={() => {
-                          setSelectedItem(item);
-                          setIsViewModalOpen(true);
-                        }}
-                      >
-                        <TableCell className="px-4 py-3 text-center text-muted-foreground">
-                          {index + 1}
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                              {item.asset.name}
-                            </span>
-                            <code className="text-[10px] font-mono bg-muted/80 px-1.5 py-0.5 rounded w-fit text-muted-foreground">
-                              {item.asset.asset_code}
-                            </code>
-                          </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3">
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-1.5 text-xs">
-                              <User
-                                size={12}
-                                className="text-muted-foreground opacity-70"
-                              />
-                              <span className="font-medium text-foreground/80">
-                                {item.asset.holder_name || "N/A"}
-                              </span>
-                            </div>
-                            <Badge
-                              variant="outline"
-                              className="w-fit text-[9px] px-1.5 py-0 rounded-sm font-medium"
-                              style={{
-                                backgroundColor: `${item.asset.status_obj?.color}10`,
-                                color: item.asset.status_obj?.color,
-                                borderColor: `${item.asset.status_obj?.color}30`,
-                              }}
-                            >
-                              {item.asset.status_obj?.name}
-                            </Badge>
-                          </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3 text-center">
-                          <Badge
-                            variant="outline"
-                            className="px-2.5 py-0.5 text-[10px] font-bold rounded-full shadow-sm"
-                            style={{
-                              backgroundColor: `${item.status_obj?.color}18`,
-                              color: item.status_obj?.color,
-                              borderColor: `${item.status_obj?.color}40`,
-                            }}
-                          >
-                            {item.status_obj?.code === "MATCHED" && (
-                              <CheckCircle2 size={10} className="mr-1" />
-                            )}
-                            {item.status_obj?.name}
-                          </Badge>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3">
-                          <div className="flex flex-col gap-1 max-w-[180px]">
-                            {item.proposed_action ? (
-                              <>
-                                <span className="text-[10px] font-bold text-amber-500 tracking-tight">
-                                  {item.proposed_action}
-                                </span>
-                                <div className="flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded border border-border/40">
-                                  {item.target_staff && <User size={10} />}
-                                  {item.target_location_id && (
-                                    <MapPin size={10} />
-                                  )}
-                                  <span className="truncate">
-                                    {item.target_staff?.full_name ||
-                                      item.target_holder_name ||
-                                      t("table.system_update")}
-                                  </span>
-                                  {(item.transfer_quantity !== null ||
-                                    item.unit_quantity !== null) && (
-                                    <span className="ml-auto font-bold text-primary">
-                                      {t("table.quantity", {
-                                        value:
-                                          item.transfer_quantity ??
-                                          item.unit_quantity,
-                                      })}
-                                    </span>
-                                  )}
-                                </div>
-                              </>
-                            ) : (
-                              <span className="text-[11px] text-muted-foreground italic">
-                                {t("table.no_action_required")}
-                              </span>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3 min-w-[150px]">
-                          <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80 leading-relaxed italic line-clamp-2 hover:line-clamp-none transition-all">
-                            {item.notes ? (
-                              <span>{item.notes}</span>
-                            ) : (
-                              <span className="opacity-40">—</span>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3 min-w-[120px]">
-                          <div className="flex flex-col text-[10px] items-end justify-center gap-1">
-                            {item.verified_at ? (
-                              <>
-                                <div className="flex flex-col items-end">
-                                  <span className="font-bold text-foreground/70">
-                                    {formatDate(item.verified_at)}
-                                  </span>
-                                  <span className="text-muted-foreground font-mono opacity-60">
-                                    {formatDate(item.verified_at, "HH:mm")}
-                                  </span>
-                                </div>
-                                <span className="text-primary font-black uppercase text-[9px] tracking-wider">
-                                  {t("table.edit")}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="text-primary font-black uppercase text-[9px] tracking-wider group-hover:underline underline-offset-4 decoration-primary/30 transition-all">
-                                {t("table.inventory")}
-                              </span>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-              <Info className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("table.audit_information")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <User size={15} className="shrink-0" />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("table.assignee")}
-                  </span>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-sm font-semibold text-foreground">
-                    {session.assignee?.full_name}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground font-mono">
-                    @{session.assignee?.username}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar size={15} className="shrink-0" />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("table.due_date")}
-                  </span>
-                </div>
-                <span className="text-sm font-bold text-red-500/80">
-                  {formatDate(session.due_date)}
-                </span>
-              </div>
-              <div className="pt-2 border-t border-border/50">
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                    {session.audit_type === "unit" ? (
-                      <Building2 size={15} />
-                    ) : (
-                      <MapPin size={15} />
-                    )}
-                    <span className="text-xs font-semibold tracking-wider">
-                      {t("detail.audit_target")}
-                    </span>
-                  </div>
-                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
-                    <span className="text-xs text-muted-foreground block mb-0.5">
-                      {session.audit_type === "unit"
-                        ? t("filters.organization")
-                        : t("filters.location")}
-                    </span>
-                    <span className="text-sm font-bold text-foreground">
-                      {session.audit_type === "unit"
-                        ? session.unit_obj?.name
-                        : session.location_obj?.name}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-border/50 flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider mb-1">
-                  {t("audit_creator")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground border">
-                    {session.assignee?.full_name?.charAt(0) || "U"}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground">
-                      {session.assignee?.full_name}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      {formatDate(session.created_at)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="p-3 rounded-xl bg-muted/30 border border-border/50">
-            <div className="flex items-start gap-3">
-              {isCompleted ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />
-              ) : (
-                <Clock className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
-              )}
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-bold tracking-tight">
-                  {t("table.status_note")}
-                </span>
-                <p className="text-[11px] text-muted-foreground leading-relaxed italic">
-                  {isCompleted
-                    ? t("table.finalized_note")
-                    : t("table.active_note")}
-                </p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
+          <CardContent className="p-3 flex items-center gap-3 h-full">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <User size={20} className="text-primary" />
             </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
+                {t("table.assignee")}
+              </span>
+              <span className="text-sm font-bold text-foreground truncate">
+                {session.assignee?.full_name}
+              </span>
+              <span className="text-[10px] text-muted-foreground font-mono opacity-60 truncate">
+                @{session.assignee?.username}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
+          <CardContent className="p-3 flex items-center gap-3 h-full">
+            <div className="h-10 w-10 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
+              <Calendar size={20} className="text-red-500" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
+                {t("table.due_date")}
+              </span>
+              <span className="text-sm font-black text-red-500/80">
+                {formatDate(session.due_date)}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
+          <CardContent className="p-3 flex items-center gap-3 h-full">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              {session.audit_type === "unit" ? (
+                <Building2 size={20} className="text-primary" />
+              ) : (
+                <MapPin size={20} className="text-primary" />
+              )}
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
+                {t("detail.audit_target")}
+              </span>
+              <span className="text-sm font-bold text-foreground truncate">
+                {session.audit_type === "unit"
+                  ? session.unit_obj?.name
+                  : session.location_obj?.name}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="rounded-xl bg-muted/30 border border-border/50 p-3 h-full flex items-center gap-3">
+          {isCompleted ? (
+            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+          ) : (
+            <Clock className="w-5 h-5 text-amber-500 shrink-0" />
+          )}
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[10px] font-black uppercase tracking-wider text-foreground/70">
+              {t("table.status_note")}
+            </span>
+            <p className="text-[11px] text-muted-foreground leading-snug italic line-clamp-2">
+              {isCompleted ? t("table.finalized_note") : t("table.active_note")}
+            </p>
           </div>
         </div>
       </div>
+
+      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md flex flex-col h-full min-h-[400px]">
+        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
+          <Package className="w-4 h-4 text-primary" />
+          <CardTitle className="text-sm font-semibold text-primary">
+            {t("table.audited_assets")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 flex-1 overflow-auto">
+          <Table className="whitespace-nowrap">
+            <TableHeader className="bg-sidebar-accent border-b border-border/50">
+              <TableRow>
+                <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+                  {t("table.no")}
+                </TableHead>
+                <TableHead className="px-4 h-10 text-xs font-semibold">
+                  {t("table.asset")}
+                </TableHead>
+                <TableHead className="px-4 h-10 text-xs font-semibold">
+                  {t("table.current_state")}
+                </TableHead>
+                <TableHead className="px-4 h-10 text-xs font-semibold text-center">
+                  {t("table.audit_result")}
+                </TableHead>
+                <TableHead className="px-4 h-10 text-xs font-semibold">
+                  {t("table.action_target")}
+                </TableHead>
+                <TableHead className="px-4 h-10 text-xs font-semibold">
+                  {t("table.notes")}
+                </TableHead>
+                <TableHead className="px-4 h-10 text-xs font-semibold">
+                  {t("table.verified")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {itemsPending ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell colSpan={7} className="p-3">
+                      <Skeleton className="h-10 w-full" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : !items || items.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="h-40 text-center text-muted-foreground italic"
+                  >
+                    {t("table.no_items_found")}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                items.map((item: IAuditDetailItem, index) => (
+                  <TableRow
+                    key={item.id}
+                    className="border-border/50 hover:bg-muted/30 group cursor-pointer"
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setIsViewModalOpen(true);
+                    }}
+                  >
+                    <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                      {index + 1}
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {item.asset.name}
+                        </span>
+                        <code className="text-[10px] font-mono bg-muted/80 px-1.5 py-0.5 rounded w-fit text-muted-foreground">
+                          {item.asset.asset_code}
+                        </code>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-xs">
+                          <User
+                            size={12}
+                            className="text-muted-foreground opacity-70"
+                          />
+                          <span className="font-medium text-foreground/80">
+                            {item.asset.holder_name || "N/A"}
+                          </span>
+                        </div>
+                        <Badge
+                          variant="outline"
+                          className="w-fit text-[9px] px-1.5 py-0 rounded-sm font-medium"
+                          style={{
+                            backgroundColor: `${item.asset.status_obj?.color}10`,
+                            color: item.asset.status_obj?.color,
+                            borderColor: `${item.asset.status_obj?.color}30`,
+                          }}
+                        >
+                          {item.asset.status_obj?.name}
+                        </Badge>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3 text-center">
+                      <Badge
+                        variant="outline"
+                        className="px-2.5 py-0.5 text-[10px] font-bold rounded-full shadow-sm"
+                        style={{
+                          backgroundColor: `${item.status_obj?.color}18`,
+                          color: item.status_obj?.color,
+                          borderColor: `${item.status_obj?.color}40`,
+                        }}
+                      >
+                        {item.status_obj?.code === "MATCHED" && (
+                          <CheckCircle2 size={10} className="mr-1" />
+                        )}
+                        {item.status_obj?.name}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3">
+                      <div className="flex flex-col gap-1 max-w-[180px]">
+                        {item.proposed_action ? (
+                          <>
+                            <span className="text-[10px] font-bold text-amber-500 tracking-tight">
+                              {item.proposed_action}
+                            </span>
+                            <div className="flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded border border-border/40">
+                              {item.target_staff && <User size={10} />}
+                              {item.target_location_id && (
+                                <MapPin size={10} />
+                              )}
+                              <span className="truncate">
+                                {item.target_staff?.full_name ||
+                                  item.target_holder_name ||
+                                  t("table.system_update")}
+                              </span>
+                              {(item.transfer_quantity !== null ||
+                                item.unit_quantity !== null) && (
+                                <span className="ml-auto font-bold text-primary">
+                                  {t("table.quantity", {
+                                    value:
+                                      item.transfer_quantity ??
+                                      item.unit_quantity,
+                                  })}
+                                </span>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <span className="text-[11px] text-muted-foreground italic">
+                            {t("table.no_action_required")}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3 min-w-[150px]">
+                      <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80 leading-relaxed italic line-clamp-2 hover:line-clamp-none transition-all">
+                        {item.notes ? (
+                          <span>{item.notes}</span>
+                        ) : (
+                          <span className="opacity-40">—</span>
+                        )}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3 min-w-[120px]">
+                      <div className="flex flex-col text-[10px] items-end justify-center gap-1">
+                        {item.verified_at ? (
+                          <>
+                            <div className="flex flex-col items-end">
+                              <span className="font-bold text-foreground/70">
+                                {formatDate(item.verified_at)}
+                              </span>
+                              <span className="text-muted-foreground font-mono opacity-60">
+                                {formatDate(item.verified_at, "HH:mm")}
+                              </span>
+                            </div>
+                            <span className="text-primary font-black uppercase text-[9px] tracking-wider">
+                              {t("table.edit")}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-primary font-black uppercase text-[9px] tracking-wider group-hover:underline underline-offset-4 decoration-primary/30 transition-all">
+                            {t("table.inventory")}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )))
+              }
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       <ViewAuditItemModal
         key={`${selectedItem?.id}-${isViewModalOpen}`}
