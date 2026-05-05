@@ -15,6 +15,18 @@ const nextConfig: NextConfig = {
         port: "8002",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "asset-api.aiminds.io.vn",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "asset.aiminds.io.vn",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

@@ -2,7 +2,15 @@ import { useEffect } from "react";
 
 export const useFaviconBadge = (count: number, trigger?: unknown) => {
   useEffect(() => {
-    const originalFaviconUrl = "/favicon.ico";
+    const getOriginalFaviconUrl = () => {
+      const existingFavicon = document.querySelector('link[rel*="icon"]') as HTMLLinkElement;
+      if (existingFavicon?.href && !existingFavicon.href.startsWith("data:")) {
+        return existingFavicon.href;
+      }
+      return "/icon.png"; // Default to our new premium icon
+    };
+
+    const originalFaviconUrl = getOriginalFaviconUrl();
 
     const resetFavicon = () => {
       const badgeLink = document.getElementById("favicon-badge");
@@ -68,32 +76,37 @@ export const useFaviconBadge = (count: number, trigger?: unknown) => {
 
       // Draw Badge Background
       ctx.beginPath();
-      ctx.arc(21, 21, 11, 0, 2 * Math.PI);
+      ctx.arc(22, 22, 10, 0, 2 * Math.PI);
       ctx.fillStyle = "#ef4444";
       ctx.fill();
 
       // Draw Badge Border
       ctx.strokeStyle = "white";
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 2;
       ctx.stroke();
 
       // Draw Badge Text
       ctx.fillStyle = "white";
-      ctx.font = "bold 18px Arial";
+      ctx.font = "bold 14px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       const text = count > 9 ? "9+" : count.toString();
-      ctx.fillText(text, 21, 21);
+      ctx.fillText(text, 22, 22);
 
       updateFavicon(canvas.toDataURL("image/png"));
     };
 
     img.onerror = () => {
+      // If image fails, don't fill the whole canvas with red.
+      // Just draw a small badge in the corner of a transparent canvas
+      // or just update the title (which we already did).
       ctx.clearRect(0, 0, 32, 32);
+      ctx.beginPath();
+      ctx.arc(16, 16, 14, 0, 2 * Math.PI);
       ctx.fillStyle = "#ef4444";
-      ctx.fillRect(0, 0, 32, 32);
+      ctx.fill();
       ctx.fillStyle = "white";
-      ctx.font = "bold 20px Arial";
+      ctx.font = "bold 18px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(count > 9 ? "9+" : count.toString(), 16, 16);
