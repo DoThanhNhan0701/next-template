@@ -106,4 +106,5 @@ export const dynamicEndpoints = {
     return map[documentType] ?? `/api/v1/allocations/${id}`;
   },
   UPLOAD_ATTACHMENTS: (documentType: string, id: number) => `/api/v1/${documentType}/${id}/attachments`,
+  AUDIT_DETAIL_UPDATE: (id: number) => `/api/v1/audit/details/${id}`,
 };

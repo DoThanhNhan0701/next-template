@@ -1617,7 +1617,9 @@
       "active_note": "Đợt kiểm kê này đang hoạt động. Tiến độ xác minh đang được theo dõi.",
       "no_action_required": "Không yêu cầu xử lý",
       "system_update": "Cập nhật hệ thống",
-      "quantity": "Số lượng: {value}"
+      "quantity": "Số lượng: {value}",
+      "inventory": "Kiểm kê",
+      "edit": "Sửa"
     },
     "filters": {
       "search_placeholder": "e.g. AUD2024, Nguyễn Văn A",
@@ -1668,10 +1670,10 @@
       "recall": "Thu hồi",
       "recall_sub": "Thu hồi về kho"
     },
+    "audit_creator": "Người tạo",
     "detail_modal": {
-      "title": "Kiểm kê tài sản",
-      "view_mode_notice": "Chế độ xem — bạn không có quyền chỉnh sửa kết quả kiểm kê này.",
-      "current_info": "Hiện tại",
+      "title": "Chi tiết kiểm kê",
+      "current_info": "Thông tin hiện tại",
       "asset_code": "Mã tài sản",
       "asset_name": "Tên tài sản",
       "holder": "Người nắm giữ",
@@ -1682,12 +1684,22 @@
       "recall_info": "Thu hồi",
       "transfer_info": "Điều chuyển",
       "receiving_warehouse": "Kho tiếp nhận",
-      "recipient_unit": "Người nhận / đơn vị",
+      "recipient_unit": "Đơn vị nhận",
+      "recipient_staff": "Nhân viên nhận",
+      "select_location": "Chọn kho/vị trí",
+      "select_unit": "Chọn đơn vị",
+      "select_unit_first": "Vui lòng chọn đơn vị trước",
+      "select_staff": "Chọn nhân viên",
+      "quantity_to_handle": "Số lượng xử lý",
       "auto_assigned": "Tự động phân bổ",
       "quantity_label": "Số lượng: {value}",
       "condition_notes": "Ghi chú tình trạng",
       "no_notes": "Không có ghi chú nào cho kết quả kiểm kê này.",
-      "close": "Đóng"
+      "close": "Đóng",
+      "save": "Lưu kết quả",
+      "view_mode": "Chế độ xem",
+      "not_assignee_notice": "Bạn không phải là người được giao thực hiện đợt kiểm kê này, do đó bạn chỉ có quyền xem chi tiết.",
+      "view_mode_notice": "Bạn đang xem chi tiết kết quả kiểm kê. Mọi thay đổi (nếu có) phải được thực hiện thông qua phiếu kiểm kê tương ứng."
     },
     "detail": {
       "inventory_verification": "Xác minh kho",

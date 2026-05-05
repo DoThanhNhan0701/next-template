@@ -76,19 +76,20 @@ export default function AuditDetail({ id }: Props) {
     url: dynamicEndpoints.AUDIT_SESSION_DETAIL(Number(id)),
   });
 
-  const { response: items, pending: itemsPending } =
-    useGet<IAuditDetailsResponse>({
-      url: dynamicEndpoints.AUDIT_SESSION_DETAILS(Number(id)),
-    });
+  const {
+    response: items,
+    pending: itemsPending,
+    reFetch: itemsReFetch,
+  } = useGet<IAuditDetailsResponse>({
+    url: dynamicEndpoints.AUDIT_SESSION_DETAILS(Number(id)),
+  });
 
-  // Fetch workflow history
   const { response: historyList, pending: historyPending } = useGet<
     ApprovalHistory[]
   >({
     url: dynamicEndpoints.WORKFLOW_HISTORY("audit", Number(id)),
   });
 
-  // Check if current user has this audit assigned to them
   const { response: myAudits } = useGet<IAuditSession[]>(
     { url: endpoints.AUDIT_MY_AUDITS },
     { staleTime: 0 },
@@ -96,7 +97,6 @@ export default function AuditDetail({ id }: Props) {
 
   const { mutate, pending: mutatePending } = useMutation();
 
-  // Check if this audit is assigned to current user
   const isMyAudit = myAudits?.some((audit) => audit.id === Number(id));
 
   const onAuditCompleteConfirm = async () => {
@@ -157,7 +157,6 @@ export default function AuditDetail({ id }: Props) {
     );
   };
 
-  // Create a mock task object for modals
   const mockTask: ITask | null =
     isMyAudit && session
       ? {
@@ -195,7 +194,6 @@ export default function AuditDetail({ id }: Props) {
 
   return (
     <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Back & Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
@@ -216,7 +214,6 @@ export default function AuditDetail({ id }: Props) {
           </div>
         </div>
 
-        {/* Action Buttons */}
         {isMyAudit &&
           ["PENDING", "COMPLETED"].includes(
             session?.status_obj?.code || "",
@@ -254,12 +251,10 @@ export default function AuditDetail({ id }: Props) {
           )}
       </div>
 
-      {/* Summary Card */}
       <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">
         <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/80 rounded-r" />
         <CardContent className="p-3 pl-5">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            {/* Left: record info */}
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <ClipboardList className="w-6 h-6 text-primary" />
@@ -268,9 +263,17 @@ export default function AuditDetail({ id }: Props) {
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
                   {t("table.audit_information")}
                 </span>
-                <span className="text-xl font-bold text-foreground tracking-tight">
-                  {session.title}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold text-foreground tracking-tight">
+                    {session.title}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="h-5 px-1.5 text-[10px] font-mono font-bold bg-muted/50 text-muted-foreground border-border/50"
+                  >
+                    #{session.id}
+                  </Badge>
+                </div>
                 <span className="text-xs text-muted-foreground flex items-center gap-1.5">
                   <Clock size={12} className="opacity-70" />
                   {t("table.created_at", {
@@ -280,7 +283,6 @@ export default function AuditDetail({ id }: Props) {
               </div>
             </div>
 
-            {/* Right: stats & status */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[80px]">
                 <span className="text-xs text-muted-foreground font-semibold tracking-wider">
@@ -290,25 +292,36 @@ export default function AuditDetail({ id }: Props) {
                   {items?.length || 0}
                 </span>
               </div>
-              <Badge
-                variant="outline"
-                className="px-4 py-2 text-sm font-bold rounded-xl h-auto"
-                style={{
-                  backgroundColor: `${session.status_obj?.color}18`,
-                  color: session.status_obj?.color,
-                  borderColor: `${session.status_obj?.color}40`,
-                }}
-              >
-                {session.status_obj?.name}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className="px-2.5 py-1 text-[10px] font-bold rounded-lg h-auto flex items-center gap-1.5 border-primary/20 bg-primary/5 text-primary"
+                >
+                  {session.audit_type === "unit" ? (
+                    <Building2 size={12} />
+                  ) : (
+                    <MapPin size={12} />
+                  )}
+                  {session.audit_type.toUpperCase()}
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="px-4 py-2 text-sm font-bold rounded-xl h-auto"
+                  style={{
+                    backgroundColor: `${session.status_obj?.color}18`,
+                    color: session.status_obj?.color,
+                    borderColor: `${session.status_obj?.color}40`,
+                  }}
+                >
+                  {session.status_obj?.name}
+                </Badge>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
-        {/* Items table */}
         <div className="lg:col-span-2">
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col min-h-[400px]">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
@@ -372,12 +385,10 @@ export default function AuditDetail({ id }: Props) {
                           setIsViewModalOpen(true);
                         }}
                       >
-                        {/* No */}
                         <TableCell className="px-4 py-3 text-center text-muted-foreground">
                           {index + 1}
                         </TableCell>
 
-                        {/* 1. Asset Info */}
                         <TableCell className="px-4 py-3">
                           <div className="flex flex-col gap-0.5">
                             <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -389,7 +400,6 @@ export default function AuditDetail({ id }: Props) {
                           </div>
                         </TableCell>
 
-                        {/* 2. Current State */}
                         <TableCell className="px-4 py-3">
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-1.5 text-xs">
@@ -415,7 +425,6 @@ export default function AuditDetail({ id }: Props) {
                           </div>
                         </TableCell>
 
-                        {/* 3. Audit Result */}
                         <TableCell className="px-4 py-3 text-center">
                           <Badge
                             variant="outline"
@@ -433,7 +442,6 @@ export default function AuditDetail({ id }: Props) {
                           </Badge>
                         </TableCell>
 
-                        {/* 4. Action & Target */}
                         <TableCell className="px-4 py-3">
                           <div className="flex flex-col gap-1 max-w-[180px]">
                             {item.proposed_action ? (
@@ -471,32 +479,37 @@ export default function AuditDetail({ id }: Props) {
                           </div>
                         </TableCell>
 
-                        {/* 5. Notes */}
                         <TableCell className="px-4 py-3 min-w-[150px]">
                           <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80 leading-relaxed italic line-clamp-2 hover:line-clamp-none transition-all">
                             {item.notes ? (
-                              <>
-                                <Info
-                                  size={12}
-                                  className="shrink-0 mt-0.5 opacity-40 text-primary"
-                                />
-                                <span>{item.notes}</span>
-                              </>
+                              <span>{item.notes}</span>
                             ) : (
                               <span className="opacity-40">—</span>
                             )}
                           </div>
                         </TableCell>
 
-                        {/* 6. Verified Time */}
-                        <TableCell className="px-4 py-3">
-                          <div className="flex flex-col text-[10px] items-end justify-center">
-                            <span className="font-bold text-foreground/70">
-                              {formatDate(item.verified_at)}
-                            </span>
-                            <span className="text-muted-foreground font-mono">
-                              {formatDate(item.verified_at, "HH:mm")}
-                            </span>
+                        <TableCell className="px-4 py-3 min-w-[120px]">
+                          <div className="flex flex-col text-[10px] items-end justify-center gap-1">
+                            {item.verified_at ? (
+                              <>
+                                <div className="flex flex-col items-end">
+                                  <span className="font-bold text-foreground/70">
+                                    {formatDate(item.verified_at)}
+                                  </span>
+                                  <span className="text-muted-foreground font-mono opacity-60">
+                                    {formatDate(item.verified_at, "HH:mm")}
+                                  </span>
+                                </div>
+                                <span className="text-primary font-black uppercase text-[9px] tracking-wider">
+                                  {t("table.edit")}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-primary font-black uppercase text-[9px] tracking-wider group-hover:underline underline-offset-4 decoration-primary/30 transition-all">
+                                {t("table.inventory")}
+                              </span>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -508,7 +521,6 @@ export default function AuditDetail({ id }: Props) {
           </Card>
         </div>
 
-        {/* Sidebar Info */}
         <div className="flex flex-col gap-3">
           <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
@@ -525,9 +537,14 @@ export default function AuditDetail({ id }: Props) {
                     {t("table.assignee")}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {session.assignee?.full_name}
-                </span>
+                <div className="flex flex-col items-end">
+                  <span className="text-sm font-semibold text-foreground">
+                    {session.assignee?.full_name}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground font-mono">
+                    @{session.assignee?.username}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -566,6 +583,25 @@ export default function AuditDetail({ id }: Props) {
                   </div>
                 </div>
               </div>
+
+              <div className="pt-2 border-t border-border/50 flex flex-col gap-1">
+                <span className="text-xs text-muted-foreground font-semibold tracking-wider mb-1">
+                  {t("audit_creator")}
+                </span>
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground border">
+                    {session.assignee?.full_name?.charAt(0) || "U"}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-foreground">
+                      {session.assignee?.full_name}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {formatDate(session.created_at)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -592,12 +628,14 @@ export default function AuditDetail({ id }: Props) {
       </div>
 
       <ViewAuditItemModal
+        key={`${selectedItem?.id}-${isViewModalOpen}`}
         item={selectedItem}
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
+        assigneeUsername={session?.assignee?.username}
+        onRefresh={itemsReFetch}
       />
 
-      {/* Workflow History */}
       <WorkflowHistory historyList={historyList} pending={historyPending} />
 
       <CompleteAuditModal

@@ -109,7 +109,10 @@ export function AllocationItemRow({
                 <SelectValue placeholder={t("form.placeholder_location")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none" className="text-muted-foreground italic">
+                <SelectItem
+                  value="none"
+                  className="text-muted-foreground italic"
+                >
                   {t("form.none")}
                 </SelectItem>
                 {locations.map((loc) => (
@@ -129,10 +132,12 @@ export function AllocationItemRow({
         name={`items.${index}.asset_id`}
         control={control}
         render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
+          <Field className="gap-1 flex-1 min-w-0">
             <FieldLabel>{t("form.asset")}</FieldLabel>
             <Select
-              onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+              onValueChange={(val) =>
+                field.onChange(val === "none" ? 0 : Number(val))
+              }
               value={field.value ? field.value.toString() : ""}
               disabled={!warehouseId}
             >
@@ -148,12 +153,16 @@ export function AllocationItemRow({
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none" className="text-muted-foreground italic">
+                <SelectItem
+                  value="none"
+                  className="text-muted-foreground italic"
+                >
                   {t("form.none")}
                 </SelectItem>
                 {assets.map((a: IPhysicalAsset) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) {t("form.quantity_label")} {a?.in_stock_quantity ?? 0}
+                    {a.name} ({a.asset_code}) {t("form.quantity_label")}{" "}
+                    {a?.in_stock_quantity ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>

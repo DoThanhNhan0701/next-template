@@ -1617,7 +1617,9 @@
       "active_note": "This audit session is currently active. Verification progress is being tracked.",
       "no_action_required": "No action required",
       "system_update": "System update",
-      "quantity": "Quantity: {value}"
+      "quantity": "Quantity: {value}",
+      "inventory": "Inventory",
+      "edit": "Edit"
     },
     "filters": {
       "search_placeholder": "e.g. AUD2024, John Doe",
@@ -1666,14 +1668,14 @@
       "transfer": "Transfer",
       "transfer_sub": "Move to unit/person",
       "recall": "Recall",
-      "recall_sub": "Return to warehouse"
+      "recall_sub": "Recall to warehouse"
     },
+    "audit_creator": "Creator",
     "detail_modal": {
-      "title": "Asset audit",
-      "view_mode_notice": "View mode — you do not have permission to edit this audit result.",
-      "current_info": "Current information",
-      "asset_code": "Asset code",
-      "asset_name": "Asset name",
+      "title": "Audit Detail",
+      "current_info": "Current Info",
+      "asset_code": "Asset Code",
+      "asset_name": "Asset Name",
       "holder": "Holder",
       "quantity": "Quantity",
       "system_status": "System status",
@@ -1682,12 +1684,22 @@
       "recall_info": "Recall information",
       "transfer_info": "Transfer",
       "receiving_warehouse": "Receiving warehouse",
-      "recipient_unit": "Recipient / unit",
-      "auto_assigned": "Auto-assigned",
+      "recipient_unit": "Recipient unit",
+      "recipient_staff": "Recipient staff",
+      "select_location": "Select location",
+      "select_unit": "Select unit",
+      "select_unit_first": "Please select unit first",
+      "select_staff": "Select staff",
+      "quantity_to_handle": "Quantity to handle",
+      "auto_assigned": "Auto assigned",
       "quantity_label": "Quantity: {value}",
-      "condition_notes": "Condition notes",
-      "no_notes": "No notes for this audit result.",
-      "close": "Close"
+      "condition_notes": "Condition Notes",
+      "no_notes": "No notes provided for this audit result.",
+      "close": "Close",
+      "save": "Save Result",
+      "view_mode": "View Mode",
+      "not_assignee_notice": "You are not the assignee for this audit session, so you only have permission to view the details.",
+      "view_mode_notice": "You are viewing the audit results. Any changes (if applicable) must be made through the corresponding audit task."
     },
     "detail": {
       "inventory_verification": "Inventory verification",

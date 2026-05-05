@@ -137,7 +137,7 @@ export default function MyTasksTable() {
     document_id: audit.id,
     document_record_number: audit.title,
     document_type: "audit",
-    requester_name: audit.assignee.full_name,
+    requester_name: audit?.assignee?.full_name || "",
     step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
     reason: "",
   }));

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripVertical, PlusIcon, Shield, Trash2Icon, User } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -10,7 +12,6 @@ import {
   GetTemplateSchema,
   TemplateFormValues,
 } from "@/components/schemas/admin/workflow-template.schema";
-import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -47,7 +48,6 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 
 type FormValues = TemplateFormValues;
 type AssigneeType = "none" | "role" | "user";
-
 
 function getAssigneeType(
   roleId?: number | null,
@@ -342,10 +342,7 @@ export default function WorkflowTemplateFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("name_label")}</FieldLabel>
-                    <Input
-                      {...field}
-                      placeholder={t("name_placeholder")}
-                    />
+                    <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -411,7 +408,7 @@ export default function WorkflowTemplateFormModal({
                     </Field>
                   )}
                 />
-                <Controller
+                {/* <Controller
                   name="is_locked"
                   control={form.control}
                   render={({ field }) => (
@@ -426,14 +423,16 @@ export default function WorkflowTemplateFormModal({
                       </label>
                     </Field>
                   )}
-                />
+                /> */}
               </div>
             </FieldGroup>
 
             {/* Steps */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">{t("approval_steps")}</span>
+                <span className="text-sm font-medium">
+                  {t("approval_steps")}
+                </span>
                 <Button
                   type="button"
                   variant="outline"

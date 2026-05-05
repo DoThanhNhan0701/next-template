@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, GitBranch, Lock, Trash2Icon, Unlock } from "lucide-react";
+import { EditIcon, GitBranch, Trash2Icon } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
@@ -83,7 +83,7 @@ export default function WorkflowTemplateTable() {
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
                 {tt("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[30%]">
+              <TableHead className="font-semibold h-10 px-4 w-[45%]">
                 {tt("workflow_name")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
@@ -95,10 +95,7 @@ export default function WorkflowTemplateTable() {
               <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
                 {tt("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                {tt("locked")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%] text-right">
+              <TableHead className="font-semibold h-10 px-4 w-[10%] text-right">
                 {tt("actions")}
               </TableHead>
             </TableRow>
@@ -149,16 +146,7 @@ export default function WorkflowTemplateTable() {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
-                    {item.is_locked ? (
-                      <Lock size={15} className="mx-auto text-amber-500" />
-                    ) : (
-                      <Unlock
-                        size={15}
-                        className="mx-auto text-muted-foreground"
-                      />
-                    )}
-                  </TableCell>
+
                   <TableCell className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-1">
                       <Button

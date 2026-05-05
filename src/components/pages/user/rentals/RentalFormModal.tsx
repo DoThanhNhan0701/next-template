@@ -109,7 +109,7 @@ function RentalItemRow({
     <div className="bg-muted/30 border rounded-lg p-3 flex items-end gap-2">
       <div className="grid grid-cols-[1fr_1fr_110px_110px] gap-2 flex-1">
         {/* Location */}
-        <Field className="gap-1">
+        <Field className="gap-1 min-w-0">
           <FieldLabel>{t("form.location")}</FieldLabel>
           <Select
             onValueChange={(val) => {
@@ -121,7 +121,7 @@ function RentalItemRow({
             }}
             value={locationId ? locationId.toString() : ""}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder={t("form.placeholder_location")} />
             </SelectTrigger>
             <SelectContent>
@@ -142,7 +142,7 @@ function RentalItemRow({
           name={`items.${index}.asset_id`}
           control={control}
           render={({ field, fieldState }) => (
-            <Field className="gap-1">
+            <Field className="gap-1 min-w-0">
               <FieldLabel>{t("form.asset")}</FieldLabel>
               <Select
                 onValueChange={(val) =>
@@ -151,7 +151,7 @@ function RentalItemRow({
                 value={field.value ? field.value.toString() : ""}
                 disabled={!locationId}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={
                       !locationId
