@@ -50,7 +50,7 @@ import { IRentalFull } from "@/types/rental";
 import { ITemplate } from "@/types/template";
 import { getTodayISO } from "@/utils/date";
 
-import { ReturnItemRow } from "./component/ReturnItemRow";
+import { ReturnItemRow } from "./components/ReturnItemRow";
 
 interface RentalReturnModalProps {
   isOpen: boolean;
@@ -178,7 +178,7 @@ export default function RentalReturnModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[700px] h-[90vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>{t("modal.title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
