@@ -979,7 +979,8 @@
       "stock": "Stock",
       "in_use": "In use",
       "rented": "Rented",
-      "edit_asset": "Edit asset"
+      "edit_asset": "Edit asset",
+      "holders_count": "({count} people)"
     },
     "detail": {
       "back": "Back",

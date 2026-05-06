@@ -979,7 +979,8 @@
       "stock": "Kho",
       "in_use": "Sử dụng",
       "rented": "Cho thuê",
-      "edit_asset": "Sửa tài sản"
+      "edit_asset": "Sửa tài sản",
+      "holders_count": "({count} người)"
     },
     "detail": {
       "back": "Quay lại",

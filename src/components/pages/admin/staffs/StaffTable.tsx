@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Contact, EditIcon, Trash2Icon } from "lucide-react";
+import { Contact, EditIcon } from "lucide-react";
 
 import {
   TableEmptyRow,
@@ -202,16 +202,6 @@ export default function StaffTable() {
                       >
                         <EditIcon size={14} />
                       </Button>
-                      {staff.is_active && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-red-500 hover:bg-red-500/10"
-                          onClick={() => {}}
-                        >
-                          <Trash2Icon size={14} />
-                        </Button>
-                      )}
                     </div>
                   </TableCell>
                 </TableRow>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import {
   Building2,
   Hash,
@@ -12,7 +14,6 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +26,7 @@ interface Props {
   onDelete: (unit: OrgUnit) => void;
 }
 
-export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
+export default function OrgUnitDetailView({ unit, onEdit }: Props) {
   const t = useTranslations("page_organization");
   if (!unit) {
     return (
@@ -75,11 +76,11 @@ export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
                   className={cn(
                     "px-1.5 py-0 h-4 text-[10px] font-medium",
                     unit.unit_type === "company" &&
-                    "bg-blue-100 text-blue-700 hover:bg-blue-100",
+                      "bg-blue-100 text-blue-700 hover:bg-blue-100",
                     unit.unit_type === "branch" &&
-                    "bg-amber-100 text-amber-700 hover:bg-amber-100",
+                      "bg-amber-100 text-amber-700 hover:bg-amber-100",
                     unit.unit_type === "department" &&
-                    "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
+                      "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
                   )}
                 >
                   {t(unit.unit_type)}
@@ -90,13 +91,6 @@ export default function OrgUnitDetailView({ unit, onEdit, onDelete }: Props) {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => onEdit(unit)}>
               {t("edit")}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => onDelete(unit)}
-            >
-              {t("delete.delete")}
             </Button>
           </div>
         </div>

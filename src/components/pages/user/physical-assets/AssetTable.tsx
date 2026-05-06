@@ -136,7 +136,11 @@ export default function AssetTable() {
   if (appliedFilters.management_type)
     queryParams.append("management_type", appliedFilters.management_type);
 
-  const { response, pending, reFetch } = useGet<{ items: IPhysicalAsset[]; total?: number; count?: number; }>({
+  const { response, pending, reFetch } = useGet<{
+    items: IPhysicalAsset[];
+    total?: number;
+    count?: number;
+  }>({
     url: `${endpoints.PHYSICAL_ASSETS}?${queryParams.toString()}`,
   });
   const assets = response?.items || [];
@@ -404,22 +408,26 @@ export default function AssetTable() {
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
-                      <div className="flex flex-col gap-1 text-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold uppercase text-secondary-foreground">
-                            {asset.holder_name?.substring(0, 2) || "NA"}
-                          </div>
-                          <span className="font-medium text-foreground/80">
-                            {asset.holder_name || t("table.unassigned")}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-muted-foreground flex items-center gap-1 pl-8">
-                          <span className="opacity-60 italic">
-                            {t("table.unit")}
-                          </span>
-                          <span>
+                      <div className="flex items-start gap-2 text-sm text-foreground/80">
+                        <Building2
+                          size={16}
+                          className="text-muted-foreground/60 shrink-0 mt-0.5"
+                        />
+                        <div className="flex flex-col gap-1">
+                          <span className="font-medium truncate max-w-[150px]">
                             {getOrgUnitLabel(asset.unit_id) || t("table.none")}
                           </span>
+                          {(asset?.holding_qty ?? 0) -
+                            (asset?.in_stock_quantity ?? 0) >
+                            0 && (
+                            <span className="text-[10px] font-semibold text-primary/70 bg-primary/5 px-1.5 py-0.5 rounded-full border border-primary/10 w-fit">
+                              {t("table.holders_count", {
+                                count:
+                                  (asset?.holding_qty ?? 0) -
+                                  (asset?.in_stock_quantity ?? 0),
+                              })}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </TableCell>
@@ -539,7 +547,9 @@ export default function AssetTable() {
       <TablePagination
         skip={skip}
         limit={limit}
-        count={assets.length} total={response?.total ?? response?.count} pending={pending}
+        count={assets.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

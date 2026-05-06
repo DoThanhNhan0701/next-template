@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Activity, EditIcon, Trash2Icon } from "lucide-react";
+import { Activity, EditIcon } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
@@ -195,14 +195,6 @@ export default function UsageModeTable() {
                         onClick={() => setUsageModeToEdit(item)}
                       >
                         <EditIcon size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-red-500 hover:bg-red-500/10"
-                        onClick={() => setUsageModeToDelete(item)}
-                      >
-                        <Trash2Icon size={14} />
                       </Button>
                     </div>
                   </TableCell>

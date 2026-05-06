@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Key, Trash2Icon, UserCog } from "lucide-react";
+import { EditIcon, Key, UserCog } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
@@ -221,16 +221,6 @@ export default function UserTable() {
                       >
                         <EditIcon size={14} />
                       </Button>
-                      {user.is_active && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-red-500 hover:bg-red-500/10"
-                          onClick={() => setUserToDelete(user)}
-                        >
-                          <Trash2Icon size={14} />
-                        </Button>
-                      )}
                     </div>
                   </TableCell>
                 </TableRow>

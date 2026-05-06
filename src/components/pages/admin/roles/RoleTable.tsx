@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Shield, Trash2Icon } from "lucide-react";
+import { EditIcon, Shield } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
@@ -208,15 +208,6 @@ export default function RoleTable() {
                         onClick={() => setRoleToEdit(role)}
                       >
                         <EditIcon size={14} />
-                      </Button>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-red-500 hover:bg-red-500/10"
-                        onClick={() => setRoleToDelete(role)}
-                      >
-                        <Trash2Icon size={14} />
                       </Button>
                     </div>
                   </TableCell>

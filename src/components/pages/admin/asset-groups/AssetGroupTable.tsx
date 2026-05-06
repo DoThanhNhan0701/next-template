@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Layers, Trash2Icon } from "lucide-react";
+import { EditIcon, Layers } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
@@ -206,16 +206,6 @@ export default function AssetGroupTable() {
                       >
                         <EditIcon size={14} />
                       </Button>
-                      {group.is_active && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-red-500 hover:bg-red-500/10"
-                          onClick={() => setAssetGroupToDelete(group)}
-                        >
-                          <Trash2Icon size={14} />
-                        </Button>
-                      )}
                     </div>
                   </TableCell>
                 </TableRow>

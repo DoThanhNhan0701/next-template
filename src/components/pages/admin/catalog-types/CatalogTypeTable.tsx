@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Tag, Trash2Icon } from "lucide-react";
+import { EditIcon, Tag } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
@@ -212,16 +212,6 @@ export default function CatalogTypeTable() {
                       >
                         <EditIcon size={14} />
                       </Button>
-                      {type.is_active && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-red-500 hover:bg-red-500/10"
-                          onClick={() => setCatalogTypeToDelete(type)}
-                        >
-                          <Trash2Icon size={14} />
-                        </Button>
-                      )}
                     </div>
                   </TableCell>
                 </TableRow>
