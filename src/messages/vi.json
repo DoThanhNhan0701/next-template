@@ -962,6 +962,7 @@
     "table": {
       "no": "STT",
       "asset": "Tài sản",
+      "asset_code": "Mã tài sản",
       "ownership": "Sở hữu",
       "location": "Vị trí",
       "purchase_info": "Mua hàng",

@@ -962,6 +962,7 @@
     "table": {
       "no": "No",
       "asset": "Asset",
+      "asset_code": "Asset code",
       "ownership": "Ownership",
       "location": "Location",
       "purchase_info": "Purchase info",
