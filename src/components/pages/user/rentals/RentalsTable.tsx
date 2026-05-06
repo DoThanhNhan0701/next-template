@@ -24,14 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -67,7 +60,7 @@ export default function RentalsTable() {
   );
 
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
 
   // Filter state
   const [q, setQ] = useState("");
@@ -106,15 +99,11 @@ export default function RentalsTable() {
   if (appliedFilters.customer_id)
     queryParams.append("customer_id", appliedFilters.customer_id);
 
-  const { response, pending, reFetch } = useGet<{ items: IRentalSummary[] }>({
+  const { response, pending, reFetch } = useGet<{ items: IRentalSummary[]; total?: number; count?: number; }>({
     url: `${endpoints.RENTALS}?${queryParams.toString()}`,
   });
   const rentals = response?.items || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = rentals.length === limit;
-
-  return (
+return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 backdrop-blur-md rounded-md transition-all hover:border-border/80">
         {/* Search Group */}
@@ -360,41 +349,13 @@ export default function RentalsTable() {
         </Table>
       </div>
 
-      {rentals.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={rentals.length} total={response?.total ?? response?.count} pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       {isModalOpen && (
         <RentalFormModal

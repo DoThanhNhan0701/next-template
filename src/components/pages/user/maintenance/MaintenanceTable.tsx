@@ -21,14 +21,7 @@ import {
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   Table,
   TableBody,
@@ -48,7 +41,7 @@ export default function MaintenanceTable() {
   const router = useRouter();
   const t = useTranslations("page_maintenance.table");
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
 
   // Filter state
   const [q, setQ] = useState("");
@@ -66,15 +59,11 @@ export default function MaintenanceTable() {
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
 
-  const { response, pending, reFetch } = useGet<{ items: IMaintenance[] }>({
+  const { response, pending, reFetch } = useGet<{ items: IMaintenance[]; total?: number; count?: number; }>({
     url: `${endpoints.MAINTENANCES}?${queryParams.toString()}`,
   });
   const maintenances = response?.items || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = maintenances.length === limit;
-
-  return (
+return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         {/* Search Group */}
@@ -278,41 +267,13 @@ export default function MaintenanceTable() {
         </Table>
       </div>
 
-      {maintenances.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={maintenances.length} total={response?.total ?? response?.count} pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       {isCreating && (
         <MaintenanceFormModal

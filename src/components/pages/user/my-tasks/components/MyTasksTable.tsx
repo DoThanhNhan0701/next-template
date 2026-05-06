@@ -22,18 +22,10 @@ import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
+import { TablePagination } from "@/components/common/TablePagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -77,6 +69,7 @@ export default function MyTasksTable() {
   const [appliedQ, setAppliedQ] = useState("");
   const [selectedProcessType, setSelectedProcessType] = useState<string>("all");
   const [localCurrentPage, setLocalCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(20);
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -200,10 +193,9 @@ export default function MyTasksTable() {
       );
   }, [tasks, mappedAudits, selectedProcessType, appliedQ]);
 
-  const totalPages = Math.ceil(allTasks.length / 20);
   const paginatedTasks = useMemo(() => {
-    return allTasks.slice((localCurrentPage - 1) * 20, localCurrentPage * 20);
-  }, [allTasks, localCurrentPage]);
+    return allTasks.slice((localCurrentPage - 1) * limit, localCurrentPage * limit);
+  }, [allTasks, localCurrentPage, limit]);
   const isPending =
     pending || auditPending || auditPendingApprovalPending;
 
@@ -212,34 +204,7 @@ export default function MyTasksTable() {
     auditPendingApprovalReFetch();
   }, [auditReFetch, auditPendingApprovalReFetch]);
 
-  const pageNumbers = useMemo(() => {
-    const pages: (number | string)[] = [];
-    const showSearch = 1;
 
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i);
-    } else {
-      pages.push(1);
-
-      if (localCurrentPage > showSearch + 2) {
-        pages.push("ellipsis-1");
-      }
-
-      const start = Math.max(2, localCurrentPage - showSearch);
-      const end = Math.min(totalPages - 1, localCurrentPage + showSearch);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (localCurrentPage < totalPages - (showSearch + 1)) {
-        pages.push("ellipsis-2");
-      }
-
-      pages.push(totalPages);
-    }
-    return pages;
-  }, [totalPages, localCurrentPage]);
 
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {
@@ -591,7 +556,7 @@ export default function MyTasksTable() {
                   className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                 >
                   <TableCell className="px-4 py-2 text-center text-sm text-muted-foreground">
-                    {(localCurrentPage - 1) * 20 + index + 1}
+                    {(localCurrentPage - 1) * limit + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-2 relative overflow-hidden">
                     <div className="flex items-center gap-1.5 overflow-hidden">
@@ -709,60 +674,17 @@ export default function MyTasksTable() {
         </Table>
       </div>
 
-      {allTasks.length > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (localCurrentPage > 1 && !isPending)
-                    setLocalCurrentPage(localCurrentPage - 1);
-                }}
-                className={
-                  localCurrentPage === 1 || isPending
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-            </PaginationItem>
-            {pageNumbers.map((page, i) => (
-              <PaginationItem key={i}>
-                {typeof page === "number" ? (
-                  <PaginationLink
-                    href="#"
-                    isActive={localCurrentPage === page}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setLocalCurrentPage(page);
-                    }}
-                  >
-                    {page}
-                  </PaginationLink>
-                ) : (
-                  <PaginationEllipsis />
-                )}
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (localCurrentPage < totalPages && !isPending)
-                    setLocalCurrentPage(localCurrentPage + 1);
-                }}
-                className={
-                  localCurrentPage === totalPages || isPending
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={(localCurrentPage - 1) * limit}
+        limit={limit}
+        count={paginatedTasks.length}
+        total={allTasks.length}
+        pending={isPending}
+        onPageChange={(newSkip) =>
+          setLocalCurrentPage(Math.floor(newSkip / limit) + 1)
+        }
+        onLimitChange={setLimit}
+      />
 
       <ApproveTaskModal
         task={selectedTask}

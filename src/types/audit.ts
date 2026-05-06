@@ -60,6 +60,6 @@ export interface IAuditDetailItem {
 }
 
 // API Response types
-export type IMyAuditsResponse = IAuditSession[];
-export type IAllAuditsResponse = IAuditSession[];
+export type IMyAuditsResponse = IAuditSession[] | { items: IAuditSession[]; total?: number; count?: number; };
+export type IAllAuditsResponse = IAuditSession[] | { items: IAuditSession[]; total?: number; count?: number; };
 export type IAuditDetailsResponse = IAuditDetailItem[];

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -23,14 +24,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -53,7 +46,7 @@ export default function StockAdjustmentTable({
   defaultType: "INCREASE" | "DECREASE";
 }) {
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
   const [q, setQ] = useState("");
   const [isManualOpen, setIsManualOpen] = useState(false);
   const router = useRouter();
@@ -77,13 +70,12 @@ export default function StockAdjustmentTable({
   const { response, pending, reFetch } = useGet<{
     items: IStockAdjustment[];
     total: number;
+    count?: number;
   }>({
     url: `${endpoints.STOCK_ADJUSTMENTS}?${queryParams.toString()}`,
   });
 
   const items = response?.items || [];
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = items.length === limit;
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
@@ -278,41 +270,15 @@ export default function StockAdjustmentTable({
         </Table>
       </div>
 
-      {items.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={items.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
     </div>
   );
 }

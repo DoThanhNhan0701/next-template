@@ -24,14 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -58,7 +51,7 @@ export default function AllAuditsTable() {
   const t = useTranslations("page_audits");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
   const [searchInput, setSearchInput] = useState("");
   const [auditTypeInput, setAuditTypeInput] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -78,17 +71,13 @@ export default function AllAuditsTable() {
     url: `${endpoints.AUDIT_SESSIONS}?${queryParams.toString()}`,
   });
 
-  const allAudits = response || [];
+  const allAudits = Array.isArray(response) ? response : response?.items || [];
 
   // Filter locally by audit_type
   const audits = !auditType
     ? allAudits
     : allAudits.filter((audit) => audit.audit_type === auditType);
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = allAudits.length === limit;
-
-  const handleSearch = () => {
+const handleSearch = () => {
     setQ(searchInput);
     setAuditType(auditTypeInput);
     setSkip(0);
@@ -314,41 +303,20 @@ export default function AllAuditsTable() {
         </Table>
       </div>
 
-      {audits.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={audits.length}
+        total={
+          Array.isArray(response)
+            ? undefined
+            : (response as { total?: number; count?: number })?.total ??
+              (response as { total?: number; count?: number })?.count
+        }
+        pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       <AuditFormModal
         isOpen={isCreateModalOpen}

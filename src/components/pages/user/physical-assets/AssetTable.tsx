@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Laptop } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -25,14 +26,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -72,7 +65,7 @@ export default function AssetTable() {
   const canCreate = hasPermission("asset:create") && hasHydrated;
 
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
 
   // Filter state
   const [q, setQ] = useState("");
@@ -143,13 +136,10 @@ export default function AssetTable() {
   if (appliedFilters.management_type)
     queryParams.append("management_type", appliedFilters.management_type);
 
-  const { response, pending, reFetch } = useGet<{ items: IPhysicalAsset[] }>({
+  const { response, pending, reFetch } = useGet<{ items: IPhysicalAsset[]; total?: number; count?: number; }>({
     url: `${endpoints.PHYSICAL_ASSETS}?${queryParams.toString()}`,
   });
   const assets = response?.items || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = assets.length === limit;
 
   const [isCreating, setIsCreating] = useState(false);
   const [assetToEdit, setAssetToEdit] = useState<IPhysicalAsset | null>(null);
@@ -264,7 +254,9 @@ export default function AssetTable() {
 
           <Select
             value={managementType}
-            onValueChange={(val) => setManagementType(val === "none" ? "" : val)}
+            onValueChange={(val) =>
+              setManagementType(val === "none" ? "" : val)
+            }
           >
             <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
               <div className="flex items-center gap-2 overflow-hidden w-full text-left">
@@ -278,7 +270,7 @@ export default function AssetTable() {
               <SelectItem value="none" className="text-muted-foreground italic">
                 {t("filters.none")}
               </SelectItem>
-              <SelectItem value="single">{t("table.by_code")}</SelectItem>
+              <SelectItem value="unique">{t("table.by_code")}</SelectItem>
               <SelectItem value="bulk">{t("table.by_quantity")}</SelectItem>
             </SelectContent>
           </Select>
@@ -399,7 +391,10 @@ export default function AssetTable() {
                           <Laptop size={16} />
                         </div>
                         <div className="flex flex-col min-w-0 flex-1">
-                          <span className="font-semibold text-sm group-hover:text-primary transition-colors truncate" title={asset.name}>
+                          <span
+                            className="font-semibold text-sm group-hover:text-primary transition-colors truncate"
+                            title={asset.name}
+                          >
                             {asset.name}
                           </span>
                           <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
@@ -430,7 +425,6 @@ export default function AssetTable() {
                     </TableCell>
                     <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1 text-sm">
-
                         {usageMode && (
                           <div className="text-[10px] text-muted-foreground pl-1 flex items-center gap-1">
                             <MapPin size={12} className="text-primary/70" />
@@ -475,7 +469,7 @@ export default function AssetTable() {
                         {((asset.in_stock_quantity ?? 0) > 0 ||
                           (asset.allocated_quantity ?? 0) > 0 ||
                           (asset.rented_quantity ?? 0) > 0) &&
-                          asset.management_type === "bulk" ? (
+                        asset.management_type === "bulk" ? (
                           <div className="flex items-center gap-1 flex-wrap justify-center">
                             {(asset.in_stock_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
@@ -499,16 +493,16 @@ export default function AssetTable() {
                             style={
                               status?.color
                                 ? {
-                                  backgroundColor: `${status.color}20`,
-                                  color: status.color,
-                                  borderColor: `${status.color}40`,
-                                }
+                                    backgroundColor: `${status.color}20`,
+                                    color: status.color,
+                                    borderColor: `${status.color}40`,
+                                  }
                                 : {}
                             }
                             className={cn(
                               "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
                               !status?.color &&
-                              "bg-primary/10 text-primary border-primary/20",
+                                "bg-primary/10 text-primary border-primary/20",
                             )}
                           >
                             {status?.name || `Status ${asset.status_id}`}
@@ -542,41 +536,13 @@ export default function AssetTable() {
         </Table>
       </div>
 
-      {assets.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={assets.length} total={response?.total ?? response?.count} pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       <AssetFormModal
         isOpen={isCreating || assetToEdit !== null}

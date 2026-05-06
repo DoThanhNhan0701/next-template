@@ -23,14 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -56,7 +49,7 @@ import { IStock } from "@/types/stock";
 export default function InventoryTable() {
   const t = useTranslations("page_inventory");
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -89,14 +82,12 @@ export default function InventoryTable() {
 
   queryParams.append("show_zero", appliedFilters.show_zero.toString());
 
-  const { response, pending } = useGet<{ items: IStock[] }>({
+  const { response, pending } = useGet<{ items: IStock[]; total?: number; count?: number; }>({
     url: `${endpoints.STOCKS}?${queryParams.toString()}`,
   });
 
   const stocks = response?.items || [];
 
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = stocks.length === limit;
 
   const handleStockAction = (stock: IStock, type: "INCREASE" | "DECREASE") => {
     dispatch(
@@ -345,41 +336,13 @@ export default function InventoryTable() {
         </Table>
       </div>
 
-      {stocks.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={stocks.length} total={response?.total ?? response?.count} pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
     </div>
   );
 }

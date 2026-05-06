@@ -21,14 +21,7 @@ import {
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -56,7 +49,7 @@ export default function TransfersTable() {
   const router = useRouter();
   const t = useTranslations("page_transfers");
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
 
   // Filter state
   const [q, setQ] = useState("");
@@ -83,15 +76,11 @@ export default function TransfersTable() {
   if (appliedFilters.unit_id)
     queryParams.append("unit_id", appliedFilters.unit_id);
 
-  const { response, pending, reFetch } = useGet<{ items: ITransfer[] }>({
+  const { response, pending, reFetch } = useGet<{ items: ITransfer[]; total?: number; count?: number; }>({
     url: `${endpoints.TRANSFERS}?${queryParams.toString()}`,
   });
   const transfers = response?.items || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = transfers.length === limit;
-
-  const [isCreating, setIsCreating] = useState(false);
+const [isCreating, setIsCreating] = useState(false);
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
@@ -327,41 +316,13 @@ export default function TransfersTable() {
         </Table>
       </div>
 
-      {transfers.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={transfers.length} total={response?.total ?? response?.count} pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       {isCreating && (
         <TransferFormModal
