@@ -701,7 +701,8 @@
       "status": "Status",
       "actions": "Actions",
       "no_tasks": "No tasks found",
-      "everything_caught_up": "Everything is caught up! No tasks match your filters."
+      "everything_caught_up": "Everything is caught up! No tasks match your filters.",
+      "pending_approval": "Pending approval"
     },
     "detail": {
       "vouchers_documents": "Vouchers & documents",

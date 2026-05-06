@@ -701,7 +701,8 @@
       "status": "Trạng thái",
       "actions": "Thao tác",
       "no_tasks": "Không tìm thấy công việc",
-      "everything_caught_up": "Mọi thứ đã hoàn tất! Không có công việc nào khớp với bộ lọc."
+      "everything_caught_up": "Mọi thứ đã hoàn tất! Không có công việc nào khớp với bộ lọc.",
+      "pending_approval": "Chờ phê duyệt"
     },
     "detail": {
       "vouchers_documents": "Chứng từ & tài liệu",

@@ -125,14 +125,26 @@ export default function MyTasksTable() {
   const tasks = useMemo(() => response || [], [response]);
 
   const allAuditsCombined = useMemo(() => {
-    const combined = [
-      ...(auditResponse || []),
-      ...(auditPendingApprovalResponse || []),
-    ];
-    // Remove duplicates based on ID
+    const myAudits = (auditResponse || []).map((a) => ({
+      ...a,
+      _isPendingApproval: false,
+    }));
+    const pendingAudits = (auditPendingApprovalResponse || []).map((a) => ({
+      ...a,
+      _isPendingApproval: true,
+    }));
+
+    const combined = [...myAudits, ...pendingAudits];
+    // Remove duplicates based on ID, prioritize pending approval
     const uniqueMap = new Map();
-    combined.forEach((item) => uniqueMap.set(item.id, item));
-    return Array.from(uniqueMap.values()) as IAuditSession[];
+    combined.forEach((item) => {
+      if (!uniqueMap.has(item.id) || item._isPendingApproval) {
+        uniqueMap.set(item.id, item);
+      }
+    });
+    return Array.from(uniqueMap.values()) as (IAuditSession & {
+      _isPendingApproval: boolean;
+    })[];
   }, [auditResponse, auditPendingApprovalResponse]);
 
   const filteredAudits = useMemo(() => {
@@ -161,6 +173,7 @@ export default function MyTasksTable() {
       requester_name: audit?.assignee?.full_name || "",
       step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
       reason: "",
+      waiting_for_approval: audit._isPendingApproval,
     }));
   }, [filteredAudits]);
 
@@ -581,12 +594,22 @@ export default function MyTasksTable() {
                     {(localCurrentPage - 1) * 20 + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-2 relative overflow-hidden">
-                    <span
-                      className="block font-semibold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]"
-                      title={task.document_record_number}
-                    >
-                      {task.document_record_number}
-                    </span>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      {task.waiting_for_approval && (
+                        <div
+                          className="shrink-0 bg-emerald-500/10 text-emerald-600 rounded p-0.5"
+                          title={tTable("pending_approval")}
+                        >
+                          <Check size={12} strokeWidth={3} />
+                        </div>
+                      )}
+                      <span
+                        className="block font-semibold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]"
+                        title={task.document_record_number}
+                      >
+                        {task.document_record_number}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="px-4 py-2">
                     <div className="flex items-center gap-2">

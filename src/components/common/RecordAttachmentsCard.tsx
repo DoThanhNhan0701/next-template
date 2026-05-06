@@ -83,6 +83,14 @@ export function RecordAttachmentsCard({
   const isImage = (url: string) =>
     /\.(png|jpg|jpeg|gif|webp)$/i.test(cleanUrl(url));
 
+  const getDisplayName = (url: string) => {
+    const filename = cleanUrl(url).split("/").pop() || "";
+    // Strip UUID prefix: pattern is "<uuid>_<original_name>"
+    const uuidPrefixPattern = /^[0-9a-f-]{36}_(.+)$/i;
+    const match = filename.match(uuidPrefixPattern);
+    return match ? match[1] : filename;
+  };
+
   const getFileIcon = (url: string) => {
     const cleaned = cleanUrl(url);
     const ext = cleaned.split(".").pop()?.toLowerCase();
@@ -213,7 +221,7 @@ export function RecordAttachmentsCard({
                     className="truncate max-w-[200px] hover:underline hover:text-primary transition-colors cursor-pointer"
                     title={isImage(url) ? "Click to preview" : "Click to view"}
                   >
-                    {cleanUrl(url).split("/").pop()}
+                    {getDisplayName(url)}
                   </a>
                   <button
                     type="button"

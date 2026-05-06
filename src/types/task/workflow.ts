@@ -17,6 +17,7 @@ export interface ITask {
     reason: string;
     action_date?: string;
     comment?: string;
+    waiting_for_approval?: boolean;
 }
 
 export type TaskStatus = ITask["status"];
