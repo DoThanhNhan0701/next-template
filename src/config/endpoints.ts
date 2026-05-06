@@ -37,7 +37,7 @@ export const endpoints = getEndPoint("api/v1", {
   PHYSICAL_ASSETS: "physical-assets",
   UNITS: "units/",
   ORG_UNITS: "org",
-  UPLOAD_ATTACHMENTS: "attachments/upload/",
+  UPLOAD_ATTACHMENTS: "attachments/upload//",
   STOCKS: "stocks/",
   RENTALS: "rentals",
   ALLOCATIONS: "allocations/",
