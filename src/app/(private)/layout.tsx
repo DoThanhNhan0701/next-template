@@ -70,15 +70,15 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
         permission: "assets:view",
       },
       {
+        title: t("inventory"),
+        url: "/inventory",
+        icon: Package,
+      },
+      {
         title: t("rentals"),
         url: "/rentals",
         icon: Key,
         permission: "rentals:manage",
-      },
-      {
-        title: t("inventory"),
-        url: "/inventory",
-        icon: Package,
       },
       {
         title: t("transfers"),

@@ -297,7 +297,7 @@ export default function WorkflowTemplateFormModal({
       steps: data.steps.map((s, i) => ({ ...s, step_order: i + 1 })),
     };
     const url = isEditing
-      ? `${endpoints.TEMPLATES}${templateToEdit.id}/`
+      ? `${endpoints.TEMPLATES}/${templateToEdit.id}`
       : endpoints.TEMPLATES;
     const method = isEditing ? "put" : "post";
 

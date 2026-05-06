@@ -62,6 +62,11 @@ export const getDocumentDetailUrl = (actionType: string, refId: number): string 
         liquidation: `/liquidations/${refId}`,
         "thanh lý": `/liquidations/${refId}`,
         "disposal": `/liquidations/${refId}`,
+
+        // Audit
+        audit: `/audits/sessions/${refId}`,
+        "kiểm kê": `/audits/sessions/${refId}`,
+        "xác nhận kiểm kê": `/audits/sessions/${refId}`,
     };
 
     // Try exact match first

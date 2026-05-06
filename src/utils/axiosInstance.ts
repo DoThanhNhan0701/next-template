@@ -38,6 +38,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    // Strip trailing slashes from the URL
+    if (config.url && config.url.endsWith('/')) {
+      config.url = config.url.slice(0, -1);
+    }
+
     const accessToken = getClientCookie(ACCESS_TOKEN);
     config.headers.Authorization = `Bearer ${accessToken}`;
 
