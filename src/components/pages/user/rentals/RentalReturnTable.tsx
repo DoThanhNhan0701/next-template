@@ -181,28 +181,28 @@ export default function RentalReturnTable() {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[140px]">
                 {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("table.customer")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[140px]">
                 {t("table.contract")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.return_location")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[130px]">
                 {t("table.return_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 text-center w-[140px]">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -240,18 +240,18 @@ export default function RentalReturnTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                       <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-2">
-                          <User size={12} className="text-muted-foreground" />
-                          <span className="font-medium text-foreground/80">
+                          <User size={12} className="text-muted-foreground shrink-0" />
+                          <span className="font-medium text-foreground/80 truncate">
                             {rentalReturn.rental.customer.name}
                           </span>
                         </div>
                         {rentalReturn.rental.customer.email && (
                           <div className="flex items-center gap-1.5">
-                            <Mail size={12} className="text-muted-foreground" />
-                            <span className="text-xs">
+                            <Mail size={12} className="text-muted-foreground shrink-0" />
+                            <span className="text-xs truncate">
                               {rentalReturn.rental.customer.email}
                             </span>
                           </div>

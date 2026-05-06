@@ -15,13 +15,13 @@ import {
   X,
 } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -76,11 +76,15 @@ export default function TransfersTable() {
   if (appliedFilters.unit_id)
     queryParams.append("unit_id", appliedFilters.unit_id);
 
-  const { response, pending, reFetch } = useGet<{ items: ITransfer[]; total?: number; count?: number; }>({
+  const { response, pending, reFetch } = useGet<{
+    items: ITransfer[];
+    total?: number;
+    count?: number;
+  }>({
     url: `${endpoints.TRANSFERS}?${queryParams.toString()}`,
   });
   const transfers = response?.items || [];
-const [isCreating, setIsCreating] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
@@ -183,41 +187,44 @@ const [isCreating, setIsCreating] = useState(false);
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
-                {t("table.transfer_info")}
+              <TableHead className="font-semibold h-10 px-4 w-[130px]">
+                {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+                {t("table.transfer_type")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("table.asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[240px]">
                 {t("table.from_to")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {t("table.status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.reason")}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={9} rows={6} />
             ) : transfers.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={9}
                 icon={FileText}
                 message={t("table.no_transfers_found")}
                 description={t("table.no_transfers_description")}
@@ -232,22 +239,22 @@ const [isCreating, setIsCreating] = useState(false);
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
-                        <FileText size={18} />
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
+                        <FileText size={16} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-sm">
-                          {item.record_number}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground font-medium">
-                          {t("detail.type")}: {item.transfer_type}
-                        </span>
-                      </div>
+                      <span className="font-semibold text-sm truncate">
+                        {item.record_number}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
+                  <TableCell className="px-4 py-3 text-center">
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {item.transfer_type}
+                    </span>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-center">
                     <div className="flex items-center gap-1.5">
                       <Calendar
                         size={12}
@@ -256,10 +263,10 @@ const [isCreating, setIsCreating] = useState(false);
                       <span>{formatDate(item.transfer_date)}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
                     <div className="flex flex-col gap-1">
                       <span
-                        className="font-semibold text-sm truncate max-w-[200px]"
+                        className="font-semibold text-sm truncate"
                         title={item.asset_name}
                       >
                         {item.asset_name}
@@ -269,36 +276,28 @@ const [isCreating, setIsCreating] = useState(false);
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
                     <div className="flex items-center gap-2 text-xs">
                       <span
-                        className={
-                          item.from_name
-                            ? "font-medium"
-                            : "italic text-muted-foreground"
-                        }
+                        className={`truncate ${item.from_name ? "font-medium" : "italic text-muted-foreground"}`}
                       >
                         {item.from_name || "—"}
                       </span>
                       <ArrowRight
                         size={12}
-                        className="text-muted-foreground/50"
+                        className="text-muted-foreground/50 shrink-0"
                       />
                       <span
-                        className={
-                          item.to_name
-                            ? "font-medium"
-                            : "italic text-muted-foreground"
-                        }
+                        className={`truncate ${item.to_name ? "font-medium" : "italic text-muted-foreground"}`}
                       >
                         {item.to_name || "—"}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-medium">
+                  <TableCell className="px-4 py-3 text-center font-medium">
                     {item.total_assets}
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-3 text-center">
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
@@ -306,8 +305,10 @@ const [isCreating, setIsCreating] = useState(false);
                       {item.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason || t("detail.no_reason")}
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <span className="text-xs text-muted-foreground italic truncate block">
+                      {item.reason || t("detail.no_reason")}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))
@@ -319,7 +320,9 @@ const [isCreating, setIsCreating] = useState(false);
       <TablePagination
         skip={skip}
         limit={limit}
-        count={transfers.length} total={response?.total ?? response?.count} pending={pending}
+        count={transfers.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

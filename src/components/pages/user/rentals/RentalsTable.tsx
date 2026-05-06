@@ -232,31 +232,31 @@ return (
         </div>
       </div>
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[120px]">
                 {t("table.rental_record")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[200px]">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[160px]">
                 {t("table.customer")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("table.total_assets")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("table.reason")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[130px]">
                 {t("table.lease_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 text-center w-[140px]">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -286,8 +286,8 @@ return (
                       {rental.record_number}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col max-w-[200px]">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                    <div className="flex flex-col">
                       <span
                         className="font-medium text-sm text-foreground/90 group-hover:text-primary transition-colors truncate"
                         title={rental.asset_name}
@@ -310,9 +310,9 @@ return (
                   <TableCell className="px-4 py-1.5 text-center font-medium">
                     {rental.total_assets || 0}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <span
-                      className="text-xs text-muted-foreground italic truncate max-w-[200px] block"
+                      className="text-xs text-muted-foreground italic truncate block"
                       title={rental.reason}
                     >
                       {rental.reason || "—"}

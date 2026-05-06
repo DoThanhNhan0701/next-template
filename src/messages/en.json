@@ -1353,6 +1353,8 @@
     },
     "table": {
       "no": "No",
+      "record_number": "Record no.",
+      "transfer_type": "Type",
       "transfer_info": "Transfer",
       "date": "Date",
       "asset_details": "Asset",

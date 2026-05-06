@@ -1353,6 +1353,8 @@
     },
     "table": {
       "no": "STT",
+      "record_number": "Số phiếu",
+      "transfer_type": "Loại",
       "transfer_info": "Điều chuyển",
       "date": "Ngày",
       "asset_details": "Tài sản",
