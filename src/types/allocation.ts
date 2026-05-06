@@ -15,6 +15,8 @@ export interface IAllocationSummary {
   reason: string;
   status: string;
   status_color: string;
+  from_name: string;
+  to_name: string;
 }
 
 export interface IAllocationDetailItem {

@@ -244,6 +244,9 @@ export default function AllocationSummaryTable() {
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.allocated_to")}
               </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.from_to")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.quantity")}
               </TableHead>
@@ -260,10 +263,10 @@ export default function AllocationSummaryTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : allocations.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={8}
                 icon={ClipboardList}
                 message={t("table.empty_allocation_title")}
                 description={t("table.empty_allocation_desc")}
@@ -304,6 +307,17 @@ export default function AllocationSummaryTable() {
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1">
                           <span>{alloc.unit_name || "-"}</span>
                         </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-1.5">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-muted-foreground">
+                          {alloc.from_name || "-"}
+                        </span>
+                        <span className="text-muted-foreground/30">→</span>
+                        <span className="text-foreground/80 font-medium">
+                          {alloc.to_name || "-"}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center font-medium">

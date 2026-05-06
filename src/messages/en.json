@@ -1536,6 +1536,7 @@
       "asset": "Asset",
       "allocated_to": "Allocated To",
       "recovered_from": "Recovered From",
+      "from_to": "From / To",
       "quantity": "Quantity",
       "reason": "Reason",
       "notes": "Notes",

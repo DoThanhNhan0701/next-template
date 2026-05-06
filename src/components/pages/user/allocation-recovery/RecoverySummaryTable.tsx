@@ -247,6 +247,9 @@ export default function RecoverySummaryTable() {
               <TableHead className="font-semibold h-10 px-4">
                 {t("table.recovered_from")}
               </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("table.from_to")}
+              </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center">
                 {t("table.quantity")}
               </TableHead>
@@ -263,10 +266,10 @@ export default function RecoverySummaryTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : recoveries.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={8}
                 icon={ClipboardList}
                 message={t("table.empty_recovery_title")}
                 description={t("table.empty_recovery_desc")}
@@ -308,6 +311,17 @@ export default function RecoverySummaryTable() {
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1">
                           <span>{recovery.unit_name || "-"}</span>
                         </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-1.5">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-muted-foreground">
+                          {recovery.from_name || "-"}
+                        </span>
+                        <span className="text-muted-foreground/30">→</span>
+                        <span className="text-foreground/80 font-medium">
+                          {recovery.to_name || "-"}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center font-medium">

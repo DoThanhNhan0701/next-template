@@ -15,6 +15,8 @@ export interface IRecoverySummary {
   notes: string | null;
   status: string;
   status_color: string;
+  from_name: string;
+  to_name: string;
 }
 
 export interface IRecoveryDetailItem {
