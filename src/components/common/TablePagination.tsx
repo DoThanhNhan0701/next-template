@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+
 import {
   Pagination,
   PaginationContent,
@@ -76,7 +77,7 @@ export function TablePagination({
   return (
     <div className="flex items-center justify-between gap-3 mt-1 flex-wrap">
       {/* Left: count info + page size selector */}
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-2 text-muted-foreground">
         <span className="font-medium">
           {from}–{to} {total !== undefined ? `/ ${total}` : ""}
         </span>
@@ -87,12 +88,16 @@ export function TablePagination({
             onPageChange(0);
           }}
         >
-          <SelectTrigger className="h-7 w-[85px] text-[10px] sm:text-xs bg-background/50 border-border/50 hover:bg-background/80 transition-all">
+          <SelectTrigger className="">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {PAGE_SIZE_OPTIONS.map((size) => (
-              <SelectItem key={size} value={size.toString()} className="text-xs">
+              <SelectItem
+                key={size}
+                value={size.toString()}
+                className="text-xs"
+              >
                 {size} / trang
               </SelectItem>
             ))}
@@ -108,7 +113,8 @@ export function TablePagination({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                if (skip > 0 && !pending) onPageChange(Math.max(0, skip - limit));
+                if (skip > 0 && !pending)
+                  onPageChange(Math.max(0, skip - limit));
               }}
               className={
                 skip === 0 || pending ? "pointer-events-none opacity-50" : ""
@@ -118,7 +124,9 @@ export function TablePagination({
 
           {pageNumbers ? (
             pageNumbers.map((page) => (
-              <PaginationItem key={typeof page === "string" ? page : `page-${page}`}>
+              <PaginationItem
+                key={typeof page === "string" ? page : `page-${page}`}
+              >
                 {typeof page === "string" ? (
                   <PaginationEllipsis />
                 ) : (

@@ -242,7 +242,11 @@ export default function AssetFormModal({
       old_code: data.old_code || null,
       unit_id: data.unit_id ?? 0,
       measure_unit_id: data.measure_unit_id ?? 0,
-      initial_location_id: data.staff_id ? undefined : 2,
+      initial_location_id: isEditing
+        ? undefined
+        : data.staff_id
+          ? undefined
+          : data.location_id || undefined,
     };
 
     const cleanedData = cleanFormData(rawData);

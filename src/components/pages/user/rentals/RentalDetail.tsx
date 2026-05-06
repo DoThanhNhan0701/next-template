@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-
-import { useDispatch, useSelector } from "react-redux";
 
 import {
   Building2,
@@ -23,8 +22,7 @@ import {
   Phone,
   XCircle,
 } from "lucide-react";
-
-import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
@@ -179,7 +177,9 @@ export default function RentalDetail({ id }: Props) {
                   {detail.record_number}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {t("detail.contract", { number: detail.contract_number || "—" })}
+                  {t("detail.contract", {
+                    number: detail.contract_number || "—",
+                  })}
                 </span>
               </div>
             </div>
@@ -242,9 +242,9 @@ export default function RentalDetail({ id }: Props) {
                     <TableHead className="px-4 h-10 text-xs font-semibold">
                       {t("detail.col_from_location")}
                     </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
+                    {/* <TableHead className="px-4 h-10 text-xs font-semibold">
                       {t("form.location")}
-                    </TableHead>
+                    </TableHead> */}
                     <TableHead className="px-4 h-10 text-xs font-semibold text-center">
                       {t("table.total_assets")}
                     </TableHead>
@@ -285,9 +285,9 @@ export default function RentalDetail({ id }: Props) {
                           {item.from_location.name}
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground">
+                      {/* <TableCell className="px-4 py-3 text-sm text-muted-foreground">
                         {item.lessee_location || ""}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell className="px-4 py-3 text-center">
                         <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
                           {item.quantity}
@@ -439,9 +439,7 @@ export default function RentalDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {isActive
-                ? t("detail.active_msg")
-                : t("detail.completed_msg")}
+              {isActive ? t("detail.active_msg") : t("detail.completed_msg")}
             </p>
           </div>
         </div>

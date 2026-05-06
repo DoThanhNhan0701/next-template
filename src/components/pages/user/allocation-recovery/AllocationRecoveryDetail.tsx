@@ -2,7 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
+
 import {
+  Building2,
   Calendar,
   CheckCircle2,
   ChevronLeft,
@@ -14,10 +16,10 @@ import {
   MapPin,
   Package,
   User,
-  Building2,
   XCircle,
 } from "lucide-react";
 
+import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,14 +35,13 @@ import {
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
-import { ApprovalHistory } from "@/types/task";
+import { cn } from "@/lib/utils";
 import { IAllocationFull } from "@/types/allocation";
 import { IRecoveryFull } from "@/types/recovery";
+import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate, formatDateTime } from "@/utils/date";
-import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
-import { cn } from "@/lib/utils";
 
 interface Props {
   id: string;
@@ -49,7 +50,8 @@ interface Props {
 export default function AllocationRecoveryDetail({ id }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const type = (searchParams.get("type") as "allocation" | "recovery") || "allocation";
+  const type =
+    (searchParams.get("type") as "allocation" | "recovery") || "allocation";
   const t = useTranslations("page_allocation_recovery");
 
   const {
@@ -98,10 +100,14 @@ export default function AllocationRecoveryDetail({ id }: Props) {
           </Button>
           <div className="flex flex-col gap-0.5">
             <h1 className="text-lg font-semibold text-foreground">
-              {isAllocation ? t("detail.allocation_title") : t("detail.recovery_title")}
+              {isAllocation
+                ? t("detail.allocation_title")
+                : t("detail.recovery_title")}
             </h1>
             <span className="text-xs text-muted-foreground">
-              {isAllocation ? t("detail.allocation_subtitle") : t("detail.recovery_subtitle")}
+              {isAllocation
+                ? t("detail.allocation_subtitle")
+                : t("detail.recovery_subtitle")}
             </span>
           </div>
         </div>
@@ -162,7 +168,9 @@ export default function AllocationRecoveryDetail({ id }: Props) {
             <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
               <Package className="w-4 h-4 text-primary" />
               <CardTitle className="text-sm font-semibold text-primary">
-                {isAllocation ? t("detail.allocated_items") : t("detail.recovered_items")}
+                {isAllocation
+                  ? t("detail.allocated_items")
+                  : t("detail.recovered_items")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 flex-1 overflow-auto">
@@ -185,7 +193,10 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                 </TableHeader>
                 <TableBody>
                   {detail.details.map((item, index) => (
-                    <TableRow key={item.id} className="border-border/50 hover:bg-muted/30">
+                    <TableRow
+                      key={item.id}
+                      className="border-border/50 hover:bg-muted/30"
+                    >
                       <TableCell className="px-4 py-3 text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
@@ -201,8 +212,11 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                       </TableCell>
                       <TableCell className="px-4 py-3">
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <MapPin size={13} className="text-primary/60 shrink-0" />
-                          {item.location.name}
+                          <MapPin
+                            size={13}
+                            className="text-primary/60 shrink-0"
+                          />
+                          {item?.location?.name ?? ""}
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-center">
@@ -232,11 +246,17 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    {isAllocation ? t("detail.allocation_date") : t("detail.recovery_date")}
+                    {isAllocation
+                      ? t("detail.allocation_date")
+                      : t("detail.recovery_date")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
-                  {formatDate(isAllocation ? allocation.allocation_date : recovery.recovery_date)}
+                  {formatDate(
+                    isAllocation
+                      ? allocation.allocation_date
+                      : recovery.recovery_date,
+                  )}
                 </span>
               </div>
 
@@ -244,14 +264,19 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User size={15} />
                   <span className="text-xs font-semibold tracking-wider">
-                    {isAllocation ? t("detail.recipient_staff") : t("detail.recovered_from")}
+                    {isAllocation
+                      ? t("detail.recipient_staff")
+                      : t("detail.recovered_from")}
                   </span>
                 </div>
                 <span className="text-sm font-semibold text-foreground">
-                  {isAllocation 
-                    ? (allocation.allocated_to_name || allocation.staff?.full_name || "—")
-                    : (recovery.recovered_from_name || recovery.staff?.full_name || "—")
-                  }
+                  {isAllocation
+                    ? allocation.allocated_to_name ||
+                      allocation.staff?.full_name ||
+                      "—"
+                    : recovery.recovered_from_name ||
+                      recovery.staff?.full_name ||
+                      "—"}
                 </span>
               </div>
 
@@ -260,7 +285,9 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Info size={15} />
                     <span className="text-xs font-semibold tracking-wider">
-                      {isAllocation ? "Mã nhân viên nhận" : "Mã nhân viên thu hồi"}
+                      {isAllocation
+                        ? "Mã nhân viên nhận"
+                        : "Mã nhân viên thu hồi"}
                     </span>
                   </div>
                   <span className="text-sm font-mono text-foreground font-medium">
@@ -281,19 +308,20 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                 </span>
               </div>
 
-              {!isAllocation && (recovery as IRecoveryFull).from_location_obj && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin size={15} />
-                    <span className="text-xs font-semibold tracking-wider">
-                      Vị trí thu hồi
+              {!isAllocation &&
+                (recovery as IRecoveryFull).from_location_obj && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin size={15} />
+                      <span className="text-xs font-semibold tracking-wider">
+                        Vị trí thu hồi
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold text-foreground">
+                      {(recovery as IRecoveryFull).from_location_obj?.name}
                     </span>
                   </div>
-                  <span className="text-sm font-semibold text-foreground">
-                    {(recovery as IRecoveryFull).from_location_obj?.name}
-                  </span>
-                </div>
-              )}
+                )}
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -331,7 +359,10 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                   {isAllocation ? t("detail.reason") : t("detail.notes")}
                 </span>
                 <p className="text-sm text-foreground/80 leading-relaxed italic">
-                  {(isAllocation ? allocation.reason : recovery.notes) || (isAllocation ? t("detail.no_reason") : t("detail.no_notes"))}
+                  {(isAllocation ? allocation.reason : recovery.notes) ||
+                    (isAllocation
+                      ? t("detail.no_reason")
+                      : t("detail.no_notes"))}
                 </p>
               </div>
             </CardContent>
@@ -339,7 +370,9 @@ export default function AllocationRecoveryDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {t("detail.record_is", { status: detail.status_obj?.name.toLowerCase() })}
+              {t("detail.record_is", {
+                status: detail.status_obj?.name.toLowerCase(),
+              })}
             </p>
           </div>
         </div>
@@ -352,7 +385,10 @@ export default function AllocationRecoveryDetail({ id }: Props) {
         onSave={async (newAttachments) => {
           await updateRecord(
             {
-              url: dynamicEndpoints.UPLOAD_ATTACHMENTS(isAllocation ? "allocations" : "recoveries", Number(id)),
+              url: dynamicEndpoints.UPLOAD_ATTACHMENTS(
+                isAllocation ? "allocations" : "recoveries",
+                Number(id),
+              ),
               method: "patch",
               body: newAttachments,
             },
@@ -413,7 +449,10 @@ export default function AllocationRecoveryDetail({ id }: Props) {
               </TableHeader>
               <TableBody>
                 {historyList.map((hist) => (
-                  <TableRow key={hist.id} className="border-border/50 hover:bg-muted/30">
+                  <TableRow
+                    key={hist.id}
+                    className="border-border/50 hover:bg-muted/30"
+                  >
                     <TableCell className="px-4 py-3 text-sm font-semibold">
                       {hist.step_name}
                     </TableCell>
@@ -433,8 +472,8 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                           hist.status === "APPROVED"
                             ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                             : hist.status === "REJECTED"
-                            ? "bg-red-500/10 text-red-500 border-red-500/20"
-                            : "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                              ? "bg-red-500/10 text-red-500 border-red-500/20"
+                              : "bg-amber-500/10 text-amber-600 border-amber-500/20",
                         )}
                       >
                         {hist.status === "APPROVED" ? (
@@ -447,8 +486,8 @@ export default function AllocationRecoveryDetail({ id }: Props) {
                         {hist.status === "APPROVED"
                           ? t("detail.approved")
                           : hist.status === "REJECTED"
-                          ? t("detail.rejected")
-                          : t("detail.pending")}
+                            ? t("detail.rejected")
+                            : t("detail.pending")}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-4 py-3 text-sm text-muted-foreground italic truncate max-w-[200px]">

@@ -224,7 +224,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                             size={13}
                             className="text-primary/60 shrink-0"
                           />
-                          {item.location.name}
+                          {item?.location?.name}
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-3 text-center">
@@ -234,7 +234,8 @@ export default function StockAdjustmentDetail({ id }: Props) {
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                            <ArrowDownCircle size={12} /> {t("detail.stock_out")}
+                            <ArrowDownCircle size={12} />{" "}
+                            {t("detail.stock_out")}
                           </span>
                         )}
                       </TableCell>
