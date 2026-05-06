@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { endpoints } from '@/config/endpoints';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { AxiosResponse } from 'axios';
+import { IAuditSession } from '@/types/audit';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const inFlightRequests: Record<string, Promise<AxiosResponse<any>>> = {};
@@ -21,8 +22,7 @@ const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
   return inFlightRequests[url];
 };
 
-const getAuditCountByStatus = (status: string): Promise<number> => {
-  const url = endpoints.AUDIT_MY_AUDITS;
+const getAuditData = (url: string): Promise<AxiosResponse<IAuditSession[]>> => {
   if (!inFlightRequests[url]) {
     inFlightRequests[url] = axiosInstance.get(url).then(res => {
       delete inFlightRequests[url];
@@ -32,14 +32,29 @@ const getAuditCountByStatus = (status: string): Promise<number> => {
       throw err;
     });
   }
-  return inFlightRequests[url].then(res => {
-    const audits = res.data || [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return audits.filter((a: any) => {
-      if (status === 'PENDING') return a.status_obj?.code === 'PENDING' || a.status_obj?.code === 'COMPLETED';
-      return a.status_obj?.code === status;
-    }).length;
-  });
+  return inFlightRequests[url] as Promise<AxiosResponse<IAuditSession[]>>;
+};
+
+const getAuditCountByStatus = async (status: string): Promise<number> => {
+  const [myAuditsRes, pendingAuditsRes] = await Promise.all([
+    getAuditData(endpoints.AUDIT_MY_AUDITS),
+    getAuditData(endpoints.AUDIT_PENDING_APPROVAL),
+  ]);
+
+  const combined = [
+    ...(myAuditsRes.data || []),
+    ...(pendingAuditsRes.data || []),
+  ];
+
+  // Remove duplicates based on ID
+  const uniqueMap = new Map<number, IAuditSession>();
+  combined.forEach((a) => uniqueMap.set(a.id, a));
+  const audits = Array.from(uniqueMap.values());
+
+  return audits.filter((a) => {
+    if (status === 'PENDING') return a.status_obj?.code === 'PENDING' || a.status_obj?.code === 'COMPLETED';
+    return a.status_obj?.code === status;
+  }).length;
 };
 
 export const actionFetchPendingCount = createAsyncThunk(

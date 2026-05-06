@@ -79,6 +79,7 @@ export default function AssetTable() {
   const [unitId, setUnitId] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [statusCode, setStatusCode] = useState<string>("");
+  const [managementType, setManagementType] = useState<string>("");
 
   // Applied filter state to avoid re-fetching on every keystroke
   const [appliedFilters, setAppliedFilters] = useState({
@@ -86,6 +87,7 @@ export default function AssetTable() {
     unit_id: "",
     category_id: "",
     status_code: "",
+    management_type: "",
   });
 
   // Fetch metadata for filters
@@ -138,6 +140,8 @@ export default function AssetTable() {
     queryParams.append("category_id", appliedFilters.category_id);
   if (appliedFilters.status_code)
     queryParams.append("status_code", appliedFilters.status_code);
+  if (appliedFilters.management_type)
+    queryParams.append("management_type", appliedFilters.management_type);
 
   const { response, pending, reFetch } = useGet<{ items: IPhysicalAsset[] }>({
     url: `${endpoints.PHYSICAL_ASSETS}?${queryParams.toString()}`,
@@ -257,6 +261,27 @@ export default function AssetTable() {
               ))}
             </SelectContent>
           </Select>
+
+          <Select
+            value={managementType}
+            onValueChange={(val) => setManagementType(val === "none" ? "" : val)}
+          >
+            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
+              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
+                <Tag size={16} className="text-muted-foreground/70 shrink-0" />
+                <div className="truncate flex-1 min-w-0">
+                  <SelectValue placeholder={t("filters.management_type")} />
+                </div>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none" className="text-muted-foreground italic">
+                {t("filters.none")}
+              </SelectItem>
+              <SelectItem value="single">{t("table.by_code")}</SelectItem>
+              <SelectItem value="bulk">{t("table.by_quantity")}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Action Group */}
@@ -269,6 +294,7 @@ export default function AssetTable() {
                 unit_id: unitId,
                 category_id: categoryId,
                 status_code: statusCode,
+                management_type: managementType,
               });
             }}
             className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
@@ -284,11 +310,13 @@ export default function AssetTable() {
               setUnitId("");
               setCategoryId("");
               setStatusCode("");
+              setManagementType("");
               setAppliedFilters({
                 q: "",
                 unit_id: "",
                 category_id: "",
                 status_code: "",
+                management_type: "",
               });
               setSkip(0);
             }}

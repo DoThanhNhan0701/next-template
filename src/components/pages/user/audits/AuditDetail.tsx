@@ -37,6 +37,7 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { usePermissions } from "@/hooks/usePermissions";
 import { AppDispatch, RootState } from "@/redux";
 import { updateCount } from "@/redux/slices/task";
 import {
@@ -63,6 +64,7 @@ export default function AuditDetail({ id }: Props) {
   const tMyTasks = useTranslations("page_my_tasks");
   const dispatch = useDispatch<AppDispatch>();
   const { counts } = useSelector((state: RootState) => state.task);
+  const { isSuperAdmin } = usePermissions();
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<IAuditDetailItem | null>(
     null,
@@ -170,7 +172,7 @@ export default function AuditDetail({ id }: Props) {
   };
 
   const mockTask: ITask | null =
-    isMyAudit && session
+    (isMyAudit || isSuperAdmin) && session
       ? {
           id: Number(id) + 1000000,
           instance_id: Number(id),
@@ -226,47 +228,45 @@ export default function AuditDetail({ id }: Props) {
           </div>
         </div>
 
-        {isMyAudit && (
-          <div className="flex items-center gap-2">
-            {session?.status_obj?.code === "PENDING" && (
+        <div className="flex items-center gap-2">
+          {session?.status_obj?.code === "PENDING" && isMyAudit && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setIsAuditCompleteModalOpen(true)}
+              disabled={mutatePending || progressPercentage < 100}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+            >
+              <Check size={16} />
+              {t("detail.complete_audit")}
+            </Button>
+          )}
+
+          {session?.status_obj?.code === "COMPLETED" && isSuperAdmin && (
+            <>
               <Button
                 variant="default"
                 size="sm"
-                onClick={() => setIsAuditCompleteModalOpen(true)}
-                disabled={mutatePending || progressPercentage < 100}
+                onClick={() => setIsAuditApproveModalOpen(true)}
+                disabled={mutatePending}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
               >
                 <Check size={16} />
-                {t("detail.complete_audit")}
+                {tMyTasks("detail.approval_form.approve")}
               </Button>
-            )}
-
-            {session?.status_obj?.code === "COMPLETED" && (
-              <>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => setIsAuditApproveModalOpen(true)}
-                  disabled={mutatePending}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-                >
-                  <Check size={16} />
-                  {tMyTasks("detail.approval_form.approve")}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsAuditRejectModalOpen(true)}
-                  disabled={mutatePending}
-                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-                >
-                  <X size={16} />
-                  {tMyTasks("detail.approval_form.reject")}
-                </Button>
-              </>
-            )}
-          </div>
-        )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAuditRejectModalOpen(true)}
+                disabled={mutatePending}
+                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+              >
+                <X size={16} />
+                {tMyTasks("detail.approval_form.reject")}
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">

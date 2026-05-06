@@ -955,7 +955,8 @@
       "search": "Search",
       "searching": "Searching...",
       "clear": "Clear filters",
-      "none": "(None)"
+      "none": "(None)",
+      "management_type": "Management type"
     },
     "table": {
       "no": "No",

@@ -111,12 +111,32 @@ export default function MyTasksTable() {
     { staleTime: 0 },
   );
 
+  const {
+    response: auditPendingApprovalResponse,
+    pending: auditPendingApprovalPending,
+    reFetch: auditPendingApprovalReFetch,
+  } = useGet<IAuditSession[]>(
+    { url: endpoints.AUDIT_PENDING_APPROVAL },
+    { staleTime: 0 },
+  );
+
   const { mutate, pending: mutatePending } = useMutation();
 
   const tasks = useMemo(() => response || [], [response]);
 
+  const allAuditsCombined = useMemo(() => {
+    const combined = [
+      ...(auditResponse || []),
+      ...(auditPendingApprovalResponse || []),
+    ];
+    // Remove duplicates based on ID
+    const uniqueMap = new Map();
+    combined.forEach((item) => uniqueMap.set(item.id, item));
+    return Array.from(uniqueMap.values()) as IAuditSession[];
+  }, [auditResponse, auditPendingApprovalResponse]);
+
   const filteredAudits = useMemo(() => {
-    return (auditResponse || []).filter((audit) => {
+    return allAuditsCombined.filter((audit) => {
       if (activeTab === "PENDING") {
         return (
           audit.status_obj.code === "PENDING" ||
@@ -125,7 +145,7 @@ export default function MyTasksTable() {
       }
       return audit.status_obj.code === activeTab;
     });
-  }, [auditResponse, activeTab]);
+  }, [allAuditsCombined, activeTab]);
 
   const mappedAudits: ITask[] = useMemo(() => {
     return filteredAudits.map((audit) => ({
@@ -171,7 +191,13 @@ export default function MyTasksTable() {
   const paginatedTasks = useMemo(() => {
     return allTasks.slice((localCurrentPage - 1) * 20, localCurrentPage * 20);
   }, [allTasks, localCurrentPage]);
-  const isPending = pending || auditPending;
+  const isPending =
+    pending || auditPending || auditPendingApprovalPending;
+
+  const reFetchAudits = useCallback(() => {
+    auditReFetch();
+    auditPendingApprovalReFetch();
+  }, [auditReFetch, auditPendingApprovalReFetch]);
 
   const pageNumbers = useMemo(() => {
     const pages: (number | string)[] = [];
@@ -248,7 +274,7 @@ export default function MyTasksTable() {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditApproveModalOpen(false);
-          auditReFetch();
+          reFetchAudits();
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -269,7 +295,7 @@ export default function MyTasksTable() {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditCompleteModalOpen(false);
-          auditReFetch();
+          reFetchAudits();
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -324,7 +350,7 @@ export default function MyTasksTable() {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditRejectModalOpen(false);
-          auditReFetch();
+          reFetchAudits();
         },
         onError: (error) => {
           getApiErrorMessage(error);

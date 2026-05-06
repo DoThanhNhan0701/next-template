@@ -49,6 +49,7 @@ export const endpoints = getEndPoint("api/v1", {
   WORKFLOW_TASKS: "workflows/tasks/",
   STOCK_ADJUSTMENTS: "stock-adjustments",
   AUDIT_MY_AUDITS: "audit/my-audits",
+  AUDIT_PENDING_APPROVAL: "audit/pending-approval",
   AUDIT_SESSIONS: "audit/sessions",
   AUDIT_BATCH_START: "audit/batch-start",
   TREE: 'tree',

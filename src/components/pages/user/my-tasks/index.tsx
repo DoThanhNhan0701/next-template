@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useDispatch } from "react-redux";
 
@@ -26,9 +26,19 @@ export default function MyTasksPage() {
   const { response: audits } = useGet<IAuditSession[]>({
     url: endpoints.AUDIT_MY_AUDITS,
   });
+  const { response: pendingApprovalAudits } = useGet<IAuditSession[]>({
+    url: endpoints.AUDIT_PENDING_APPROVAL,
+  });
+
+  const allAudits = useMemo(() => {
+    const combined = [...(audits || []), ...(pendingApprovalAudits || [])];
+    const uniqueMap = new Map<number, IAuditSession>();
+    combined.forEach((a) => uniqueMap.set(a.id, a));
+    return Array.from(uniqueMap.values());
+  }, [audits, pendingApprovalAudits]);
 
   const getAuditCount = (status: string) => {
-    return (audits || []).filter((a) => {
+    return allAudits.filter((a) => {
       if (status === "PENDING") {
         return (
           a.status_obj?.code === "PENDING" || a.status_obj?.code === "COMPLETED"
@@ -48,7 +58,9 @@ export default function MyTasksPage() {
 
   useEffect(() => {
     dispatch(updateCount({ status: "PENDING", count: pendingCount }));
-  }, [pendingCount, dispatch]);
+    dispatch(updateCount({ status: "APPROVED", count: approvedCount }));
+    dispatch(updateCount({ status: "REJECTED", count: rejectedCount }));
+  }, [pendingCount, approvedCount, rejectedCount, dispatch]);
 
   return (
     <div className="h-full flex flex-col gap-3">

@@ -955,7 +955,8 @@
       "search": "Tìm kiếm",
       "searching": "Đang tìm...",
       "clear": "Xóa bộ lọc",
-      "none": "(Không có)"
+      "none": "(Không có)",
+      "management_type": "Loại quản lý"
     },
     "table": {
       "no": "STT",
