@@ -1325,6 +1325,7 @@
     "table": {
       "no": "No",
       "asset_information": "Asset",
+      "asset_code": "Asset code",
       "location": "Location",
       "management_type": "Management type",
       "quantity": "Quantity",

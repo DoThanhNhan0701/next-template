@@ -308,7 +308,7 @@ export default function AssetTable() {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-auto">
-        <Table className="min-w-300">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-3 w-[50px] text-center">
@@ -357,8 +357,8 @@ export default function AssetTable() {
                     <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {skip + index + 1}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex items-center gap-2 max-w-[380px]">
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                      <div className="flex items-center gap-2 overflow-hidden">
                         <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
                           <Laptop size={16} />
                         </div>

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -23,7 +24,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -82,12 +82,15 @@ export default function InventoryTable() {
 
   queryParams.append("show_zero", appliedFilters.show_zero.toString());
 
-  const { response, pending } = useGet<{ items: IStock[]; total?: number; count?: number; }>({
+  const { response, pending } = useGet<{
+    items: IStock[];
+    total?: number;
+    count?: number;
+  }>({
     url: `${endpoints.STOCKS}?${queryParams.toString()}`,
   });
 
   const stocks = response?.items || [];
-
 
   const handleStockAction = (stock: IStock, type: "INCREASE" | "DECREASE") => {
     dispatch(
@@ -211,35 +214,38 @@ export default function InventoryTable() {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="whitespace-nowrap table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[35%]">
+              <TableHead className="font-semibold h-10 px-4 w-[300px]">
                 {t("table.asset_information")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[100px] text-center">
+                {t("table.asset_code")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[220px] text-center">
                 {t("table.location")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("table.management_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-[100px]">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[20%]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-[200px]">
                 {t("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : stocks.length === 0 ? (
               <TableEmptyRow
-                colSpan={6}
+                colSpan={7}
                 icon={Package}
                 message={t("table.no_items_found")}
                 description={t("table.no_items_description")}
@@ -253,22 +259,26 @@ export default function InventoryTable() {
                   <TableCell className="px-4 py-3 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="flex items-center gap-3">
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <div className="flex items-center gap-3 overflow-hidden">
                       <div className="bg-primary/5 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
                         <Package size={18} />
                       </div>
-                      <div className="flex flex-col">
+                      <div className="flex flex-col min-w-0 flex-1">
                         <span
-                          className="font-semibold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]"
+                          className="font-semibold text-sm group-hover:text-primary transition-colors truncate"
                           title={stock.asset_name}
                         >
                           {stock.asset_name}
                         </span>
-                        <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
-                          {stock.asset_code}
-                        </span>
                       </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex justify-center">
+                      <span className="text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
+                        {stock.asset_code}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
@@ -306,25 +316,25 @@ export default function InventoryTable() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center gap-1.5">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-green-600 hover:bg-green-500/10 hover:text-green-700 text-xs gap-1 disabled:opacity-40"
+                        className="h-7 px-2 text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/15 hover:text-emerald-600 text-xs gap-1.5 disabled:opacity-30 disabled:bg-transparent"
                         onClick={() => handleStockAction(stock, "INCREASE")}
                         disabled={stock.management_type === "unique"}
                       >
-                        <ArrowUpCircle size={13} />
+                        <ArrowUpCircle size={14} className="shrink-0" />
                         {t("table.stock_in")}
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-red-500 hover:bg-red-500/10 hover:text-red-600 text-xs gap-1 disabled:opacity-40"
+                        className="h-7 px-2 text-rose-500 bg-rose-500/5 hover:bg-rose-500/15 hover:text-rose-600 text-xs gap-1.5 disabled:opacity-30 disabled:bg-transparent"
                         onClick={() => handleStockAction(stock, "DECREASE")}
                         disabled={stock.management_type === "unique"}
                       >
-                        <ArrowDownCircle size={13} />
+                        <ArrowDownCircle size={14} className="shrink-0" />
                         {t("table.stock_out")}
                       </Button>
                     </div>
@@ -339,7 +349,9 @@ export default function InventoryTable() {
       <TablePagination
         skip={skip}
         limit={limit}
-        count={stocks.length} total={response?.total ?? response?.count} pending={pending}
+        count={stocks.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

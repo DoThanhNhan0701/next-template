@@ -1325,6 +1325,7 @@
     "table": {
       "no": "STT",
       "asset_information": "Tài sản",
+      "asset_code": "Mã tài sản",
       "location": "Vị trí",
       "management_type": "Loại quản lý",
       "quantity": "Số lượng",
