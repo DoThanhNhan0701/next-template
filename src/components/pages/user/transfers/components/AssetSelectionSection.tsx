@@ -9,6 +9,7 @@ import {
   UseFieldArrayAppend,
   UseFieldArrayRemove,
   UseFormReturn,
+  useWatch,
 } from "react-hook-form";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
@@ -17,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
-  FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import {
@@ -51,6 +51,16 @@ export function AssetSelectionSection({
   watchedType,
 }: AssetSelectionSectionProps) {
   const t = useTranslations("page_transfers");
+
+  const watchedDetails = useWatch({
+    control: form.control,
+    name: "details",
+  });
+
+  const selectedAssetIds = (watchedDetails || [])
+    .map((d) => d?.asset_id)
+    .filter((id): id is number => !!id);
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -88,76 +98,79 @@ export function AssetSelectionSection({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="relative bg-muted/30 border rounded-lg p-3 flex flex-row items-start gap-3"
+            className="bg-muted/30 border rounded-lg p-3 flex items-end gap-2"
           >
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute right-1 top-1 h-6 w-6 text-red-500 hover:bg-red-50"
-              onClick={() => remove(index)}
-              disabled={fields.length === 1}
-            >
-              <Trash size={12} />
-            </Button>
-
-            <div className="flex-1 space-y-1">
-              <FieldGroup className="gap-3">
+            <div className="grid grid-cols-[1fr_120px] gap-2 flex-1">
+              <div className="min-w-0">
                 <Controller
                   name={`details.${index}.asset_id`}
                   control={form.control}
-                  render={({ field: detailField, fieldState }) => (
-                    <Field className="gap-1">
-                      <FieldLabel>{t("form.select_asset")}</FieldLabel>
-                      <Select
-                        onValueChange={(val) =>
-                          detailField.onChange(val === "none" ? 0 : Number(val))
-                        }
-                        value={
-                          detailField.value ? detailField.value.toString() : undefined
-                        }
-                        disabled={
-                          assetsPending ||
-                          (!assetsPending && assets.length === 0)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={
-                              assetsPending
-                                ? t("form.loading")
-                                : assets.length === 0
-                                  ? t("form.no_assets")
-                                  : t("form.select_asset")
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none" className="text-muted-foreground italic">
-                            {t("filters.none")}
-                          </SelectItem>
-                          {assets.map((a) => (
-                            <SelectItem
-                              key={`asset-${a.id}`}
-                              value={a.id.toString()}
-                            >
-                              {a.name} ({a.asset_code}) {t("form.quantity")}:{" "}
-                              {watchedType === "holder"
-                                ? (a?.holding_qty ?? 0)
-                                : (a?.current_stock ?? 0)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FieldError errors={[fieldState.error]} />
-                    </Field>
-                  )}
-                />
-              </FieldGroup>
-            </div>
+                  render={({ field: detailField, fieldState }) => {
+                    const filteredAssets = assets.filter(
+                      (a) =>
+                        a.id === detailField.value ||
+                        !selectedAssetIds.includes(a.id),
+                    );
 
-            <div className="w-32 space-y-1 text-center">
-              <FieldGroup className="gap-3">
+                    return (
+                      <Field className="gap-1 min-w-0">
+                        <FieldLabel>{t("form.select_asset")}</FieldLabel>
+                        <Select
+                          onValueChange={(val) =>
+                            detailField.onChange(
+                              val === "none" ? 0 : Number(val),
+                            )
+                          }
+                          value={
+                            detailField.value
+                              ? detailField.value.toString()
+                              : ""
+                          }
+                          disabled={
+                            assetsPending ||
+                            (!assetsPending && assets.length === 0)
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                assetsPending
+                                  ? t("form.loading")
+                                  : assets.length === 0
+                                    ? t("form.no_assets")
+                                    : t("form.select_asset")
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem
+                              value="none"
+                              className="text-muted-foreground italic"
+                            >
+                              {t("filters.none")}
+                            </SelectItem>
+                            {filteredAssets.map((a) => (
+                              <SelectItem
+                                key={`asset-${a.id}`}
+                                value={a.id.toString()}
+                              >
+                                {a.name} ({a.asset_code}) {t("form.quantity")}:{" "}
+                                {watchedType === "holder"
+                                  ? (a?.holding_qty ?? 0)
+                                  : (a?.current_stock ?? 0)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FieldError errors={[fieldState.error]} />
+                      </Field>
+                    );
+                  }}
+                />
+              </div>
+
+              {/* Quantity */}
+              <div className="min-w-0">
                 <Controller
                   name={`details.${index}.quantity`}
                   control={form.control}
@@ -174,8 +187,20 @@ export function AssetSelectionSection({
                     </Field>
                   )}
                 />
-              </FieldGroup>
+              </div>
             </div>
+
+            {/* Delete */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 shrink-0 text-red-500 hover:bg-red-50"
+              onClick={() => remove(index)}
+              disabled={fields.length === 1}
+            >
+              <Trash size={14} />
+            </Button>
           </div>
         ))}
       </div>

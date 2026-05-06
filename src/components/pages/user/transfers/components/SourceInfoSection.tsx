@@ -96,7 +96,7 @@ export function SourceInfoSection({
                   field.onChange(val === "none" ? 0 : Number(val));
                   form.setValue("details", [{ asset_id: 0, quantity: 1 }]);
                 }}
-                value={field.value ? field.value.toString() : undefined}
+                value={field.value ? field.value.toString() : ""}
               >
                 <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
                   <SelectValue placeholder={t("form.select_source_entity")} />

@@ -52,7 +52,7 @@ export function TargetDestinationSection({
                   <FieldLabel>{t("form.select_specific_personnel")}</FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
-                    value={field.value ? field.value.toString() : undefined}
+                    value={field.value ? field.value.toString() : ""}
                   >
                     <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
                       <SelectValue placeholder={t("form.select_specific_personnel")} />
@@ -90,7 +90,7 @@ export function TargetDestinationSection({
                   </FieldLabel>
                   <Select
                     onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
-                    value={field.value ? field.value.toString() : undefined}
+                    value={field.value ? field.value.toString() : ""}
                   >
                     <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
                       <div className="flex items-center gap-2">
@@ -119,41 +119,6 @@ export function TargetDestinationSection({
           </div>
         )}
 
-        <hr className="border-muted-foreground/10" />
-
-        <Controller
-          name="location_id"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field className="gap-1">
-              <FieldLabel>{t("form.new_geographical_location")}</FieldLabel>
-              <Select
-                onValueChange={(val) =>
-                  field.onChange(val === "none" ? null : Number(val))
-                }
-                value={field.value ? field.value.toString() : "none"}
-              >
-                <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-2 focus:ring-primary/20 hover:border-primary/50">
-                  <SelectValue placeholder={t("form.keep_current_location")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">
-                    {t("form.keep_current_location")}
-                  </SelectItem>
-                  {locations.map((l) => (
-                    <SelectItem
-                      key={`target-geoloc-${l.id}`}
-                      value={l.id.toString()}
-                    >
-                      {l.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
       </div>
 
       <div className="grid grid-cols-3 gap-3">
