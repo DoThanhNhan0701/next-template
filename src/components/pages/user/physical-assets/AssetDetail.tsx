@@ -14,6 +14,9 @@ import {
   Package,
   Printer,
   QrCode,
+  ShieldCheck,
+  Trash2,
+  UserCheck,
   Wrench,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -40,7 +43,7 @@ import {
 import AssetFormModal from "./AssetFormModal";
 import PrintQRModal from "./PrintQRModal";
 import LifecycleTab from "./lifecycle/LifecycleTab";
-import OverviewTab from "./overview/OverviewTab";
+import OverviewTab, { StatItem } from "./overview/OverviewTab";
 
 const AssetModulesTable = dynamic(() => import("./AssetModulesTable"), {
   ssr: false,
@@ -49,6 +52,7 @@ const AssetModulesTable = dynamic(() => import("./AssetModulesTable"), {
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const router = useRouter();
   const t = useTranslations("page_physical_assets");
+  const t2 = useTranslations("page_physical_assets.overview");
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "overview";
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -209,13 +213,49 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           </div>
         </div>
 
+        <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg">
+          <div className="grid grid-cols-2 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
+            <StatItem
+              icon={<Box className="w-4 h-4 text-slate-400" />}
+              label={t2("stats.registered")}
+              value={asset.total_quantity}
+            />
+            <StatItem
+              icon={<ShieldCheck className="w-4 h-4 text-emerald-500" />}
+              label={t2("stats.in_stock")}
+              value={asset.in_stock_quantity}
+              valueColor="text-emerald-600"
+            />
+            <StatItem
+              icon={<UserCheck className="w-4 h-4 text-blue-500" />}
+              label={t2("stats.allocation")}
+              value={asset.allocated_quantity}
+              valueColor="text-blue-600"
+            />
+            <StatItem
+              icon={<Clock className="w-4 h-4 text-amber-500" />}
+              label={t2("stats.rented")}
+              value={asset.rented_quantity}
+            />
+            <StatItem
+              icon={<Wrench className="w-4 h-4 text-rose-400" />}
+              label={t2("stats.maintenance")}
+              value={asset.maintenance_quantity}
+            />
+            <StatItem
+              icon={<Trash2 className="w-4 h-4 text-red-500" />}
+              label={t2("stats.liquidated")}
+              value={asset.liquidated_quantity}
+            />
+          </div>
+        </Card>
+
         <Tabs
           value={activeTab}
           onValueChange={handleTabChange}
           className="w-full"
         >
-          {/* Tabs styled like mockup */}
-          <div className="w-full">
+          <div className="w-full pb-3">
             <TabsList className="grid w-full grid-cols-5 h-16 p-1 bg-muted/40 rounded-lg">
               <TabsTrigger
                 value="overview"
