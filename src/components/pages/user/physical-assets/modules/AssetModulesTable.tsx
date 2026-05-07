@@ -16,31 +16,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dynamicEndpoints } from "@/config/endpoints";
-import { useGet } from "@/hooks/useGet";
 import { IAssetModule } from "@/types/physical-asset";
 import { formatDateTime } from "@/utils/date";
+import { formatNumberWithCommas } from "@/utils/number";
 
 import ModuleFormModal from "./ModuleFormModal";
 
 interface ModulesTableProps {
   assetId: number;
+  modules: IAssetModule[];
+  pending: boolean;
+  reFetch: () => void;
 }
 
-export default function ModulesTable({ assetId }: ModulesTableProps) {
+export default function ModulesTable({
+  assetId,
+  modules,
+  pending,
+  reFetch,
+}: ModulesTableProps) {
   const t = useTranslations("page_physical_assets");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedModule, setSelectedModule] = useState<IAssetModule | null>(
     null,
   );
-
-  const {
-    response: modules = [],
-    pending,
-    reFetch,
-  } = useGet<IAssetModule[]>({
-    url: dynamicEndpoints.PHYSICAL_ASSET_MODULES(assetId),
-  });
 
   if (pending) {
     return (
@@ -125,6 +124,9 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
               <TableHead className="w-[80px] text-center font-semibold h-11 px-2 whitespace-nowrap">
                 {t("detail.modules.table.quantity")}
               </TableHead>
+              <TableHead className="w-[120px] text-right font-semibold h-11 px-2 whitespace-nowrap">
+                {t("detail.modules.table.cost")}
+              </TableHead>
               <TableHead className="w-[120px] font-semibold h-11 px-2 whitespace-nowrap">
                 {t("detail.modules.table.attached_date")}
               </TableHead>
@@ -172,13 +174,16 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
                   <TableCell className="text-center px-2">
                     {module.quantity}
                   </TableCell>
+                  <TableCell className="text-right px-2 font-medium">
+                    {formatNumberWithCommas(module.cost)}
+                  </TableCell>
                   <TableCell className="px-2 text-muted-foreground">
                     {formatDateTime(module.attached_date)}
                   </TableCell>
                   <TableCell className="text-center px-2">
                     <Badge
                       variant="outline"
-                      className={`whitespace-nowrap px-2 py-0 h-5 text-[10px] font-semibold uppercase tracking-wider ${statusStyle}`}
+                      className={`whitespace-nowrap px-2 py-0 h-5 text-[10px] font-semibold tracking-wider ${statusStyle}`}
                     >
                       {t(
                         "detail.modules.form.statuses." +
@@ -190,6 +195,30 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
               );
             })}
           </TableBody>
+          {modules.length > 0 && (
+            <tfoot>
+              <TableRow className="bg-muted/50 font-semibold border-t-2 border-border/60">
+                <TableCell
+                  colSpan={5}
+                  className="text-right py-3 px-4 tracking-wider text-[10px] text-muted-foreground font-bold"
+                >
+                  {t("table.total_summary", { defaultValue: "Tổng cộng" })}
+                </TableCell>
+                <TableCell className="text-center py-3 px-2 text-sm text-primary">
+                  {modules.reduce((acc, curr) => acc + curr.quantity, 0)}
+                </TableCell>
+                <TableCell className="text-right py-3 px-2 text-sm text-primary">
+                  {formatNumberWithCommas(
+                    modules.reduce(
+                      (acc, curr) => acc + curr.cost * curr.quantity,
+                      0,
+                    ),
+                  )}
+                </TableCell>
+                <TableCell colSpan={2} />
+              </TableRow>
+            </tfoot>
+          )}
         </Table>
       </div>
 

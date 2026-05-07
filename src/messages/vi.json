@@ -1032,7 +1032,8 @@
       "in_use": "Sử dụng",
       "rented": "Cho thuê",
       "edit_asset": "Sửa tài sản",
-      "holders_count": "({count} người)"
+      "holders_count": "({count} người)",
+      "total_summary": "Tổng cộng"
     },
     "detail": {
       "back": "Quay lại",
@@ -1139,7 +1140,8 @@
         "allocation": "Cấp phát",
         "rented": "Cho thuê",
         "maintenance": "Bảo trì",
-        "liquidated": "Thanh lý"
+        "liquidated": "Thanh lý",
+        "modules": "Linh kiện"
       },
       "management_info": "Quản lý",
       "fields": {

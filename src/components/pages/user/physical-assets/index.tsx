@@ -1,4 +1,4 @@
-import AssetTable from "./AssetTable";
+import AssetTable from "./list/AssetTable";
 
 export default function PhysicalAssetsPage() {
   return (

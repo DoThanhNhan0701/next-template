@@ -12,19 +12,17 @@ import {
   Clock,
   Info,
   Package,
-  Printer,
   QrCode,
   ShieldCheck,
   Trash2,
   UserCheck,
   Wrench,
 } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
 import { useDispatch } from "react-redux";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints } from "@/config/endpoints";
@@ -36,16 +34,25 @@ import { openRecovery } from "@/redux/slices/recovery";
 import { openRental } from "@/redux/slices/rental";
 import {
   IAssetHolder,
+  IAssetModule,
   IAssetStock,
   IPhysicalAssetDetail,
 } from "@/types/physical-asset";
 
-import AssetFormModal from "./AssetFormModal";
-import PrintQRModal from "./PrintQRModal";
+import AssetFormModal from "./modals/AssetFormModal";
+import PrintQRModal from "./docs/PrintQRModal";
 import LifecycleTab from "./lifecycle/LifecycleTab";
 import OverviewTab, { StatItem } from "./overview/OverviewTab";
 
-const AssetModulesTable = dynamic(() => import("./AssetModulesTable"), {
+const AssetModulesTable = dynamic(() => import("./modules/AssetModulesTable"), {
+  ssr: false,
+});
+
+const SpecsTab = dynamic(() => import("./specs/SpecsTab"), {
+  ssr: false,
+});
+
+const DocsTab = dynamic(() => import("./docs/DocsTab"), {
   ssr: false,
 });
 
@@ -126,6 +133,14 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
 
   const { response: stocks } = useGet<IAssetStock[]>(
     { url: dynamicEndpoints.PHYSICAL_ASSET_STOCK(Number(id)) },
+    { deps: [Number(id)] },
+  );
+  const {
+    response: modules = [],
+    pending: modulesPending,
+    reFetch: modulesReFetch,
+  } = useGet<IAssetModule[]>(
+    { url: dynamicEndpoints.PHYSICAL_ASSET_MODULES(Number(id)) },
     { deps: [Number(id)] },
   );
 
@@ -214,7 +229,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         </div>
 
         <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg">
-          <div className="grid grid-cols-2 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
+          <div className="grid grid-cols-2 lg:grid-cols-7 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
             <StatItem
               icon={<Box className="w-4 h-4 text-slate-400" />}
               label={t2("stats.registered")}
@@ -246,6 +261,12 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               icon={<Trash2 className="w-4 h-4 text-red-500" />}
               label={t2("stats.liquidated")}
               value={asset.liquidated_quantity}
+            />
+            <StatItem
+              icon={<Package className="w-4 h-4 text-indigo-400" />}
+              label={t2("stats.modules")}
+              value={(modules ?? []).length}
+              valueColor="text-indigo-600"
             />
           </div>
         </Card>
@@ -317,7 +338,12 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             />
           </TabsContent>
           <TabsContent value="modules" className="mt-3">
-            <AssetModulesTable assetId={asset.id} />
+            <AssetModulesTable
+              modules={modules ?? []}
+              pending={modulesPending}
+              reFetch={modulesReFetch}
+              assetId={asset.id}
+            />
           </TabsContent>
           <TabsContent
             value="history"
@@ -329,150 +355,17 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             value="specs"
             className="mt-3 outline-none focus-visible:ring-0"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-              <div className="lg:col-span-2">
-                {asset.specifications ? (
-                  <div className="rounded-xl border border-border/50 overflow-hidden h-full">
-                    <div className="bg-muted/40 px-4 py-1.5 border-b border-border/50 flex items-center gap-2">
-                      <Wrench className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-semibold text-primary">
-                        {t("detail.specs.title")}
-                      </span>
-                    </div>
-                    <div className="px-4 py-4">
-                      <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
-                        {asset.specifications}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-8 text-center text-sm text-muted-foreground rounded-xl border border-border/50 bg-muted/10 h-full flex items-center justify-center">
-                    {t("detail.specs.no_specs")}
-                  </div>
-                )}
-              </div>
-              <div className="lg:col-span-1">
-                <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg h-full flex flex-col">
-                  <CardHeader className="py-4 flex-none items-center justify-center border-b border-border/40">
-                    <CardTitle className="text-sm font-semibold text-foreground/70">
-                      {t("detail.specs.model_image")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-3 flex-1 flex flex-col">
-                    <div className="aspect-square bg-muted/20 rounded-lg flex items-center justify-center border border-border/20 mb-6 max-h-62.5">
-                      <Box className="w-12 h-12 text-muted-foreground/30" />
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                        <span className="text-sm text-muted-foreground">
-                          {t("detail.specs.model")}
-                        </span>
-                        <span className="text-sm font-medium text-foreground">
-                          {asset.model || "—"}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                        <span className="text-sm text-muted-foreground">
-                          {t("detail.specs.serial_number")}
-                        </span>
-                        <span className="text-sm font-medium text-foreground">
-                          {asset.serial_number || "—"}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                        <span className="text-sm text-muted-foreground">
-                          {t("detail.specs.management_type")}
-                        </span>
-                        <span className="text-sm font-medium text-foreground">
-                          {asset.management_type || "—"}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-0.5 border-t border-border/20 pt-3">
-                        <span className="text-sm text-muted-foreground">
-                          {t("detail.specs.quantity")}
-                        </span>
-                        <span className="text-sm font-semibold text-foreground">
-                          {asset.quantity ?? "—"}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+            <SpecsTab asset={asset} />
           </TabsContent>
           <TabsContent
             value="docs"
             className="mt-3 outline-none focus-visible:ring-0"
           >
-            <div className="flex flex-col items-center gap-3 py-8">
-              <div className="flex flex-col items-center gap-2">
-                <h3 className="text-sm font-semibold text-foreground">
-                  {t("detail.docs.qr_title")}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {t("detail.docs.qr_description", { code: asset.asset_code })}
-                </p>
-              </div>
-              <div
-                id="qr-print-area"
-                className="flex gap-3 items-center p-6 bg-white rounded-xl border border-border/60 shadow-sm max-w-lg"
-              >
-                {/* QR Code */}
-                <div className="shrink-0">
-                  <QRCodeSVG value={asset.asset_code} size={160} level="H" />
-                </div>
-
-                {/* Info */}
-                <div className="flex flex-col gap-3 flex-1 min-w-0">
-                  <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                      {t("detail.docs.preview.code")}
-                    </span>
-                    <span className="font-mono text-base font-bold text-gray-900 tracking-wider">
-                      {asset.asset_code}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 pb-3 border-b border-gray-100">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                      {t("detail.docs.preview.owner")}
-                    </span>
-                    <span className="text-sm font-semibold text-gray-800">
-                      {holders?.[0]?.name || "—"}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-1 pb-3 border-b border-gray-100">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
-                      {t("detail.docs.preview.importance")}
-                    </span>
-                    {asset.importance_obj ? (
-                      <span
-                        className="text-sm font-bold w-fit"
-                        style={{ color: asset.importance_obj.color }}
-                      >
-                        {asset.importance_obj.name}
-                      </span>
-                    ) : (
-                      <span className="text-sm font-semibold text-gray-800">
-                        —
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400 text-center">
-                    RAINSCALES VIETNAM JSC.
-                  </span>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={() => setIsPrintModalOpen(true)}
-              >
-                <Printer className="w-4 h-4" />
-                {t("detail.docs.print_qr")}
-              </Button>
-            </div>
+            <DocsTab
+              asset={asset}
+              holders={holders ?? []}
+              onPrintQR={() => setIsPrintModalOpen(true)}
+            />
           </TabsContent>
         </Tabs>
       </div>

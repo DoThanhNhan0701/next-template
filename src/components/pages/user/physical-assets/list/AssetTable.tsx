@@ -51,7 +51,7 @@ import { IStatus } from "@/types/status";
 import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
-import AssetFormModal from "./AssetFormModal";
+import AssetFormModal from "../modals/AssetFormModal";
 
 export default function AssetTable() {
   const router = useRouter();
