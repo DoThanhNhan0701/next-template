@@ -1050,7 +1050,8 @@
         "overview": "Overview",
         "history": "History",
         "specs": "Specs",
-        "docs": "QR & Docs"
+        "docs": "QR & Docs",
+        "modules": "Modules"
       },
       "specs": {
         "title": "Specs",
@@ -1069,6 +1070,62 @@
           "code": "Code",
           "owner": "Owner",
           "importance": "Importance level"
+        }
+      },
+      "modules": {
+        "title": "Modules list",
+        "no_modules": "No modules attached to this asset yet",
+        "table": {
+          "name": "Module name",
+          "code": "Module code",
+          "type": "Type",
+          "serial": "Serial number",
+          "model": "Model",
+          "quantity": "Quantity",
+          "cost": "Cost",
+          "purchase_date": "Purchase date",
+          "warranty": "Warranty expiration",
+          "status": "Status",
+          "attached_date": "Attached date"
+        },
+        "form": {
+          "title": "Add new module",
+          "add_button": "Add module",
+          "loading": "Loading...",
+          "cancel_button": "Cancel",
+          "fields": {
+            "name": "Module name",
+            "code": "Module code (auto-gen if empty)",
+            "type": "Module type",
+            "status": "Status",
+            "serial": "Serial Number",
+            "model": "Model / Brand",
+            "quantity": "Quantity",
+            "cost": "Cost (VNĐ)",
+            "purchase_date": "Purchase date",
+            "warranty": "Warranty expiration",
+            "notes": "Notes"
+          },
+          "placeholders": {
+            "name": "e.g. Dell 24 inch Monitor",
+            "code": "e.g. MOD000000001",
+            "serial": "SN...",
+            "model": "e.g. Dell P2422H",
+            "notes": "Additional info..."
+          },
+          "types": {
+            "peripheral": "Peripheral",
+            "component": "Component",
+            "accessory": "Accessory",
+            "license": "License",
+            "sim_card": "SIM Card"
+          },
+          "statuses": {
+            "active": "Active",
+            "damaged": "Damaged",
+            "lost": "Lost",
+            "returned": "Returned"
+          }
         }
       }
     },

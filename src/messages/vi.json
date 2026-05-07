@@ -1050,7 +1050,8 @@
         "overview": "Tổng quan",
         "history": "Lịch sử",
         "specs": "Thông số",
-        "docs": "QR & Tài liệu"
+        "docs": "QR & Tài liệu",
+        "modules": "Linh kiện"
       },
       "specs": {
         "title": "Thông số",
@@ -1069,6 +1070,62 @@
           "code": "Mã",
           "owner": "Sở hữu",
           "importance": "Mức độ quan trọng"
+        }
+      },
+      "modules": {
+        "title": "Danh sách linh kiện",
+        "no_modules": "Chưa có linh kiện nào được gắn vào tài sản này",
+        "table": {
+          "name": "Tên linh kiện",
+          "code": "Mã linh kiện",
+          "type": "Loại",
+          "serial": "Số serial",
+          "model": "Model",
+          "quantity": "Số lượng",
+          "cost": "Nguyên giá",
+          "purchase_date": "Ngày mua",
+          "warranty": "Hết hạn bảo hành",
+          "status": "Trạng thái",
+          "attached_date": "Ngày gắn"
+        },
+        "form": {
+          "title": "Thêm module mới",
+          "add_button": "Thêm module",
+          "loading": "Đang tải...",
+          "cancel_button": "Hủy",
+          "fields": {
+            "name": "Tên module",
+            "code": "Mã module (tự sinh nếu để trống)",
+            "type": "Loại module",
+            "status": "Trạng thái",
+            "serial": "Serial Number",
+            "model": "Model / Hãng",
+            "quantity": "Số lượng",
+            "cost": "Giá trị (VNĐ)",
+            "purchase_date": "Ngày mua",
+            "warranty": "Hạn bảo hành",
+            "notes": "Ghi chú"
+          },
+          "placeholders": {
+            "name": "VD: Màn hình Dell 24 inch",
+            "code": "VD: MOD000000001",
+            "serial": "SN...",
+            "model": "VD: Dell P2422H",
+            "notes": "Thông tin bổ sung..."
+          },
+          "types": {
+            "peripheral": "Thiết bị ngoại vi",
+            "component": "Linh kiện",
+            "accessory": "Phụ kiện",
+            "license": "Bản quyền",
+            "sim_card": "SIM Card"
+          },
+          "statuses": {
+            "active": "Đang dùng",
+            "damaged": "Hỏng",
+            "lost": "Mất",
+            "returned": "Đã trả"
+          }
         }
       }
     },

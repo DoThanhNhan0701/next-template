@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import {
@@ -10,6 +11,7 @@ import {
   Box,
   Clock,
   Info,
+  Package,
   Printer,
   QrCode,
   Wrench,
@@ -39,6 +41,10 @@ import AssetFormModal from "./AssetFormModal";
 import PrintQRModal from "./PrintQRModal";
 import LifecycleTab from "./lifecycle/LifecycleTab";
 import OverviewTab from "./overview/OverviewTab";
+
+const AssetModulesTable = dynamic(() => import("./AssetModulesTable"), {
+  ssr: false,
+});
 
 export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const router = useRouter();
@@ -210,7 +216,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         >
           {/* Tabs styled like mockup */}
           <div className="w-full">
-            <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/40 rounded-lg">
+            <TabsList className="grid w-full grid-cols-5 h-16 p-1 bg-muted/40 rounded-lg">
               <TabsTrigger
                 value="overview"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
@@ -245,6 +251,15 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 <QrCode className="w-4 h-4" />
                 <span className="text-sm font-medium">
                   {t("detail.tabs.docs")}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="modules"
+                className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
+              >
+                <Package className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {t("detail.tabs.modules")}
                 </span>
               </TabsTrigger>
             </TabsList>
@@ -416,6 +431,9 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 {t("detail.docs.print_qr")}
               </Button>
             </div>
+          </TabsContent>
+          <TabsContent value="modules" className="mt-0">
+            <AssetModulesTable assetId={asset.id} />
           </TabsContent>
         </Tabs>
       </div>

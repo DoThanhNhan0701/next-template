@@ -184,3 +184,21 @@ export interface IAssetHolder {
   source_number: string;
   acquired_at: string;
 }
+export interface IAssetModule {
+  id: number;
+  asset_id: number;
+  name: string;
+  module_code: string;
+  module_type: string;
+  serial_number: string | null;
+  model: string | null;
+  quantity: number;
+  cost: number;
+  purchase_date: string | null;
+  warranty_expiration: string | null;
+  status: string;
+  attached_date: string;
+  detached_date: string | null;
+  notes: string | null;
+  created_at: string;
+}
