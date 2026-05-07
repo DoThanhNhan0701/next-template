@@ -24,7 +24,7 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 // New modular components
 import { ActionHeader } from "./task-detail/ActionHeader";
 import { ApprovalHistory } from "./task-detail/ApprovalHistory";
-import { DocumentInfo } from "./task-detail/DocumentInfo";
+import { DocumentDetailTable, DocumentInfo } from "./task-detail/DocumentInfo";
 import { SidebarInfo } from "./task-detail/SidebarInfo";
 import { TaskApprovalForm } from "./task-detail/TaskApprovalForm";
 import { getStatusInfo } from "./task-detail/status-utils";
@@ -46,35 +46,26 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     response: detail,
     pending: detailPending,
     reFetch: reFetchDetail,
-  } = useGet<DocumentDetail>(
-    {
-      url: dynamicEndpoints.DOCUMENT_DETAIL(documentType, Number(id)),
-    },
-    { staleTime: 0 },
-  );
+  } = useGet<DocumentDetail>({
+    url: dynamicEndpoints.DOCUMENT_DETAIL(documentType, Number(id)),
+  });
 
   const {
     response: historyList,
     pending: historyPending,
     reFetch: reFetchHistory,
-  } = useGet<IApprovalHistory[]>(
-    {
-      url: dynamicEndpoints.WORKFLOW_HISTORY(documentType, Number(id)),
-    },
-    { staleTime: 0 },
-  );
+  } = useGet<IApprovalHistory[]>({
+    url: dynamicEndpoints.WORKFLOW_HISTORY(documentType, Number(id)),
+  });
 
   const { response: myTasksResponse, reFetch: reFetchMyTasks } = useGet<
     ITask[]
-  >(
-    {
-      url: `${endpoints.WORKFLOW_TASKS}me`,
-      config: {
-        params: { status: status },
-      },
+  >({
+    url: `${endpoints.WORKFLOW_TASKS}me`,
+    config: {
+      params: { status: status },
     },
-    { staleTime: 0 },
-  );
+  });
 
   const activeTask = (myTasksResponse || []).find(
     (t) => t.document_id === Number(id) && t.document_type === documentType,
@@ -136,19 +127,22 @@ export default function TaskDetail({ id }: TaskDetailProps) {
         onAction={handleAction}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-3">
-        <div className="lg:col-span-2 flex flex-col gap-3">
+      {/* Info Sections - Multi-column grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 mt-2">
+        <div className="lg:col-span-9">
           <DocumentInfo detail={detail} documentType={documentType} />
         </div>
-
-        <div className="flex flex-col gap-3">
+        <div className="lg:col-span-3">
           <SidebarInfo detail={detail} />
         </div>
       </div>
 
+      {/* Full Width Table */}
+      <DocumentDetailTable detail={detail} documentType={documentType} />
+
       <RecordAttachmentsCard
         title={t("vouchers_documents")}
-        className="mt-3"
+        className="mt-3 rounded-md"
         initialAttachments={
           (detail.attachments || []).map(
             (a: string | { url?: string; file_path?: string }) =>

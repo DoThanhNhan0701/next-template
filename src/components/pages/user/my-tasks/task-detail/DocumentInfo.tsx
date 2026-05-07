@@ -58,6 +58,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       label: string;
       value: React.ReactNode;
       badge?: { label: string; variant?: string };
+      fullWidth?: boolean;
     }> = [];
 
     // Helper to push fields
@@ -67,8 +68,9 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       label: string,
       value: React.ReactNode,
       badge?: { label: string; variant?: string },
+      fullWidth?: boolean,
     ) => {
-      fields.push({ icon, iconColor: color, label, value, badge });
+      fields.push({ icon, iconColor: color, label, value, badge, fullWidth });
     };
 
     if (documentType === "allocation" || isAllocationDocument(detail)) {
@@ -201,6 +203,8 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           <span className="text-sm font-medium text-muted-foreground italic">
             {recovery.notes}
           </span>,
+          undefined,
+          true,
         );
       }
 
@@ -360,6 +364,8 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         <span className="text-sm font-medium text-muted-foreground italic">
           {rReturn.notes || "-"}
         </span>,
+        undefined,
+        true,
       );
     } else if (documentType === "transfer" || isTransferDocument(detail)) {
       const transfer = detail as TransferDocument;
@@ -382,7 +388,12 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         tFields("from"),
         transfer.from_name,
       );
-      addField(User, "bg-green-500/10 text-green-500", tFields("to"), transfer.to_name);
+      addField(
+        User,
+        "bg-green-500/10 text-green-500",
+        tFields("to"),
+        transfer.to_name,
+      );
       addField(
         History,
         "bg-emerald-500/10 text-emerald-500",
@@ -502,6 +513,8 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           <span className="text-sm font-medium text-muted-foreground italic">
             {maintenance.notes}
           </span>,
+          undefined,
+          true,
         );
       }
     }
@@ -516,6 +529,8 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         <span className="text-sm font-medium text-muted-foreground italic">
           {commonDetail.reason}
         </span>,
+        undefined,
+        true,
       );
     }
 
@@ -533,7 +548,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         "bg-violet-500/10 text-violet-500",
         tFields("type"),
         liquidation.liquidation_type.charAt(0).toUpperCase() +
-        liquidation.liquidation_type.slice(1),
+          liquidation.liquidation_type.slice(1),
       );
       addField(
         Package,
@@ -566,6 +581,8 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
           <span className="text-sm font-medium text-muted-foreground italic">
             {liquidation.notes}
           </span>,
+          undefined,
+          true,
         );
       }
       if (liquidation.external_link) {
@@ -597,11 +614,25 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.allocated_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.allocated_assets.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.allocated_assets.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.allocated_assets.cols.asset") },
-          { key: "asset_code", label: t("tables.allocated_assets.cols.asset_code") },
-          { key: "location", label: t("tables.allocated_assets.cols.location") },
-          { key: "quantity", label: t("tables.allocated_assets.cols.quantity"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.allocated_assets.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.allocated_assets.cols.location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.allocated_assets.cols.quantity"),
+            align: "center" as const,
+          },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -623,12 +654,30 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.stock_adjustment.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.stock_adjustment.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.stock_adjustment.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.stock_adjustment.cols.asset") },
-          { key: "asset_code", label: t("tables.stock_adjustment.cols.asset_code") },
-          { key: "location", label: t("tables.stock_adjustment.cols.location") },
-          { key: "type", label: t("tables.stock_adjustment.cols.type"), align: "center" as const },
-          { key: "quantity", label: t("tables.stock_adjustment.cols.quantity"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.stock_adjustment.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.stock_adjustment.cols.location"),
+          },
+          {
+            key: "type",
+            label: t("tables.stock_adjustment.cols.type"),
+            align: "center" as const,
+          },
+          {
+            key: "quantity",
+            label: t("tables.stock_adjustment.cols.quantity"),
+            align: "center" as const,
+          },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -649,11 +698,25 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.recovered_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.recovered_assets.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.recovered_assets.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.recovered_assets.cols.asset") },
-          { key: "asset_code", label: t("tables.recovered_assets.cols.asset_code") },
-          { key: "location", label: t("tables.recovered_assets.cols.location") },
-          { key: "quantity", label: t("tables.recovered_assets.cols.quantity"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.recovered_assets.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.recovered_assets.cols.location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.recovered_assets.cols.quantity"),
+            align: "center" as const,
+          },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -673,12 +736,30 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.rental_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.rental_assets.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.rental_assets.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.rental_assets.cols.asset") },
-          { key: "asset_code", label: t("tables.rental_assets.cols.asset_code") },
-          { key: "location", label: t("tables.rental_assets.cols.from_location") },
-          { key: "quantity", label: t("tables.rental_assets.cols.quantity"), align: "center" as const },
-          { key: "rental_revenue", label: t("tables.rental_assets.cols.revenue"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.rental_assets.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.rental_assets.cols.from_location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.rental_assets.cols.quantity"),
+            align: "center" as const,
+          },
+          {
+            key: "rental_revenue",
+            label: t("tables.rental_assets.cols.revenue"),
+            align: "center" as const,
+          },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -699,11 +780,26 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.returned_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.returned_assets.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.returned_assets.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.returned_assets.cols.asset") },
-          { key: "asset_code", label: t("tables.returned_assets.cols.asset_code") },
-          { key: "quantity", label: t("tables.returned_assets.cols.quantity"), align: "center" as const },
-          { key: "condition", label: t("tables.returned_assets.cols.condition"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.returned_assets.cols.asset_code"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.returned_assets.cols.quantity"),
+            align: "center" as const,
+          },
+          {
+            key: "condition",
+            label: t("tables.returned_assets.cols.condition"),
+            align: "center" as const,
+          },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -723,11 +819,28 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.transferred_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.transferred_assets.cols.no"), align: "center" as const },
-          { key: "asset_name", label: t("tables.transferred_assets.cols.asset") },
-          { key: "asset_code", label: t("tables.transferred_assets.cols.asset_code") },
-          { key: "from_location_name", label: t("tables.transferred_assets.cols.from_location") },
-          { key: "quantity", label: t("tables.transferred_assets.cols.quantity"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.transferred_assets.cols.no"),
+            align: "center" as const,
+          },
+          {
+            key: "asset_name",
+            label: t("tables.transferred_assets.cols.asset"),
+          },
+          {
+            key: "asset_code",
+            label: t("tables.transferred_assets.cols.asset_code"),
+          },
+          {
+            key: "from_location_name",
+            label: t("tables.transferred_assets.cols.from_location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.transferred_assets.cols.quantity"),
+            align: "center" as const,
+          },
         ],
         rows: d.details.map((item, index) => ({
           id: item.id,
@@ -747,10 +860,21 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.maintenance_assets.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.maintenance_assets.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.maintenance_assets.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.maintenance_assets.cols.asset") },
-          { key: "asset_code", label: t("tables.maintenance_assets.cols.asset_code") },
-          { key: "quantity", label: t("tables.maintenance_assets.cols.quantity"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.maintenance_assets.cols.asset_code"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.maintenance_assets.cols.quantity"),
+            align: "center" as const,
+          },
           { key: "notes", label: t("tables.maintenance_assets.cols.notes") },
         ],
         rows: d.details.map((item, index) => ({
@@ -771,12 +895,30 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         title: t("tables.disposal_items.title"),
         icon: Package,
         columns: [
-          { key: "no", label: t("tables.disposal_items.cols.no"), align: "center" as const },
+          {
+            key: "no",
+            label: t("tables.disposal_items.cols.no"),
+            align: "center" as const,
+          },
           { key: "asset", label: t("tables.disposal_items.cols.asset") },
-          { key: "asset_code", label: t("tables.disposal_items.cols.asset_code") },
-          { key: "from_location", label: t("tables.disposal_items.cols.from_location") },
-          { key: "quantity", label: t("tables.disposal_items.cols.quantity"), align: "center" as const },
-          { key: "unit_value", label: t("tables.disposal_items.cols.unit_value"), align: "center" as const },
+          {
+            key: "asset_code",
+            label: t("tables.disposal_items.cols.asset_code"),
+          },
+          {
+            key: "from_location",
+            label: t("tables.disposal_items.cols.from_location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.disposal_items.cols.quantity"),
+            align: "center" as const,
+          },
+          {
+            key: "unit_value",
+            label: t("tables.disposal_items.cols.unit_value"),
+            align: "center" as const,
+          },
           {
             key: "remaining_value",
             label: t("tables.disposal_items.cols.remaining_value"),
@@ -808,69 +950,420 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
   if (!formattedData) return null;
 
   return (
-    <Card className="shadow-sm border-border/50 h-full bg-card/60 backdrop-blur-md">
-      <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 py-3 px-4">
+    <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
+      <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
         <div className="flex items-center gap-2">
-          <CardTitle className="text-sm font-semibold text-primary">
+          <CardTitle className="text-xs font-semibold text-primary">
             {formattedData.documentTitle}
           </CardTitle>
         </div>
-        <Badge
-          variant="outline"
-          className={`${getStatusInfo(detail.status_obj?.name).color} px-3 py-1 font-bold text-sm`}
-        >
-          {getStatusInfo(detail.status_obj?.name).label}
-        </Badge>
+        <div className="flex items-center gap-3">
+          <span className="text-base font-bold text-foreground tracking-tight">
+            {detail.record_number}
+          </span>
+          <Badge
+            variant="outline"
+            className={`${getStatusInfo(detail.status_obj?.name).color} px-2 py-0.5 font-bold text-xs`}
+          >
+            {getStatusInfo(detail.status_obj?.name).label}
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent className="p-3">
-        <div className="text-2xl font-bold text-foreground mb-4 tracking-tight">
-          {detail.record_number}
-        </div>
-
-        <div className="grid grid-cols-1 gap-x-3 gap-y-3">
-          {formattedData.fields.map((field, index) => {
-            const IconComponent = field.icon;
-            return (
-              <div
-                key={index}
-                className="flex items-center gap-3 border-b border-border/50 pb-3"
-              >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
+            {formattedData.fields.map((field, index) => {
+              const IconComponent = field.icon;
+              return (
                 <div
-                  className={`w-10 h-10 rounded-full ${field.iconColor} flex items-center justify-center shrink-0`}
+                  key={index}
+                  className={`flex items-center gap-2 border-b border-border/20 py-1.5 last:border-0 ${field.fullWidth ? "md:col-span-2 lg:col-span-3" : ""}`}
                 >
-                  <IconComponent className="w-5 h-5" />
+                <div
+                  className={`w-7 h-7 rounded-full ${field.iconColor} flex items-center justify-center shrink-0`}
+                >
+                  <IconComponent className="w-4 h-4" />
                 </div>
-                <div className="grid grid-cols-[140px_1fr] items-center gap-2 py-0.5">
-                  <span className="text-sm font-bold text-muted-foreground tracking-wider">
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-tight">
                     {field.label}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 overflow-hidden">
                     {field.badge && (
                       <Badge
                         variant="secondary"
-                        className="text-sm h-5 bg-muted text-muted-foreground px-2 font-bold"
+                        className="text-[10px] h-4 bg-muted text-muted-foreground px-1 border-0"
                       >
                         {field.badge.label}
                       </Badge>
                     )}
-                    {typeof field.value === "string" ||
-                      typeof field.value === "number" ? (
-                      <span className="text-sm font-bold text-foreground">
-                        {field.value}
-                      </span>
-                    ) : (
-                      field.value
-                    )}
+                    <div className="truncate text-xs font-semibold text-foreground">
+                      {typeof field.value === "string" ||
+                      typeof field.value === "number"
+                        ? field.value
+                        : field.value}
+                    </div>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
+      </CardContent>
+    </Card>
+  );
+};
 
-        {formattedData.detailItems && (
-          <DetailTable detailItems={formattedData.detailItems} />
-        )}
+export const DocumentDetailTable = ({
+  detail,
+  documentType,
+}: DocumentInfoProps) => {
+  const t = useTranslations("page_my_tasks.detail.document_info");
+
+  const detailItems = useMemo(() => {
+    if (!detail) return null;
+
+    // Table Data (Detail Items) - Reusing logic from above but simplified
+    if (
+      (documentType === "allocation" || isAllocationDocument(detail)) &&
+      (detail as AllocationDocument).details?.length > 0
+    ) {
+      const d = detail as AllocationDocument;
+      return {
+        title: t("tables.allocated_assets.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.allocated_assets.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.allocated_assets.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.allocated_assets.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.allocated_assets.cols.location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.allocated_assets.cols.quantity"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.location?.name || "-",
+          quantity: item.quantity,
+        })),
+      };
+    } else if (
+      (documentType === "stock_in" ||
+        documentType === "stock_out" ||
+        isStockAdjustmentDocument(detail)) &&
+      (detail as StockAdjustmentDocument).details?.length > 0
+    ) {
+      const d = detail as StockAdjustmentDocument;
+      return {
+        title: t("tables.stock_adjustment.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.stock_adjustment.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.stock_adjustment.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.stock_adjustment.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.stock_adjustment.cols.location"),
+          },
+          {
+            key: "type",
+            label: t("tables.stock_adjustment.cols.type"),
+            align: "center" as const,
+          },
+          {
+            key: "quantity",
+            label: t("tables.stock_adjustment.cols.quantity"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.location?.name || "-",
+          type: item.adjustment_type,
+          quantity: item.quantity_diff,
+        })),
+      };
+    } else if (
+      (documentType === "recovery" || isRecoveryDocument(detail)) &&
+      (detail as RecoveryDocument).details?.length > 0
+    ) {
+      const d = detail as RecoveryDocument;
+      return {
+        title: t("tables.recovered_assets.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.recovered_assets.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.recovered_assets.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.recovered_assets.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.recovered_assets.cols.location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.recovered_assets.cols.quantity"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.location?.name || "-",
+          quantity: item.quantity,
+        })),
+      };
+    } else if (
+      (documentType === "rental" || isRentalDocument(detail)) &&
+      (detail as RentalDocument).details?.length > 0
+    ) {
+      const d = detail as RentalDocument;
+      return {
+        title: t("tables.rental_assets.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.rental_assets.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.rental_assets.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.rental_assets.cols.asset_code"),
+          },
+          {
+            key: "location",
+            label: t("tables.rental_assets.cols.from_location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.rental_assets.cols.quantity"),
+            align: "center" as const,
+          },
+          {
+            key: "rental_revenue",
+            label: t("tables.rental_assets.cols.revenue"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          location: item.from_location?.name || "-",
+          quantity: item.quantity,
+          rental_revenue: formatNumberWithCommas(item.rental_revenue),
+        })),
+      };
+    } else if (
+      (documentType === "rental_return" || isRentalReturnDocument(detail)) &&
+      (detail as RentalReturnDocument).details?.length > 0
+    ) {
+      const d = detail as RentalReturnDocument;
+      return {
+        title: t("tables.returned_assets.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.returned_assets.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.returned_assets.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.returned_assets.cols.asset_code"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.returned_assets.cols.quantity"),
+            align: "center" as const,
+          },
+          {
+            key: "condition",
+            label: t("tables.returned_assets.cols.condition"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          quantity: item.quantity,
+          condition: item.condition || "-",
+        })),
+      };
+    } else if (
+      (documentType === "transfer" || isTransferDocument(detail)) &&
+      (detail as TransferDocument).details?.length > 0
+    ) {
+      const d = detail as TransferDocument;
+      return {
+        title: t("tables.transferred_assets.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.transferred_assets.cols.no"),
+            align: "center" as const,
+          },
+          {
+            key: "asset_name",
+            label: t("tables.transferred_assets.cols.asset"),
+          },
+          {
+            key: "asset_code",
+            label: t("tables.transferred_assets.cols.asset_code"),
+          },
+          {
+            key: "from_location_name",
+            label: t("tables.transferred_assets.cols.from_location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.transferred_assets.cols.quantity"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset_name: item.asset_name,
+          asset_code: item.asset_code,
+          from_location_name: item.from_location_name,
+          quantity: item.quantity,
+        })),
+      };
+    } else if (
+      (documentType === "maintenance" || isMaintenanceDocument(detail)) &&
+      (detail as MaintenanceDocument).details?.length > 0
+    ) {
+      const d = detail as MaintenanceDocument;
+      return {
+        title: t("tables.maintenance_assets.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.maintenance_assets.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.maintenance_assets.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.maintenance_assets.cols.asset_code"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.maintenance_assets.cols.quantity"),
+            align: "center" as const,
+          },
+          { key: "notes", label: t("tables.maintenance_assets.cols.notes") },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          quantity: item.quantity,
+          notes: item.notes || "-",
+        })),
+      };
+    } else if (
+      (documentType === "liquidation" || isLiquidationDocument(detail)) &&
+      (detail as LiquidationDocument).details?.length > 0
+    ) {
+      const d = detail as LiquidationDocument;
+      return {
+        title: t("tables.disposal_items.title"),
+        icon: Package,
+        columns: [
+          {
+            key: "no",
+            label: t("tables.disposal_items.cols.no"),
+            align: "center" as const,
+          },
+          { key: "asset", label: t("tables.disposal_items.cols.asset") },
+          {
+            key: "asset_code",
+            label: t("tables.disposal_items.cols.asset_code"),
+          },
+          {
+            key: "from_location",
+            label: t("tables.disposal_items.cols.from_location"),
+          },
+          {
+            key: "quantity",
+            label: t("tables.disposal_items.cols.quantity"),
+            align: "center" as const,
+          },
+          {
+            key: "unit_value",
+            label: t("tables.disposal_items.cols.unit_value"),
+            align: "center" as const,
+          },
+          {
+            key: "remaining_value",
+            label: t("tables.disposal_items.cols.remaining_value"),
+            align: "center" as const,
+          },
+        ],
+        rows: d.details.map((item, index) => ({
+          id: item.id,
+          no: index + 1,
+          asset: item.asset.name,
+          asset_code: item.asset.asset_code,
+          from_location: item.from_location?.name || "-",
+          quantity: item.quantity,
+          unit_value: formatNumberWithCommas(item.unit_value),
+          remaining_value: formatNumberWithCommas(item.remaining_value),
+        })),
+      };
+    }
+    return null;
+  }, [detail, documentType, t]);
+
+  if (!detailItems) return null;
+
+  return (
+    <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md mt-3 overflow-hidden rounded-md">
+      <CardContent className="p-0">
+        <DetailTable detailItems={detailItems} />
       </CardContent>
     </Card>
   );

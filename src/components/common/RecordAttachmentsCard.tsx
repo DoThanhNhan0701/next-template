@@ -174,7 +174,7 @@ export function RecordAttachmentsCard({
 
   return (
     <Card className={className}>
-      <CardHeader className="py-3 px-4 border-b border-border/40 bg-muted/5 flex flex-row items-center justify-between">
+      <CardHeader className="py-2 px-3 border-b border-border/40 bg-muted/5 flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold text-primary">
           <div className="w-1.5 h-1.5 rounded-full bg-primary" />
           {title}

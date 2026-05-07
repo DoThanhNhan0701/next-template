@@ -33,14 +33,14 @@ export const DetailTable = ({ detailItems }: DetailTableProps) => {
   const IconComponent = detailItems.icon || Package;
 
   return (
-    <div className="mt-6">
-      <div className="flex items-center gap-2 mb-3">
-        <h3 className="text-sm font-semibold text-primary w-full flex items-center gap-2">
+    <div>
+      <div className="flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-primary w-full flex items-center gap-2 px-3 py-2">
           <IconComponent className="w-4 h-4" />
           {detailItems.title}
         </h3>
       </div>
-      <div className="rounded-xl border border-border/50 overflow-hidden shadow-sm">
+      <div className="overflow-hidden">
         <Table>
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-border/50">
             <TableRow className="hover:bg-transparent border-border/50">

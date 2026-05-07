@@ -1,8 +1,8 @@
 "use client";
 
-import { Clock, History, User } from "lucide-react";
-
 import { useTranslations } from "next-intl";
+
+import { Clock, History, User } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -19,25 +19,25 @@ interface SidebarInfoProps {
 export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
   const t = useTranslations("page_my_tasks.detail.sidebar_info");
   return (
-    <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group h-full">
-      <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
+    <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group h-full rounded-md">
+      <CardHeader className="flex flex-row items-center gap-2 border-b border-border/40 py-2 px-3">
         <History className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
-        <CardTitle className="text-sm font-semibold text-primary">
+        <CardTitle className="text-xs font-semibold text-primary">
           {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-3">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between pb-3 border-b border-border/50">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                <User className="w-4 h-4" />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between pb-2 border-b border-border/20 last:border-0 last:pb-0">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                <User className="w-3.5 h-3.5" />
               </div>
-              <span className="text-sm font-bold text-muted-foreground tracking-wider">
+              <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">
                 {t("creator")}
               </span>
             </div>
-            <span className="text-sm font-semibold text-foreground">
+            <span className="text-xs font-semibold text-foreground">
               {detail.creator?.full_name ||
                 (isAllocationDocument(detail)
                   ? (detail as AllocationDocument).issuer_name
@@ -45,17 +45,17 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between pb-3 border-b border-border/50">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                <Clock className="w-4 h-4" />
+          <div className="flex items-center justify-between pb-2 border-b border-border/20 last:border-0 last:pb-0">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                <Clock className="w-3.5 h-3.5" />
               </div>
-              <span className="text-sm font-bold text-muted-foreground tracking-wider">
+              <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">
                 {t("created_time")}
               </span>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-xs font-semibold text-foreground">
                 {formatDateTime(detail.created_at)}
               </span>
             </div>
@@ -63,17 +63,17 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
 
           {isAllocationDocument(detail) &&
             (detail as AllocationDocument).issuer && (
-              <div className="flex items-center justify-between pb-3 border-b border-border/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                    <User className="w-4 h-4" />
+              <div className="flex items-center justify-between pb-2 border-b border-border/20 last:border-0 last:pb-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                    <User className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-sm font-bold text-muted-foreground tracking-wider">
+                  <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">
                     {t("issuer_details")}
                   </span>
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-sm font-semibold text-foreground">
+                  <span className="text-xs font-semibold text-foreground">
                     {(detail as AllocationDocument).issuer.full_name}
                   </span>
                   <span className="text-[10px] text-muted-foreground uppercase">
@@ -83,11 +83,11 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
               </div>
             )}
 
-          <div className="mt-3 p-3 rounded-xl bg-muted/30 border border-border/50 flex flex-col gap-2">
-            <span className="text-sm font-black text-muted-foreground tracking-[0.2em] text-center">
+          <div className="mt-1- p-2 rounded-lg bg-muted/30 border border-border/40 flex flex-col gap-1">
+            <span className="text-[10px] font-black text-muted-foreground tracking-[0.15em] text-center uppercase">
               {t("system_notes")}
             </span>
-            <p className="text-sm text-muted-foreground italic text-center leading-relaxed">
+            <p className="text-[11px] text-muted-foreground italic text-center leading-tight">
               {t("system_notes_description")}
             </p>
           </div>
