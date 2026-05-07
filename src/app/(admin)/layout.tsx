@@ -10,7 +10,6 @@ import {
   Contact,
   GitBranch,
   Grid,
-  Layers,
   MapPin,
   MousePointerClick,
   Shield,
@@ -36,7 +35,7 @@ export default function AdminLayout({
     { title: t("roles"), url: "/admin/roles", icon: Shield },
     { title: t("organization"), url: "/admin/organization", icon: Building2 },
     { title: t("locations"), url: "/admin/locations", icon: MapPin },
-    { title: t("asset_groups"), url: "/admin/asset-groups", icon: Layers },
+    // { title: t("asset_groups"), url: "/admin/asset-groups", icon: Layers },
     { title: t("catalog_types"), url: "/admin/catalog-types", icon: Grid },
     {
       title: t("asset_statuses"),

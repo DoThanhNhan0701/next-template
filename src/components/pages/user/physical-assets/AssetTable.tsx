@@ -359,9 +359,6 @@ export default function AssetTable() {
                     </TableCell>
                     <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                       <div className="flex items-center gap-2 overflow-hidden">
-                        <div className="bg-primary/5 p-1.5 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
-                          <Laptop size={16} />
-                        </div>
                         <div className="flex flex-col min-w-0 flex-1">
                           <span
                             className="font-semibold text-sm group-hover:text-primary transition-colors truncate"

@@ -5,6 +5,7 @@ import { IStatus } from "./status";
 
 export interface IAllocationSummary {
   id: number;
+  record_number: string;
   asset_name: string;
   asset_code: string;
   allocated_to_name: string;

@@ -239,22 +239,22 @@ export default function TransfersTable() {
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
-                    <div className="flex items-center justify-center gap-2 overflow-hidden">
-                      <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
-                        <FileText size={16} />
-                      </div>
-                      <span className="font-semibold text-sm truncate">
+                  <TableCell className="px-4 py-1.5 text-center">
+                    <div className="flex justify-center">
+                      <span
+                        className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
+                        title={item.record_number}
+                      >
                         {item.record_number}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <span className="text-xs text-muted-foreground font-medium">
                       {item.transfer_type}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-center">
+                  <TableCell className="px-4 py-1.5 text-sm text-center">
                     <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}
@@ -263,7 +263,7 @@ export default function TransfersTable() {
                       <span>{formatDate(item.transfer_date)}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex flex-col gap-1">
                       <span
                         className="font-semibold text-sm truncate"
@@ -276,7 +276,7 @@ export default function TransfersTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex items-center gap-2 text-xs">
                       <span
                         className={`truncate ${item.from_name ? "font-medium" : "italic text-muted-foreground"}`}
@@ -294,10 +294,10 @@ export default function TransfersTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center font-medium">
+                  <TableCell className="px-4 py-1.5 text-center font-medium">
                     {item.total_assets}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
@@ -305,7 +305,7 @@ export default function TransfersTable() {
                       {item.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <span className="text-xs text-muted-foreground italic truncate block">
                       {item.reason || t("detail.no_reason")}
                     </span>

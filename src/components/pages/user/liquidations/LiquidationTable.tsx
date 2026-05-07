@@ -5,15 +5,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-import {
-  Calendar,
-  FileText,
-  Package,
-  RotateCcw,
-  Search,
-  Trash2,
-  X,
-} from "lucide-react";
+import { Calendar, RotateCcw, Search, Trash2, X } from "lucide-react";
 
 import { TablePagination } from "@/components/common/TablePagination";
 import {
@@ -178,19 +170,17 @@ export default function LiquidationTable() {
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 relative text-center">
-                    <div className="flex items-center justify-center gap-3 overflow-hidden">
-                      <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
-                        <FileText size={18} />
-                      </div>
-                      <div className="flex flex-col gap-0.5 overflow-hidden">
-                        <span className="font-semibold text-sm truncate block">
-                          {item.record_number}
-                        </span>
-                      </div>
+                  <TableCell className="px-4 py-2 text-center">
+                    <div className="flex justify-center">
+                      <span
+                        className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
+                        title={item.record_number}
+                      >
+                        {item.record_number}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-center">
+                  <TableCell className="px-4 py-1.5 text-sm text-center">
                     <div className="flex items-center justify-center gap-1.5 text-xs">
                       <Calendar
                         size={12}
@@ -199,13 +189,9 @@ export default function LiquidationTable() {
                       <span>{formatDate(item.liquidation_date)}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex flex-col gap-1 overflow-hidden">
                       <div className="flex items-center gap-2 overflow-hidden">
-                        <Package
-                          size={14}
-                          className="text-muted-foreground/60 shrink-0"
-                        />
                         <span
                           className="font-semibold text-sm truncate block"
                           title={item.asset_name}
@@ -218,10 +204,10 @@ export default function LiquidationTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-medium text-center">
+                  <TableCell className="px-4 py-1.5 text-sm font-medium text-center">
                     {item.total_assets}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
@@ -229,7 +215,7 @@ export default function LiquidationTable() {
                       {item.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <span
                       className="truncate block text-xs text-muted-foreground italic"
                       title={

@@ -160,10 +160,10 @@ export default function CustomerTable() {
                   key={item.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
-                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 font-medium text-foreground">
+                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-1.5">
                         {item.customer_type === "Individual" ? (
@@ -178,7 +178,7 @@ export default function CustomerTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-1.5">
                     <div className="flex flex-col gap-1 text-sm">
                       {item.phone && (
                         <div className="flex items-center gap-1.5">
@@ -194,13 +194,13 @@ export default function CustomerTable() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 font-mono text-xs uppercase">
+                  <TableCell className="px-4 py-1.5 font-mono text-xs uppercase">
                     {item.identifier}
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-[200px] truncate underline decoration-muted-foreground/30 underline-offset-2">
+                  <TableCell className="px-4 py-1.5 max-w-[200px] truncate underline decoration-muted-foreground/30 underline-offset-2">
                     {item.address || "-"}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     {item.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         {t("active")}
@@ -211,7 +211,7 @@ export default function CustomerTable() {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
+                  <TableCell className="px-4 py-1.5 text-right">
                     <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"

@@ -237,11 +237,11 @@ export default function AllocationSummaryTable() {
               <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[200px]">
-                {t("table.asset")}
+              <TableHead className="font-semibold h-10 px-4 w-[120px]">
+                {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
-                {t("table.asset_code")}
+              <TableHead className="font-semibold h-10 px-4 w-[280px]">
+                {t("table.asset")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.allocated_to")}
@@ -288,18 +288,28 @@ export default function AllocationSummaryTable() {
                     <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                       {skip + index + 1}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                      <span
-                        className="font-semibold text-sm truncate block"
-                        title={alloc.asset_name}
-                      >
-                        {alloc.asset_name || "-"}
-                      </span>
+                    <TableCell className="px-4 py-2 text-center">
+                      <div className="flex justify-center">
+                        <span
+                          className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
+                          title={alloc.record_number}
+                        >
+                          {alloc.record_number}
+                        </span>
+                      </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
-                      <span className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded inline-block">
-                        {alloc.asset_code || "-"}
-                      </span>
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                      <div className="flex flex-col gap-0.5">
+                        <span
+                          className="font-semibold text-sm truncate block"
+                          title={alloc.asset_name}
+                        >
+                          {alloc.asset_name || "-"}
+                        </span>
+                        <span className="text-muted-foreground font-mono">
+                          {alloc.asset_code || "-"}
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                       <div className="flex flex-col gap-0.5 text-sm">

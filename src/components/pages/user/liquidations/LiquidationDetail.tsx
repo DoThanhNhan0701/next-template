@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -19,7 +20,6 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
 import { Badge } from "@/components/ui/badge";
@@ -207,10 +207,10 @@ export default function LiquidationDetail({ id }: Props) {
                       className="border-border/50 hover:bg-muted/30"
                     >
                       {/* No */}
-                      <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                      <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-sm font-semibold text-foreground">
                             {item.asset?.name}
@@ -220,7 +220,7 @@ export default function LiquidationDetail({ id }: Props) {
                           </code>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin
                             size={13}
@@ -229,18 +229,18 @@ export default function LiquidationDetail({ id }: Props) {
                           {item.from_location?.name || "—"}
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-center">
+                      <TableCell className="px-4 py-1.5 text-center">
                         <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
                           {item.quantity}
                         </span>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-right text-sm font-medium">
+                      <TableCell className="px-4 py-1.5 text-right text-sm font-medium">
                         {item.unit_value?.toLocaleString("vi-VN")}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-right text-sm font-medium text-amber-600">
+                      <TableCell className="px-4 py-1.5 text-right text-sm font-medium text-amber-600">
                         {item.remaining_value?.toLocaleString("vi-VN")}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
+                      <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
                         {item.notes || "—"}
                       </TableCell>
                     </TableRow>
@@ -363,7 +363,9 @@ export default function LiquidationDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {isPending ? t("status_pending_desc") : t("status_processed_desc")}
+              {isPending
+                ? t("status_pending_desc")
+                : t("status_processed_desc")}
             </p>
           </div>
         </div>
@@ -444,10 +446,10 @@ export default function LiquidationDetail({ id }: Props) {
                     key={hist.id}
                     className="border-border/50 hover:bg-muted/30"
                   >
-                    <TableCell className="px-4 py-3 text-sm font-semibold">
+                    <TableCell className="px-4 py-1.5 text-sm font-semibold">
                       {hist.step_name}
                     </TableCell>
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex items-center gap-2">
                         <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold transition-transform group-hover:scale-110">
                           {hist.requester_name?.charAt(0)}
@@ -455,7 +457,7 @@ export default function LiquidationDetail({ id }: Props) {
                         <span className="text-sm">{hist.requester_name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-1.5 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
                           <CheckCircle2 size={12} /> {t("status_approved")}
@@ -470,10 +472,10 @@ export default function LiquidationDetail({ id }: Props) {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
+                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
                       {hist.comment || "—"}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-xs text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
                       {formatDateTime(hist.action_date)}
                     </TableCell>
                   </TableRow>

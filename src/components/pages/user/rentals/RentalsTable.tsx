@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -24,7 +25,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -99,11 +99,15 @@ export default function RentalsTable() {
   if (appliedFilters.customer_id)
     queryParams.append("customer_id", appliedFilters.customer_id);
 
-  const { response, pending, reFetch } = useGet<{ items: IRentalSummary[]; total?: number; count?: number; }>({
+  const { response, pending, reFetch } = useGet<{
+    items: IRentalSummary[];
+    total?: number;
+    count?: number;
+  }>({
     url: `${endpoints.RENTALS}?${queryParams.toString()}`,
   });
   const rentals = response?.items || [];
-return (
+  return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 backdrop-blur-md rounded-md transition-all hover:border-border/80">
         {/* Search Group */}
@@ -282,9 +286,14 @@ return (
                     {skip + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
-                    <span className="font-semibold text-sm">
-                      {rental.record_number}
-                    </span>
+                    <div className="flex justify-center">
+                      <span
+                        className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
+                        title={rental.record_number}
+                      >
+                        {rental.record_number}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex flex-col">
@@ -294,7 +303,7 @@ return (
                       >
                         {rental.asset_name}
                       </span>
-                      <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
+                      <span className="text-xs text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
                         {rental.asset_code}
                       </span>
                     </div>
@@ -352,7 +361,9 @@ return (
       <TablePagination
         skip={skip}
         limit={limit}
-        count={rentals.length} total={response?.total ?? response?.count} pending={pending}
+        count={rentals.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

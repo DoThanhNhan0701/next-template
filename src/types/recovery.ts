@@ -5,6 +5,7 @@ import { IStatus } from "./status";
 
 export interface IRecoverySummary {
   id: number;
+  record_number: string;
   asset_name: string;
   asset_code: string;
   recovered_from_name: string;

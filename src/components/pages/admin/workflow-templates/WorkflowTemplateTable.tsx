@@ -116,10 +116,10 @@ export default function WorkflowTemplateTable() {
                   key={item.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
-                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                     {index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 font-medium">
+                  <TableCell className="px-4 py-1.5 font-medium">
                     <div className="flex flex-col">
                       <span>{item.name}</span>
                       {item.description && (
@@ -129,13 +129,13 @@ export default function WorkflowTemplateTable() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
+                  <TableCell className="px-4 py-1.5 text-sm">
                     {docTypeLabels[item.document_type] ?? item.document_type}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center text-sm">
+                  <TableCell className="px-4 py-1.5 text-center text-sm">
                     {item.steps?.length ?? 0}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     {item.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         {t("active")}
@@ -147,7 +147,7 @@ export default function WorkflowTemplateTable() {
                     )}
                   </TableCell>
 
-                  <TableCell className="px-4 py-3 text-right">
+                  <TableCell className="px-4 py-1.5 text-right">
                     <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"

@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 
 import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
@@ -109,6 +110,15 @@ export default function StockAdjustmentModal({
     control: form.control,
     name: "details",
   });
+
+  const watchedDetails = useWatch({
+    control: form.control,
+    name: "details",
+  });
+
+  const selectedAssetIds = (watchedDetails || [])
+    .map((item: FormValues["details"][number]) => item?.asset_id)
+    .filter((id): id is number => !!id && id !== 0);
 
   useEffect(() => {
     if (isOpen) {
@@ -290,25 +300,18 @@ export default function StockAdjustmentModal({
                   </Button>
                 </div>
 
-                {fields.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-6 border border-dashed rounded-md">
-                    {t("form.empty_items")}
-                  </p>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    {fields.map((field, index) => (
-                      <AdjustmentDetailRow
-                        disabled={fields.length === 1}
-                        key={field.id}
-                        index={index}
-                        control={form.control}
-                        setValue={form.setValue}
-                        locations={locations}
-                        onRemove={() => remove(index)}
-                      />
-                    ))}
-                  </div>
-                )}
+                {fields.map((field, index) => (
+                  <AdjustmentDetailRow
+                    disabled={fields.length === 1}
+                    key={field.id}
+                    index={index}
+                    control={form.control}
+                    setValue={form.setValue}
+                    locations={locations}
+                    onRemove={() => remove(index)}
+                    selectedAssetIds={selectedAssetIds}
+                  />
+                ))}
               </div>
 
               <ApprovalProcessSection

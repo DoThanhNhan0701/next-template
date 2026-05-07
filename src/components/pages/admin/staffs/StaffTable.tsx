@@ -170,18 +170,20 @@ export default function StaffTable() {
                   key={staff.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
-                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 font-medium text-foreground">
+                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
                     {staff.staff_code}
                   </TableCell>
-                  <TableCell className="px-4 py-3">{staff.full_name}</TableCell>
-                  <TableCell className="px-4 py-3">{staff.email}</TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-1.5">
+                    {staff.full_name}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5">{staff.email}</TableCell>
+                  <TableCell className="px-4 py-1.5">
                     {staff.unit?.name || "-"}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     {staff.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         {t("active")}
@@ -192,7 +194,7 @@ export default function StaffTable() {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
+                  <TableCell className="px-4 py-1.5 text-right">
                     <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"

@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -24,7 +25,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
 import {
   Select,
   SelectContent,
@@ -235,7 +235,7 @@ export default function RentalReturnTable() {
                         <span className="font-semibold text-sm">
                           {rentalReturn.record_number}
                         </span>
-                        <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
+                        <span className="text-xs text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
                           {rentalReturn.rental.record_number}
                         </span>
                       </div>
@@ -243,14 +243,20 @@ export default function RentalReturnTable() {
                     <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                       <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-2">
-                          <User size={12} className="text-muted-foreground shrink-0" />
+                          <User
+                            size={12}
+                            className="text-muted-foreground shrink-0"
+                          />
                           <span className="font-medium text-foreground/80 truncate">
                             {rentalReturn.rental.customer.name}
                           </span>
                         </div>
                         {rentalReturn.rental.customer.email && (
                           <div className="flex items-center gap-1.5">
-                            <Mail size={12} className="text-muted-foreground shrink-0" />
+                            <Mail
+                              size={12}
+                              className="text-muted-foreground shrink-0"
+                            />
                             <span className="text-xs truncate">
                               {rentalReturn.rental.customer.email}
                             </span>
@@ -309,7 +315,9 @@ export default function RentalReturnTable() {
       <TablePagination
         skip={skip}
         limit={limit}
-        count={rentalReturns.length} total={response?.total ?? response?.count} pending={pending}
+        count={rentalReturns.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

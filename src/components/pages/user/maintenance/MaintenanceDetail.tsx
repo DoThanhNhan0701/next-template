@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import {
   CalendarDays,
@@ -125,7 +125,9 @@ export default function MaintenanceDetail({ id }: Props) {
                 </span>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <CalendarDays size={12} />
-                  <span>{t("created_at", { date: formatDate(detail.create_date) })}</span>
+                  <span>
+                    {t("created_at", { date: formatDate(detail.create_date) })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -200,10 +202,10 @@ export default function MaintenanceDetail({ id }: Props) {
                       className="border-border/50 hover:bg-muted/30"
                     >
                       {/* No */}
-                      <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                      <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-sm font-semibold text-foreground">
                             {item.asset?.name}
@@ -213,12 +215,12 @@ export default function MaintenanceDetail({ id }: Props) {
                           </code>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-center">
+                      <TableCell className="px-4 py-1.5 text-center">
                         <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
                           {item.quantity}
                         </span>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground italic max-w-xs truncate">
+                      <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic max-w-xs truncate">
                         {item.notes || "—"}
                       </TableCell>
                     </TableRow>
@@ -477,10 +479,10 @@ export default function MaintenanceDetail({ id }: Props) {
                     key={hist.id}
                     className="border-border/50 hover:bg-muted/30"
                   >
-                    <TableCell className="px-4 py-3 text-sm font-semibold">
+                    <TableCell className="px-4 py-1.5 text-sm font-semibold">
                       {hist.step_name}
                     </TableCell>
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex items-center gap-2">
                         <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
                           {hist.requester_name?.charAt(0)}
@@ -488,7 +490,7 @@ export default function MaintenanceDetail({ id }: Props) {
                         <span className="text-sm">{hist.requester_name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-1.5 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
                           <CheckCircle2 size={12} /> {t("status_approved")}
@@ -503,10 +505,10 @@ export default function MaintenanceDetail({ id }: Props) {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
+                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
                       {hist.comment || "—"}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-xs text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
                       {formatDateTime(hist.action_date)}
                     </TableCell>
                   </TableRow>

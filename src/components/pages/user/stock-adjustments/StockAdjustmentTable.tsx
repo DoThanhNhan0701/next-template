@@ -198,9 +198,14 @@ export default function StockAdjustmentTable({
                     {skip + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-center">
-                    <span className="font-mono text-xs bg-muted/50 px-1.5 py-0.5 rounded">
-                      {item.record_number}
-                    </span>
+                    <div className="flex justify-center">
+                      <span
+                        className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
+                        title={item.record_number}
+                      >
+                        {item.record_number}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
                     <span

@@ -276,7 +276,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               <div className="lg:col-span-2">
                 {asset.specifications ? (
                   <div className="rounded-xl border border-border/50 overflow-hidden h-full">
-                    <div className="bg-muted/40 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+                    <div className="bg-muted/40 px-4 py-1.5 border-b border-border/50 flex items-center gap-2">
                       <Wrench className="w-4 h-4 text-primary" />
                       <span className="text-sm font-semibold text-primary">
                         {t("detail.specs.title")}

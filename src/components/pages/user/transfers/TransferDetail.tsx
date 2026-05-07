@@ -204,10 +204,10 @@ export default function TransferDetail({ id }: Props) {
                       className="border-border/50 hover:bg-muted/30"
                     >
                       {/* No */}
-                      <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                      <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-sm font-semibold text-foreground">
                             {item.asset_name}
@@ -217,7 +217,7 @@ export default function TransferDetail({ id }: Props) {
                           </code>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin
                             size={13}
@@ -226,7 +226,7 @@ export default function TransferDetail({ id }: Props) {
                           {item.from_location_name}
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin
                             size={13}
@@ -235,7 +235,7 @@ export default function TransferDetail({ id }: Props) {
                           {item.to_location_name || detail.to_name || "—"}
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-center">
+                      <TableCell className="px-4 py-1.5 text-center">
                         <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
                           {item.quantity}
                         </span>
@@ -342,7 +342,9 @@ export default function TransferDetail({ id }: Props) {
 
           <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
             <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {t("detail.transfer_record_is", { status: detail.status_obj?.name.toLowerCase() })}
+              {t("detail.transfer_record_is", {
+                status: detail.status_obj?.name.toLowerCase(),
+              })}
             </p>
           </div>
         </div>
@@ -419,10 +421,10 @@ export default function TransferDetail({ id }: Props) {
                     key={hist.id}
                     className="border-border/50 hover:bg-muted/30"
                   >
-                    <TableCell className="px-4 py-3 text-sm font-semibold">
+                    <TableCell className="px-4 py-1.5 text-sm font-semibold">
                       {hist.step_name}
                     </TableCell>
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex items-center gap-2">
                         <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
                           {hist.requester_name?.charAt(0)}
@@ -430,7 +432,7 @@ export default function TransferDetail({ id }: Props) {
                         <span className="text-sm">{hist.requester_name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-1.5 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
                           <CheckCircle2 size={12} /> {t("detail.approved")}
@@ -445,10 +447,10 @@ export default function TransferDetail({ id }: Props) {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
+                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
                       {hist.comment || "—"}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-xs text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
                       {formatDateTime(hist.action_date)}
                     </TableCell>
                   </TableRow>

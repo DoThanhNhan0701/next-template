@@ -34,6 +34,7 @@ interface AdjustmentDetailRowProps {
   setValue: UseFormSetValue<StockAdjustmentFormValues>;
   locations: ILocation[];
   onRemove: () => void;
+  selectedAssetIds: number[];
 }
 
 export function AdjustmentDetailRow({
@@ -43,6 +44,7 @@ export function AdjustmentDetailRow({
   setValue,
   locations,
   onRemove,
+  selectedAssetIds,
 }: AdjustmentDetailRowProps) {
   const t = useTranslations("page_stock_in_out");
 
@@ -64,6 +66,15 @@ export function AdjustmentDetailRow({
   );
 
   const assets = assetRes?.items || [];
+
+  const currentAssetId = useWatch({
+    control,
+    name: `details.${index}.asset_id`,
+  });
+
+  const filteredAssets = assets.filter(
+    (a) => !selectedAssetIds.includes(a.id) || a.id === currentAssetId,
+  );
 
   return (
     <div className="relative bg-muted/30 border rounded-lg p-3 flex flex-row flex-wrap items-start gap-3">
@@ -120,7 +131,9 @@ export function AdjustmentDetailRow({
           <Field className="gap-1 flex-1 min-w-[160px]">
             <FieldLabel>{t("form.asset")}</FieldLabel>
             <Select
-              onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+              onValueChange={(val) =>
+                field.onChange(val === "none" ? 0 : Number(val))
+              }
               value={field.value ? field.value.toString() : ""}
               disabled={!locationId || locationId === 0}
             >
@@ -144,9 +157,10 @@ export function AdjustmentDetailRow({
                 >
                   {t("form.none")}
                 </SelectItem>
-                {assets.map((a) => (
+                {filteredAssets.map((a) => (
                   <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) {t("form.quantity")}: {a?.current_stock ?? 0}
+                    {a.name} ({a.asset_code}) {t("form.quantity")}:{" "}
+                    {a?.current_stock ?? 0}
                   </SelectItem>
                 ))}
               </SelectContent>

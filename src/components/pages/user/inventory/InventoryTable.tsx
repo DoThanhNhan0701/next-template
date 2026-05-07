@@ -256,14 +256,11 @@ export default function InventoryTable() {
                   key={stock.id}
                   className="group hover:bg-primary/3 transition-colors relative"
                 >
-                  <TableCell className="px-4 py-3 text-center text-sm text-muted-foreground">
+                  <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex items-center gap-3 overflow-hidden">
-                      <div className="bg-primary/5 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary/10 shrink-0">
-                        <Package size={18} />
-                      </div>
                       <div className="flex flex-col min-w-0 flex-1">
                         <span
                           className="font-semibold text-sm group-hover:text-primary transition-colors truncate"
@@ -274,14 +271,14 @@ export default function InventoryTable() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <div className="flex justify-center">
                       <span className="text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
                         {stock.asset_code}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <div className="flex items-center justify-center gap-2 px-2.5 py-1.5 bg-secondary/30 rounded-md w-fit mx-auto">
                       <MapPin size={14} className="text-primary/70 shrink-0" />
                       <span className="text-sm font-medium">
@@ -289,7 +286,7 @@ export default function InventoryTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     {stock.management_type === "unique" ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-600">
                         {t("table.by_code")}
@@ -304,7 +301,7 @@ export default function InventoryTable() {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <div
                       className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
                         stock.quantity > 0
@@ -315,7 +312,7 @@ export default function InventoryTable() {
                       {stock.quantity}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <div className="flex items-center justify-center gap-1.5">
                       <Button
                         variant="ghost"

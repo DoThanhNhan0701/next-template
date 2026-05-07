@@ -5,23 +5,15 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-import {
-  Calendar,
-  FileText,
-  Package,
-  RotateCcw,
-  Search,
-  Wrench,
-  X,
-} from "lucide-react";
+import { Calendar, RotateCcw, Search, Wrench, X } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
 import {
   Table,
   TableBody,
@@ -59,11 +51,15 @@ export default function MaintenanceTable() {
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
 
-  const { response, pending, reFetch } = useGet<{ items: IMaintenance[]; total?: number; count?: number; }>({
+  const { response, pending, reFetch } = useGet<{
+    items: IMaintenance[];
+    total?: number;
+    count?: number;
+  }>({
     url: `${endpoints.MAINTENANCES}?${queryParams.toString()}`,
   });
   const maintenances = response?.items || [];
-return (
+  return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         {/* Search Group */}
@@ -136,13 +132,16 @@ return (
               <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px] text-center">
-                {t("maintenance_info")}
+              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+                {t("record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[200px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+                {t("ticket_number")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[160px] text-center">
                 {t("date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[250px]">
+              <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("asset_details")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[180px]">
@@ -161,10 +160,10 @@ return (
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={9} rows={6} />
             ) : maintenances.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={9}
                 icon={Wrench}
                 message={t("empty_title")}
                 description={t("empty_desc")}
@@ -179,22 +178,20 @@ return (
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 relative text-center">
-                    <div className="flex items-center justify-center gap-3 overflow-hidden">
-                      <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
-                        <FileText size={18} />
-                      </div>
-                      <div className="flex flex-col gap-0.5 overflow-hidden text-left">
-                        <span className="font-semibold text-sm truncate block">
-                          {t("record_number", { value: item.record_number })}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground font-medium truncate block">
-                          {t("ticket_number", { value: item.ticket_number })}
-                        </span>
-                      </div>
+                  <TableCell className="px-4 py-2 text-center">
+                    <div className="flex justify-center">
+                      <span
+                        className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
+                        title={item.record_number}
+                      >
+                        {item.record_number}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-center">
+                  <TableCell className="px-4 py-1.5 text-center text-xs">
+                    {item.ticket_number}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5 text-sm text-center">
                     <div className="flex flex-col gap-1 overflow-hidden items-center">
                       <div className="flex items-center gap-1.5 overflow-hidden">
                         <Calendar
@@ -204,7 +201,9 @@ return (
                         <span className="text-[11px] font-medium text-muted-foreground shrink-0">
                           {t("outing")}
                         </span>
-                        <span className="truncate">{formatDate(item.outing_date)}</span>
+                        <span className="truncate">
+                          {formatDate(item.outing_date)}
+                        </span>
                       </div>
                       {item.return_date && (
                         <div className="flex items-center gap-1.5 overflow-hidden">
@@ -215,18 +214,16 @@ return (
                           <span className="text-[11px] font-medium text-muted-foreground shrink-0">
                             {t("return")}
                           </span>
-                          <span className="truncate">{formatDate(item.return_date)}</span>
+                          <span className="truncate">
+                            {formatDate(item.return_date)}
+                          </span>
                         </div>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex flex-col gap-1 overflow-hidden">
                       <div className="flex items-center gap-2 overflow-hidden">
-                        <Package
-                          size={14}
-                          className="text-muted-foreground/60 shrink-0"
-                        />
                         <span
                           className="font-semibold text-sm truncate block"
                           title={item.asset_name}
@@ -239,17 +236,18 @@ return (
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell
-                    className="px-4 py-3 text-sm max-w-0 overflow-hidden"
-                  >
-                    <span className="truncate block" title={item.service_provider_name}>
+                  <TableCell className="px-4 py-1.5 text-sm max-w-0 overflow-hidden">
+                    <span
+                      className="truncate block"
+                      title={item.service_provider_name}
+                    >
                       {item.service_provider_name || t("none")}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-medium text-center">
+                  <TableCell className="px-4 py-1.5 text-sm font-medium text-center">
                     {item.total_assets}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
@@ -257,8 +255,11 @@ return (
                       {item.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
-                    <span className="truncate block text-xs text-muted-foreground italic" title={item.reason || t("no_reason")}>
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                    <span
+                      className="truncate block text-xs text-muted-foreground italic"
+                      title={item.reason || t("no_reason")}
+                    >
                       {item.reason || t("no_reason")}
                     </span>
                   </TableCell>
@@ -272,7 +273,9 @@ return (
       <TablePagination
         skip={skip}
         limit={limit}
-        count={maintenances.length} total={response?.total ?? response?.count} pending={pending}
+        count={maintenances.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

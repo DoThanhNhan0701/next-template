@@ -205,10 +205,10 @@ export default function StockAdjustmentDetail({ id }: Props) {
                       className="border-border/50 hover:bg-muted/30"
                     >
                       {/* No */}
-                      <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                      <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-sm font-semibold text-foreground">
                             {item.asset.name}
@@ -218,7 +218,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                           </code>
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3">
+                      <TableCell className="px-4 py-1.5">
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin
                             size={13}
@@ -227,7 +227,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                           {item?.location?.name}
                         </div>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-center">
+                      <TableCell className="px-4 py-1.5 text-center">
                         {item.adjustment_type === "INCREASE" ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
                             <ArrowUpCircle size={12} /> {t("detail.stock_in")}
@@ -239,12 +239,12 @@ export default function StockAdjustmentDetail({ id }: Props) {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-center">
+                      <TableCell className="px-4 py-1.5 text-center">
                         <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
                           {item.quantity_diff}
                         </span>
                       </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
+                      <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
                         {item.notes || t("detail.no_reason")}
                       </TableCell>
                     </TableRow>
@@ -406,10 +406,10 @@ export default function StockAdjustmentDetail({ id }: Props) {
                     key={hist.id}
                     className="border-border/50 hover:bg-muted/30"
                   >
-                    <TableCell className="px-4 py-3 text-sm font-semibold">
+                    <TableCell className="px-4 py-1.5 text-sm font-semibold">
                       {hist.step_name}
                     </TableCell>
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex items-center gap-2">
                         <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
                           {hist.requester_name?.charAt(0)}
@@ -417,7 +417,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
                         <span className="text-sm">{hist.requester_name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-1.5 text-center">
                       {hist.status === "APPROVED" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
                           <CheckCircle2 size={12} /> {t("detail.approved")}
@@ -432,10 +432,10 @@ export default function StockAdjustmentDetail({ id }: Props) {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-sm text-muted-foreground italic">
+                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
                       {hist.comment || t("detail.no_reason")}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-xs text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
                       {formatDate(hist.action_date)}
                     </TableCell>
                   </TableRow>

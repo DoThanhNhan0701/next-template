@@ -119,14 +119,14 @@ export default function StatusTable() {
                   key={item.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
-                  <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 font-medium text-foreground">
+                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
                     {item.code}
                   </TableCell>
-                  <TableCell className="px-4 py-3">{item.name}</TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-1.5">{item.name}</TableCell>
+                  <TableCell className="px-4 py-1.5">
                     <div className="flex items-center gap-2">
                       <div
                         className="w-4 h-4 rounded-full border border-border/50"
@@ -137,7 +137,7 @@ export default function StatusTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
+                  <TableCell className="px-4 py-1.5 text-center">
                     {item.is_system ? (
                       <span className="text-blue-600 bg-blue-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         {tt("badge_system")}
@@ -148,7 +148,7 @@ export default function StatusTable() {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right">
+                  <TableCell className="px-4 py-1.5 text-right">
                     <div className="flex justify-end gap-1">
                       <Button
                         variant="ghost"

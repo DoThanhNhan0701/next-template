@@ -496,11 +496,11 @@ export default function AuditDetail({ id }: Props) {
                       setIsViewModalOpen(true);
                     }}
                   >
-                    <TableCell className="px-4 py-3 text-center text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {index + 1}
                     </TableCell>
 
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                           {item.asset.name}
@@ -511,7 +511,7 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1.5 text-xs">
                           <User
@@ -536,7 +536,7 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-3 text-center">
+                    <TableCell className="px-4 py-1.5 text-center">
                       <Badge
                         variant="outline"
                         className="px-2.5 py-0.5 text-[10px] font-bold rounded-full shadow-sm"
@@ -553,7 +553,7 @@ export default function AuditDetail({ id }: Props) {
                       </Badge>
                     </TableCell>
 
-                    <TableCell className="px-4 py-3">
+                    <TableCell className="px-4 py-1.5">
                       <div className="flex flex-col gap-1 max-w-[180px]">
                         {item.proposed_action ? (
                           <>
@@ -588,7 +588,7 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-3 min-w-[150px]">
+                    <TableCell className="px-4 py-1.5 min-w-[150px]">
                       <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80 leading-relaxed italic line-clamp-2 hover:line-clamp-none transition-all">
                         {item.notes ? (
                           <span>{item.notes}</span>
@@ -598,7 +598,7 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-3 min-w-[120px]">
+                    <TableCell className="px-4 py-1.5 min-w-[120px]">
                       <div className="flex flex-col text-[10px] items-end justify-center gap-1">
                         {item.verified_at ? (
                           <>
