@@ -227,6 +227,15 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 </span>
               </TabsTrigger>
               <TabsTrigger
+                value="modules"
+                className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
+              >
+                <Package className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {t("detail.tabs.modules")}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger
                 value="history"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
@@ -253,15 +262,6 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                   {t("detail.tabs.docs")}
                 </span>
               </TabsTrigger>
-              <TabsTrigger
-                value="modules"
-                className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
-              >
-                <Package className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {t("detail.tabs.modules")}
-                </span>
-              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -276,7 +276,9 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               onUpdate={reFetch}
             />
           </TabsContent>
-          {/* Placeholder contents for other tabs */}
+          <TabsContent value="modules" className="mt-3">
+            <AssetModulesTable assetId={asset.id} />
+          </TabsContent>
           <TabsContent
             value="history"
             className="pt-2 outline-none focus-visible:ring-0 h-[70svh]"
@@ -431,9 +433,6 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 {t("detail.docs.print_qr")}
               </Button>
             </div>
-          </TabsContent>
-          <TabsContent value="modules" className="mt-0">
-            <AssetModulesTable assetId={asset.id} />
           </TabsContent>
         </Tabs>
       </div>

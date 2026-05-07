@@ -1090,9 +1090,12 @@
         },
         "form": {
           "title": "Thêm module mới",
+          "title_edit": "Chỉnh sửa linh kiện",
           "add_button": "Thêm module",
+          "save_button": "Lưu thay đổi",
           "loading": "Đang tải...",
           "cancel_button": "Hủy",
+          "edit_description": "Cập nhật thông tin chi tiết cho linh kiện đã chọn.",
           "fields": {
             "name": "Tên module",
             "code": "Mã module (tự sinh nếu để trống)",

@@ -1,10 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Package, Plus } from "lucide-react";
 import { useState } from "react";
 
+import { useTranslations } from "next-intl";
+
+import { Package, Plus } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,9 +19,8 @@ import {
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { IAssetModule } from "@/types/physical-asset";
-import { formatDate } from "@/utils/date";
-import { formatNumberWithCommas } from "@/utils/number";
-import { Button } from "@/components/ui/button";
+import { formatDateTime } from "@/utils/date";
+
 import ModuleFormModal from "./ModuleFormModal";
 
 interface ModulesTableProps {
@@ -28,6 +30,9 @@ interface ModulesTableProps {
 export default function ModulesTable({ assetId }: ModulesTableProps) {
   const t = useTranslations("page_physical_assets");
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedModule, setSelectedModule] = useState<IAssetModule | null>(
+    null,
+  );
 
   const {
     response: modules = [],
@@ -76,7 +81,11 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
         <ModuleFormModal
           assetId={assetId}
           isOpen={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
+          onClose={() => {
+            setIsFormOpen(false);
+            setSelectedModule(null);
+          }}
+          moduleToEdit={selectedModule ?? undefined}
           onSuccess={reFetch}
         />
       </div>
@@ -101,7 +110,7 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
               <TableHead className="w-[50px] text-center font-semibold h-11 px-2 whitespace-nowrap">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="min-w-[180px] font-semibold h-11 px-3 whitespace-nowrap">
+              <TableHead className="min-w-[150px] font-semibold h-11 px-3 whitespace-nowrap">
                 {t("detail.modules.table.name")}
               </TableHead>
               <TableHead className="w-[120px] font-semibold h-11 px-2 whitespace-nowrap">
@@ -116,19 +125,10 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
               <TableHead className="w-[80px] text-center font-semibold h-11 px-2 whitespace-nowrap">
                 {t("detail.modules.table.quantity")}
               </TableHead>
-              <TableHead className="w-[120px] text-right font-semibold h-11 px-2 whitespace-nowrap">
-                {t("detail.modules.table.cost")}
-              </TableHead>
-              <TableHead className="w-[110px] font-semibold h-11 px-2 whitespace-nowrap">
-                {t("detail.modules.table.purchase_date")}
-              </TableHead>
-              <TableHead className="w-[110px] font-semibold h-11 px-2 whitespace-nowrap">
-                {t("detail.modules.table.warranty")}
-              </TableHead>
-              <TableHead className="w-[110px] font-semibold h-11 px-2 whitespace-nowrap">
+              <TableHead className="w-[120px] font-semibold h-11 px-2 whitespace-nowrap">
                 {t("detail.modules.table.attached_date")}
               </TableHead>
-              <TableHead className="w-[120px] text-center font-semibold h-11 px-2 whitespace-nowrap">
+              <TableHead className="w-[110px] text-center font-semibold h-11 px-2 whitespace-nowrap">
                 {t("detail.modules.table.status")}
               </TableHead>
             </TableRow>
@@ -137,7 +137,8 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
             {modules.map((module, index) => {
               let statusStyle = "bg-amber-50 text-amber-600 border-amber-200";
               if (module.status === "active") {
-                statusStyle = "bg-emerald-50 text-emerald-600 border-emerald-200";
+                statusStyle =
+                  "bg-emerald-50 text-emerald-600 border-emerald-200";
               } else if (module.status === "damaged") {
                 statusStyle = "bg-rose-50 text-rose-600 border-rose-200";
               } else if (module.status === "lost") {
@@ -147,44 +148,42 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
               return (
                 <TableRow
                   key={module.id}
-                  className="border-b border-border/40 last:border-0 hover:bg-muted/20 transition-colors"
+                  className="border-b border-border/40 last:border-0 hover:bg-muted/20 transition-colors cursor-pointer text-xs"
+                  onClick={() => {
+                    setSelectedModule(module);
+                    setIsFormOpen(true);
+                  }}
                 >
-                  <TableCell className="text-center text-xs text-muted-foreground px-2">
+                  <TableCell className="text-center text-muted-foreground px-2">
                     {index + 1}
                   </TableCell>
-                  <TableCell className="font-medium text-sm px-3 max-w-[250px] truncate">
+                  <TableCell className="font-medium text-sm px-3 max-w-[200px] truncate">
                     {module.name}
                   </TableCell>
-                  <TableCell className="text-sm font-mono px-2 text-primary/80">
+                  <TableCell className="font-mono px-2 text-primary/80">
                     {module.module_code || "—"}
                   </TableCell>
-                  <TableCell className="text-sm px-2 text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
+                  <TableCell className="px-2 text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
                     {module.serial_number || "—"}
                   </TableCell>
-                  <TableCell className="text-sm px-2 truncate max-w-[120px]">
+                  <TableCell className="px-2 text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
                     {module.model || "—"}
                   </TableCell>
-                  <TableCell className="text-center text-sm font-medium px-2">
+                  <TableCell className="text-center px-2">
                     {module.quantity}
                   </TableCell>
-                  <TableCell className="text-right text-sm font-medium px-2 tabular-nums">
-                    {formatNumberWithCommas(module.cost)}
-                  </TableCell>
-                  <TableCell className="text-[11px] text-muted-foreground whitespace-nowrap px-2">
-                    {formatDate(module.purchase_date)}
-                  </TableCell>
-                  <TableCell className="text-[11px] text-muted-foreground whitespace-nowrap px-2">
-                    {formatDate(module.warranty_expiration)}
-                  </TableCell>
-                  <TableCell className="text-[11px] text-muted-foreground whitespace-nowrap px-2">
-                    {formatDate(module.attached_date)}
+                  <TableCell className="px-2 text-muted-foreground">
+                    {formatDateTime(module.attached_date)}
                   </TableCell>
                   <TableCell className="text-center px-2">
                     <Badge
                       variant="outline"
                       className={`whitespace-nowrap px-2 py-0 h-5 text-[10px] font-semibold uppercase tracking-wider ${statusStyle}`}
                     >
-                      {t("detail.modules.form.statuses." + (module.status || "active"))}
+                      {t(
+                        "detail.modules.form.statuses." +
+                          (module.status || "active"),
+                      )}
                     </Badge>
                   </TableCell>
                 </TableRow>
@@ -197,7 +196,11 @@ export default function ModulesTable({ assetId }: ModulesTableProps) {
       <ModuleFormModal
         assetId={assetId}
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={() => {
+          setIsFormOpen(false);
+          setSelectedModule(null);
+        }}
+        moduleToEdit={selectedModule ?? undefined}
         onSuccess={reFetch}
       />
     </div>

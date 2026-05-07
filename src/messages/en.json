@@ -1090,9 +1090,12 @@
         },
         "form": {
           "title": "Add new module",
+          "title_edit": "Edit Module",
           "add_button": "Add module",
+          "save_button": "Save changes",
           "loading": "Loading...",
           "cancel_button": "Cancel",
+          "edit_description": "Update the detailed information for the selected module.",
           "fields": {
             "name": "Module name",
             "code": "Module code (auto-gen if empty)",

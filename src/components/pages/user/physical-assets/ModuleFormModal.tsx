@@ -44,6 +44,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useMutation } from "@/hooks/useMutation";
+import { IAssetModule } from "@/types/physical-asset";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
@@ -53,6 +54,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  moduleToEdit?: IAssetModule;
 }
 
 export default function ModuleFormModal({
@@ -60,6 +62,7 @@ export default function ModuleFormModal({
   isOpen,
   onClose,
   onSuccess,
+  moduleToEdit,
 }: Props) {
   const t = useTranslations("page_physical_assets");
   const { mutate, pending } = useMutation();
@@ -84,22 +87,39 @@ export default function ModuleFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      form.reset({
-        name: "",
-        module_code: "",
-        module_type: "component",
-        serial_number: "",
-        model: "",
-        quantity: 1,
-        cost: 0,
-        purchase_date: getTodayISO(),
-        warranty_expiration: "",
-        status: "active",
-        notes: "",
-        asset_id: assetId,
-      });
+      if (moduleToEdit) {
+        form.reset({
+          name: moduleToEdit.name,
+          module_code: moduleToEdit.module_code,
+          module_type: moduleToEdit.module_type as IModuleForm["module_type"],
+          serial_number: moduleToEdit.serial_number ?? "",
+          model: moduleToEdit.model ?? "",
+          quantity: moduleToEdit.quantity,
+          cost: moduleToEdit.cost,
+          purchase_date: moduleToEdit.purchase_date || getTodayISO(),
+          warranty_expiration: moduleToEdit.warranty_expiration || "",
+          status: moduleToEdit.status as IModuleForm["status"],
+          notes: moduleToEdit.notes ?? "",
+          asset_id: assetId,
+        });
+      } else {
+        form.reset({
+          name: "",
+          module_code: "",
+          module_type: "component",
+          serial_number: "",
+          model: "",
+          quantity: 1,
+          cost: 0,
+          purchase_date: getTodayISO(),
+          warranty_expiration: "",
+          status: "active",
+          notes: "",
+          asset_id: assetId,
+        });
+      }
     }
-  }, [isOpen, form, assetId]);
+  }, [isOpen, form, assetId, moduleToEdit]);
 
   const handleClose = () => {
     onClose();
@@ -110,8 +130,13 @@ export default function ModuleFormModal({
     const data = ModuleSchema.parse(values);
     await mutate(
       {
-        url: dynamicEndpoints.PHYSICAL_ASSET_MODULES(assetId),
-        method: "post",
+        url: moduleToEdit
+          ? dynamicEndpoints.PHYSICAL_ASSET_MODULES_DETAIL(
+              assetId,
+              moduleToEdit.id,
+            )
+          : dynamicEndpoints.PHYSICAL_ASSET_MODULES(assetId),
+        method: moduleToEdit ? "patch" : "post",
         body: {
           ...data,
           purchase_date: data.purchase_date
@@ -139,9 +164,15 @@ export default function ModuleFormModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[900px] h-fit max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{t("detail.modules.form.title")}</DialogTitle>
+          <DialogTitle>
+            {moduleToEdit
+              ? t("detail.modules.form.title_edit")
+              : t("detail.modules.form.title")}
+          </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            {t("detail.modules.form.fields.code")}
+            {moduleToEdit
+              ? t("detail.modules.form.edit_description")
+              : t("detail.modules.form.fields.code")}
           </DialogDescription>
         </DialogHeader>
 
@@ -442,7 +473,9 @@ export default function ModuleFormModal({
             <Button type="submit" disabled={pending}>
               {pending
                 ? t("detail.modules.form.loading")
-                : t("detail.modules.form.add_button")}
+                : moduleToEdit
+                  ? t("detail.modules.form.save_button")
+                  : t("detail.modules.form.add_button")}
             </Button>
           </DialogFooter>
         </form>

@@ -35,6 +35,7 @@ export default function AdminLayout({
     { title: t("staff"), url: "/admin/staff", icon: Contact },
     { title: t("roles"), url: "/admin/roles", icon: Shield },
     { title: t("organization"), url: "/admin/organization", icon: Building2 },
+    { title: t("offices"), url: "/admin/offices", icon: Building },
     { title: t("locations"), url: "/admin/locations", icon: MapPin },
     // { title: t("asset_groups"), url: "/admin/asset-groups", icon: Layers },
     { title: t("catalog_types"), url: "/admin/catalog-types", icon: Grid },
@@ -50,7 +51,6 @@ export default function AdminLayout({
     },
     { title: t("suppliers"), url: "/admin/suppliers", icon: Store },
     { title: t("customers"), url: "/admin/customers", icon: Users },
-    { title: t("offices"), url: "/admin/offices", icon: Building },
     {
       title: t("approval_workflows"),
       url: "/admin/workflow-templates",
