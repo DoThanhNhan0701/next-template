@@ -127,7 +127,7 @@ export default function StockAdjustmentDetail({ id }: Props) {
           <div className="flex items-center gap-2">
             <FileText className="w-4 h-4 text-primary" />
             <CardTitle className="text-xs font-semibold text-primary tracking-wider">
-              {t("detail.record_no")}
+              {t("detail.record_number")}
             </CardTitle>
           </div>
           <div className="flex items-center gap-3">

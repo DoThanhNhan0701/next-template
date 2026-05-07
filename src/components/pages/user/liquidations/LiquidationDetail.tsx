@@ -4,28 +4,25 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
-  CheckCircle2,
   ChevronLeft,
   ClipboardList,
-  Clock,
   CreditCard,
   ExternalLink,
   FileText,
-  History,
   Info,
   Link2,
+  LucideIcon,
   MapPin,
   Package,
   User,
   Users,
-  XCircle,
 } from "lucide-react";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
+import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -42,7 +39,7 @@ import { ILiquidationFull } from "@/types/liquidation";
 import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { formatDate, formatDateTime } from "@/utils/date";
+import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
 interface Props {
@@ -105,274 +102,228 @@ export default function LiquidationDetail({ id }: Props) {
         </div>
       </div>
 
-      {/* Summary */}
-      <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/80 rounded-r" />
-        <CardContent className="p-3 pl-5">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            {/* Left: record info */}
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <FileText className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("record_number")}
-                </span>
-                <span className="text-xl font-bold text-foreground tracking-tight">
-                  {detail.record_number}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(detail.liquidation_date)}
-                </span>
-              </div>
+      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-primary" />
+            <CardTitle className="text-xs font-semibold text-primary tracking-wider">
+              {t("record_number")}
+            </CardTitle>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-base font-bold text-foreground tracking-tight">
+              {detail.record_number}
+            </span>
+            <Badge
+              variant="outline"
+              className="px-2 py-0.5 font-bold text-xs"
+              style={{
+                backgroundColor: `${detail.status_obj?.color}18`,
+                color: detail.status_obj?.color,
+                borderColor: `${detail.status_obj?.color}40`,
+              }}
+            >
+              {detail.status_obj?.name}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="p-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 mb-4">
+            <div className="bg-primary/5 rounded-lg p-3 border border-primary/10 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-1 leading-none">
+                {t("total_value")}
+              </span>
+              <span className="text-sm font-bold text-primary tabular-nums tracking-tight">
+                {formatNumberWithCommas(detail.total_value ?? 0)}
+              </span>
             </div>
-
-            {/* Right: stats */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[100px]">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("total_value")}
-                </span>
-                <span className="text-xl font-bold text-primary">
-                  {formatNumberWithCommas(detail.total_value ?? 0)}
-                </span>
-              </div>
-              <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-muted/40 border border-border/50 min-w-[80px]">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("items_count")}
-                </span>
-                <span className="text-xl font-bold text-foreground">
-                  {detail.details?.length || 0}
-                </span>
-              </div>
-              <Badge
-                variant="outline"
-                className="px-4 py-2 text-sm font-bold rounded-xl h-auto"
-                style={{
-                  backgroundColor: `${detail.status_obj?.color}18`,
-                  color: detail.status_obj?.color,
-                  borderColor: `${detail.status_obj?.color}40`,
-                }}
-              >
-                {detail.status_obj?.name}
-              </Badge>
+            <div className="bg-muted/30 rounded-lg p-3 border border-border/40 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-1 leading-none">
+                {t("items_count")}
+              </span>
+              <span className="text-sm font-bold text-foreground tracking-tight">
+                {detail.details?.length || 0}
+              </span>
+            </div>
+            <div className="bg-muted/30 rounded-lg p-3 border border-border/40 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-1 leading-none">
+                {t("date")}
+              </span>
+              <span className="text-sm font-bold text-foreground tracking-tight">
+                {formatDate(detail.liquidation_date)}
+              </span>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Main grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
-        {/* Items table */}
-        <div className="lg:col-span-2">
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
-              <Package className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("disposal_items")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 flex-1 overflow-auto">
-              <Table className="whitespace-nowrap">
-                <TableHeader className="bg-sidebar-accent border-b border-border/50">
-                  <TableRow>
-                    <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      {t("no")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("asset")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("from_location")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      {t("quantity")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-right">
-                      {t("unit_value")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-right">
-                      {t("remaining_value")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("notes")}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {detail.details.map((item, index) => (
-                    <TableRow
-                      key={item.id}
-                      className="border-border/50 hover:bg-muted/30"
-                    >
-                      {/* No */}
-                      <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5">
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-sm font-semibold text-foreground">
-                            {item.asset?.name}
-                          </span>
-                          <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded w-fit text-muted-foreground">
-                            {item.asset?.asset_code}
-                          </code>
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5">
-                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <MapPin
-                            size={13}
-                            className="text-primary/60 shrink-0"
-                          />
-                          {item.from_location?.name || "—"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5 text-center">
-                        <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
-                          {item.quantity}
-                        </span>
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5 text-right text-sm font-medium">
-                        {item.unit_value?.toLocaleString("vi-VN")}
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5 text-right text-sm font-medium text-amber-600">
-                        {item.remaining_value?.toLocaleString("vi-VN")}
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
-                        {item.notes || "—"}
-                      </TableCell>
-                    </TableRow>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
+            <InfoItem
+              icon={ClipboardList}
+              color="bg-amber-500/10 text-amber-500"
+              label={t("type")}
+              value={<Badge variant="secondary" className="font-bold">{detail.liquidation_type}</Badge>}
+            />
+            <InfoItem
+              icon={CreditCard}
+              color="bg-indigo-500/10 text-indigo-500"
+              label={t("buyer")}
+              value={detail.buyer_name || "—"}
+            />
+            <InfoItem
+              icon={User}
+              color="bg-emerald-500/10 text-emerald-500"
+              label={t("creator")}
+              value={detail.creator?.full_name || "—"}
+            />
+            <InfoItem
+              icon={Users}
+              color="bg-purple-500/10 text-purple-500"
+              label={t("committee")}
+              value={
+                <div className="flex flex-wrap gap-1">
+                  {detail.committee?.split(",").map((name, idx) => (
+                    <Badge key={idx} variant="outline" className="text-[10px] py-0 px-1 border-border/40">
+                      {name.trim()}
+                    </Badge>
                   ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Sidebar */}
-        <div className="flex flex-col gap-3">
-          {/* General Info */}
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-              <Info className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("general_info")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <ClipboardList size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("type")}
-                  </span>
+                  {!detail.committee && "—"}
                 </div>
-                <Badge variant="secondary">{detail.liquidation_type}</Badge>
-              </div>
-              <Separator className="bg-border/40" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <CreditCard size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("buyer")}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {detail.buyer_name || "—"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <User size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("creator")}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {detail.creator?.full_name}
-                </span>
-              </div>
-              {detail.external_link && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Link2 size={15} />
-                    <span className="text-xs font-semibold tracking-wider">
-                      {t("link")}
-                    </span>
-                  </div>
+              }
+            />
+            {detail.external_link && (
+              <InfoItem
+                icon={Link2}
+                color="bg-pink-500/10 text-pink-500"
+                label={t("link")}
+                value={
                   <a
                     href={detail.external_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline flex items-center gap-1 truncate max-w-36"
+                    className="text-primary hover:underline hover:underline-offset-2 flex items-center gap-1"
                   >
-                    {t("view_link")} <ExternalLink size={12} />
+                    {t("view_link")} <ExternalLink size={10} />
                   </a>
-                </div>
-              )}
-              <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
-                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  {t("reason")}
-                </span>
-                <p className="text-sm text-foreground/80 leading-relaxed italic">
-                  {detail.reason || "—"}
-                </p>
-              </div>
-              {detail.notes && (
-                <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
-                  <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                    {t("notes")}
+                }
+              />
+            )}
+            {detail.reason && (
+              <InfoItem
+                icon={Info}
+                color="bg-orange-500/10 text-orange-500"
+                label={t("reason")}
+                value={
+                  <span className="italic opacity-80 leading-relaxed font-medium">
+                    {detail.reason}
                   </span>
-                  <p className="text-sm text-foreground/80 leading-relaxed">
+                }
+                fullWidth
+              />
+            )}
+            {detail.notes && (
+              <InfoItem
+                icon={FileText}
+                color="bg-blue-500/10 text-blue-500"
+                label={t("notes")}
+                value={
+                  <span className="opacity-80 leading-relaxed font-medium">
                     {detail.notes}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Committee */}
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-              <Users className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("committee")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3">
-              <div className="flex flex-wrap gap-2">
-                {detail.committee?.split(",").map((name, idx) => (
-                  <Badge
-                    key={idx}
-                    variant="outline"
-                    className="bg-muted/30 border-border/50 text-xs py-1"
-                  >
-                    {name.trim()}
-                  </Badge>
-                ))}
-                {!detail.committee && (
-                  <span className="text-xs text-muted-foreground italic">
-                    {t("no_committee")}
                   </span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
-            <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {isPending
-                ? t("status_pending_desc")
-                : t("status_processed_desc")}
-            </p>
+                }
+                fullWidth
+              />
+            )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md overflow-hidden rounded-md">
+        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/40 py-2 px-3">
+          <Package className="w-4 h-4 text-primary" />
+          <CardTitle className="text-xs font-semibold text-primary tracking-wider">
+            {t("disposal_items")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table className="whitespace-nowrap">
+            <TableHeader className="bg-muted/30 border-b border-border/40">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="font-bold h-8 px-3 w-[50px] text-center text-[10px]">
+                  {t("no")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
+                  {t("asset")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
+                  {t("from_location")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
+                  {t("quantity")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-right">
+                  {t("unit_value")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-right">
+                  {t("remaining_value")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
+                  {t("notes")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {detail.details.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  className="border-border/20 hover:bg-muted/30 group"
+                >
+                  <TableCell className="px-3 py-1.5 text-center text-[11px] font-medium text-muted-foreground">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5">
+                    <div className="flex flex-col">
+                      <span className="text-[12px] font-bold text-foreground">
+                        {item.asset?.name}
+                      </span>
+                      <span className="text-[10px] font-mono text-muted-foreground leading-none">
+                        {item.asset?.asset_code}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5">
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                      <MapPin size={12} className="text-primary/60" />
+                      {item.from_location?.name || "—"}
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5 text-center">
+                    <Badge
+                      variant="secondary"
+                      className="bg-primary/10 text-primary hover:bg-primary/10 px-1.5 py-0 min-w-8 justify-center text-[11px] font-bold h-5 border-0"
+                    >
+                      {item.quantity}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5 text-right font-medium text-[11px]">
+                    {item.unit_value?.toLocaleString("vi-VN")}
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5 text-right font-bold text-[11px] text-amber-600">
+                    {item.remaining_value?.toLocaleString("vi-VN")}
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5">
+                    <div className="text-[11px] text-muted-foreground italic truncate max-w-[150px]" title={item.notes ?? undefined}>
+                      {item.notes || "—"}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
       <RecordAttachmentsCard
         title={t("disposal_documents")}
+        className="rounded-md"
         initialAttachments={detail.attachments || []}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -399,92 +350,51 @@ export default function LiquidationDetail({ id }: Props) {
         }}
       />
 
-      {/* Workflow History */}
-      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-          <History className="w-4 h-4 text-amber-500" />
-          <CardTitle className="text-sm font-semibold text-primary">
-            {t("approval_history")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {historyPending ? (
-            <div className="flex flex-col gap-2 p-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full" />
-              ))}
-            </div>
-          ) : !historyList || historyList.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
-              <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">{t("no_approval_history")}</p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader className="bg-sidebar-accent border-b border-border/50">
-                <TableRow>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    {t("history_step")}
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    {t("history_approver")}
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    {t("history_status")}
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    {t("history_comment")}
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    {t("history_date")}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {historyList.map((hist) => (
-                  <TableRow
-                    key={hist.id}
-                    className="border-border/50 hover:bg-muted/30"
-                  >
-                    <TableCell className="px-4 py-1.5 text-sm font-semibold">
-                      {hist.step_name}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold transition-transform group-hover:scale-110">
-                          {hist.requester_name?.charAt(0)}
-                        </div>
-                        <span className="text-sm">{hist.requester_name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
-                      {hist.status === "APPROVED" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> {t("status_approved")}
-                        </span>
-                      ) : hist.status === "REJECTED" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> {t("status_rejected")}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> {t("status_pending")}
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
-                      {hist.comment || "—"}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
-                      {formatDateTime(hist.action_date)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      <WorkflowHistory
+        historyList={historyList}
+        pending={historyPending}
+        className="rounded-md"
+      />
+
+      <div className="p-2 rounded-lg bg-primary/5 border border-primary/10 text-center">
+        <p className="text-[11px] text-muted-foreground/80 italic font-medium">
+          {isPending
+            ? t("status_pending_desc")
+            : t("status_processed_desc")}
+        </p>
+      </div>
     </div>
   );
 }
+
+const InfoItem = ({
+  icon: Icon,
+  color,
+  label,
+  value,
+  fullWidth = false,
+}: {
+  icon: LucideIcon | React.ElementType;
+  color: string;
+  label: string;
+  value: React.ReactNode;
+  fullWidth?: boolean;
+}) => (
+  <div
+    className={`flex items-center gap-2 border-b border-border/20 py-1.5 last:border-0 ${fullWidth ? "md:col-span-2 lg:col-span-3" : ""}`}
+  >
+    <div
+      className={`w-7 h-7 rounded-full ${color} flex items-center justify-center shrink-0`}
+    >
+      <Icon className="w-4 h-4" />
+    </div>
+    <div className="flex flex-col min-w-0">
+      <span className="text-[10px] font-bold text-muted-foreground tracking-wider leading-tight">
+        {label}
+      </span>
+      <div className="truncate text-xs font-semibold text-foreground">
+        {value}
+      </div>
+    </div>
+  </div>
+);

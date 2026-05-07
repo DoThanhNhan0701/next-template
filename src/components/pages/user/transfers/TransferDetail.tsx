@@ -13,6 +13,7 @@ import {
   MapPin,
   Package,
   ArrowRight,
+  User,
 } from "lucide-react";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
@@ -145,6 +146,12 @@ export default function TransferDetail({ id }: Props) {
                   color="bg-emerald-500/10 text-emerald-500"
                   label={t("detail.transfer_date")}
                   value={formatDate(detail.transfer_date)}
+                />
+                <InfoItem
+                  icon={User}
+                  color="bg-amber-500/10 text-amber-500"
+                  label={t("detail.creator")}
+                  value={detail.creator?.full_name || "—"}
                 />
                 <InfoItem
                   icon={ArrowRightLeft}

@@ -35,6 +35,10 @@ export interface ITransfer {
 
 export interface ITransferFull extends ITransfer {
   details: ITransferDetail[];
+  creator?: {
+    full_name: string;
+    username: string;
+  };
   attachments: string[];
 }
 

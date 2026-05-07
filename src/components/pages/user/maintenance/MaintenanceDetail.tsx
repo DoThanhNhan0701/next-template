@@ -168,13 +168,19 @@ export default function MaintenanceDetail({ id }: Props) {
               icon={Tag}
               color="bg-amber-500/10 text-amber-500"
               label={t("ticket_number")}
-              value={<span className="font-mono font-bold">{detail.ticket_number}</span>}
+              value={
+                <span className="font-mono font-bold">
+                  {detail.ticket_number}
+                </span>
+              }
             />
             <InfoItem
               icon={UserCheck}
               color="bg-emerald-500/10 text-emerald-500"
               label={t("creator")}
-              value={detail.creator?.full_name || detail.creator?.username || "—"}
+              value={
+                detail.creator?.full_name || detail.creator?.username || "—"
+              }
             />
             <InfoItem
               icon={Clock}
@@ -364,7 +370,7 @@ export default function MaintenanceDetail({ id }: Props) {
           await updateMaintenance(
             {
               url: dynamicEndpoints.UPLOAD_ATTACHMENTS(
-                "maintenance",
+                "maintenances",
                 Number(id),
               ),
               method: "patch",
