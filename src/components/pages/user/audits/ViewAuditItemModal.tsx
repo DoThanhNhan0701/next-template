@@ -8,9 +8,11 @@ import {
   AlertTriangle,
   ArrowRightLeft,
   Building2,
+  CheckCircle,
   CheckCircle2,
+  ClipboardList,
   HelpCircle,
-  Info,
+  LucideIcon,
   MapPin,
   Package,
   RotateCcw,
@@ -21,10 +23,10 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -159,10 +161,10 @@ export default function ViewAuditItemModal({
       sub: t("results.matched_sub"),
       icon: CheckCircle2,
       color: "text-emerald-600 dark:text-emerald-400",
-      border: "border-emerald-500/20",
-      bg: "bg-emerald-500/5",
-      iconBg: "bg-emerald-500/10",
-      activeShadow: "shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)]",
+      border: "border-emerald-500/50",
+      bg: "bg-emerald-500/20",
+      iconBg: "bg-emerald-500/30",
+      activeShadow: "shadow-[0_0_15px_-5px_rgba(16,185,129,0.5)]",
     },
     {
       code: "MISSING",
@@ -171,10 +173,10 @@ export default function ViewAuditItemModal({
       sub: t("results.lost_sub"),
       icon: XCircle,
       color: "text-red-600 dark:text-red-400",
-      border: "border-red-500/20",
-      bg: "bg-red-500/5",
-      iconBg: "bg-red-500/10",
-      activeShadow: "shadow-[0_0_20px_-5px_rgba(239,68,68,0.3)]",
+      border: "border-red-500/50",
+      bg: "bg-red-500/20",
+      iconBg: "bg-red-500/30",
+      activeShadow: "shadow-[0_0_15px_-5px_rgba(239,68,68,0.5)]",
     },
     {
       code: "DAMAGED",
@@ -182,10 +184,10 @@ export default function ViewAuditItemModal({
       sub: t("results.damaged_sub"),
       icon: AlertTriangle,
       color: "text-amber-600 dark:text-amber-400",
-      border: "border-amber-500/20",
-      bg: "bg-amber-500/5",
-      iconBg: "bg-amber-500/10",
-      activeShadow: "shadow-[0_0_20px_-5px_rgba(245,158,11,0.3)]",
+      border: "border-amber-500/50",
+      bg: "bg-amber-500/20",
+      iconBg: "bg-amber-500/30",
+      activeShadow: "shadow-[0_0_15px_-5px_rgba(245,158,11,0.5)]",
     },
     {
       code: "UNEXPECTED",
@@ -194,10 +196,10 @@ export default function ViewAuditItemModal({
       sub: t("results.unknown_sub"),
       icon: HelpCircle,
       color: "text-blue-600 dark:text-blue-400",
-      border: "border-blue-500/20",
-      bg: "bg-blue-500/5",
-      iconBg: "bg-blue-500/10",
-      activeShadow: "shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]",
+      border: "border-blue-500/50",
+      bg: "bg-blue-500/20",
+      iconBg: "bg-blue-500/30",
+      activeShadow: "shadow-[0_0_15px_-5px_rgba(59,130,246,0.5)]",
     },
   ];
 
@@ -225,244 +227,183 @@ export default function ViewAuditItemModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[900px] max-h-[95vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl rounded-xl bg-background/80 backdrop-blur-xl">
-        <DialogHeader className="p-4 px-6 shrink-0 border-b border-border/40 bg-muted/5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
-              <Info size={20} />
+      <DialogContent className="sm:max-w-[1000px] max-h-[92vh] flex flex-col p-0 overflow-hidden border-border shadow-2xl rounded-xl bg-background backdrop-blur-none ring-1 ring-white/10">
+        <DialogHeader className="p-4 px-6 shrink-0 bg-muted/20">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30">
+                <ClipboardList size={20} strokeWidth={3} />
+              </div>
+              <div className="flex flex-col gap-0">
+                <DialogTitle className="text-xl font-black tracking-tight text-foreground">
+                  {t("detail_modal.title")}
+                </DialogTitle>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-[10px] px-2 py-0.5 h-5 bg-muted/80 border-border font-black text-foreground"
+                  >
+                    {item.asset.asset_code}
+                  </Badge>
+                  <span className="text-xs font-black text-foreground/90 truncate max-w-[250px]">
+                    {item.asset.name}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <DialogTitle className="text-lg font-bold tracking-tight">
-                {t("detail_modal.title")}
-              </DialogTitle>
-              <DialogDescription className="text-xs font-medium text-muted-foreground/70">
-                {item.asset.asset_code} — {item.asset.name}
-              </DialogDescription>
-            </div>
+            {!isLocked && (
+              <Badge
+                variant="outline"
+                className="px-2.5 py-1 text-[10px] font-black rounded-md bg-amber-500 text-white border-none shadow-lg tracking-wider"
+              >
+                {t("detail_modal.edit_mode")}
+              </Badge>
+            )}
           </div>
         </DialogHeader>
 
-        <div className="flex-1 px-6 pb-6 space-y-6 overflow-y-auto custom-scrollbar">
-          {!isAssignee ? (
-            <div className="bg-blue-500/5 border border-blue-500/10 text-blue-700 dark:text-blue-300 py-2.5 px-3.5 rounded-xl flex items-start gap-3 transition-all hover:bg-blue-500/10">
-              <div className="p-1.5 rounded-lg bg-blue-500/10 shrink-0">
-                <ShieldAlert className="h-4 w-4" />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-bold tracking-tight">
-                  {t("detail_modal.view_mode")}
-                </span>
-                <p className="text-[10px] leading-relaxed opacity-70 font-medium">
-                  {t("detail_modal.not_assignee_notice")}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-amber-500/5 border border-amber-500/15 text-amber-700 dark:text-amber-300 py-2.5 px-3.5 rounded-xl flex items-center gap-3 transition-all hover:bg-amber-500/10">
-              <div className="p-1.5 rounded-lg bg-amber-500/10 shrink-0 rotate-3">
-                <AlertTriangle className="h-4 w-4" />
-              </div>
-              <div className="text-[11px] font-bold tracking-tight leading-normal">
-                {t("detail_modal.view_mode_notice")}
-              </div>
-            </div>
-          )}
-          {isLocked && (
-            <div className="bg-emerald-500/5 border border-emerald-500/15 text-emerald-700 dark:text-emerald-300 py-2.5 px-3.5 rounded-xl flex items-center gap-3 transition-all hover:bg-emerald-500/10">
-              <div className="p-1.5 rounded-lg bg-emerald-500/10 shrink-0">
-                <CheckCircle2 className="h-4 w-4" />
-              </div>
-              <div className="flex flex-col gap-0.5 text-left">
-                <span className="text-xs font-bold tracking-tight">
-                  {t("detail_modal.view_mode")}
-                </span>
-                <p className="text-[10px] leading-relaxed opacity-70 font-medium">
-                  {t("detail_modal.locked_mode_notice")}
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div className="p-1 rounded-xl border border-border/40 bg-linear-to-b from-muted/20 to-transparent">
-                <div className="p-4 rounded-xl bg-background/50 backdrop-blur-sm shadow-sm space-y-6">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
-                    <Package size={14} className="text-primary" />
+        <div className="flex-1 px-6 py-5 overflow-y-auto custom-scrollbar bg-linear-to-b from-transparent via-muted/5 to-muted/10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Column: Asset Information */}
+            <div className="lg:col-span-4 space-y-5">
+              <Card className="border-none bg-card/40 shadow-none rounded-xl overflow-hidden group">
+                <CardHeader className="py-2 px-1 border-none bg-transparent">
+                  <CardTitle className="text-[10px] font-black tracking-[0.2em] text-primary flex items-center gap-2">
+                    <Package size={14} strokeWidth={3} />
                     {t("detail_modal.current_info")}
-                  </h3>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className="p-2.5 rounded-xl bg-muted/10 text-primary/70 shrink-0 border border-border/20 shadow-inner">
-                        <Info size={16} />
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-wider">
-                          {t("detail_modal.asset_name")}
-                        </span>
-                        <p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
-                          {item.asset.name}
-                        </p>
-                      </div>
-                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 pt-3 space-y-5">
+                  <div className="grid grid-cols-2 gap-4">
+                    <StatItem
+                      label={t("detail_modal.quantity")}
+                      value={item.transfer_quantity ?? item.unit_quantity ?? 0}
+                      color="text-primary"
+                    />
+                    <StatItem
+                      label={t("detail_modal.system_status")}
+                      value={item.asset.status_obj?.name}
+                      color="text-emerald-600 dark:text-emerald-400"
+                      isBadge
+                    />
+                  </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-wider">
-                          {t("detail_modal.asset_code")}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className="font-mono text-[11px] h-6 px-2.5 bg-muted/50 border-border/40"
-                          >
-                            {item.asset.asset_code}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-wider">
-                          {t("detail_modal.quantity")}
-                        </span>
-                        <span className="text-sm font-black text-primary drop-shadow-sm">
-                          {item.transfer_quantity ?? item.unit_quantity ?? 0}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="space-y-4">
+                    <InfoItem
+                      icon={User}
+                      color="bg-primary/10 text-primary"
+                      label={t("detail_modal.holder")}
+                      value={item.asset.holder_name || "N/A"}
+                    />
+                  </div>
 
-                    <div className="flex flex-col gap-4 p-4 rounded-xl bg-muted/10 border border-border/10 shadow-inner">
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-xl bg-background flex items-center justify-center text-primary shadow-sm border border-border/30">
-                          <User size={15} />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[10px] font-bold text-muted-foreground/50 uppercase">
-                            {t("detail_modal.holder")}
-                          </span>
-                          <span className="text-xs font-bold">
-                            {item.asset.holder_name || "N/A"}
-                          </span>
-                        </div>
+                  <Field className="space-y-2.5 pt-1">
+                    <FieldLabel className="text-[10px] font-black tracking-widest text-foreground px-1">
+                      {t("detail_modal.condition_notes")}
+                    </FieldLabel>
+                    {canEdit ? (
+                      <Textarea
+                        value={localNotes}
+                        onChange={(e) => setLocalNotes(e.target.value)}
+                        placeholder={t("detail_modal.no_notes")}
+                        className="min-h-[120px] rounded-lg bg-muted/20 border-none focus:ring-primary/20 transition-all resize-none text-sm p-4 leading-relaxed font-bold text-foreground placeholder:font-medium shadow-none"
+                      />
+                    ) : (
+                      <div className="p-4 rounded-lg bg-muted/10 min-h-[100px] text-sm text-foreground leading-relaxed italic whitespace-pre-wrap font-bold">
+                        {item.notes || t("detail_modal.no_notes")}
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <span className="text-[10px] font-bold text-muted-foreground/50 uppercase">
-                          {t("detail_modal.system_status")}
-                        </span>
-                        <Badge
-                          variant="secondary"
-                          className="w-fit px-3 py-1 text-[10px] font-black rounded-lg bg-primary/10 text-primary border-primary/20 shadow-sm uppercase tracking-tighter"
-                        >
-                          {item.asset.status_obj?.name}
-                        </Badge>
-                      </div>
-                    </div>
+                    )}
+                  </Field>
+                </CardContent>
+              </Card>
+
+              {!isAssignee && (
+                <div className="bg-blue-600/10 border-none text-blue-700 dark:text-blue-300 p-4 rounded-xl flex items-start gap-4 transition-all hover:bg-blue-600/20 group">
+                  <div className="p-2 rounded-lg bg-blue-600/20 shrink-0">
+                    <ShieldAlert size={20} strokeWidth={3} />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] font-black tracking-wider">
+                      {t("detail_modal.view_mode")}
+                    </span>
+                    <p className="text-[11px] leading-relaxed font-bold italic">
+                      {t("detail_modal.not_assignee_notice")}
+                    </p>
                   </div>
                 </div>
-              </div>
-
-              <Field className="space-y-4">
-                <FieldLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2 px-1">
-                  <div className="h-1 w-4 bg-primary rounded-full" />
-                  {t("detail_modal.condition_notes")}
-                </FieldLabel>
-                {canEdit ? (
-                  <Textarea
-                    value={localNotes}
-                    onChange={(e) => setLocalNotes(e.target.value)}
-                    placeholder={t("detail_modal.no_notes")}
-                    className="min-h-[140px] rounded-xl bg-muted/10 border-border/30 focus:border-primary/40 focus:ring-primary/10 transition-all resize-none text-sm p-5 leading-relaxed font-medium placeholder:font-normal"
-                  />
-                ) : (
-                  <div className="p-4 rounded-xl border border-dashed border-border/60 bg-muted/5 min-h-[120px] text-sm text-foreground/80 leading-relaxed italic whitespace-pre-wrap font-medium">
-                    {item.notes || t("detail_modal.no_notes")}
-                  </div>
-                )}
-              </Field>
+              )}
             </div>
 
-            <div className="space-y-6 flex flex-col h-full">
+            {/* Right Column: Audit Actions */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Audit Result Selection */}
               <Field className="space-y-4">
-                <FieldLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2 px-1">
-                  <div className="h-1 w-4 bg-primary rounded-full" />
+                <FieldLabel className="text-[10px] font-black tracking-[0.2em] text-foreground flex items-center gap-2 px-1">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
                   {t("detail_modal.audit_result")}
                 </FieldLabel>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {auditResults.map((res) => {
                     const isSelected =
                       localStatus === res.code ||
                       (localStatus && res.aliasCodes?.includes(localStatus));
 
                     return (
-                      <div
+                      <button
                         key={res.code}
+                        disabled={!canEdit}
                         className={cn(
-                          "relative group p-4 rounded-xl border flex flex-col items-center justify-center gap-3 transition-all duration-300",
-                          canEdit && "cursor-pointer active:scale-95",
+                          "relative group p-3 rounded-xl flex flex-col items-center justify-center gap-2 transition-all duration-300 overflow-hidden shadow-sm",
+                          canEdit &&
+                            "cursor-pointer active:scale-[0.97]",
                           isSelected
                             ? cn(
+                                "border-2",
                                 res.border,
                                 res.bg,
                                 res.activeShadow,
-                                "ring-1",
-                                res.border.replace("20", "40"),
+                                "border-opacity-100 ring-2",
+                                res.border.replace("border-", "ring-"),
                               )
-                            : "border-border/30 bg-muted/5 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 hover:bg-muted/10",
+                            : "border-none bg-muted/40 opacity-90 hover:opacity-100",
                         )}
                         onClick={() => canEdit && setLocalStatus(res.code)}
                       >
-                        {isSelected && (
-                          <div
-                            className="absolute top-2 right-2 h-2 w-2 rounded-full bg-current"
-                            style={{ backgroundColor: "currentColor" }}
-                          />
-                        )}
                         <div
                           className={cn(
-                            "p-3 rounded-xl transition-all duration-300 shadow-sm",
+                            "p-2.5 rounded-lg transition-all duration-300 shadow-md",
                             isSelected ? res.iconBg : "bg-muted/40",
                           )}
                         >
                           <res.icon
-                            size={20}
+                            size={22}
+                            strokeWidth={3}
                             className={cn(
                               "transition-all duration-300",
-                              isSelected
-                                ? res.color
-                                : "text-muted-foreground/40",
+                              isSelected ? res.color : "text-foreground/40",
                             )}
                           />
                         </div>
-                        <div className="flex flex-col items-center gap-1">
+                        <div className="flex flex-col items-center">
                           <span
                             className={cn(
-                              "text-xs font-bold tracking-tight transition-all duration-300",
-                              isSelected
-                                ? res.color
-                                : "text-muted-foreground/70",
+                              "text-[11px] font-black tracking-tight transition-all duration-300",
+                              isSelected ? res.color : "text-foreground/90",
                             )}
                           >
                             {res.label}
                           </span>
-                          <span
-                            className={cn(
-                              "text-[9px] font-bold text-center px-1 transition-all duration-300",
-                              isSelected
-                                ? "text-foreground/60"
-                                : "text-muted-foreground/30",
-                            )}
-                          >
-                            {res.sub}
-                          </span>
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
               </Field>
 
+              {/* Proposed Action Selection */}
               <Field className="space-y-4">
-                <FieldLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2 px-1">
-                  <div className="h-1 w-4 bg-primary rounded-full" />
+                <FieldLabel className="text-[10px] font-black tracking-[0.2em] text-foreground flex items-center gap-2 px-1">
+                  <div className="h-2 w-2 rounded-full bg-amber-500" />
                   {t("detail_modal.proposed_action")}
                 </FieldLabel>
                 <div className="grid grid-cols-3 gap-3">
@@ -472,14 +413,16 @@ export default function ViewAuditItemModal({
                       localAction === action.key ||
                       (localAction && action.aliasKeys?.includes(localAction));
                     return (
-                      <div
+                      <button
                         key={action.label}
+                        disabled={!canEdit}
                         className={cn(
-                          "p-3 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all duration-300",
-                          canEdit && "cursor-pointer active:scale-95",
+                          "relative group p-3.5 rounded-xl flex flex-col items-center justify-center gap-2 transition-all duration-300 overflow-hidden shadow-sm",
+                          canEdit &&
+                            "cursor-pointer active:scale-[0.97]",
                           isSelected
-                            ? "border-primary/40 bg-primary/5 shadow-[0_0_15px_-5px_rgba(var(--primary),0.2)] ring-1 ring-primary/20"
-                            : "border-border/30 bg-muted/5 opacity-50 grayscale hover:opacity-100 hover:grayscale-0",
+                            ? "border-2 border-primary bg-primary/20 shadow-xl shadow-primary/10 ring-2 ring-primary/40"
+                            : "border-none bg-muted/40 opacity-90 hover:opacity-100",
                         )}
                         onClick={() => {
                           if (canEdit) {
@@ -492,49 +435,50 @@ export default function ViewAuditItemModal({
                       >
                         <div
                           className={cn(
-                            "p-2 rounded-xl transition-all duration-300 shadow-sm",
-                            isSelected ? "bg-primary/20" : "bg-muted/40",
+                            "p-2.5 rounded-lg transition-all duration-300 shadow-md",
+                            isSelected
+                              ? "bg-primary/30 shadow-primary/20"
+                              : "bg-muted/40",
                           )}
                         >
                           <action.icon
-                            size={16}
+                            size={20}
+                            strokeWidth={3}
                             className={cn(
                               "transition-all duration-300",
                               isSelected
                                 ? "text-primary"
-                                : "text-muted-foreground/40",
+                                : "text-foreground/40",
                             )}
                           />
                         </div>
                         <span
                           className={cn(
-                            "text-[11px] font-bold text-center leading-tight transition-all duration-300",
-                            isSelected
-                              ? "text-primary"
-                              : "text-muted-foreground/70",
+                            "text-[11px] font-black tracking-tight transition-all duration-300 leading-tight",
+                            isSelected ? "text-primary" : "text-foreground/90",
                           )}
                         >
                           {action.label}
                         </span>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
               </Field>
 
-              <div className="flex-1 min-h-[100px] flex flex-col justify-end">
+              {/* Dynamic Action Fields */}
+              <div className="min-h-[120px]">
                 {localAction && localAction !== "NONE" && (
-                  <Field className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-xl shadow-primary/5 border-dashed">
-                    <div className="flex items-center gap-2">
-                      <div className="h-6 w-1 bg-primary rounded-full animate-pulse" />
-                      <h4 className="text-[10px] font-black text-primary/80 uppercase tracking-widest">
+                  <div className="p-5 rounded-xl bg-primary/5 flex flex-col gap-5 animate-in fade-in slide-in-from-top-3 duration-500 shadow-xl relative">
+                    <div className="absolute -top-3 left-5 px-3 py-0.5 bg-primary rounded-full shadow-lg">
+                      <span className="text-[10px] font-black text-white tracking-widest">
                         {localAction === "RECALL" ||
                         proposedActions
                           .find((a) => a.key === "RECALL")
                           ?.aliasKeys?.includes(localAction)
                           ? t("detail_modal.recall_info")
                           : t("detail_modal.transfer_info")}
-                      </h4>
+                      </span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-5">
@@ -543,8 +487,12 @@ export default function ViewAuditItemModal({
                           .find((a) => a.key === "RECALL")
                           ?.aliasKeys?.includes(localAction)) && (
                         <div className="flex flex-col gap-2.5">
-                          <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-tighter flex items-center gap-1.5">
-                            <MapPin size={12} className="text-primary/50" />
+                          <span className="text-[10px] font-black text-foreground tracking-widest flex items-center gap-2">
+                            <MapPin
+                              size={14}
+                              strokeWidth={3}
+                              className="text-primary"
+                            />
                             {t("detail_modal.receiving_warehouse")}
                           </span>
                           {canEdit ? (
@@ -554,19 +502,19 @@ export default function ViewAuditItemModal({
                                 setTargetLocationId(Number(v))
                               }
                             >
-                              <SelectTrigger className="w-full h-11 bg-background border-border/40 focus:ring-primary/20 transition-all rounded-xl shadow-sm font-semibold">
+                              <SelectTrigger className="w-full h-11 bg-background border-none focus:ring-primary/20 transition-all rounded-lg shadow-sm font-black text-sm">
                                 <SelectValue
                                   placeholder={t(
                                     "detail_modal.select_location",
                                   )}
                                 />
                               </SelectTrigger>
-                              <SelectContent className="rounded-xl shadow-2xl border-border/40">
+                              <SelectContent className="rounded-lg shadow-2xl border-none">
                                 {locations?.map((loc) => (
                                   <SelectItem
                                     key={loc.id}
                                     value={loc.id.toString()}
-                                    className="rounded-xl my-1"
+                                    className="rounded-md my-1 text-sm font-black"
                                   >
                                     {loc.name}
                                   </SelectItem>
@@ -574,13 +522,17 @@ export default function ViewAuditItemModal({
                               </SelectContent>
                             </Select>
                           ) : (
-                            <div className="p-4 rounded-xl border border-border/40 bg-background/50 flex items-center gap-3 text-sm font-bold shadow-sm">
-                              <MapPin size={16} className="text-primary" />
+                            <div className="p-4 rounded-lg bg-background flex items-center gap-3 text-sm font-black">
+                              <MapPin
+                                size={18}
+                                strokeWidth={3}
+                                className="text-primary"
+                              />
                               {item.target_holder_name ||
                                 (item.target_location_id
                                   ? locations?.find(
                                       (l) => l.id === item.target_location_id,
-                                    )?.name || `#${item.target_location_id}`
+                                    )?.name
                                   : "N/A")}
                             </div>
                           )}
@@ -591,12 +543,13 @@ export default function ViewAuditItemModal({
                         proposedActions
                           .find((a) => a.key === "TRANSFER")
                           ?.aliasKeys?.includes(localAction)) && (
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                           <div className="flex flex-col gap-2.5">
-                            <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-tighter flex items-center gap-1.5">
+                            <span className="text-[10px] font-black text-foreground tracking-widest flex items-center gap-2">
                               <Building2
-                                size={12}
-                                className="text-primary/50"
+                                size={14}
+                                strokeWidth={3}
+                                className="text-primary"
                               />
                               {t("detail_modal.recipient_unit")}
                             </span>
@@ -608,17 +561,17 @@ export default function ViewAuditItemModal({
                                   setTargetStaffId(null);
                                 }}
                               >
-                                <SelectTrigger className="w-full h-11 bg-background border-border/40 focus:ring-primary/20 transition-all rounded-xl shadow-sm font-semibold">
+                                <SelectTrigger className="w-full h-11 bg-background border-none focus:ring-primary/20 transition-all rounded-lg shadow-sm font-black text-sm">
                                   <SelectValue
                                     placeholder={t("detail_modal.select_unit")}
                                   />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-xl shadow-2xl border-border/40">
+                                <SelectContent className="rounded-lg shadow-2xl border-none">
                                   {orgUnits?.map((unit) => (
                                     <SelectItem
                                       key={unit.id}
                                       value={unit.id.toString()}
-                                      className="rounded-xl my-1"
+                                      className="rounded-md my-1 text-sm font-black"
                                     >
                                       {unit.name}
                                     </SelectItem>
@@ -626,21 +579,29 @@ export default function ViewAuditItemModal({
                                 </SelectContent>
                               </Select>
                             ) : (
-                              <div className="p-4 rounded-xl border border-border/40 bg-background/50 flex items-center gap-3 text-sm font-bold shadow-sm truncate">
-                                <Building2 size={16} className="text-primary" />
+                              <div className="p-4 rounded-lg bg-background flex items-center gap-3 text-sm font-black">
+                                <Building2
+                                  size={18}
+                                  strokeWidth={3}
+                                  className="text-primary"
+                                />
                                 {item.target_holder_name ||
                                   (item.target_unit_id
                                     ? orgUnits?.find(
                                         (u) => u.id === item.target_unit_id,
-                                      )?.name || `#${item.target_unit_id}`
+                                      )?.name
                                     : "N/A")}
                               </div>
                             )}
                           </div>
 
                           <div className="flex flex-col gap-2.5">
-                            <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-tighter flex items-center gap-1.5">
-                              <User size={12} className="text-primary/50" />
+                            <span className="text-[10px] font-black text-foreground tracking-widest flex items-center gap-2">
+                              <User
+                                size={14}
+                                strokeWidth={3}
+                                className="text-primary"
+                              />
                               {t("detail_modal.recipient_staff")}
                             </span>
                             {canEdit ? (
@@ -651,7 +612,7 @@ export default function ViewAuditItemModal({
                                 }
                                 disabled={!targetUnitId}
                               >
-                                <SelectTrigger className="w-full h-11 bg-background border-border/40 focus:ring-primary/20 transition-all rounded-xl shadow-sm font-semibold disabled:opacity-40">
+                                <SelectTrigger className="w-full h-11 bg-background border-none focus:ring-primary/20 transition-all rounded-lg shadow-sm font-black disabled:opacity-50 text-sm">
                                   <SelectValue
                                     placeholder={
                                       !targetUnitId
@@ -660,12 +621,12 @@ export default function ViewAuditItemModal({
                                     }
                                   />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-xl shadow-2xl border-border/40">
+                                <SelectContent className="rounded-lg shadow-2xl border-none">
                                   {staffs?.map((staff) => (
                                     <SelectItem
                                       key={staff.id}
                                       value={staff.id.toString()}
-                                      className="rounded-xl my-1"
+                                      className="rounded-md my-1 text-sm font-black"
                                     >
                                       {staff.full_name}
                                     </SelectItem>
@@ -673,8 +634,12 @@ export default function ViewAuditItemModal({
                                 </SelectContent>
                               </Select>
                             ) : (
-                              <div className="p-4 rounded-xl border border-border/40 bg-background/50 flex items-center gap-3 text-sm font-bold shadow-sm truncate">
-                                <User size={16} className="text-primary" />
+                              <div className="p-4 rounded-lg bg-background flex items-center gap-3 text-sm font-black">
+                                <User
+                                  size={18}
+                                  strokeWidth={3}
+                                  className="text-primary"
+                                />
                                 {item.target_staff?.full_name ||
                                   item.target_holder_name ||
                                   "N/A"}
@@ -683,32 +648,20 @@ export default function ViewAuditItemModal({
                           </div>
                         </div>
                       )}
-
-                      {(item.transfer_quantity !== null ||
-                        item.unit_quantity !== null) && (
-                        <div className="flex items-center justify-between gap-2 mt-2 px-5 py-3 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">
-                            {t("detail_modal.quantity_to_handle")}
-                          </span>
-                          <span className="text-lg font-black tracking-tighter">
-                            {item.transfer_quantity ?? item.unit_quantity}
-                          </span>
-                        </div>
-                      )}
                     </div>
-                  </Field>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
 
-        <DialogFooter className="p-4 px-6 shrink-0 border-t border-border/40 bg-muted/5 flex items-center justify-between gap-4">
+        <DialogFooter className="p-4 px-6 shrink-0 bg-muted/20 flex items-center justify-between gap-4">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             onClick={onClose}
-            className="hover:bg-muted font-bold text-muted-foreground text-[10px] uppercase tracking-widest h-11 px-6 rounded-xl transition-all"
+            className="hover:bg-muted font-black text-[10px] tracking-[0.15em] h-11 px-8 rounded-lg transition-all border-none"
           >
             {t("detail_modal.close")}
           </Button>
@@ -716,11 +669,16 @@ export default function ViewAuditItemModal({
           {canEdit && (
             <Button
               type="button"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] px-10 shadow-xl shadow-primary/20 h-11 rounded-xl transition-all active:scale-95 disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[10px] tracking-[0.15em] px-12 shadow-2xl shadow-primary/30 h-11 rounded-lg transition-all active:scale-95 disabled:opacity-50 group gap-3 border-none"
               disabled={isSaving}
               onClick={handleSave}
             >
-              {isSaving ? "..." : t("detail_modal.save")}
+              {isSaving ? (
+                <RotateCcw className="animate-spin w-4 h-4" />
+              ) : (
+                <CheckCircle className="w-4 h-4 transition-transform group-hover:scale-125" />
+              )}
+              {t("detail_modal.save")}
             </Button>
           )}
         </DialogFooter>
@@ -728,3 +686,71 @@ export default function ViewAuditItemModal({
     </Dialog>
   );
 }
+
+const InfoItem = ({
+  icon: Icon,
+  color,
+  label,
+  value,
+}: {
+  icon: LucideIcon | React.ElementType;
+  color: string;
+  label: string;
+  value: React.ReactNode;
+}) => (
+  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 transition-all hover:bg-muted/30 group">
+    <div
+      className={cn(
+        "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 shadow-sm ring-1 ring-white/10",
+        color.replace("text-", "bg-").replace(" primary", "primary/20"),
+        color,
+      )}
+    >
+      <Icon className="w-5 h-5" strokeWidth={3} />
+    </div>
+    <div className="flex flex-col min-w-0">
+      <span className="text-[10px] font-black text-foreground/70 tracking-widest leading-none mb-1">
+        {label}
+      </span>
+      <div className="truncate text-sm font-black text-foreground">{value}</div>
+    </div>
+  </div>
+);
+
+const StatItem = ({
+  label,
+  value,
+  color,
+  isBadge = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  color: string;
+  isBadge?: boolean;
+}) => (
+  <div className="flex flex-col gap-1.5 p-4 rounded-lg bg-muted/20">
+    <span className="text-[10px] font-black text-foreground/60 tracking-widest leading-none">
+      {label}
+    </span>
+    {isBadge ? (
+      <Badge
+        variant="outline"
+        className={cn(
+          "w-fit px-2 py-0.5 h-5 text-[9px] font-black rounded border-none shadow-sm bg-background",
+          color,
+        )}
+      >
+        <span className={color}>{value}</span>
+      </Badge>
+    ) : (
+      <span
+        className={cn(
+          "text-xl font-black tracking-tighter leading-none",
+          color,
+        )}
+      >
+        {value}
+      </span>
+    )}
+  </div>
+);

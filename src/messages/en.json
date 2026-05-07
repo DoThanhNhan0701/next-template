@@ -1868,7 +1868,8 @@
       "view_mode": "View Mode",
       "not_assignee_notice": "You are not the assignee for this audit session, so you only have permission to view the details.",
       "view_mode_notice": "You are viewing the audit results. Any changes (if applicable) must be made through the corresponding audit task.",
-      "locked_mode_notice": "This audit batch has been completed or is awaiting approval. You can only view the results."
+      "locked_mode_notice": "This audit batch has been completed or is awaiting approval. You can only view the results.",
+      "edit_mode": "Edit Mode"
     },
     "detail": {
       "inventory_verification": "Inventory verification",

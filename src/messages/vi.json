@@ -1869,7 +1869,8 @@
       "view_mode": "Chế độ xem",
       "not_assignee_notice": "Bạn không phải là người được giao thực hiện đợt kiểm kê này, do đó bạn chỉ có quyền xem chi tiết.",
       "view_mode_notice": "Bạn đang xem chi tiết kết quả kiểm kê. Mọi thay đổi (nếu có) phải được thực hiện thông qua phiếu kiểm kê tương ứng.",
-      "locked_mode_notice": "Đợt kiểm kê này đã hoàn thành hoặc đang đợi duyêt. Bạn chỉ có quyền xem chi tiết kết quả."
+      "locked_mode_notice": "Đợt kiểm kê này đã hoàn thành hoặc đang đợi duyêt. Bạn chỉ có quyền xem chi tiết kết quả.",
+      "edit_mode": "Chế độ chỉnh sửa"
     },
     "detail": {
       "inventory_verification": "Xác minh kho",
