@@ -22,6 +22,7 @@ interface WorkflowHistoryProps {
   pending: boolean;
   title?: string;
   emptyMessage?: string;
+  className?: string;
 }
 
 /**
@@ -38,6 +39,7 @@ export function WorkflowHistory({
   pending,
   title,
   emptyMessage,
+  className,
 }: WorkflowHistoryProps) {
   const t = useTranslations("page_my_tasks.detail.approval_history");
 
@@ -65,7 +67,9 @@ export function WorkflowHistory({
   };
 
   return (
-    <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md rounded-md">
+    <Card
+      className={`shadow-sm border-border/50 bg-card/60 backdrop-blur-md rounded-md ${className}`}
+    >
       <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-2 px-3">
         <History className="w-4 h-4 text-amber-500" />
         <CardTitle className="text-sm font-semibold text-primary">
