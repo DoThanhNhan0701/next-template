@@ -1539,6 +1539,7 @@
       "create": "Create",
       "no": "No",
       "asset": "Asset",
+      "asset_code": "Asset Code",
       "allocated_to": "Allocated To",
       "recovered_from": "Recovered From",
       "from_to": "From / To",

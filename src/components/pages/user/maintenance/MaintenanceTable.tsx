@@ -130,31 +130,31 @@ return (
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px] text-center">
                 {t("maintenance_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[200px] text-center">
                 {t("date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[250px]">
                 {t("asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("service_provider")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("reason")}
               </TableHead>
             </TableRow>
@@ -179,72 +179,72 @@ return (
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="flex items-center gap-3">
+                  <TableCell className="px-4 py-3 relative text-center">
+                    <div className="flex items-center justify-center gap-3 overflow-hidden">
                       <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
                         <FileText size={18} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-sm">
+                      <div className="flex flex-col gap-0.5 overflow-hidden text-left">
+                        <span className="font-semibold text-sm truncate block">
                           {t("record_number", { value: item.record_number })}
                         </span>
-                        <span className="text-[10px] text-muted-foreground font-medium">
+                        <span className="text-[10px] text-muted-foreground font-medium truncate block">
                           {t("ticket_number", { value: item.ticket_number })}
                         </span>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5">
+                  <TableCell className="px-4 py-3 text-sm text-center">
+                    <div className="flex flex-col gap-1 overflow-hidden items-center">
+                      <div className="flex items-center gap-1.5 overflow-hidden">
                         <Calendar
                           size={12}
-                          className="text-muted-foreground/60"
+                          className="text-muted-foreground/60 shrink-0"
                         />
-                        <span className="text-[11px] font-medium text-muted-foreground">
+                        <span className="text-[11px] font-medium text-muted-foreground shrink-0">
                           {t("outing")}
                         </span>
-
-                        <span>{formatDate(item.outing_date)}</span>
+                        <span className="truncate">{formatDate(item.outing_date)}</span>
                       </div>
                       {item.return_date && (
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 overflow-hidden">
                           <RotateCcw
                             size={12}
-                            className="text-muted-foreground/60"
+                            className="text-muted-foreground/60 shrink-0"
                           />
-                          <span className="text-[11px] font-medium text-muted-foreground">
+                          <span className="text-[11px] font-medium text-muted-foreground shrink-0">
                             {t("return")}
                           </span>
-                          <span>{formatDate(item.return_date)}</span>
+                          <span className="truncate">{formatDate(item.return_date)}</span>
                         </div>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <div className="flex flex-col gap-1 overflow-hidden">
+                      <div className="flex items-center gap-2 overflow-hidden">
                         <Package
                           size={14}
-                          className="text-muted-foreground/60"
+                          className="text-muted-foreground/60 shrink-0"
                         />
                         <span
-                          className="font-semibold text-sm truncate max-w-[200px]"
+                          className="font-semibold text-sm truncate block"
                           title={item.asset_name}
                         >
                           {item.asset_name}
                         </span>
                       </div>
-                      <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
+                      <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit truncate block">
                         {item.asset_code}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell
-                    className="px-4 py-3 text-sm truncate max-w-[200px]"
-                    title={item.service_provider_name}
+                    className="px-4 py-3 text-sm max-w-0 overflow-hidden"
                   >
-                    {item.service_provider_name || t("none")}
+                    <span className="truncate block" title={item.service_provider_name}>
+                      {item.service_provider_name || t("none")}
+                    </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm font-medium text-center">
                     {item.total_assets}
@@ -257,8 +257,10 @@ return (
                       {item.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason || t("no_reason")}
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <span className="truncate block text-xs text-muted-foreground italic" title={item.reason || t("no_reason")}>
+                      {item.reason || t("no_reason")}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))

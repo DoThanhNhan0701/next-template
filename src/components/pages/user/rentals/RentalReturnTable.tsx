@@ -187,19 +187,19 @@ export default function RentalReturnTable() {
               <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px]">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("table.record_number")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("table.customer")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px]">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("table.contract")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.return_location")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px]">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.return_date")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[140px]">
@@ -230,8 +230,8 @@ export default function RentalReturnTable() {
                     <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {skip + index + 1}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex flex-col">
+                    <TableCell className="px-4 py-1.5 text-center">
+                      <div className="flex flex-col items-center">
                         <span className="font-semibold text-sm">
                           {rentalReturn.record_number}
                         </span>
@@ -258,7 +258,7 @@ export default function RentalReturnTable() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 text-center">
                       <span className="text-sm font-medium">
                         {rentalReturn.rental.contract_number}
                       </span>
@@ -274,11 +274,11 @@ export default function RentalReturnTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex items-center gap-1.5">
+                    <TableCell className="px-4 py-1.5 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
                         <Calendar
                           size={12}
-                          className="text-muted-foreground/60"
+                          className="text-muted-foreground/60 shrink-0"
                         />
                         <span className="text-xs">
                           {formatDate(rentalReturn.return_date)}

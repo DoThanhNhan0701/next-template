@@ -501,31 +501,31 @@ export default function MyTasksTable() {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {tTable("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+              <TableHead className="font-semibold h-10 px-4 w-[180px] text-center">
                 {tTable("record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+              <TableHead className="font-semibold h-10 px-4 w-[160px] text-center">
                 {tTable("process_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {tTable("current_step")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+              <TableHead className="font-semibold h-10 px-4 w-[200px]">
                 {tTable("requester")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {tTable("created_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {tTable("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-[11px] tracking-wider text-right">
+              <TableHead className="font-semibold h-10 px-4 w-[100px] text-right">
                 {tTable("actions")}
               </TableHead>
             </TableRow>
@@ -558,8 +558,8 @@ export default function MyTasksTable() {
                   <TableCell className="px-4 py-2 text-center text-sm text-muted-foreground">
                     {(localCurrentPage - 1) * limit + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-2 relative overflow-hidden">
-                    <div className="flex items-center gap-1.5 overflow-hidden">
+                  <TableCell className="px-4 py-2 relative text-center text-sm">
+                    <div className="flex items-center justify-center gap-1.5 overflow-hidden">
                       {task.waiting_for_approval && (
                         <div
                           className="shrink-0 bg-emerald-500/10 text-emerald-600 rounded p-0.5"
@@ -569,50 +569,50 @@ export default function MyTasksTable() {
                         </div>
                       )}
                       <span
-                        className="block font-semibold text-sm group-hover:text-primary transition-colors truncate max-w-[200px]"
+                        className="block font-semibold group-hover:text-primary transition-colors truncate"
                         title={task.document_record_number}
                       >
                         {task.document_record_number}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-2">
-                    <div className="flex items-center gap-2">
+                  <TableCell className="px-4 py-2 text-center">
+                    <div className="flex items-center justify-center gap-2 overflow-hidden text-xs">
                       <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
                         {getProcessIcon(task.document_type)}
                       </div>
-                      <span className="text-xs font-bold text-foreground/80">
+                      <span className="font-bold text-foreground/80 truncate block">
                         {tDocTypes(
                           task.document_type as Parameters<typeof tDocTypes>[0],
                         )}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
                     <Badge
                       variant="outline"
-                      className="px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70"
+                      className="px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70 truncate block text-center"
                     >
                       {task.step_name}
                     </Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-bold text-secondary-foreground">
+                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
+                    <div className="flex items-center gap-2 text-sm overflow-hidden">
+                      <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-bold text-secondary-foreground shrink-0">
                         {task.requester_name.charAt(0)}
                       </div>
-                      <span className="font-medium text-foreground/80">
+                      <span className="font-medium text-foreground/80 truncate block">
                         {task.requester_name}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-2">
-                    <div className="flex flex-col gap-0.5 text-xs">
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Clock size={12} className="opacity-60" />
-                        <span>{formatDate(task.created_at, "HH:mm")}</span>
+                  <TableCell className="px-4 py-2 text-center">
+                    <div className="flex flex-col gap-0.5 text-xs overflow-hidden items-center">
+                      <div className="flex items-center justify-center gap-1.5 text-muted-foreground overflow-hidden">
+                        <Clock size={12} className="opacity-60 shrink-0" />
+                        <span className="truncate">{formatDate(task.created_at, "HH:mm")}</span>
                       </div>
-                      <span className="text-[10px] text-muted-foreground/80 ml-4 font-mono font-medium">
+                      <span className="text-[10px] text-muted-foreground/80 font-mono font-medium truncate">
                         {formatDate(task.created_at)}
                       </span>
                     </div>

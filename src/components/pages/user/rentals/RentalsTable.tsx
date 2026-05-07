@@ -238,7 +238,7 @@ return (
               <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[120px]">
+              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {t("table.rental_record")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[200px]">
@@ -253,7 +253,7 @@ return (
               <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("table.reason")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px]">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.lease_date")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[140px]">
@@ -281,7 +281,7 @@ return (
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
+                  <TableCell className="px-4 py-1.5 text-center">
                     <span className="font-semibold text-sm">
                       {rental.record_number}
                     </span>
@@ -318,11 +318,11 @@ return (
                       {rental.reason || "—"}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex items-center gap-1.5">
+                  <TableCell className="px-4 py-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}
-                        className="text-muted-foreground/60"
+                        className="text-muted-foreground/60 shrink-0"
                       />
                       <span className="text-xs text-muted-foreground">
                         {formatDate(rental.lease_date)}

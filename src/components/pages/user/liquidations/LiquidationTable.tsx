@@ -15,13 +15,13 @@ import {
   X,
 } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
 import {
   Table,
   TableBody,
@@ -59,11 +59,15 @@ export default function LiquidationTable() {
 
   if (appliedFilters.q) queryParams.append("q", appliedFilters.q);
 
-  const { response, pending, reFetch } = useGet<{ items: ILiquidation[]; total?: number; count?: number; }>({
+  const { response, pending, reFetch } = useGet<{
+    items: ILiquidation[];
+    total?: number;
+    count?: number;
+  }>({
     url: `${endpoints.LIQUIDATIONS}?${queryParams.toString()}`,
   });
   const liquidations = response?.items || [];
-return (
+  return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         <div className="relative flex-1 min-w-0">
@@ -128,28 +132,28 @@ return (
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px] text-center">
                 {t("liquidation_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[150px] text-center">
                 {t("date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[250px]">
                 {t("asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("reason")}
               </TableHead>
             </TableRow>
@@ -174,52 +178,50 @@ return (
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 relative overflow-hidden">
-                    <div className="flex items-center gap-3">
+                  <TableCell className="px-4 py-3 relative text-center">
+                    <div className="flex items-center justify-center gap-3 overflow-hidden">
                       <div className="bg-primary/5 p-2 rounded-lg text-primary shrink-0 opacity-70">
                         <FileText size={18} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-sm">
+                      <div className="flex flex-col gap-0.5 overflow-hidden">
+                        <span className="font-semibold text-sm truncate block">
                           {item.record_number}
                         </span>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar
-                          size={12}
-                          className="text-muted-foreground/60"
-                        />
-                        <span>{formatDate(item.liquidation_date)}</span>
-                      </div>
+                  <TableCell className="px-4 py-3 text-sm text-center">
+                    <div className="flex items-center justify-center gap-1.5 text-xs">
+                      <Calendar
+                        size={12}
+                        className="text-muted-foreground/60 shrink-0"
+                      />
+                      <span>{formatDate(item.liquidation_date)}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <div className="flex flex-col gap-1 overflow-hidden">
+                      <div className="flex items-center gap-2 overflow-hidden">
                         <Package
                           size={14}
-                          className="text-muted-foreground/60"
+                          className="text-muted-foreground/60 shrink-0"
                         />
                         <span
-                          className="font-semibold text-sm truncate max-w-[200px]"
+                          className="font-semibold text-sm truncate block"
                           title={item.asset_name}
                         >
                           {item.asset_name}
                         </span>
                       </div>
-                      <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
+                      <span className="text-xs text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit truncate block">
                         {item.asset_code}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm font-medium">
+                  <TableCell className="px-4 py-3 text-sm font-medium text-center">
                     {item.total_assets}
                   </TableCell>
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-4 py-3 text-center">
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-sm"
                       style={{ backgroundColor: item.status_color }}
@@ -227,9 +229,17 @@ return (
                       {item.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-[200px] truncate text-xs text-muted-foreground italic">
-                    {item.reason ||
-                      t("no_reason_placeholder", { fallback: "No reason" })}
+                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
+                    <span
+                      className="truncate block text-xs text-muted-foreground italic"
+                      title={
+                        item.reason ||
+                        t("no_reason_placeholder", { fallback: "No reason" })
+                      }
+                    >
+                      {item.reason ||
+                        t("no_reason_placeholder", { fallback: "No reason" })}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))
@@ -241,7 +251,9 @@ return (
       <TablePagination
         skip={skip}
         limit={limit}
-        count={liquidations.length} total={response?.total ?? response?.count} pending={pending}
+        count={liquidations.length}
+        total={response?.total ?? response?.count}
+        pending={pending}
         onPageChange={setSkip}
         onLimitChange={setLimit}
       />

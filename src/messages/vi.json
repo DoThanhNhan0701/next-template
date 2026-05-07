@@ -1539,6 +1539,7 @@
       "create": "Tạo mới",
       "no": "STT",
       "asset": "Tài sản",
+      "asset_code": "Mã tài sản",
       "allocated_to": "Cấp phát cho",
       "recovered_from": "Thu hồi từ",
       "from_to": "Từ / Đến",

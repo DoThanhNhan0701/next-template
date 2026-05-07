@@ -171,25 +171,25 @@ const handleSearch = () => {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[300px]">
                 {t("table.title")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[250px]">
                 {t("table.type_target")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.assignee")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.due_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -214,23 +214,23 @@ const handleSearch = () => {
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex flex-col">
                       <span
-                        className="font-semibold text-sm truncate max-w-[200px]"
+                        className="font-semibold text-sm truncate block"
                         title={audit.title}
                       >
                         {audit.title}
                       </span>
-                      <span className="text-[10px] text-muted-foreground text-nowrap">
+                      <span className="text-[10px] text-muted-foreground truncate block">
                         {t("table.created_at", {
                           date: formatDate(audit.created_at),
                         })}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col gap-1">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                    <div className="flex flex-col gap-1 overflow-hidden">
                       <Badge
                         variant="outline"
                         className="w-fit text-[10px] px-1.5 py-0"
@@ -239,14 +239,14 @@ const handleSearch = () => {
                           ? t("filters.organization")
                           : t("filters.location")}
                       </Badge>
-                      <div className="flex items-center gap-1.5 text-sm">
+                      <div className="flex items-center gap-1.5 text-sm overflow-hidden">
                         {audit.audit_type === "unit" ? (
                           <>
                             <Building2
                               size={12}
-                              className="text-muted-foreground"
+                              className="text-muted-foreground shrink-0"
                             />
-                            <span className="text-foreground/80">
+                            <span className="text-foreground/80 truncate block">
                               {audit.unit_obj?.name || "—"}
                             </span>
                           </>
@@ -254,9 +254,9 @@ const handleSearch = () => {
                           <>
                             <MapPin
                               size={12}
-                              className="text-muted-foreground"
+                              className="text-muted-foreground shrink-0"
                             />
-                            <span className="text-foreground/80">
+                            <span className="text-foreground/80 truncate block">
                               {audit.location_obj?.name || "—"}
                             </span>
                           </>
@@ -264,21 +264,21 @@ const handleSearch = () => {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex items-center gap-2">
-                      <User size={12} className="text-muted-foreground" />
-                      <span className="text-sm font-medium text-foreground/80">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <User size={12} className="text-muted-foreground shrink-0" />
+                      <span className="text-sm font-medium text-foreground/80 truncate block">
                         {audit.assignee?.full_name || "—"}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex items-center gap-1.5">
+                  <TableCell className="px-4 py-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5 text-xs">
                       <Calendar
                         size={12}
-                        className="text-muted-foreground/60"
+                        className="text-muted-foreground/60 shrink-0"
                       />
-                      <span className="text-xs">
+                      <span>
                         {formatDate(audit.due_date)}
                       </span>
                     </div>

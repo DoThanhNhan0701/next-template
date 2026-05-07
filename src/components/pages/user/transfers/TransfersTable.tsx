@@ -193,7 +193,7 @@ export default function TransfersTable() {
               <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px]">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.record_number")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
@@ -239,8 +239,8 @@ export default function TransfersTable() {
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-3 max-w-0 overflow-hidden">
-                    <div className="flex items-center gap-2 overflow-hidden">
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2 overflow-hidden">
                       <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
                         <FileText size={16} />
                       </div>
@@ -255,10 +255,10 @@ export default function TransfersTable() {
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-sm text-center">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}
-                        className="text-muted-foreground/60"
+                        className="text-muted-foreground/60 shrink-0"
                       />
                       <span>{formatDate(item.transfer_date)}</span>
                     </div>

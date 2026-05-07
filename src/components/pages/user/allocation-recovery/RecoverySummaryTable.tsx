@@ -235,41 +235,44 @@ export default function RecoverySummaryTable() {
       />
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[200px]">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+                {t("table.asset_code")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.recovered_from")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[200px]">
                 {t("table.from_to")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[180px]">
                 {t("table.notes")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={9} rows={6} />
             ) : recoveries.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={9}
                 icon={ClipboardList}
                 message={t("table.empty_recovery_title")}
                 description={t("table.empty_recovery_desc")}
@@ -289,37 +292,45 @@ export default function RecoverySummaryTable() {
                     <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                       {skip + index + 1}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex flex-col">
-                        <span
-                          className="font-semibold text-sm truncate max-w-[200px]"
-                          title={recovery.asset_name}
-                        >
-                          {recovery.asset_name || "-"}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit mt-1">
-                          {recovery.asset_code || "-"}
-                        </span>
-                      </div>
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                      <span
+                        className="font-semibold text-sm truncate block"
+                        title={recovery.asset_name}
+                      >
+                        {recovery.asset_name || "-"}
+                      </span>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex flex-col gap-1 text-sm">
-                        <span className="font-medium text-foreground/80">
+                    <TableCell className="px-4 py-1.5 text-center">
+                      <span className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded inline-block">
+                        {recovery.asset_code || "-"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                      <div className="flex flex-col gap-0.5 text-sm">
+                        <span className="font-medium text-foreground/80 truncate block">
                           {recovery.recovered_from_name ||
                             t("table.unassigned")}
                         </span>
-                        <div className="text-[11px] text-muted-foreground flex items-center gap-1">
-                          <span>{recovery.unit_name || "-"}</span>
+                        <div className="text-[11px] text-muted-foreground truncate block">
+                          {recovery.unit_name || "-"}
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                      <div className="flex items-center gap-2 text-sm overflow-hidden">
+                        <span
+                          className="text-muted-foreground truncate"
+                          title={recovery.from_name || "-"}
+                        >
                           {recovery.from_name || "-"}
                         </span>
-                        <span className="text-muted-foreground/30">→</span>
-                        <span className="text-foreground/80 font-medium">
+                        <span className="text-muted-foreground/30 shrink-0">
+                          →
+                        </span>
+                        <span
+                          className="text-foreground/80 font-medium truncate"
+                          title={recovery.to_name || "-"}
+                        >
                           {recovery.to_name || "-"}
                         </span>
                       </div>
@@ -327,23 +338,21 @@ export default function RecoverySummaryTable() {
                     <TableCell className="px-4 py-1.5 text-center font-medium">
                       {recovery.total_quantity || 0}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                       <span
-                        className="text-sm max-w-[200px] truncate block"
+                        className="text-sm truncate block"
                         title={recovery.notes || "-"}
                       >
                         {recovery.notes || "-"}
                       </span>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex items-center gap-1.5">
+                    <TableCell className="px-4 py-1.5 text-center">
+                      <div className="flex items-center justify-center gap-1.5 text-xs">
                         <Calendar
                           size={12}
-                          className="text-muted-foreground/60"
+                          className="text-muted-foreground/60 shrink-0"
                         />
-                        <span className="text-xs">
-                          {formatDate(recovery.recovery_date)}
-                        </span>
+                        <span>{formatDate(recovery.recovery_date)}</span>
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center">

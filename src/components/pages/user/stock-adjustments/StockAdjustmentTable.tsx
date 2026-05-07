@@ -148,31 +148,31 @@ export default function StockAdjustmentTable({
 
       {/* Table */}
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.record_no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[240px]">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
                 {t("table.type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[90px] text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[220px]">
                 {t("table.reason")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4">
+              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center">
+              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -197,16 +197,18 @@ export default function StockAdjustmentTable({
                   <TableCell className="px-4 py-2 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 text-center">
                     <span className="font-mono text-xs bg-muted/50 px-1.5 py-0.5 rounded">
                       {item.record_number}
                     </span>
                   </TableCell>
-                  <TableCell
-                    className="px-4 py-2 font-medium text-sm truncate max-w-[200px]"
-                    title={item.asset_names}
-                  >
-                    {item.asset_names}
+                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
+                    <span
+                      className="font-medium text-sm truncate block"
+                      title={item.asset_names}
+                    >
+                      {item.asset_names}
+                    </span>
                   </TableCell>
                   <TableCell className="px-4 py-2 text-center">
                     {item.adjustment_type === "INCREASE" ? (
@@ -222,7 +224,7 @@ export default function StockAdjustmentTable({
                   <TableCell className="px-4 py-2 text-center font-medium">
                     {item.total_quantity}
                   </TableCell>
-                  <TableCell className="px-4 py-2 max-w-[220px]">
+                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
                     <span
                       className="text-sm truncate block"
                       title={item.reason}
@@ -230,11 +232,11 @@ export default function StockAdjustmentTable({
                       {item.reason || "-"}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-2">
-                    <div className="flex items-center gap-1.5">
+                  <TableCell className="px-4 py-2 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}
-                        className="text-muted-foreground/60"
+                        className="text-muted-foreground/60 shrink-0"
                       />
                       <span className="text-xs">
                         {formatDate(item.adjustment_date)}
