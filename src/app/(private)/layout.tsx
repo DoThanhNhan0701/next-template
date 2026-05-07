@@ -46,12 +46,12 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   useFaviconBadge(counts.PENDING, pathname);
 
   useEffect(() => {
-    if (authLoading || !isReady) return;
+    if (authLoading || !isReady || !isInitialized) return;
     if (pathname !== "/my-tasks") {
       dispatch(actionFetchPendingCount());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authLoading, isReady, isInitialized]);
 
   const router = useRouter();
   const allItems: SidebarItem[] = useMemo(
