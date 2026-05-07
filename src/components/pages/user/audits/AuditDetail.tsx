@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ClipboardList,
   Clock,
+  LucideIcon,
   MapPin,
   Package,
   User,
@@ -208,6 +209,7 @@ export default function AuditDetail({ id }: Props) {
 
   return (
     <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
@@ -220,9 +222,9 @@ export default function AuditDetail({ id }: Props) {
           </Button>
           <div className="flex flex-col gap-0.5">
             <h1 className="text-lg font-semibold text-foreground">
-              {t("table.audit_batch_title")}
+              {t("table.audit_information")}
             </h1>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground font-medium">
               {t("detail.inventory_verification")}
             </span>
           </div>
@@ -235,9 +237,7 @@ export default function AuditDetail({ id }: Props) {
               size="sm"
               onClick={() => setIsAuditCompleteModalOpen(true)}
               disabled={mutatePending || progressPercentage < 100}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
             >
-              <Check size={16} />
               {t("detail.complete_audit")}
             </Button>
           )}
@@ -251,7 +251,7 @@ export default function AuditDetail({ id }: Props) {
                 disabled={mutatePending}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
               >
-                <Check size={16} />
+                <Check size={14} />
                 {tMyTasks("detail.approval_form.approve")}
               </Button>
               <Button
@@ -261,7 +261,7 @@ export default function AuditDetail({ id }: Props) {
                 disabled={mutatePending}
                 className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
               >
-                <X size={16} />
+                <X size={14} />
                 {tMyTasks("detail.approval_form.reject")}
               </Button>
             </>
@@ -269,201 +269,163 @@ export default function AuditDetail({ id }: Props) {
         </div>
       </div>
 
-      <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/80 rounded-r" />
-        <CardContent className="p-3 pl-5">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <ClipboardList className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("table.audit_information")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-foreground tracking-tight">
-                    {session.title}
-                  </span>
-                  <Badge
-                    variant="outline"
-                    className="h-5 px-1.5 text-[10px] font-mono font-bold bg-muted/50 text-muted-foreground border-border/50"
-                  >
-                    #{session.id}
-                  </Badge>
-                </div>
-                <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                  <Clock size={12} className="opacity-70" />
-                  {t("table.created_at", {
-                    date: formatDate(session.created_at),
-                  })}
-                </span>
-              </div>
+      {/* Main Info Card */}
+      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
+          <div className="flex items-center gap-2">
+            <ClipboardList className="w-4 h-4 text-primary" />
+            <CardTitle className="text-xs font-semibold text-primary tracking-wider">
+              {t("detail.record_number")}
+            </CardTitle>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-base font-bold text-foreground tracking-tight">
+              #{session.id}
+            </span>
+            <Badge
+              variant="outline"
+              className="px-2 py-0.5 font-bold text-xs"
+              style={{
+                backgroundColor: `${session.status_obj?.color}18`,
+                color: session.status_obj?.color,
+                borderColor: `${session.status_obj?.color}40`,
+              }}
+            >
+              {session.status_obj?.name}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="p-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 mb-4">
+            <div className="bg-primary/5 rounded-lg p-3 border border-primary/10 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-1 leading-none">
+                {t("detail.total_items")}
+              </span>
+              <span className="text-sm font-bold text-primary tracking-tight">
+                {items?.length || 0}
+              </span>
             </div>
-
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-[80px]">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("detail.total_items")}
+            <div className="md:col-span-1 lg:col-span-2 bg-muted/30 rounded-lg p-3 border border-border/40 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest leading-none">
+                  {t("detail.audit_progress")}
                 </span>
-                <span className="text-2xl font-bold text-primary">
-                  {items?.length || 0}
+                <span className="text-xs font-bold text-primary">
+                  {Math.round(progressPercentage)}%
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className="px-2.5 py-1 text-[10px] font-bold rounded-lg h-auto flex items-center gap-1.5 border-primary/20 bg-primary/5 text-primary"
-                >
-                  {session.audit_type === "unit" ? (
-                    <Building2 size={12} />
-                  ) : (
-                    <MapPin size={12} />
-                  )}
+              <Progress
+                value={progressPercentage}
+                className="h-1.5 bg-background/50"
+              />
+              <span className="text-[10px] text-muted-foreground font-medium text-center">
+                {t("detail.assets_count", {
+                  verified: verifiedItems,
+                  total: totalItems,
+                })}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
+            <InfoItem
+              icon={ClipboardList}
+              color="bg-primary/10 text-primary"
+              label={t("table.title")}
+              value={session.title}
+              fullWidth
+            />
+            <InfoItem
+              icon={session.audit_type === "unit" ? Building2 : MapPin}
+              color="bg-amber-500/10 text-amber-500"
+              label={t("detail.type")}
+              value={
+                <Badge variant="secondary" className="font-bold">
                   {session.audit_type.toUpperCase()}
                 </Badge>
-                <Badge
-                  variant="outline"
-                  className="px-4 py-2 text-sm font-bold rounded-xl h-auto"
-                  style={{
-                    backgroundColor: `${session.status_obj?.color}18`,
-                    color: session.status_obj?.color,
-                    borderColor: `${session.status_obj?.color}40`,
-                  }}
-                >
-                  {session.status_obj?.name}
-                </Badge>
-              </div>
+              }
+            />
+            <InfoItem
+              icon={User}
+              color="bg-emerald-500/10 text-emerald-500"
+              label={t("table.assignee")}
+              value={session.assignee?.full_name}
+            />
+            <InfoItem
+              icon={Calendar}
+              color="bg-red-500/10 text-red-500"
+              label={t("detail.due_date")}
+              value={
+                <span className="text-red-500 font-bold">
+                  {formatDate(session.due_date)}
+                </span>
+              }
+            />
+            <InfoItem
+              icon={session.audit_type === "unit" ? Building2 : MapPin}
+              color="bg-purple-500/10 text-purple-500"
+              label={t("detail.audit_target")}
+              value={
+                session.audit_type === "unit"
+                  ? session.unit_obj?.name
+                  : session.location_obj?.name
+              }
+            />
+            <InfoItem
+              icon={Clock}
+              color="bg-indigo-500/10 text-indigo-500"
+              label={t("table.created_at", { date: "" })
+                .replace("{date}", "")
+                .trim()}
+              value={formatDate(session.created_at)}
+            />
+            <div className="md:col-span-2 lg:col-span-3 rounded-lg bg-primary/5 border border-primary/10 p-2 flex items-center gap-2 mt-2">
+              {isCompleted ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <Clock className="w-4 h-4 text-amber-500 shrink-0" />
+              )}
+              <p className="text-[11px] text-muted-foreground leading-snug italic font-medium">
+                {isCompleted
+                  ? t("detail.status_processed_desc")
+                  : t("detail.status_pending_desc")}
+              </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative p-4">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-foreground">
-              {t("detail.audit_progress")}
-            </span>
-            <span className="text-sm font-bold text-primary">
-              {Math.round(progressPercentage)}%
-            </span>
-          </div>
-          <Progress value={progressPercentage} className="h-2 bg-muted/50" />
-          <span className="text-xs text-muted-foreground">
-            {t("detail.assets_count", {
-              verified: verifiedItems,
-              total: totalItems,
-            })}
-          </span>
-        </div>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-          <CardContent className="p-3 flex items-center gap-3 h-full">
-            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <User size={20} className="text-primary" />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
-                {t("table.assignee")}
-              </span>
-              <span className="text-sm font-bold text-foreground truncate">
-                {session.assignee?.full_name}
-              </span>
-              <span className="text-[10px] text-muted-foreground font-mono opacity-60 truncate">
-                @{session.assignee?.username}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-          <CardContent className="p-3 flex items-center gap-3 h-full">
-            <div className="h-10 w-10 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
-              <Calendar size={20} className="text-red-500" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
-                {t("table.due_date")}
-              </span>
-              <span className="text-sm font-black text-red-500/80">
-                {formatDate(session.due_date)}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-          <CardContent className="p-3 flex items-center gap-3 h-full">
-            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              {session.audit_type === "unit" ? (
-                <Building2 size={20} className="text-primary" />
-              ) : (
-                <MapPin size={20} className="text-primary" />
-              )}
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-wider">
-                {t("detail.audit_target")}
-              </span>
-              <span className="text-sm font-bold text-foreground truncate">
-                {session.audit_type === "unit"
-                  ? session.unit_obj?.name
-                  : session.location_obj?.name}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="rounded-xl bg-muted/30 border border-border/50 p-3 h-full flex items-center gap-3">
-          {isCompleted ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
-          ) : (
-            <Clock className="w-5 h-5 text-amber-500 shrink-0" />
-          )}
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[10px] font-black uppercase tracking-wider text-foreground/70">
-              {t("table.status_note")}
-            </span>
-            <p className="text-[11px] text-muted-foreground leading-snug italic line-clamp-2">
-              {isCompleted ? t("table.finalized_note") : t("table.active_note")}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md flex flex-col h-full min-h-[400px]">
-        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
+      {/* Assets Table */}
+      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md overflow-hidden rounded-md">
+        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/40 py-2 px-3">
           <Package className="w-4 h-4 text-primary" />
-          <CardTitle className="text-sm font-semibold text-primary">
+          <CardTitle className="text-xs font-semibold text-primary tracking-wider">
             {t("table.audited_assets")}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0 flex-1 overflow-auto">
+        <CardContent className="p-0">
           <Table className="whitespace-nowrap">
-            <TableHeader className="bg-sidebar-accent border-b border-border/50">
-              <TableRow>
-                <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+            <TableHeader className="bg-muted/30 border-b border-border/40">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="font-bold h-8 px-3 w-[50px] text-center text-[10px]">
                   {t("table.no")}
                 </TableHead>
-                <TableHead className="px-4 h-10 text-xs font-semibold">
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.asset")}
                 </TableHead>
-                <TableHead className="px-4 h-10 text-xs font-semibold">
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.current_state")}
                 </TableHead>
-                <TableHead className="px-4 h-10 text-xs font-semibold text-center">
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
                   {t("table.audit_result")}
                 </TableHead>
-                <TableHead className="px-4 h-10 text-xs font-semibold">
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.action_target")}
                 </TableHead>
-                <TableHead className="px-4 h-10 text-xs font-semibold">
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.notes")}
                 </TableHead>
-                <TableHead className="px-4 h-10 text-xs font-semibold">
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-right">
                   {t("table.verified")}
                 </TableHead>
               </TableRow>
@@ -481,7 +443,7 @@ export default function AuditDetail({ id }: Props) {
                 <TableRow>
                   <TableCell
                     colSpan={7}
-                    className="h-40 text-center text-muted-foreground italic"
+                    className="h-32 text-center text-muted-foreground italic text-xs"
                   >
                     {t("table.no_items_found")}
                   </TableCell>
@@ -490,45 +452,41 @@ export default function AuditDetail({ id }: Props) {
                 items.map((item: IAuditDetailItem, index) => (
                   <TableRow
                     key={item.id}
-                    className="border-border/50 hover:bg-muted/30 group cursor-pointer"
+                    className="border-border/20 hover:bg-muted/30 group cursor-pointer"
                     onClick={() => {
                       setSelectedItem(item);
                       setIsViewModalOpen(true);
                     }}
                   >
-                    <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
+                    <TableCell className="px-3 py-1.5 text-center text-[11px] font-medium text-muted-foreground">
                       {index + 1}
                     </TableCell>
 
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-3 py-1.5">
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                        <span className="text-[12px] font-bold text-foreground group-hover:text-primary transition-colors">
                           {item.asset.name}
                         </span>
-                        <code className="text-[10px] font-mono bg-muted/80 px-1.5 py-0.5 rounded w-fit text-muted-foreground">
+                        <code className="text-[10px] font-mono bg-muted/80 px-1.5 py-0.5 rounded w-fit text-muted-foreground opacity-70">
                           {item.asset.asset_code}
                         </code>
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-3 py-1.5">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-xs">
-                          <User
-                            size={12}
-                            className="text-muted-foreground opacity-70"
-                          />
-                          <span className="font-medium text-foreground/80">
+                        <div className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                          <User size={10} className="text-primary/60" />
+                          <span className="truncate max-w-[120px]">
                             {item.asset.holder_name || "N/A"}
                           </span>
                         </div>
                         <Badge
                           variant="outline"
-                          className="w-fit text-[9px] px-1.5 py-0 rounded-sm font-medium"
+                          className="w-fit text-[9px] px-1.5 py-0 rounded-sm font-bold border-0"
                           style={{
-                            backgroundColor: `${item.asset.status_obj?.color}10`,
+                            backgroundColor: `${item.asset.status_obj?.color}15`,
                             color: item.asset.status_obj?.color,
-                            borderColor: `${item.asset.status_obj?.color}30`,
                           }}
                         >
                           {item.asset.status_obj?.name}
@@ -536,14 +494,13 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-1.5 text-center">
+                    <TableCell className="px-3 py-1.5 text-center">
                       <Badge
                         variant="outline"
-                        className="px-2.5 py-0.5 text-[10px] font-bold rounded-full shadow-sm"
+                        className="px-2 py-0.5 text-[9px] font-bold rounded-full border-0"
                         style={{
                           backgroundColor: `${item.status_obj?.color}18`,
                           color: item.status_obj?.color,
-                          borderColor: `${item.status_obj?.color}40`,
                         }}
                       >
                         {item.status_obj?.code === "MATCHED" && (
@@ -553,14 +510,14 @@ export default function AuditDetail({ id }: Props) {
                       </Badge>
                     </TableCell>
 
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex flex-col gap-1 max-w-[180px]">
+                    <TableCell className="px-3 py-1.5">
+                      <div className="flex flex-col gap-0.5 max-w-[150px]">
                         {item.proposed_action ? (
                           <>
-                            <span className="text-[10px] font-bold text-amber-500 tracking-tight">
+                            <span className="text-[10px] font-bold text-amber-500 leading-none mb-1">
                               {item.proposed_action}
                             </span>
-                            <div className="flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/30 px-1.5 py-0.5 rounded border border-border/40">
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-medium truncate">
                               {item.target_staff && <User size={10} />}
                               {item.target_location_id && <MapPin size={10} />}
                               <span className="truncate">
@@ -568,58 +525,40 @@ export default function AuditDetail({ id }: Props) {
                                   item.target_holder_name ||
                                   t("table.system_update")}
                               </span>
-                              {(item.transfer_quantity !== null ||
-                                item.unit_quantity !== null) && (
-                                <span className="ml-auto font-bold text-primary">
-                                  {t("table.quantity", {
-                                    value:
-                                      item.transfer_quantity ??
-                                      item.unit_quantity,
-                                  })}
-                                </span>
-                              )}
                             </div>
                           </>
                         ) : (
-                          <span className="text-[11px] text-muted-foreground italic">
+                          <span className="text-[10px] text-muted-foreground italic opacity-60">
                             {t("table.no_action_required")}
                           </span>
                         )}
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-1.5 min-w-[150px]">
-                      <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80 leading-relaxed italic line-clamp-2 hover:line-clamp-none transition-all">
-                        {item.notes ? (
-                          <span>{item.notes}</span>
-                        ) : (
-                          <span className="opacity-40">—</span>
-                        )}
+                    <TableCell className="px-3 py-1.5">
+                      <div
+                        className="text-[11px] text-muted-foreground italic truncate max-w-[120px]"
+                        title={item.notes ?? undefined}
+                      >
+                        {item.notes || "—"}
                       </div>
                     </TableCell>
 
-                    <TableCell className="px-4 py-1.5 min-w-[120px]">
-                      <div className="flex flex-col text-[10px] items-end justify-center gap-1">
-                        {item.verified_at ? (
-                          <>
-                            <div className="flex flex-col items-end">
-                              <span className="font-bold text-foreground/70">
-                                {formatDate(item.verified_at)}
-                              </span>
-                              <span className="text-muted-foreground font-mono opacity-60">
-                                {formatDate(item.verified_at, "HH:mm")}
-                              </span>
-                            </div>
-                            <span className="text-primary font-black uppercase text-[9px] tracking-wider">
-                              {t("table.edit")}
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-primary font-black uppercase text-[9px] tracking-wider group-hover:underline underline-offset-4 decoration-primary/30 transition-all">
-                            {t("table.inventory")}
+                    <TableCell className="px-3 py-1.5 text-right">
+                      {item.verified_at ? (
+                        <div className="flex flex-col items-end gap-0.5">
+                          <span className="text-[11px] font-bold text-foreground/80">
+                            {formatDate(item.verified_at)}
                           </span>
-                        )}
-                      </div>
+                          <span className="text-[9px] font-black uppercase text-primary tracking-wider">
+                            {t("table.edit")}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-[9px] font-black uppercase text-primary tracking-wider hover:underline underline-offset-2">
+                          {t("table.inventory")}
+                        </span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -629,6 +568,13 @@ export default function AuditDetail({ id }: Props) {
         </CardContent>
       </Card>
 
+      <WorkflowHistory
+        historyList={historyList}
+        pending={historyPending}
+        className="rounded-md"
+      />
+
+      {/* Modals */}
       <ViewAuditItemModal
         key={`${selectedItem?.id}-${isViewModalOpen}`}
         item={selectedItem}
@@ -638,8 +584,6 @@ export default function AuditDetail({ id }: Props) {
         onRefresh={itemsReFetch}
         isLocked={session.status_obj?.code !== "PENDING"}
       />
-
-      <WorkflowHistory historyList={historyList} pending={historyPending} />
 
       <CompleteAuditModal
         task={mockTask}
@@ -667,3 +611,35 @@ export default function AuditDetail({ id }: Props) {
     </div>
   );
 }
+
+const InfoItem = ({
+  icon: Icon,
+  color,
+  label,
+  value,
+  fullWidth = false,
+}: {
+  icon: LucideIcon | React.ElementType;
+  color: string;
+  label: string;
+  value: React.ReactNode;
+  fullWidth?: boolean;
+}) => (
+  <div
+    className={`flex items-center gap-2 border-b border-border/20 py-1.5 last:border-0 ${fullWidth ? "md:col-span-2 lg:col-span-3 transition-all" : ""}`}
+  >
+    <div
+      className={`w-7 h-7 rounded-full ${color} flex items-center justify-center shrink-0`}
+    >
+      <Icon className="w-4 h-4" />
+    </div>
+    <div className="flex flex-col min-w-0">
+      <span className="text-[10px] font-bold text-muted-foreground tracking-wider leading-tight">
+        {label}
+      </span>
+      <div className="truncate text-xs font-semibold text-foreground">
+        {value}
+      </div>
+    </div>
+  </div>
+);

@@ -1872,11 +1872,17 @@
     },
     "detail": {
       "inventory_verification": "Inventory verification",
+      "record_number": "Record Number",
+      "type": "Audit Type",
+      "creator": "Creator",
+      "due_date": "Due Date",
       "total_items": "Total items",
       "audit_target": "Audit target",
       "audit_progress": "Audit progress",
       "assets_count": "{verified} / {total} assets",
-      "complete_audit": "Complete audit"
+      "complete_audit": "Complete audit",
+      "status_pending_desc": "Audit session is currently active. Verification progress is being tracked.",
+      "status_processed_desc": "Audit session has been completed and approved."
     }
   },
   "page_maintenance": {

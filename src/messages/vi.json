@@ -1873,11 +1873,17 @@
     },
     "detail": {
       "inventory_verification": "Xác minh kho",
+      "record_number": "Mã phiếu",
+      "type": "Loại kiểm kê",
+      "creator": "Người tạo",
+      "due_date": "Hạn hoàn thành",
       "total_items": "Tổng số tài sản",
       "audit_target": "Đối tượng kiểm kê",
       "audit_progress": "Tiến độ kiểm kê",
       "assets_count": "{verified} / {total} tài sản",
-      "complete_audit": "Hoàn thành kiểm kê"
+      "complete_audit": "Hoàn thành kiểm kê",
+      "status_pending_desc": "Đợt kiểm kê đang diễn ra. Tiến độ xác minh đang được theo dõi.",
+      "status_processed_desc": "Đợt kiểm kê đã được hoàn tất và phê duyệt."
     }
   },
   "page_maintenance": {
