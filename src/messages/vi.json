@@ -33,6 +33,7 @@
     "usage_modes": "Chế độ sử dụng",
     "suppliers": "Nhà cung cấp",
     "customers": "Khách hàng",
+    "offices": "Văn phòng",
     "approval_workflows": "Quy trình phê duyệt"
   },
   "page_users": {
@@ -101,6 +102,7 @@
     "phone_placeholder": "e.g. 0123 456 789",
     "phone_optional": "Số điện thoại",
     "unit": "Đơn vị",
+    "office": "Văn phòng",
     "organization": "Tổ chức",
     "status": "Trạng thái",
     "actions": "Thao tác",
@@ -112,6 +114,7 @@
     "register_new_staff": "Đăng ký nhân viên mới trong hệ thống.",
     "update_staff_info": "Cập nhật thông tin nhân viên.",
     "select_organization": "e.g. Phòng tài chính",
+    "select_office": "Chọn văn phòng",
     "cancel": "Hủy",
     "save": "Lưu",
     "saving": "Đang lưu...",
@@ -251,6 +254,54 @@
     "delete": {
       "title": "Xác nhận xóa",
       "confirm_message": "Bạn có chắc chắn muốn xóa vị trí <important>{name}</important>?",
+      "warning": "Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "deleting": "Đang xóa..."
+    },
+    "validation": {
+      "field_required": "Trường này là bắt buộc!"
+    }
+  },
+  "page_offices": {
+    "title": "Văn phòng",
+    "add_office": "Tạo mới",
+    "all_statuses": "Tất cả trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "table": {
+      "no": "STT",
+      "code": "Mã",
+      "name": "Tên văn phòng",
+      "address": "Địa chỉ",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "no_offices_found": "Không tìm thấy văn phòng nào",
+      "add_first_office": "Thêm văn phòng đầu tiên của bạn bằng nút phía trên."
+    },
+    "form": {
+      "create_title": "Tạo mới văn phòng",
+      "edit_title": "Chỉnh sửa văn phòng",
+      "create_description": "Thiết lập một văn phòng mới cho hệ thống.",
+      "edit_description": "Cập nhật thông tin chi tiết văn phòng.",
+      "code_label": "Mã văn phòng",
+      "code_placeholder": "e.g. HN_OFFICE",
+      "name_label": "Tên văn phòng",
+      "name_placeholder": "e.g. Văn phòng Hà nội",
+      "address_label": "Địa chỉ",
+      "address_placeholder": "e.g. Số 1, Đường 2, Quận 3...",
+      "description_label": "Mô tả",
+      "description_placeholder": "e.g. Ghi chú chi tiết văn phòng",
+      "active_status": "Trạng thái",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "no_changes": "Không có thay đổi nào được thực hiện."
+    },
+    "delete": {
+      "title": "Xác nhận xóa",
+      "confirm_message": "Bạn có chắc chắn muốn xóa văn phòng <important>{name}</important>?",
       "warning": "Hành động này không thể hoàn tác.",
       "cancel": "Hủy",
       "delete": "Xóa",

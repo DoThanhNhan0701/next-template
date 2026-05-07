@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import {
   Activity,
+  Building,
   Building2,
   Contact,
   GitBranch,
@@ -49,6 +50,7 @@ export default function AdminLayout({
     },
     { title: t("suppliers"), url: "/admin/suppliers", icon: Store },
     { title: t("customers"), url: "/admin/customers", icon: Users },
+    { title: t("offices"), url: "/admin/offices", icon: Building },
     {
       title: t("approval_workflows"),
       url: "/admin/workflow-templates",

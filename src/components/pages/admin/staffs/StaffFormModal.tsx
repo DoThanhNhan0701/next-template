@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 import { GetStaffSchema } from "@/components/schemas/admin/staff.schema";
@@ -34,6 +35,7 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { IOffice } from "@/types/office";
 import { IStaff, IUnit } from "@/types/staff";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
@@ -42,7 +44,7 @@ interface Props {
   staffToEdit?: IStaff | null;
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (data?: unknown, method?: "post" | "patch" | "delete") => void;
+  onSuccess: (data?: unknown, method?: "post" | "put" | "delete") => void;
 }
 
 export default function StaffFormModal({
@@ -57,6 +59,9 @@ export default function StaffFormModal({
   const { response: units = [] } = useGet<IUnit[]>({
     url: endpoints.ORG_UNITS,
   });
+  const { response: offices = [] } = useGet<IOffice[]>({
+    url: endpoints.OFFICES,
+  });
 
   const schema = GetStaffSchema(t);
   const form = useForm({
@@ -66,7 +71,8 @@ export default function StaffFormModal({
       full_name: "",
       email: "",
       phone: "",
-      unit_id: 0,
+      unit_id: "" as unknown as number,
+      office_id: "" as unknown as number,
       is_active: true,
     },
   });
@@ -80,6 +86,7 @@ export default function StaffFormModal({
           email: staffToEdit.email,
           phone: staffToEdit.phone || "",
           unit_id: staffToEdit.unit_id,
+          office_id: staffToEdit.office_id,
           is_active: staffToEdit.is_active,
         });
       } else {
@@ -88,7 +95,8 @@ export default function StaffFormModal({
           full_name: "",
           email: "",
           phone: "",
-          unit_id: 0,
+          unit_id: "" as unknown as number,
+          office_id: "" as unknown as number,
           is_active: true,
         });
       }
@@ -99,7 +107,7 @@ export default function StaffFormModal({
     const url = isEditing
       ? dynamicEndpoints.STAFF_DETAIL(staffToEdit.id)
       : endpoints.STAFFS;
-    const method = isEditing ? "patch" : "post";
+    const method = isEditing ? "put" : "post";
     const payload = { ...data };
 
     await mutate(
@@ -125,11 +133,11 @@ export default function StaffFormModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[450px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? t("edit_staff") : t("add_staff")}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? t("edit_staff") : t("add_staff")}
+          </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            {isEditing
-              ? t("update_staff_info")
-              : t("register_new_staff")}
+            {isEditing ? t("update_staff_info") : t("register_new_staff")}
           </DialogDescription>
         </DialogHeader>
 
@@ -231,6 +239,36 @@ export default function StaffFormModal({
                               value={unit.id.toString()}
                             >
                               {unit.name} ({unit.code})
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="office_id"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-1">
+                    <FieldLabel>{t("office")}</FieldLabel>
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={field.value?.toString() || ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("select_office")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {offices
+                          ?.filter((off) => off.is_active)
+                          .map((off) => (
+                            <SelectItem key={off.id} value={off.id.toString()}>
+                              {off.name} ({off.code})
                             </SelectItem>
                           ))}
                       </SelectContent>

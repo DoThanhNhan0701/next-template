@@ -1,3 +1,5 @@
+import { IOffice } from "./office";
+
 export interface IUnit {
   id: number;
   name: string;
@@ -17,7 +19,9 @@ export interface IStaff {
   email: string;
   phone: string | null;
   unit_id: number;
+  office_id: number;
   is_active: boolean;
   created_at: string;
   unit?: IUnit;
+  office?: IOffice;
 }

@@ -33,6 +33,7 @@
     "usage_modes": "Usage modes",
     "suppliers": "Suppliers",
     "customers": "Customers",
+    "offices": "Offices",
     "approval_workflows": "Approval workflows"
   },
   "page_users": {
@@ -101,6 +102,7 @@
     "phone_placeholder": "e.g. 0123 456 789",
     "phone_optional": "Phone",
     "unit": "Unit",
+    "office": "Office",
     "organization": "Organization",
     "status": "Status",
     "actions": "Actions",
@@ -112,6 +114,7 @@
     "register_new_staff": "Register a new staff member in the system.",
     "update_staff_info": "Update staff member information.",
     "select_organization": "e.g. Finance department",
+    "select_office": "Select office",
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
@@ -251,6 +254,54 @@
     "delete": {
       "title": "Confirm delete",
       "confirm_message": "Are you sure you want to delete the location <important>{name}</important>?",
+      "warning": "This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "field_required": "Field is required!"
+    }
+  },
+  "page_offices": {
+    "title": "Offices",
+    "add_office": "Create",
+    "all_statuses": "All statuses",
+    "active": "Active",
+    "inactive": "Inactive",
+    "table": {
+      "no": "No",
+      "code": "Code",
+      "name": "Office name",
+      "address": "Address",
+      "description": "Description",
+      "status": "Status",
+      "actions": "Actions",
+      "no_offices_found": "No offices found",
+      "add_first_office": "Add your first office using the button above."
+    },
+    "form": {
+      "create_title": "Create new office",
+      "edit_title": "Edit office",
+      "create_description": "Set up a new office for the system.",
+      "edit_description": "Update the office details.",
+      "code_label": "Office code",
+      "code_placeholder": "e.g. ST_TOTAL",
+      "name_label": "Office name",
+      "name_placeholder": "e.g. Main warehouse",
+      "address_label": "Address",
+      "address_placeholder": "e.g. Number 1, St 2, Dist 3...",
+      "description_label": "Description",
+      "description_placeholder": "e.g. Detailed office notes",
+      "active_status": "Status",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "no_changes": "No changes were made."
+    },
+    "delete": {
+      "title": "Confirm delete",
+      "confirm_message": "Are you sure you want to delete the office <important>{name}</important>?",
       "warning": "This action cannot be undone.",
       "cancel": "Cancel",
       "delete": "Delete",

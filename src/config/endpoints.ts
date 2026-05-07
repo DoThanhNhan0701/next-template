@@ -55,6 +55,7 @@ export const endpoints = getEndPoint("api/v1", {
   TREE: 'tree',
   MAINTENANCES: "maintenances",
   LIQUIDATIONS: "liquidations",
+  OFFICES: "offices",
   IMPORTANCES: "asset-classifications/importances",
 });
 
@@ -92,6 +93,7 @@ export const dynamicEndpoints = {
   STOCK_ADJUSTMENT_DETAIL: (id: number) => `/api/v1/stock-adjustments/${id}`,
   MAINTENANCE_DETAIL: (id: number) => `/api/v1/maintenances/${id}`,
   LIQUIDATION_DETAIL: (id: number) => `/api/v1/liquidations/${id}`,
+  OFFICE_DETAIL: (id: number) => `/api/v1/offices/${id}`,
   DOCUMENT_DETAIL: (documentType: string, id: number) => {
     const map: Record<string, string> = {
       allocation: `/api/v1/allocations/${id}`,

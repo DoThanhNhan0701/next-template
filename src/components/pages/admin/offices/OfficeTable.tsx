@@ -1,11 +1,11 @@
 "use client";
-
 import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Contact, EditIcon } from "lucide-react";
+import { Building, EditIcon } from "lucide-react";
 
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -35,68 +35,77 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { endpoints } from "@/config/endpoints";
+import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { IStaff } from "@/types/staff";
+import { IOffice } from "@/types/office";
 
-import StaffFormModal from "./StaffFormModal";
+import OfficeFormModal from "./OfficeFormModal";
 
-export default function StaffTable() {
-  const t = useTranslations("page_staff");
+export default function OfficeTable() {
+  const t = useTranslations("page_offices");
+  const tt = useTranslations("page_offices.table");
+  const td = useTranslations("page_offices.delete");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
-  const [isActive, setIsActive] = useState<string>("all");
+  const [isActiveFilter, setIsActiveFilter] = useState("all");
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
     limit: limit.toString(),
   });
-  if (isActive !== "all") {
-    queryParams.append("is_active", isActive);
+
+  if (isActiveFilter !== "all") {
+    queryParams.append("is_active", isActiveFilter);
   }
 
-  const { response, pending, reFetch, setResponse } = useGet<{
-    items: IStaff[];
-  }>({
-    url: `${endpoints.STAFFS}?${queryParams.toString()}`,
+  const { response, pending, reFetch, setResponse } = useGet<IOffice[]>({
+    url: `${endpoints.OFFICES}?${queryParams.toString()}`,
   });
-  const staffs = response?.items || [];
 
+  const offices = response || [];
   const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = staffs.length === limit;
+  const hasMore = offices.length === limit;
 
   const [isCreating, setIsCreating] = useState(false);
-  const [staffToEdit, setStaffToEdit] = useState<IStaff | null>(null);
+  const [officeToEdit, setOfficeToEdit] = useState<IOffice | null>(null);
+  const [officeToDelete, setOfficeToDelete] = useState<IOffice | null>(null);
 
   const handleSuccess = (responseData?: unknown, method?: string) => {
-    if (responseData && method === "put") {
-      const resp = responseData as { data?: IStaff } | IStaff;
+    if (responseData && method === "patch") {
+      const resp = responseData as { data?: IOffice } | IOffice;
       const updatedItem = ("data" in resp ? resp.data : resp) as
-        | IStaff
+        | IOffice
         | undefined;
       if (updatedItem?.id) {
-        setResponse((prev: { items: IStaff[] } | null) =>
+        setResponse((prev: IOffice[] | null) =>
           prev
-            ? {
-                ...prev,
-                items: prev.items.map((u: IStaff) =>
-                  u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-                ),
-              }
+            ? prev.map((off: IOffice) =>
+                off.id === updatedItem?.id ? { ...off, ...updatedItem } : off,
+              )
             : null,
         );
         return;
       }
     } else if (responseData && method === "post") {
-      const resp = responseData as { data?: IStaff } | IStaff;
-      const newItem = ("data" in resp ? resp.data : resp) as IStaff | undefined;
+      const resp = responseData as { data?: IOffice } | IOffice;
+      const newItem = ("data" in resp ? resp.data : resp) as
+        | IOffice
+        | undefined;
       if (newItem?.id) {
-        setResponse((prev: { items: IStaff[] } | null) =>
+        setResponse((prev: IOffice[] | null) =>
+          prev ? [newItem, ...prev] : [newItem],
+        );
+        return;
+      }
+    } else if (responseData && method === "delete") {
+      const resp = responseData as { data?: IOffice } | IOffice;
+      const deletedItem = ("data" in resp ? resp.data : resp) as
+        | IOffice
+        | undefined;
+      if (deletedItem?.id) {
+        setResponse((prev: IOffice[] | null) =>
           prev
-            ? {
-                ...prev,
-                items: [newItem, ...prev.items],
-              }
+            ? prev.filter((off: IOffice) => off.id !== deletedItem.id)
             : null,
         );
         return;
@@ -109,9 +118,9 @@ export default function StaffTable() {
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full">
         <Select
-          value={isActive}
+          value={isActiveFilter}
           onValueChange={(val) => {
-            setIsActive(val);
+            setIsActiveFilter(val);
             setSkip(0);
           }}
         >
@@ -124,7 +133,7 @@ export default function StaffTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>{t("add_staff")}</Button>
+        <Button onClick={() => setIsCreating(true)}>{t("add_office")}</Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -132,65 +141,59 @@ export default function StaffTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                Ref
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[12%]">
-                {t("staff_code")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[18%]">
-                {t("full_name")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                {t("email")}
+                {tt("no")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {t("unit")}
+                {tt("code")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[25%]">
+                {tt("name")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[25%]">
+                {tt("address")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {t("office")}
+                {tt("description")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                {t("status")}
+                {tt("status")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-right w-[5%]">
-                {t("actions")}
+                {tt("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
-            ) : staffs.length === 0 ? (
+              <TableLoadingRows colSpan={7} rows={6} />
+            ) : offices.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
-                icon={Contact}
-                message={t("no_staff_found")}
-                description={t("add_first_staff_description")}
+                colSpan={7}
+                icon={Building}
+                message={tt("no_offices_found")}
+                description={tt("add_first_office")}
               />
             ) : (
-              staffs.map((staff, index) => (
+              offices.map((off, index) => (
                 <TableRow
-                  key={staff.id}
+                  key={off.id}
                   className="hover:bg-primary/5 transition-colors"
                 >
                   <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 font-medium text-foreground">
-                    {staff.staff_code}
+                    {off.code}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    {staff.full_name}
+                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
+                    {off.name}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">{staff.email}</TableCell>
+                  <TableCell className="px-4 py-1.5">{off.address}</TableCell>
                   <TableCell className="px-4 py-1.5">
-                    {staff.unit?.name || "-"}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    {staff.office?.name || "-"}
+                    {off.description}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
-                    {staff.is_active ? (
+                    {off.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         {t("active")}
                       </span>
@@ -206,7 +209,7 @@ export default function StaffTable() {
                         variant="ghost"
                         size="icon"
                         className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setStaffToEdit(staff)}
+                        onClick={() => setOfficeToEdit(off)}
                       >
                         <EditIcon size={14} />
                       </Button>
@@ -219,7 +222,7 @@ export default function StaffTable() {
         </Table>
       </div>
 
-      {staffs.length > 0 || skip > 0 ? (
+      {offices.length > 0 || skip > 0 ? (
         <Pagination className="flex w-full justify-end mt-1">
           <PaginationContent>
             <PaginationItem>
@@ -255,6 +258,20 @@ export default function StaffTable() {
               </PaginationItem>
             )}
 
+            {currentPage > 2 && (
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSkip((currentPage - 2) * limit);
+                  }}
+                >
+                  {currentPage - 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+
             <PaginationItem>
               <PaginationLink href="#" isActive>
                 {currentPage}
@@ -263,30 +280,73 @@ export default function StaffTable() {
 
             {hasMore && (
               <PaginationItem>
-                <PaginationNext
+                <PaginationLink
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (hasMore && !pending) setSkip(skip + limit);
+                    setSkip(currentPage * limit);
                   }}
-                  className={
-                    !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                  }
-                />
+                >
+                  {currentPage + 1}
+                </PaginationLink>
               </PaginationItem>
             )}
+
+            {hasMore && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (hasMore && !pending) setSkip(skip + limit);
+                }}
+                className={
+                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
+                }
+              />
+            </PaginationItem>
           </PaginationContent>
         </Pagination>
       ) : null}
 
-      <StaffFormModal
-        isOpen={isCreating || staffToEdit !== null}
+      <OfficeFormModal
+        isOpen={isCreating || officeToEdit !== null}
         onClose={() => {
           setIsCreating(false);
-          setStaffToEdit(null);
+          setOfficeToEdit(null);
         }}
-        staffToEdit={staffToEdit}
+        officeToEdit={officeToEdit}
         onSuccess={handleSuccess}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={officeToDelete !== null}
+        onClose={() => setOfficeToDelete(null)}
+        onSuccess={() => handleSuccess(officeToDelete, "delete")}
+        title={td("title")}
+        description={
+          <>
+            {td.rich("confirm_message", {
+              name: officeToDelete?.name || "this item",
+              important: (chunks) => (
+                <span className="font-semibold">{chunks}</span>
+              ),
+            })}{" "}
+            {td("warning")}
+          </>
+        }
+        url={
+          officeToDelete
+            ? dynamicEndpoints.OFFICE_DETAIL(officeToDelete.id)
+            : ""
+        }
+        method="delete"
+        translationGroup="page_offices.delete"
       />
     </div>
   );
