@@ -8,23 +8,22 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Calendar,
-  CheckCircle2,
   ChevronLeft,
   Clock,
   DollarSign,
   FileCheck,
   FileText,
-  History,
   Link2,
+  LucideIcon,
   Mail,
   MapPin,
   Package,
   Phone,
-  XCircle,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { RecordAttachmentsCard } from "@/components/common/RecordAttachmentsCard";
+import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +45,7 @@ import { IRentalFull } from "@/types/rental";
 import { ApprovalHistory } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { formatDate, formatDateTime } from "@/utils/date";
+import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
 import RentalReturnModal from "./RentalReturnModal";
@@ -91,7 +90,6 @@ export default function RentalDetail({ id }: Props) {
     } else {
       getApiSuccessMessage(res);
 
-      // If the current user is the first-step approver, increment their PENDING task count
       const assignments = data.workflow_assignments as
         | Array<{ step_id: number; user_id: number }>
         | undefined;
@@ -128,7 +126,6 @@ export default function RentalDetail({ id }: Props) {
 
   return (
     <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Back */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
@@ -139,313 +136,270 @@ export default function RentalDetail({ id }: Props) {
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
-          <div className="flex flex-col gap-0.5">
-            <h1 className="text-lg font-semibold text-foreground">
+          <div className="flex flex-col">
+            <h1 className="text-base font-bold text-foreground leading-tight">
               {t("detail.title")}
             </h1>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-[10px] text-muted-foreground font-bold tracking-wider opacity-70">
               {t("detail.subtitle")}
             </span>
           </div>
         </div>
 
         {isActive && (
-          <Button
-            onClick={() => setShowReturnModal(true)}
-            className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:shadow-md transition-all"
-          >
+          <Button onClick={() => setShowReturnModal(true)} size="sm">
             {t("detail.btn_return")}
           </Button>
         )}
       </div>
 
-      {/* Summary */}
-      <Card className="border border-border/50 shadow-sm bg-card/60 backdrop-blur-md overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-primary/80 rounded-r" />
-        <CardContent className="p-3 pl-5">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            {/* Left: record info */}
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <FileText className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
+        <div className="lg:col-span-9 flex flex-col gap-3">
+          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-primary" />
+                <CardTitle className="text-xs font-semibold text-primary tracking-wider">
                   {t("detail.record_number")}
-                </span>
-                <span className="text-xl font-bold text-foreground tracking-tight">
+                </CardTitle>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-base font-bold text-foreground tracking-tight">
                   {detail.record_number}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {t("detail.contract", {
-                    number: detail.contract_number || "—",
-                  })}
-                </span>
+                <Badge
+                  variant="outline"
+                  className="px-2 py-0.5 font-bold text-xs"
+                  style={{
+                    backgroundColor: `${detail.status_obj?.color}18`,
+                    color: detail.status_obj?.color,
+                    borderColor: `${detail.status_obj?.color}40`,
+                  }}
+                >
+                  {detail.status_obj?.name}
+                </Badge>
               </div>
-            </div>
-
-            {/* Right: stats */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 min-w-20">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("detail.total_assets")}
-                </span>
-                <span className="text-2xl font-bold text-primary">
-                  {totalAssets}
-                </span>
-              </div>
-              <div className="flex flex-col items-center px-5 py-2.5 rounded-xl bg-amber-500/5 border border-amber-500/10 min-w-25">
-                <span className="text-xs text-muted-foreground font-semibold tracking-wider">
-                  {t("detail.return_date")}
-                </span>
-                <span className="text-2xl font-bold text-amber-600">
-                  {formatDate(returnDate)}
-                </span>
-              </div>
-              <Badge
-                variant="outline"
-                className="px-4 py-2 text-sm font-bold rounded-xl h-auto"
-                style={{
-                  backgroundColor: `${detail.status_obj?.color}18`,
-                  color: detail.status_obj?.color,
-                  borderColor: `${detail.status_obj?.color}40`,
-                }}
-              >
-                {detail.status_obj?.name}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Main grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-stretch">
-        {/* Items table */}
-        <div className="lg:col-span-2">
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4 shrink-0">
-              <Package className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("detail.rental_items")}
-              </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 flex-1 overflow-auto">
-              <Table className="whitespace-nowrap">
-                <TableHeader className="bg-sidebar-accent border-b border-border/50">
-                  <TableRow>
-                    <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                      {t("table.no")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("detail.col_asset")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("detail.col_from_location")}
-                    </TableHead>
-                    {/* <TableHead className="px-4 h-10 text-xs font-semibold">
-                      {t("form.location")}
-                    </TableHead> */}
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      {t("table.total_assets")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                      {t("detail.col_return_date")}
-                    </TableHead>
-                    <TableHead className="px-4 h-10 text-xs font-semibold text-right">
-                      {t("form.item_revenue")}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {detail.details.map((item, index) => (
-                    <TableRow
-                      key={item.id}
-                      className="border-border/50 hover:bg-muted/30"
-                    >
-                      {/* No */}
-                      <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5">
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-sm font-semibold text-foreground">
-                            {item.asset.name}
-                          </span>
-                          <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded w-fit text-muted-foreground">
-                            {item.asset.asset_code}
-                          </code>
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5">
-                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <MapPin
-                            size={13}
-                            className="text-primary/60 shrink-0"
-                          />
-                          {item.from_location.name}
-                        </div>
-                      </TableCell>
-                      {/* <TableCell className="px-4 py-1.5 text-sm text-muted-foreground">
-                        {item.lessee_location || ""}
-                      </TableCell> */}
-                      <TableCell className="px-4 py-1.5 text-center">
-                        <span className="inline-flex items-center justify-center w-8 h-6 bg-primary/10 text-primary rounded-lg text-sm font-bold">
-                          {item.quantity}
-                        </span>
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5 text-center">
-                        <span className="inline-flex items-center justify-center w-8 h-6 bg-emerald-500/10 text-emerald-600 rounded-lg text-sm font-bold">
-                          {item.returned_quantity}
-                        </span>
-                      </TableCell>
-                      <TableCell className="px-4 py-1.5 text-right">
-                        <span className="text-sm font-semibold text-emerald-600">
-                          {formatNumberWithCommas(item.rental_revenue)}
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <CardContent className="p-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
+                <InfoItem
+                  icon={FileCheck}
+                  color="bg-primary/10 text-primary"
+                  label={t("detail.contract_number")}
+                  value={detail.contract_number || "—"}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  color="bg-emerald-500/10 text-emerald-500"
+                  label={t("detail.lease_date")}
+                  value={formatDate(detail.lease_date)}
+                />
+                <InfoItem
+                  icon={Clock}
+                  color="bg-amber-500/10 text-amber-500"
+                  label={t("detail.duration")}
+                  value={t("detail.duration_days", {
+                    days: detail.duration_days,
+                  })}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  color="bg-rose-500/10 text-rose-500"
+                  label={t("detail.return_date")}
+                  value={formatDate(returnDate)}
+                />
+                <InfoItem
+                  icon={DollarSign}
+                  color="bg-indigo-500/10 text-indigo-500"
+                  label={t("detail.total_revenue")}
+                  value={
+                    <span className="font-bold text-emerald-600">
+                      {formatNumberWithCommas(detail.total_revenue)}
+                    </span>
+                  }
+                />
+                <InfoItem
+                  icon={Package}
+                  color="bg-purple-500/10 text-purple-500"
+                  label={t("detail.total_assets")}
+                  value={totalAssets}
+                />
+                {detail.external_link && (
+                  <InfoItem
+                    icon={Link2}
+                    color="bg-cyan-500/10 text-cyan-500"
+                    label={t("form.external_link")}
+                    value={
+                      <a
+                        href={detail.external_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline hover:underline-offset-2"
+                      >
+                        {t("detail.view_link")}
+                      </a>
+                    }
+                    fullWidth
+                  />
+                )}
+                {detail.notes && (
+                  <InfoItem
+                    icon={FileText}
+                    color="bg-orange-500/10 text-orange-500"
+                    label={t("detail.notes")}
+                    value={
+                      <span className="italic opacity-80 leading-relaxed font-medium">
+                        {detail.notes}
+                      </span>
+                    }
+                    fullWidth
+                  />
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar */}
-        <div className="flex flex-col gap-3">
-          {/* Customer Info */}
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-              <Building2 className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
+        <div className="lg:col-span-3">
+          <Card className="shadow-sm border-border/50 overflow-hidden bg-card/60 backdrop-blur-md group h-full rounded-md">
+            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/40 py-2 px-3">
+              <Building2 className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
+              <CardTitle className="text-xs font-semibold text-primary tracking-wider">
                 {t("detail.customer_info")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  {t("detail.customer_name")}
-                </span>
-                <span className="text-sm font-semibold text-foreground">
-                  {detail.customer.name}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone size={14} className="shrink-0" />
-                <span>{detail.customer.phone}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail size={14} className="shrink-0" />
-                <span className="truncate">{detail.customer.email}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin size={14} className="shrink-0" />
-                <span>{detail.customer.address || "—"}</span>
-              </div>
-              <div className="flex flex-col gap-1 pt-2 border-t border-border/50">
-                <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                  {t("detail.identifier")}
-                </span>
-                <code className="text-xs font-mono bg-muted px-2 py-1 rounded text-foreground">
-                  {detail.customer.identifier}
-                </code>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Rental Info */}
-          <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-            <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-              <FileCheck className="w-4 h-4 text-primary" />
-              <CardTitle className="text-sm font-semibold text-primary">
-                {t("detail.rental_info")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("detail.lease_date")}
+            <CardContent className="p-3">
+              <div className="space-y-3">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold text-muted-foreground tracking-wider leading-none">
+                    {t("detail.customer_name")}
                   </span>
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {formatDate(detail.lease_date)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("detail.duration")}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {t("detail.duration_days", { days: detail.duration_days })}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("detail.return_date")}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {formatDate(returnDate)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <DollarSign size={15} />
-                  <span className="text-xs font-semibold tracking-wider">
-                    {t("detail.total_revenue")}
-                  </span>
-                </div>
-                <span className="text-sm font-bold text-emerald-600">
-                  {formatNumberWithCommas(detail.total_revenue)}
-                </span>
-              </div>
-              {detail.external_link && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Link2 size={15} />
-                    <span className="text-xs font-semibold tracking-wider">
-                      {t("form.external_link")}
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                      {detail.customer.name.charAt(0)}
+                    </div>
+                    <span className="text-sm font-bold text-foreground">
+                      {detail.customer.name}
                     </span>
                   </div>
-                  <a
-                    href={detail.external_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary underline underline-offset-2 truncate max-w-36"
-                  >
-                    {detail.external_link}
-                  </a>
                 </div>
-              )}
-              {detail.notes && (
-                <div className="flex flex-col gap-1.5 pt-2 border-t border-border/50">
-                  <span className="text-xs font-semibold tracking-wider text-muted-foreground">
-                    {t("detail.notes")}
+
+                <div className="space-y-1.5 border-t border-border/40 pt-2">
+                  <SidebarContactItem
+                    icon={Phone}
+                    value={detail.customer.phone}
+                  />
+                  <SidebarContactItem
+                    icon={Mail}
+                    value={detail.customer.email}
+                  />
+                  <SidebarContactItem
+                    icon={MapPin}
+                    value={detail.customer.address || "—"}
+                  />
+                </div>
+
+                <div className="pt-2 border-t border-border/40">
+                  <span className="text-[10px] font-bold text-muted-foreground tracking-wider leading-none mb-1 block">
+                    {t("detail.identifier")}
                   </span>
-                  <p className="text-sm text-foreground/80 leading-relaxed italic">
-                    {detail.notes}
-                  </p>
+                  <code className="text-xs font-mono bg-muted/60 px-2 py-1 rounded block text-foreground/80 break-all border border-border/30">
+                    {detail.customer.identifier}
+                  </code>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
-
-          <div className="p-3 rounded-xl bg-muted/30 border border-border/50 text-center">
-            <p className="text-xs text-muted-foreground italic leading-relaxed">
-              {isActive ? t("detail.active_msg") : t("detail.completed_msg")}
-            </p>
-          </div>
         </div>
       </div>
+
+      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md overflow-hidden rounded-md">
+        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/40 py-2 px-3">
+          <Package className="w-4 h-4 text-primary" />
+          <CardTitle className="text-xs font-semibold text-primary tracking-wider">
+            {t("detail.rental_items")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table className="whitespace-nowrap">
+            <TableHeader className="bg-muted/30 border-b border-border/40">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="font-bold h-8 px-3 w-[50px] text-center text-[10px]">
+                  {t("table.no")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
+                  {t("detail.col_asset")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
+                  {t("detail.col_from_location")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
+                  {t("table.total_assets")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
+                  {t("detail.col_returned_quantity")}
+                </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-right">
+                  {t("form.item_revenue")}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {detail.details.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  className="border-border/20 hover:bg-muted/30 group"
+                >
+                  <TableCell className="px-3 py-1.5 text-center text-[11px] font-medium text-muted-foreground">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5">
+                    <div className="flex flex-col">
+                      <span className="text-[12px] font-bold text-foreground">
+                        {item.asset.name}
+                      </span>
+                      <span className="text-[10px] font-mono text-muted-foreground leading-none">
+                        {item.asset.asset_code}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5">
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                      <MapPin size={12} className="text-primary/60" />
+                      {item.from_location.name}
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5 text-center">
+                    <Badge
+                      variant="secondary"
+                      className="bg-primary/10 text-primary hover:bg-primary/10 px-1.5 py-0 min-w-8 justify-center text-[11px] font-bold h-5 border-0"
+                    >
+                      {item.quantity}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5 text-center">
+                    <Badge
+                      variant="outline"
+                      className="bg-emerald-500/10 text-emerald-600 px-1.5 py-0 min-w-8 justify-center text-[11px] font-bold h-5 border-emerald-500/20"
+                    >
+                      {item.returned_quantity}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-3 py-1.5 text-right">
+                    <span className="text-[12px] font-bold text-emerald-600">
+                      {formatNumberWithCommas(item.rental_revenue)}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
       <RecordAttachmentsCard
         title={t("detail.attachments")}
+        className="rounded-md"
         initialAttachments={detail.attachments}
         isPending={updatePending}
         onSave={async (newAttachments) => {
@@ -469,94 +423,14 @@ export default function RentalDetail({ id }: Props) {
         }}
       />
 
-      {/* Workflow History */}
-      <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-        <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
-          <History className="w-4 h-4 text-amber-500" />
-          <CardTitle className="text-sm font-semibold text-primary">
-            {t("detail.approval_history")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {historyPending ? (
-            <div className="flex flex-col gap-2 p-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full" />
-              ))}
-            </div>
-          ) : !historyList || historyList.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
-              <Clock className="w-8 h-8 opacity-30" />
-              <p className="text-sm italic">{t("detail.no_history")}</p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader className="bg-sidebar-accent border-b border-border/50">
-                <TableRow>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Step
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Approver
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold text-center">
-                    Status
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Comment
-                  </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
-                    Date
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {historyList.map((hist) => (
-                  <TableRow
-                    key={hist.id}
-                    className="border-border/50 hover:bg-muted/30"
-                  >
-                    <TableCell className="px-4 py-1.5 text-sm font-semibold">
-                      {hist.step_name}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
-                          {hist.requester_name?.charAt(0)}
-                        </div>
-                        <span className="text-sm">{hist.requester_name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
-                      {hist.status === "APPROVED" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
-                          <CheckCircle2 size={12} /> Approved
-                        </span>
-                      ) : hist.status === "REJECTED" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
-                          <XCircle size={12} /> Rejected
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
-                          <Clock size={12} /> Pending
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
-                      {hist.comment || "—"}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
-                      {formatDateTime(hist.action_date)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      <WorkflowHistory historyList={historyList} pending={historyPending} />
 
-      {/* Return Modal */}
+      <div className="p-2 rounded-lg bg-primary/5 border border-primary/10 text-center">
+        <p className="text-[11px] text-muted-foreground/80 italic font-medium">
+          {isActive ? t("detail.active_msg") : t("detail.completed_msg")}
+        </p>
+      </div>
+
       <RentalReturnModal
         isOpen={showReturnModal}
         onClose={() => setShowReturnModal(false)}
@@ -567,3 +441,52 @@ export default function RentalDetail({ id }: Props) {
     </div>
   );
 }
+
+const InfoItem = ({
+  icon: Icon,
+  color,
+  label,
+  value,
+  fullWidth = false,
+}: {
+  icon: LucideIcon | React.ElementType;
+  color: string;
+  label: string;
+  value: React.ReactNode;
+  fullWidth?: boolean;
+}) => (
+  <div
+    className={`flex items-center gap-2 border-b border-border/20 py-1.5 last:border-0 ${fullWidth ? "md:col-span-2 lg:col-span-3" : ""}`}
+  >
+    <div
+      className={`w-7 h-7 rounded-full ${color} flex items-center justify-center shrink-0`}
+    >
+      <Icon className="w-4 h-4" />
+    </div>
+    <div className="flex flex-col min-w-0">
+      <span className="text-[10px] font-bold text-muted-foreground tracking-wider leading-tight">
+        {label}
+      </span>
+      <div className="truncate text-xs font-semibold text-foreground">
+        {value}
+      </div>
+    </div>
+  </div>
+);
+
+const SidebarContactItem = ({
+  icon: Icon,
+  value,
+}: {
+  icon: LucideIcon | React.ElementType;
+  value: string;
+}) => (
+  <div className="flex items-center gap-2.5 group/contact">
+    <div className="w-6 h-6 rounded bg-muted/50 flex items-center justify-center text-muted-foreground group-hover/contact:bg-primary/10 group-hover/contact:text-primary transition-colors">
+      <Icon size={12} />
+    </div>
+    <span className="text-[11px] font-medium text-foreground/70 group-hover/contact:text-foreground transition-colors truncate">
+      {value}
+    </span>
+  </div>
+);

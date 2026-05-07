@@ -1306,8 +1306,12 @@
       "col_asset": "Asset",
       "col_from_location": "From location",
       "col_return_date": "Return date",
+      "col_returned_quantity": "Returned",
       "customer_name": "Customer name",
-      "identifier": "Identifier"
+      "identifier": "Identifier",
+      "contract_number": "Contract number",
+      "view_link": "View link",
+      "by": "By"
     },
     "form": {
       "create_title": "Create rental record",

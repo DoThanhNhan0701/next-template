@@ -65,8 +65,8 @@ export function WorkflowHistory({
   };
 
   return (
-    <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md">
-      <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-3 px-4">
+    <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md rounded-md">
+      <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-2 px-3">
         <History className="w-4 h-4 text-amber-500" />
         <CardTitle className="text-sm font-semibold text-primary">
           {title || t("title")}
