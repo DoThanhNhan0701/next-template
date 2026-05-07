@@ -141,7 +141,7 @@ export default function MaintenanceTable() {
               <TableHead className="font-semibold h-10 px-4 w-[160px] text-center">
                 {t("date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[220px]">
+              <TableHead className="font-semibold h-10 px-4 w-[320px]">
                 {t("asset_details")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[180px]">
@@ -153,17 +153,14 @@ export default function MaintenanceTable() {
               <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
-                {t("reason")}
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={9} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : maintenances.length === 0 ? (
               <TableEmptyRow
-                colSpan={9}
+                colSpan={8}
                 icon={Wrench}
                 message={t("empty_title")}
                 description={t("empty_desc")}
@@ -253,14 +250,6 @@ export default function MaintenanceTable() {
                       style={{ backgroundColor: item.status_color }}
                     >
                       {item.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                    <span
-                      className="truncate block text-xs text-muted-foreground italic"
-                      title={item.reason || t("no_reason")}
-                    >
-                      {item.reason || t("no_reason")}
                     </span>
                   </TableCell>
                 </TableRow>

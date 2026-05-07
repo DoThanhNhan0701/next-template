@@ -245,7 +245,7 @@ export default function RentalsTable() {
               <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {t("table.rental_record")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[200px]">
+              <TableHead className="font-semibold h-10 px-4 w-[320px]">
                 {t("table.asset")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[160px]">
@@ -253,9 +253,6 @@ export default function RentalsTable() {
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("table.total_assets")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[220px]">
-                {t("table.reason")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.lease_date")}
@@ -267,10 +264,10 @@ export default function RentalsTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : rentals.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={7}
                 icon={ClipboardList}
                 message={t("table.no_rentals_found")}
                 description={t("table.no_rentals_description")}
@@ -318,14 +315,6 @@ export default function RentalsTable() {
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center font-medium">
                     {rental.total_assets || 0}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                    <span
-                      className="text-xs text-muted-foreground italic truncate block"
-                      title={rental.reason}
-                    >
-                      {rental.reason || "—"}
-                    </span>
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
                     <div className="flex items-center justify-center gap-1.5">

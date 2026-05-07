@@ -136,7 +136,7 @@ export default function LiquidationTable() {
               <TableHead className="font-semibold h-10 px-4 w-[150px] text-center">
                 {t("date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[250px]">
+              <TableHead className="font-semibold h-10 px-4 w-[320px]">
                 {t("asset_details")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
@@ -145,17 +145,14 @@ export default function LiquidationTable() {
               <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
                 {t("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
-                {t("reason")}
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : liquidations.length === 0 ? (
               <TableEmptyRow
-                colSpan={7}
+                colSpan={6}
                 icon={Trash2}
                 message={t("empty_title")}
                 description={t("empty_desc")}
@@ -213,18 +210,6 @@ export default function LiquidationTable() {
                       style={{ backgroundColor: item.status_color }}
                     >
                       {item.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                    <span
-                      className="truncate block text-xs text-muted-foreground italic"
-                      title={
-                        item.reason ||
-                        t("no_reason_placeholder", { fallback: "No reason" })
-                      }
-                    >
-                      {item.reason ||
-                        t("no_reason_placeholder", { fallback: "No reason" })}
                     </span>
                   </TableCell>
                 </TableRow>

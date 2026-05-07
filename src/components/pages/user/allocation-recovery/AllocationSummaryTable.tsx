@@ -240,7 +240,7 @@ export default function AllocationSummaryTable() {
               <TableHead className="font-semibold h-10 px-4 w-[120px]">
                 {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[280px]">
+              <TableHead className="font-semibold h-10 px-4 w-[320px]">
                 {t("table.asset")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[180px]">
@@ -252,9 +252,6 @@ export default function AllocationSummaryTable() {
               <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
-                {t("table.reason")}
-              </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.date")}
               </TableHead>
@@ -265,10 +262,10 @@ export default function AllocationSummaryTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={9} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : allocations.length === 0 ? (
               <TableEmptyRow
-                colSpan={9}
+                colSpan={8}
                 icon={ClipboardList}
                 message={t("table.empty_allocation_title")}
                 description={t("table.empty_allocation_desc")}
@@ -342,14 +339,6 @@ export default function AllocationSummaryTable() {
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center font-medium">
                       {alloc.total_quantity || 0}
-                    </TableCell>
-                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                      <span
-                        className="text-sm truncate block"
-                        title={alloc.reason || "-"}
-                      >
-                        {alloc.reason || "-"}
-                      </span>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center">
                       <div className="flex items-center justify-center gap-1.5 text-xs">

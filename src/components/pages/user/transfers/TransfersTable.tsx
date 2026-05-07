@@ -202,7 +202,7 @@ export default function TransfersTable() {
               <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[220px]">
+              <TableHead className="font-semibold h-10 px-4 w-[320px]">
                 {t("table.asset_details")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[240px]">
@@ -214,17 +214,14 @@ export default function TransfersTable() {
               <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
                 {t("table.status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
-                {t("table.reason")}
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={9} rows={6} />
+              <TableLoadingRows colSpan={8} rows={6} />
             ) : transfers.length === 0 ? (
               <TableEmptyRow
-                colSpan={9}
+                colSpan={8}
                 icon={FileText}
                 message={t("table.no_transfers_found")}
                 description={t("table.no_transfers_description")}
@@ -303,11 +300,6 @@ export default function TransfersTable() {
                       style={{ backgroundColor: item.status_color }}
                     >
                       {item.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                    <span className="text-xs text-muted-foreground italic truncate block">
-                      {item.reason || t("detail.no_reason")}
                     </span>
                   </TableCell>
                 </TableRow>

@@ -157,7 +157,7 @@ export default function StockAdjustmentTable({
               <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.record_no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[240px]">
+              <TableHead className="font-semibold h-10 px-4 w-[320px]">
                 {t("table.asset")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
@@ -165,9 +165,6 @@ export default function StockAdjustmentTable({
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[90px] text-center">
                 {t("table.quantity")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[220px]">
-                {t("table.reason")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
                 {t("table.date")}
@@ -179,10 +176,10 @@ export default function StockAdjustmentTable({
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={7} rows={6} />
             ) : items.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={7}
                 icon={PackageSearch}
                 message={t("table.empty_title")}
                 description={t("table.empty_desc")}
@@ -228,14 +225,6 @@ export default function StockAdjustmentTable({
                   </TableCell>
                   <TableCell className="px-4 py-2 text-center font-medium">
                     {item.total_quantity}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
-                    <span
-                      className="text-sm truncate block"
-                      title={item.reason}
-                    >
-                      {item.reason || "-"}
-                    </span>
                   </TableCell>
                   <TableCell className="px-4 py-2 text-center">
                     <div className="flex items-center justify-center gap-1.5">
