@@ -202,3 +202,9 @@ export interface IAssetModule {
   notes: string | null;
   created_at: string;
 }
+
+export interface ICloneResponse {
+  voucher_number: string;
+  cloned_count: number;
+  assets: IPhysicalAssetDetail[];
+}

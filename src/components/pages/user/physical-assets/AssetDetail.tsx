@@ -36,12 +36,15 @@ import {
   IAssetHolder,
   IAssetModule,
   IAssetStock,
+  ICloneResponse,
   IPhysicalAssetDetail,
 } from "@/types/physical-asset";
 
-import AssetFormModal from "./modals/AssetFormModal";
 import PrintQRModal from "./docs/PrintQRModal";
 import LifecycleTab from "./lifecycle/LifecycleTab";
+import AssetFormModal from "./modals/AssetFormModal";
+import CloneAssetModal from "./modals/CloneAssetModal";
+import CloneSuccessModal from "./modals/CloneSuccessModal";
 import OverviewTab, { StatItem } from "./overview/OverviewTab";
 
 const AssetModulesTable = dynamic(() => import("./modules/AssetModulesTable"), {
@@ -63,6 +66,9 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") ?? "overview";
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isCloneModalOpen, setIsCloneModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [clonedData, setClonedData] = useState<ICloneResponse | null>(null);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { hasPermission } = usePermissions();
@@ -220,6 +226,14 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
             <Button variant="outline" onClick={handleRecovery}>
               {t("detail.recovery")}
             </Button>
+            {asset.management_type === "unique" && (
+              <Button
+                variant="outline"
+                onClick={() => setIsCloneModalOpen(true)}
+              >
+                {t("detail.clone")}
+              </Button>
+            )}
             {canEdit && (
               <Button onClick={() => setIsEditOpen(true)}>
                 {t("detail.edit")}
@@ -383,6 +397,25 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           }}
         />
       )}
+
+      {asset && (
+        <CloneAssetModal
+          isOpen={isCloneModalOpen}
+          onClose={() => setIsCloneModalOpen(false)}
+          assetId={asset.id}
+          initialLocationId={asset.location_id}
+          onSuccess={(res) => {
+            setClonedData(res as ICloneResponse);
+            setIsSuccessModalOpen(true);
+          }}
+        />
+      )}
+
+      <CloneSuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+        data={clonedData}
+      />
 
       {asset && (
         <PrintQRModal

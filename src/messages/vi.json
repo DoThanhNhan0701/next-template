@@ -1042,6 +1042,7 @@
       "rentals": "Cho thuê",
       "allocation": "Cấp phát",
       "recovery": "Thu hồi",
+      "clone": "Nhân bản",
       "reasons": {
         "allocation": "Cấp phát tài sản: {name}",
         "recovery": "Thu hồi tài sản: {name}",
@@ -1198,8 +1199,14 @@
     "modals": {
       "create_title": "Tạo mới",
       "edit_title": "Sửa tài sản",
+      "clone_title": "Nhân bản tài sản",
+      "clone_success_title": "Nhân bản thành công",
       "create_description": "Điền các thông tin cần thiết để đăng ký tài sản mới vào hệ thống.",
       "edit_description": "Chỉnh sửa thông tin của tài sản đã chọn.",
+      "clone_description": "Tạo bản sao mới của tài sản này.",
+      "cloned_assets": "Danh sách tài sản mới",
+      "view_detail": "Xem chi tiết",
+      "cloned_count": "Số lượng nhân bản: {count}",
       "sections": {
         "general": "1. Thông tin chung",
         "tracking": "2. Theo dõi & Quản lý",

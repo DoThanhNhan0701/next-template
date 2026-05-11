@@ -76,6 +76,7 @@ export const dynamicEndpoints = {
   PHYSICAL_ASSET_HOLDERS: (id: number) => `/api/v1/physical-assets/${id}/holders`,
   PHYSICAL_ASSET_STOCK: (id: number) => `/api/v1/physical-assets/${id}/stock`,
   PHYSICAL_ASSET_MODULES: (id: number) => `/api/v1/physical-assets/${id}/modules`,
+  PHYSICAL_ASSET_CLONE: (id: number) => `/api/v1/physical-assets/${id}/clone`,
   PHYSICAL_ASSET_MODULES_DETAIL: (asset_id: number, module_id: number) => `/api/v1/physical-assets/${asset_id}/modules/${module_id}`,
   RENTAL_DETAIL: (id: number) => `/api/v1/rentals/${id}`,
   RENTAL_RETURN: (id: number) => `/api/v1/rentals/${id}/return`,

@@ -106,7 +106,7 @@ export default function LoginPage() {
           />
           <div className="absolute inset-0 bg-linear-to-tr from-primary/40 via-transparent to-primary/20" />
         </div>
-        
+
         <div className="relative z-10 p-12 text-center text-white">
           <div className="mb-8 flex justify-center">
             <div className="rounded-2xl bg-white/10 p-4 shadow-xl backdrop-blur-md">
@@ -123,10 +123,11 @@ export default function LoginPage() {
             Streamline Your Assets
           </h1>
           <p className="max-w-md text-lg text-white/80">
-            A comprehensive solution for tracking, maintaining, and optimizing your organization&apos;s physical assets in real-time.
+            A comprehensive solution for tracking, maintaining, and optimizing
+            your organization&apos;s physical assets in real-time.
           </p>
         </div>
-        
+
         <div className="absolute bottom-8 left-8 z-10 flex gap-4 text-xs text-white/60">
           <span>© 2026 Asset Management System</span>
           <span>Privacy Policy</span>
@@ -166,7 +167,12 @@ export default function LoginPage() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-2">
-                    <FieldLabel htmlFor="username" className="text-sm font-medium">Username</FieldLabel>
+                    <FieldLabel
+                      htmlFor="username"
+                      className="text-sm font-medium"
+                    >
+                      Username
+                    </FieldLabel>
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60">
                         <User className="h-4 w-4" />
@@ -195,9 +201,14 @@ export default function LoginPage() {
                   return (
                     <Field data-invalid={fieldState.invalid} className="gap-2">
                       <div className="flex items-center justify-between">
-                        <FieldLabel htmlFor="password" className="text-sm font-medium">Password</FieldLabel>
-                        <button 
-                          type="button" 
+                        <FieldLabel
+                          htmlFor="password"
+                          className="text-sm font-medium"
+                        >
+                          Password
+                        </FieldLabel>
+                        <button
+                          type="button"
                           className="text-xs font-semibold text-primary hover:underline transition-all"
                           onClick={() => {}} // Placeholder for forgot password
                         >
@@ -242,9 +253,9 @@ export default function LoginPage() {
               />
             </FieldGroup>
 
-            <Button 
-              variant="default" 
-              type="submit" 
+            <Button
+              variant="default"
+              type="submit"
               disabled={pending}
               className="h-11 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 transition-all hover:translate-y-[-2px] active:translate-y-0"
             >
@@ -262,7 +273,10 @@ export default function LoginPage() {
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <button disabled className="font-semibold text-primary hover:underline transition-all">
+              <button
+                disabled
+                className="font-semibold text-primary hover:underline transition-all"
+              >
                 Contact your administrator
               </button>
             </p>

@@ -227,25 +227,25 @@ export default function ViewAuditItemModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[1000px] max-h-[92vh] flex flex-col p-0 overflow-hidden border-border shadow-2xl rounded-xl bg-background backdrop-blur-none ring-1 ring-white/10">
-        <DialogHeader className="p-4 px-6 shrink-0 bg-muted/20">
+      <DialogContent className="sm:max-w-[1000px] max-h-[92vh] flex flex-col p-0 overflow-hidden border shadow-lg rounded-2xl bg-background">
+        <DialogHeader className="p-5 px-6 shrink-0 border-b bg-muted/30">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/20 text-primary shadow-sm ring-1 ring-primary/30">
-                <ClipboardList size={20} strokeWidth={3} />
+              <div className="p-2.5 rounded-lg bg-primary/10 text-primary">
+                <ClipboardList size={20} strokeWidth={2.5} />
               </div>
-              <div className="flex flex-col gap-0">
-                <DialogTitle className="text-xl font-black tracking-tight text-foreground">
+              <div className="flex flex-col gap-1">
+                <DialogTitle className="text-lg font-semibold text-foreground">
                   {t("detail_modal.title")}
                 </DialogTitle>
                 <div className="flex items-center gap-2">
                   <Badge
                     variant="outline"
-                    className="font-mono text-[10px] px-2 py-0.5 h-5 bg-muted/80 border-border font-black text-foreground"
+                    className="font-mono text-[10px] px-2 py-0.5 h-5 bg-muted border font-medium text-foreground/80"
                   >
                     {item.asset.asset_code}
                   </Badge>
-                  <span className="text-xs font-black text-foreground/90 truncate max-w-[250px]">
+                  <span className="text-xs font-medium text-muted-foreground truncate max-w-[250px]">
                     {item.asset.name}
                   </span>
                 </div>
@@ -253,8 +253,8 @@ export default function ViewAuditItemModal({
             </div>
             {!isLocked && (
               <Badge
-                variant="outline"
-                className="px-2.5 py-1 text-[10px] font-black rounded-md bg-amber-500 text-white border-none shadow-lg tracking-wider"
+                variant="default"
+                className="px-3 py-1 text-[10px] font-medium rounded-md bg-amber-500 hover:bg-amber-600 text-white border-none"
               >
                 {t("detail_modal.edit_mode")}
               </Badge>
@@ -262,18 +262,18 @@ export default function ViewAuditItemModal({
           </div>
         </DialogHeader>
 
-        <div className="flex-1 px-6 py-5 overflow-y-auto custom-scrollbar bg-linear-to-b from-transparent via-muted/5 to-muted/10">
+        <div className="flex-1 px-6 py-5 overflow-y-auto custom-scrollbar bg-muted/10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column: Asset Information */}
-            <div className="lg:col-span-4 space-y-5">
-              <Card className="border-none bg-card/40 shadow-none rounded-xl overflow-hidden group">
-                <CardHeader className="py-2 px-1 border-none bg-transparent">
-                  <CardTitle className="text-[10px] font-black tracking-[0.2em] text-primary flex items-center gap-2">
-                    <Package size={14} strokeWidth={3} />
+            <div className="lg:col-span-4 space-y-4">
+              <Card className="border bg-card shadow-sm rounded-lg overflow-hidden">
+                <CardHeader className="py-3 px-4 border-b bg-muted/50">
+                  <CardTitle className="text-xs font-semibold text-foreground flex items-center gap-2">
+                    <Package size={16} strokeWidth={2} />
                     {t("detail_modal.current_info")}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0 pt-3 space-y-5">
+                <CardContent className="p-4 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <StatItem
                       label={t("detail_modal.quantity")}
@@ -297,8 +297,8 @@ export default function ViewAuditItemModal({
                     />
                   </div>
 
-                  <Field className="space-y-2.5 pt-1">
-                    <FieldLabel className="text-[10px] font-black tracking-widest text-foreground px-1">
+                  <Field className="space-y-2">
+                    <FieldLabel className="text-xs font-medium text-foreground">
                       {t("detail_modal.condition_notes")}
                     </FieldLabel>
                     {canEdit ? (
@@ -306,10 +306,10 @@ export default function ViewAuditItemModal({
                         value={localNotes}
                         onChange={(e) => setLocalNotes(e.target.value)}
                         placeholder={t("detail_modal.no_notes")}
-                        className="min-h-[120px] rounded-lg bg-muted/20 border-none focus:ring-primary/20 transition-all resize-none text-sm p-4 leading-relaxed font-bold text-foreground placeholder:font-medium shadow-none"
+                        className="min-h-[120px] rounded-md bg-background border focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm p-3 leading-relaxed font-normal text-foreground placeholder:text-muted-foreground"
                       />
                     ) : (
-                      <div className="p-4 rounded-lg bg-muted/10 min-h-[100px] text-sm text-foreground leading-relaxed italic whitespace-pre-wrap font-bold">
+                      <div className="p-3 rounded-md bg-muted/50 border min-h-[100px] text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                         {item.notes || t("detail_modal.no_notes")}
                       </div>
                     )}
@@ -318,15 +318,15 @@ export default function ViewAuditItemModal({
               </Card>
 
               {!isAssignee && (
-                <div className="bg-blue-600/10 border-none text-blue-700 dark:text-blue-300 p-4 rounded-xl flex items-start gap-4 transition-all hover:bg-blue-600/20 group">
-                  <div className="p-2 rounded-lg bg-blue-600/20 shrink-0">
-                    <ShieldAlert size={20} strokeWidth={3} />
+                <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 p-4 rounded-lg flex items-start gap-3">
+                  <div className="p-2 rounded-md bg-blue-100 dark:bg-blue-900/50 shrink-0">
+                    <ShieldAlert size={18} strokeWidth={2} />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="text-[11px] font-black tracking-wider">
+                    <span className="text-xs font-semibold">
                       {t("detail_modal.view_mode")}
                     </span>
-                    <p className="text-[11px] leading-relaxed font-bold italic">
+                    <p className="text-xs leading-relaxed font-normal">
                       {t("detail_modal.not_assignee_notice")}
                     </p>
                   </div>
@@ -335,11 +335,11 @@ export default function ViewAuditItemModal({
             </div>
 
             {/* Right Column: Audit Actions */}
-            <div className="lg:col-span-8 space-y-6">
+            <div className="lg:col-span-8 space-y-5">
               {/* Audit Result Selection */}
-              <Field className="space-y-4">
-                <FieldLabel className="text-[10px] font-black tracking-[0.2em] text-foreground flex items-center gap-2 px-1">
-                  <div className="h-2 w-2 rounded-full bg-primary" />
+              <Field className="space-y-3">
+                <FieldLabel className="text-xs font-semibold text-foreground flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                   {t("detail_modal.audit_result")}
                 </FieldLabel>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -353,47 +353,42 @@ export default function ViewAuditItemModal({
                         key={res.code}
                         disabled={!canEdit}
                         className={cn(
-                          "relative group p-3 rounded-xl flex flex-col items-center justify-center gap-2 transition-all duration-300 overflow-hidden shadow-sm",
-                          canEdit &&
-                            "cursor-pointer active:scale-[0.97]",
+                          "relative group p-4 rounded-lg flex flex-col items-center justify-center gap-2.5 transition-all duration-200 border",
+                          canEdit && "cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
                           isSelected
                             ? cn(
-                                "border-2",
-                                res.border,
-                                res.bg,
-                                res.activeShadow,
-                                "border-opacity-100 ring-2",
-                                res.border.replace("border-", "ring-"),
-                              )
-                            : "border-none bg-muted/40 opacity-90 hover:opacity-100",
+                              "border-2",
+                              res.border,
+                              res.bg,
+                              "shadow-md",
+                            )
+                            : "border-border bg-card hover:bg-muted/50",
                         )}
                         onClick={() => canEdit && setLocalStatus(res.code)}
                       >
                         <div
                           className={cn(
-                            "p-2.5 rounded-lg transition-all duration-300 shadow-md",
-                            isSelected ? res.iconBg : "bg-muted/40",
+                            "p-2 rounded-md transition-all duration-200",
+                            isSelected ? res.iconBg : "bg-muted/50",
                           )}
                         >
                           <res.icon
-                            size={22}
-                            strokeWidth={3}
+                            size={20}
+                            strokeWidth={2}
                             className={cn(
-                              "transition-all duration-300",
-                              isSelected ? res.color : "text-foreground/40",
+                              "transition-all duration-200",
+                              isSelected ? res.color : "text-muted-foreground",
                             )}
                           />
                         </div>
-                        <div className="flex flex-col items-center">
-                          <span
-                            className={cn(
-                              "text-[11px] font-black tracking-tight transition-all duration-300",
-                              isSelected ? res.color : "text-foreground/90",
-                            )}
-                          >
-                            {res.label}
-                          </span>
-                        </div>
+                        <span
+                          className={cn(
+                            "text-xs font-medium text-center transition-all duration-200",
+                            isSelected ? res.color : "text-foreground",
+                          )}
+                        >
+                          {res.label}
+                        </span>
                       </button>
                     );
                   })}
@@ -401,9 +396,9 @@ export default function ViewAuditItemModal({
               </Field>
 
               {/* Proposed Action Selection */}
-              <Field className="space-y-4">
-                <FieldLabel className="text-[10px] font-black tracking-[0.2em] text-foreground flex items-center gap-2 px-1">
-                  <div className="h-2 w-2 rounded-full bg-amber-500" />
+              <Field className="space-y-3">
+                <FieldLabel className="text-xs font-semibold text-foreground flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                   {t("detail_modal.proposed_action")}
                 </FieldLabel>
                 <div className="grid grid-cols-3 gap-3">
@@ -417,12 +412,11 @@ export default function ViewAuditItemModal({
                         key={action.label}
                         disabled={!canEdit}
                         className={cn(
-                          "relative group p-3.5 rounded-xl flex flex-col items-center justify-center gap-2 transition-all duration-300 overflow-hidden shadow-sm",
-                          canEdit &&
-                            "cursor-pointer active:scale-[0.97]",
+                          "relative group p-4 rounded-lg flex flex-col items-center justify-center gap-2.5 transition-all duration-200 border",
+                          canEdit && "cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
                           isSelected
-                            ? "border-2 border-primary bg-primary/20 shadow-xl shadow-primary/10 ring-2 ring-primary/40"
-                            : "border-none bg-muted/40 opacity-90 hover:opacity-100",
+                            ? "border-2 border-primary bg-primary/10 shadow-md"
+                            : "border-border bg-card hover:bg-muted/50",
                         )}
                         onClick={() => {
                           if (canEdit) {
@@ -435,27 +429,23 @@ export default function ViewAuditItemModal({
                       >
                         <div
                           className={cn(
-                            "p-2.5 rounded-lg transition-all duration-300 shadow-md",
-                            isSelected
-                              ? "bg-primary/30 shadow-primary/20"
-                              : "bg-muted/40",
+                            "p-2 rounded-md transition-all duration-200",
+                            isSelected ? "bg-primary/20" : "bg-muted/50",
                           )}
                         >
                           <action.icon
                             size={20}
-                            strokeWidth={3}
+                            strokeWidth={2}
                             className={cn(
-                              "transition-all duration-300",
-                              isSelected
-                                ? "text-primary"
-                                : "text-foreground/40",
+                              "transition-all duration-200",
+                              isSelected ? "text-primary" : "text-muted-foreground",
                             )}
                           />
                         </div>
                         <span
                           className={cn(
-                            "text-[11px] font-black tracking-tight transition-all duration-300 leading-tight",
-                            isSelected ? "text-primary" : "text-foreground/90",
+                            "text-xs font-medium text-center transition-all duration-200",
+                            isSelected ? "text-primary" : "text-foreground",
                           )}
                         >
                           {action.label}
@@ -469,185 +459,160 @@ export default function ViewAuditItemModal({
               {/* Dynamic Action Fields */}
               <div className="min-h-[120px]">
                 {localAction && localAction !== "NONE" && (
-                  <div className="p-5 rounded-xl bg-primary/5 flex flex-col gap-5 animate-in fade-in slide-in-from-top-3 duration-500 shadow-xl relative">
-                    <div className="absolute -top-3 left-5 px-3 py-0.5 bg-primary rounded-full shadow-lg">
-                      <span className="text-[10px] font-black text-white tracking-widest">
+                  <div className="p-5 rounded-lg bg-muted/30 border flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-300 relative">
+                    <div className="flex items-center gap-2 pb-2 border-b">
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                      <span className="text-xs font-semibold text-foreground">
                         {localAction === "RECALL" ||
-                        proposedActions
-                          .find((a) => a.key === "RECALL")
-                          ?.aliasKeys?.includes(localAction)
+                          proposedActions
+                            .find((a) => a.key === "RECALL")
+                            ?.aliasKeys?.includes(localAction)
                           ? t("detail_modal.recall_info")
                           : t("detail_modal.transfer_info")}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-5">
+                    <div className="grid grid-cols-1 gap-4">
                       {(localAction === "RECALL" ||
                         proposedActions
                           .find((a) => a.key === "RECALL")
                           ?.aliasKeys?.includes(localAction)) && (
-                        <div className="flex flex-col gap-2.5">
-                          <span className="text-[10px] font-black text-foreground tracking-widest flex items-center gap-2">
-                            <MapPin
-                              size={14}
-                              strokeWidth={3}
-                              className="text-primary"
-                            />
-                            {t("detail_modal.receiving_warehouse")}
-                          </span>
-                          {canEdit ? (
-                            <Select
-                              value={targetLocationId?.toString() || ""}
-                              onValueChange={(v) =>
-                                setTargetLocationId(Number(v))
-                              }
-                            >
-                              <SelectTrigger className="w-full h-11 bg-background border-none focus:ring-primary/20 transition-all rounded-lg shadow-sm font-black text-sm">
-                                <SelectValue
-                                  placeholder={t(
-                                    "detail_modal.select_location",
-                                  )}
-                                />
-                              </SelectTrigger>
-                              <SelectContent className="rounded-lg shadow-2xl border-none">
-                                {locations?.map((loc) => (
-                                  <SelectItem
-                                    key={loc.id}
-                                    value={loc.id.toString()}
-                                    className="rounded-md my-1 text-sm font-black"
-                                  >
-                                    {loc.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          ) : (
-                            <div className="p-4 rounded-lg bg-background flex items-center gap-3 text-sm font-black">
-                              <MapPin
-                                size={18}
-                                strokeWidth={3}
-                                className="text-primary"
-                              />
-                              {item.target_holder_name ||
-                                (item.target_location_id
-                                  ? locations?.find(
+                          <div className="flex flex-col gap-2">
+                            <span className="text-xs font-medium text-foreground flex items-center gap-2">
+                              <MapPin size={14} strokeWidth={2} className="text-primary" />
+                              {t("detail_modal.receiving_warehouse")}
+                            </span>
+                            {canEdit ? (
+                              <Select
+                                value={targetLocationId?.toString() || ""}
+                                onValueChange={(v) =>
+                                  setTargetLocationId(Number(v))
+                                }
+                              >
+                                <SelectTrigger className="w-full h-10 bg-background border focus:ring-2 focus:ring-primary/20 transition-all rounded-md font-normal text-sm">
+                                  <SelectValue
+                                    placeholder={t("detail_modal.select_location")}
+                                  />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-md shadow-lg border">
+                                  {locations?.map((loc) => (
+                                    <SelectItem
+                                      key={loc.id}
+                                      value={loc.id.toString()}
+                                      className="rounded-sm my-0.5 text-sm font-normal"
+                                    >
+                                      {loc.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <div className="p-3 rounded-md bg-background border flex items-center gap-2 text-sm font-normal">
+                                <MapPin size={16} strokeWidth={2} className="text-primary" />
+                                {item.target_holder_name ||
+                                  (item.target_location_id
+                                    ? locations?.find(
                                       (l) => l.id === item.target_location_id,
                                     )?.name
-                                  : "N/A")}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                                    : "N/A")}
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                       {(localAction === "TRANSFER" ||
                         proposedActions
                           .find((a) => a.key === "TRANSFER")
                           ?.aliasKeys?.includes(localAction)) && (
-                        <div className="space-y-5">
-                          <div className="flex flex-col gap-2.5">
-                            <span className="text-[10px] font-black text-foreground tracking-widest flex items-center gap-2">
-                              <Building2
-                                size={14}
-                                strokeWidth={3}
-                                className="text-primary"
-                              />
-                              {t("detail_modal.recipient_unit")}
-                            </span>
-                            {canEdit ? (
-                              <Select
-                                value={targetUnitId?.toString() || ""}
-                                onValueChange={(v) => {
-                                  setTargetUnitId(Number(v));
-                                  setTargetStaffId(null);
-                                }}
-                              >
-                                <SelectTrigger className="w-full h-11 bg-background border-none focus:ring-primary/20 transition-all rounded-lg shadow-sm font-black text-sm">
-                                  <SelectValue
-                                    placeholder={t("detail_modal.select_unit")}
-                                  />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-lg shadow-2xl border-none">
-                                  {orgUnits?.map((unit) => (
-                                    <SelectItem
-                                      key={unit.id}
-                                      value={unit.id.toString()}
-                                      className="rounded-md my-1 text-sm font-black"
-                                    >
-                                      {unit.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            ) : (
-                              <div className="p-4 rounded-lg bg-background flex items-center gap-3 text-sm font-black">
-                                <Building2
-                                  size={18}
-                                  strokeWidth={3}
-                                  className="text-primary"
-                                />
-                                {item.target_holder_name ||
-                                  (item.target_unit_id
-                                    ? orgUnits?.find(
+                          <div className="space-y-4">
+                            <div className="flex flex-col gap-2">
+                              <span className="text-xs font-medium text-foreground flex items-center gap-2">
+                                <Building2 size={14} strokeWidth={2} className="text-primary" />
+                                {t("detail_modal.recipient_unit")}
+                              </span>
+                              {canEdit ? (
+                                <Select
+                                  value={targetUnitId?.toString() || ""}
+                                  onValueChange={(v) => {
+                                    setTargetUnitId(Number(v));
+                                    setTargetStaffId(null);
+                                  }}
+                                >
+                                  <SelectTrigger className="w-full h-10 bg-background border focus:ring-2 focus:ring-primary/20 transition-all rounded-md font-normal text-sm">
+                                    <SelectValue
+                                      placeholder={t("detail_modal.select_unit")}
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent className="rounded-md shadow-lg border">
+                                    {orgUnits?.map((unit) => (
+                                      <SelectItem
+                                        key={unit.id}
+                                        value={unit.id.toString()}
+                                        className="rounded-sm my-0.5 text-sm font-normal"
+                                      >
+                                        {unit.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <div className="p-3 rounded-md bg-background border flex items-center gap-2 text-sm font-normal">
+                                  <Building2 size={16} strokeWidth={2} className="text-primary" />
+                                  {item.target_holder_name ||
+                                    (item.target_unit_id
+                                      ? orgUnits?.find(
                                         (u) => u.id === item.target_unit_id,
                                       )?.name
-                                    : "N/A")}
-                              </div>
-                            )}
-                          </div>
+                                      : "N/A")}
+                                </div>
+                              )}
+                            </div>
 
-                          <div className="flex flex-col gap-2.5">
-                            <span className="text-[10px] font-black text-foreground tracking-widest flex items-center gap-2">
-                              <User
-                                size={14}
-                                strokeWidth={3}
-                                className="text-primary"
-                              />
-                              {t("detail_modal.recipient_staff")}
-                            </span>
-                            {canEdit ? (
-                              <Select
-                                value={targetStaffId?.toString() || ""}
-                                onValueChange={(v) =>
-                                  setTargetStaffId(Number(v))
-                                }
-                                disabled={!targetUnitId}
-                              >
-                                <SelectTrigger className="w-full h-11 bg-background border-none focus:ring-primary/20 transition-all rounded-lg shadow-sm font-black disabled:opacity-50 text-sm">
-                                  <SelectValue
-                                    placeholder={
-                                      !targetUnitId
-                                        ? t("detail_modal.select_unit_first")
-                                        : t("detail_modal.select_staff")
-                                    }
-                                  />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-lg shadow-2xl border-none">
-                                  {staffs?.map((staff) => (
-                                    <SelectItem
-                                      key={staff.id}
-                                      value={staff.id.toString()}
-                                      className="rounded-md my-1 text-sm font-black"
-                                    >
-                                      {staff.full_name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            ) : (
-                              <div className="p-4 rounded-lg bg-background flex items-center gap-3 text-sm font-black">
-                                <User
-                                  size={18}
-                                  strokeWidth={3}
-                                  className="text-primary"
-                                />
-                                {item.target_staff?.full_name ||
-                                  item.target_holder_name ||
-                                  "N/A"}
-                              </div>
-                            )}
+                            <div className="flex flex-col gap-2">
+                              <span className="text-xs font-medium text-foreground flex items-center gap-2">
+                                <User size={14} strokeWidth={2} className="text-primary" />
+                                {t("detail_modal.recipient_staff")}
+                              </span>
+                              {canEdit ? (
+                                <Select
+                                  value={targetStaffId?.toString() || ""}
+                                  onValueChange={(v) =>
+                                    setTargetStaffId(Number(v))
+                                  }
+                                  disabled={!targetUnitId}
+                                >
+                                  <SelectTrigger className="w-full h-10 bg-background border focus:ring-2 focus:ring-primary/20 transition-all rounded-md font-normal disabled:opacity-50 text-sm">
+                                    <SelectValue
+                                      placeholder={
+                                        !targetUnitId
+                                          ? t("detail_modal.select_unit_first")
+                                          : t("detail_modal.select_staff")
+                                      }
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent className="rounded-md shadow-lg border">
+                                    {staffs?.map((staff) => (
+                                      <SelectItem
+                                        key={staff.id}
+                                        value={staff.id.toString()}
+                                        className="rounded-sm my-0.5 text-sm font-normal"
+                                      >
+                                        {staff.full_name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <div className="p-3 rounded-md bg-background border flex items-center gap-2 text-sm font-normal">
+                                  <User size={16} strokeWidth={2} className="text-primary" />
+                                  {item.target_staff?.full_name ||
+                                    item.target_holder_name ||
+                                    "N/A"}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </div>
                   </div>
                 )}
@@ -656,12 +621,12 @@ export default function ViewAuditItemModal({
           </div>
         </div>
 
-        <DialogFooter className="p-4 px-6 shrink-0 bg-muted/20 flex items-center justify-between gap-4">
+        <DialogFooter className="p-4 px-6 shrink-0 border-t bg-muted/30 flex items-center justify-between gap-4">
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
-            className="hover:bg-muted font-black text-[10px] tracking-[0.15em] h-11 px-8 rounded-lg transition-all border-none"
+            className="hover:bg-muted font-medium text-sm h-10 px-6 rounded-md transition-all"
           >
             {t("detail_modal.close")}
           </Button>
@@ -669,14 +634,14 @@ export default function ViewAuditItemModal({
           {canEdit && (
             <Button
               type="button"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[10px] tracking-[0.15em] px-12 shadow-2xl shadow-primary/30 h-11 rounded-lg transition-all active:scale-95 disabled:opacity-50 group gap-3 border-none"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm px-8 shadow-md h-10 rounded-md transition-all active:scale-95 disabled:opacity-50 gap-2"
               disabled={isSaving}
               onClick={handleSave}
             >
               {isSaving ? (
                 <RotateCcw className="animate-spin w-4 h-4" />
               ) : (
-                <CheckCircle className="w-4 h-4 transition-transform group-hover:scale-125" />
+                <CheckCircle className="w-4 h-4" />
               )}
               {t("detail_modal.save")}
             </Button>
@@ -698,21 +663,21 @@ const InfoItem = ({
   label: string;
   value: React.ReactNode;
 }) => (
-  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 transition-all hover:bg-muted/30 group">
+  <div className="flex items-center gap-3 p-3 rounded-md bg-muted/30 border transition-all hover:bg-muted/50">
     <div
       className={cn(
-        "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 shadow-sm ring-1 ring-white/10",
-        color.replace("text-", "bg-").replace(" primary", "primary/20"),
+        "w-9 h-9 rounded-md flex items-center justify-center shrink-0",
+        color.replace("text-", "bg-").replace(" primary", "primary/10"),
         color,
       )}
     >
-      <Icon className="w-5 h-5" strokeWidth={3} />
+      <Icon className="w-4 h-4" strokeWidth={2} />
     </div>
     <div className="flex flex-col min-w-0">
-      <span className="text-[10px] font-black text-foreground/70 tracking-widest leading-none mb-1">
+      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-none mb-1">
         {label}
       </span>
-      <div className="truncate text-sm font-black text-foreground">{value}</div>
+      <div className="truncate text-sm font-medium text-foreground">{value}</div>
     </div>
   </div>
 );
@@ -728,15 +693,15 @@ const StatItem = ({
   color: string;
   isBadge?: boolean;
 }) => (
-  <div className="flex flex-col gap-1.5 p-4 rounded-lg bg-muted/20">
-    <span className="text-[10px] font-black text-foreground/60 tracking-widest leading-none">
+  <div className="flex flex-col gap-1.5 p-3 rounded-md bg-muted/30 border">
+    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide leading-none">
       {label}
     </span>
     {isBadge ? (
       <Badge
         variant="outline"
         className={cn(
-          "w-fit px-2 py-0.5 h-5 text-[9px] font-black rounded border-none shadow-sm bg-background",
+          "w-fit px-2 py-0.5 h-5 text-[10px] font-medium rounded border bg-background",
           color,
         )}
       >
@@ -745,7 +710,7 @@ const StatItem = ({
     ) : (
       <span
         className={cn(
-          "text-xl font-black tracking-tighter leading-none",
+          "text-xl font-semibold tracking-tight leading-none",
           color,
         )}
       >

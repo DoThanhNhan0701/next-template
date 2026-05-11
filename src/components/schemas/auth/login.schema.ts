@@ -10,7 +10,6 @@ export const LoginSchema = z.object({
     .min(1, "Field is required!")
     .max(254, "Username is too long!")
     .trim()
-    .toLowerCase()
     .refine(
       (value) => USERNAME_REGEX.test(value),
       {

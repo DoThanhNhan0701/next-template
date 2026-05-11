@@ -1041,6 +1041,7 @@
       "rentals": "Rentals",
       "allocation": "Allocation",
       "recovery": "Recovery",
+      "clone": "Clone",
       "reasons": {
         "allocation": "Allocation: {name}",
         "recovery": "Recovery: {name}",
@@ -1196,8 +1197,14 @@
     "modals": {
       "create_title": "Create",
       "edit_title": "Edit asset",
+      "clone_title": "Clone Asset",
+      "clone_success_title": "Clone Successful",
       "create_description": "Fill in the required details to register a new asset in the system.",
       "edit_description": "Modify the information of the selected asset.",
+      "clone_description": "Create a new copy of this asset.",
+      "cloned_assets": "New Cloned Assets",
+      "view_detail": "View Detail",
+      "cloned_count": "Cloned count: {count}",
       "sections": {
         "general": "1. General information",
         "tracking": "2. Tracking & management",
