@@ -214,28 +214,6 @@ export default function ModuleFormModal({
                   />
 
                   <Controller
-                    name="module_code"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-1">
-                        <FieldLabel>
-                          {t("detail.modules.form.fields.code")}
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder={t(
-                            "detail.modules.form.placeholders.code",
-                          )}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  <Controller
                     name="module_type"
                     control={form.control}
                     render={({ field, fieldState }) => (

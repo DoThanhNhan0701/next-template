@@ -18,7 +18,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { OrgUnit } from "@/components/ui/tree";
+import { dynamicEndpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
 import { cn } from "@/lib/utils";
+import { IUser } from "@/types/auth";
 
 interface Props {
   unit: OrgUnit | null;
@@ -28,6 +31,14 @@ interface Props {
 
 export default function OrgUnitDetailView({ unit, onEdit }: Props) {
   const t = useTranslations("page_organization");
+
+  const { response: leader } = useGet<IUser>(
+    {
+      url: unit?.leader_id ? dynamicEndpoints.USER_DETAIL(unit.leader_id) : "",
+    },
+    { disabled: !unit?.leader_id },
+  );
+
   if (!unit) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 text-center border-2 border-dashed rounded-xl opacity-60">
@@ -110,7 +121,7 @@ export default function OrgUnitDetailView({ unit, onEdit }: Props) {
           <DetailItem
             icon={<User className="h-4 w-4" />}
             label={t("leader")}
-            value={unit.leader_id?.toString() || t("no_leader_assigned")}
+            value={`${leader?.full_name ?? "-"} - ${leader?.username ?? "-"}`}
           />
           <DetailItem
             icon={<MapPin className="h-4 w-4" />}
