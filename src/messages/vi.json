@@ -85,6 +85,13 @@
       "cancel": "Hủy",
       "delete": "Hủy kích hoạt",
       "deleting": "Đang hủy..."
+    },
+    "reset": {
+      "title": "Xác nhận đặt lại mật khẩu",
+      "confirm_message": "Bạn có chắc chắn muốn đặt lại mật khẩu cho tài khoản <important>{name}</important> về mặc định?",
+      "cancel": "Hủy",
+      "confirm": "Đặt lại",
+      "resetting": "Đang đặt lại..."
     }
   },
   "page_staff": {

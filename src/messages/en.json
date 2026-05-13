@@ -85,6 +85,13 @@
       "cancel": "Cancel",
       "delete": "Deactivate",
       "deleting": "Deactivating..."
+    },
+    "reset": {
+      "title": "Confirm password reset",
+      "confirm_message": "Are you sure you want to reset the password for <important>{name}</important> to the default password?",
+      "cancel": "Cancel",
+      "confirm": "Reset",
+      "resetting": "Resetting..."
     }
   },
   "page_staff": {

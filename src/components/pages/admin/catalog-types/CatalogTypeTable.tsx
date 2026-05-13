@@ -138,14 +138,8 @@ export default function CatalogTypeTable() {
               <TableHead className="font-semibold h-10 px-4 w-[20%]">
                 {tt("name")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
+              <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 {tt("group")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%] text-center">
-                {tt("mgmt_type")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                {tt("warranty")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
                 {tt("status")}
@@ -157,10 +151,10 @@ export default function CatalogTypeTable() {
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
             {pending ? (
-              <TableLoadingRows colSpan={8} rows={6} />
+              <TableLoadingRows colSpan={6} rows={6} />
             ) : catalogTypes.length === 0 ? (
               <TableEmptyRow
-                colSpan={8}
+                colSpan={6}
                 icon={Tag}
                 message={tt("no_types_found")}
                 description={tt("add_first_type")}
@@ -180,16 +174,6 @@ export default function CatalogTypeTable() {
                   <TableCell className="px-4 py-1.5">{type.name}</TableCell>
                   <TableCell className="px-4 py-1.5">
                     {type.catalog_group_name || type.catalog_group?.name}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    <span>
-                      {tt.has(type.management_type)
-                        ? tt(type.management_type)
-                        : type.management_type.replace("_", " ")}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    {type.has_warranty ? tt("yes") : tt("no_val")}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
                     {type.is_active ? (

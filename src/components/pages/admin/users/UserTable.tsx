@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Key, UserCog } from "lucide-react";
+import { EditIcon, Key, RotateCcw, UserCog } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
@@ -75,6 +75,7 @@ export default function UserTable() {
   const [isCreating, setIsCreating] = useState(false);
   const [userToEdit, setUserToEdit] = useState<IUser | null>(null);
   const [userToPwChange, setUserToPwChange] = useState<IUser | null>(null);
+  const [userToResetPw, setUserToResetPw] = useState<IUser | null>(null);
   const [userToDelete, setUserToDelete] = useState<IUser | null>(null);
 
   const handleSuccess = (responseData?: unknown, method?: string) => {
@@ -219,6 +220,14 @@ export default function UserTable() {
                         variant="ghost"
                         size="icon"
                         className="text-muted-foreground hover:text-foreground"
+                        onClick={() => setUserToResetPw(user)}
+                      >
+                        <RotateCcw size={14} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={() => setUserToEdit(user)}
                       >
                         <EditIcon size={14} />
@@ -353,6 +362,23 @@ export default function UserTable() {
         method="patch"
         body={{ is_active: false }}
         translationGroup="page_users.delete"
+      />
+      <ConfirmDeleteModal
+        isOpen={userToResetPw !== null}
+        onClose={() => setUserToResetPw(null)}
+        onSuccess={handleSuccess}
+        title={t("reset.title")}
+        description={t.rich("reset.confirm_message", {
+          name: userToResetPw?.username || "this user",
+          important: (chunks) => (
+            <span className="font-semibold">{chunks}</span>
+          ),
+        })}
+        url={userToResetPw ? dynamicEndpoints.USER_RESET_PASSWORD(userToResetPw.id) : ""}
+        method="post"
+        translationGroup="page_users.reset"
+        confirmText={t("reset.confirm")}
+        loadingText={t("reset.resetting")}
       />
     </div>
   );
