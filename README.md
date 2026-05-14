@@ -1,3 +1,5 @@
+# Security Classification: Confidential
+
 # Asset Management System
 
 Hệ thống quản lý tài sản toàn diện được xây dựng với Next.js 16, hỗ trợ theo dõi tài sản, cho thuê, bảo trì, kiểm kê và quản lý quy trình phê duyệt.
