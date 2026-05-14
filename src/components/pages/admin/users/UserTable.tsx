@@ -142,7 +142,7 @@ export default function UserTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                Ref
+                STT
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
                 {t("username")}
@@ -374,7 +374,11 @@ export default function UserTable() {
             <span className="font-semibold">{chunks}</span>
           ),
         })}
-        url={userToResetPw ? dynamicEndpoints.USER_RESET_PASSWORD(userToResetPw.id) : ""}
+        url={
+          userToResetPw
+            ? dynamicEndpoints.USER_RESET_PASSWORD(userToResetPw.id)
+            : ""
+        }
         method="post"
         translationGroup="page_users.reset"
         confirmText={t("reset.confirm")}

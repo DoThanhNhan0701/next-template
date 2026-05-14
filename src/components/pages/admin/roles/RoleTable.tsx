@@ -147,7 +147,7 @@ export default function RoleTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                Ref
+                STT
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 {t("role_name")}

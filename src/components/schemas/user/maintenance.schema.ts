@@ -1,5 +1,6 @@
-import { z } from "zod";
 import { type useTranslations } from "next-intl";
+
+import { z } from "zod";
 
 type TFunction = ReturnType<typeof useTranslations>;
 
