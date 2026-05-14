@@ -21,6 +21,7 @@ Hệ thống quản lý tài sản toàn diện được xây dựng với Next.
 ### Module Chính
 
 #### 1. **Quản Lý Tài Sản (Assets)**
+
 - Theo dõi chi tiết thông tin tài sản vật lý
 - Quản lý vòng đời tài sản (lifecycle tracking)
 - Lịch sử người giữ tài sản (asset holders)
@@ -28,52 +29,61 @@ Hệ thống quản lý tài sản toàn diện được xây dựng với Next.
 - Xem thông tin tồn kho theo tài sản
 
 #### 2. **Quản Lý Tồn Kho (Inventory)**
+
 - Theo dõi số lượng tồn kho theo địa điểm
 - Nhập/Xuất kho (Stock In/Out)
 - Điều chỉnh tồn kho (Stock Adjustments)
 - Báo cáo tồn kho theo thời gian thực
 
 #### 3. **Cho Thuê Tài Sản (Rentals)**
+
 - Tạo đơn cho thuê tài sản
 - Quản lý quy trình trả tài sản
 - Theo dõi trạng thái cho thuê
 - Quy trình phê duyệt cho thuê
 
 #### 4. **Bảo Trì (Maintenance)**
+
 - Lập kế hoạch bảo trì định kỳ
 - Theo dõi lịch sử bảo trì
 - Quản lý chi phí bảo trì
 - Thông báo bảo trì sắp tới
 
 #### 5. **Kiểm Kê (Audits)**
+
 - Tạo phiên kiểm kê (audit sessions)
 - Kiểm kê hàng loạt (batch audit)
 - So sánh số liệu thực tế với hệ thống
 - Phê duyệt/Từ chối kết quả kiểm kê
 
 #### 6. **Điều Chuyển (Transfers)**
+
 - Điều chuyển tài sản giữa các địa điểm
 - Theo dõi trạng thái điều chuyển
 - Đính kèm tài liệu điều chuyển
 - Quy trình phê duyệt điều chuyển
 
 #### 7. **Thanh Lý (Liquidations)**
+
 - Quản lý quy trình thanh lý tài sản
 - Theo dõi giá trị thanh lý
 - Lịch sử thanh lý
 
 #### 8. **Cấp Phát & Thu Hồi (Allocation & Recovery)**
+
 - Cấp phát tài sản cho nhân viên
 - Thu hồi tài sản
 - Theo dõi người đang giữ tài sản
 
 #### 9. **Công Việc Của Tôi (My Tasks)**
+
 - Danh sách công việc cần xử lý
 - Thông báo công việc mới (badge counter)
 - Phê duyệt/Từ chối công việc
 - Theo dõi tiến độ công việc
 
 #### 10. **Dashboard**
+
 - Tổng quan hệ thống
 - Thống kê theo module
 - Biểu đồ trạng thái tài sản
@@ -82,54 +92,66 @@ Hệ thống quản lý tài sản toàn diện được xây dựng với Next.
 ### Module Quản Trị (Admin)
 
 #### 1. **Quản Lý Người Dùng (Users)**
+
 - Tạo/Sửa/Xóa người dùng
 - Kích hoạt/Vô hiệu hóa tài khoản
 - Đổi mật khẩu
 - Phân quyền người dùng
 
 #### 2. **Quản Lý Nhân Viên (Staff)**
+
 - Thông tin nhân viên
 - Liên kết với tài khoản người dùng
 - Theo dõi tài sản đang giữ
 
 #### 3. **Quản Lý Vai Trò (Roles)**
+
 - Tạo vai trò tùy chỉnh
 - Phân quyền chi tiết (permissions)
 - RBAC (Role-Based Access Control)
 
 #### 4. **Tổ Chức (Organization)**
+
 - Cấu trúc tổ chức dạng cây
 - Quản lý đơn vị tổ chức
 - Phân cấp quản lý
 
 #### 5. **Địa Điểm (Locations)**
+
 - Quản lý các địa điểm lưu trữ
 - Theo dõi tồn kho theo địa điểm
 
 #### 6. **Nhóm Tài Sản (Asset Groups)**
+
 - Phân loại tài sản theo nhóm
 - Cấu hình thuộc tính nhóm
 
 #### 7. **Loại Danh Mục (Catalog Types)**
+
 - Định nghĩa loại tài sản
 - Nhóm danh mục (Catalog Groups)
 
 #### 8. **Trạng Thái Tài Sản (Asset Statuses)**
+
 - Quản lý các trạng thái tài sản
 - Cấu hình workflow chuyển trạng thái
 
 #### 9. **Chế Độ Sử Dụng (Usage Modes)**
+
 - Định nghĩa cách sử dụng tài sản
 
 #### 10. **Nhà Cung Cấp (Suppliers)**
+
 - Quản lý thông tin nhà cung cấp
 - Lịch sử mua hàng
 
 #### 11. **Khách Hàng (Customers)**
+
 - Quản lý thông tin khách hàng
 - Lịch sử cho thuê
 
 #### 12. **Quy Trình Phê Duyệt (Workflow Templates)**
+
 - Tạo template quy trình phê duyệt
 - Cấu hình nhiều cấp phê duyệt
 - Áp dụng cho các module khác nhau
@@ -150,49 +172,49 @@ Hệ thống quản lý tài sản toàn diện được xây dựng với Next.
 
 ### Core Technologies
 
-| Công Nghệ | Version | Mô Tả |
-|-----------|---------|-------|
-| **Next.js** | 16.2.2 | React framework với App Router |
-| **React** | 19.2.1 | UI library |
-| **TypeScript** | 5.9.3 | Type-safe JavaScript |
-| **Tailwind CSS** | 4.2.2 | Utility-first CSS framework |
+| Công Nghệ        | Version | Mô Tả                          |
+| ---------------- | ------- | ------------------------------ |
+| **Next.js**      | 16.2.2  | React framework với App Router |
+| **React**        | 19.2.1  | UI library                     |
+| **TypeScript**   | 5.9.3   | Type-safe JavaScript           |
+| **Tailwind CSS** | 4.2.2   | Utility-first CSS framework    |
 
 ### State Management
 
-| Library | Mục Đích |
-|---------|----------|
-| **Redux Toolkit** | Client state management |
-| **TanStack Query** | Server state & caching |
-| **React Hook Form** | Form state management |
+| Library             | Mục Đích                |
+| ------------------- | ----------------------- |
+| **Redux Toolkit**   | Client state management |
+| **TanStack Query**  | Server state & caching  |
+| **React Hook Form** | Form state management   |
 
 ### UI Components
 
-| Library | Mục Đích |
-|---------|----------|
-| **Radix UI** | Headless UI components |
-| **Lucide React** | Icon library |
-| **Sonner** | Toast notifications |
-| **react-day-picker** | Date picker |
-| **qrcode.react** | QR code generation |
+| Library              | Mục Đích               |
+| -------------------- | ---------------------- |
+| **Radix UI**         | Headless UI components |
+| **Lucide React**     | Icon library           |
+| **Sonner**           | Toast notifications    |
+| **react-day-picker** | Date picker            |
+| **qrcode.react**     | QR code generation     |
 
 ### Utilities
 
-| Library | Mục Đích |
-|---------|----------|
-| **Axios** | HTTP client |
-| **Zod** | Schema validation |
-| **date-fns** | Date manipulation |
-| **next-intl** | Internationalization |
-| **next-themes** | Theme management |
-| **js-cookie** | Cookie management |
+| Library         | Mục Đích             |
+| --------------- | -------------------- |
+| **Axios**       | HTTP client          |
+| **Zod**         | Schema validation    |
+| **date-fns**    | Date manipulation    |
+| **next-intl**   | Internationalization |
+| **next-themes** | Theme management     |
+| **js-cookie**   | Cookie management    |
 
 ### Development Tools
 
-| Tool | Mục Đích |
-|------|----------|
-| **ESLint** | Code linting |
-| **Prettier** | Code formatting |
-| **@trivago/prettier-plugin-sort-imports** | Import sorting |
+| Tool                                      | Mục Đích        |
+| ----------------------------------------- | --------------- |
+| **ESLint**                                | Code linting    |
+| **Prettier**                              | Code formatting |
+| **@trivago/prettier-plugin-sort-imports** | Import sorting  |
 
 ---
 
@@ -412,27 +434,32 @@ asset-management/
 ### Các Bước Cài Đặt
 
 1. **Clone repository**
+
 ```bash
 git clone <repository-url>
 cd asset-management
 ```
 
 2. **Cài đặt dependencies**
+
 ```bash
 pnpm install
 ```
 
 3. **Cấu hình environment variables**
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 Chỉnh sửa file `.env.local`:
+
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://your-api-url:8000
 ```
 
 4. **Chạy development server**
+
 ```bash
 pnpm dev
 ```
@@ -504,7 +531,7 @@ Tạo file `.env.local` với các biến sau:
 
 ```env
 # API Configuration
-NEXT_PUBLIC_API_BASE_URL=http://192.168.30.69:8002
+NEXT_PUBLIC_API_BASE_URL=http://
 
 # App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -520,13 +547,13 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig = {
-  allowedDevOrigins: ["10.2.21.177"],
+  allowedDevOrigins: ["****"],
   images: {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "192.168.30.69",
-        port: "8002",
+        hostname: "****",
+        port: "",
         pathname: "/**",
       },
     ],
@@ -539,17 +566,19 @@ export default withNextIntl(nextConfig);
 ### Internationalization (i18n)
 
 Hệ thống hỗ trợ 2 ngôn ngữ:
+
 - **vi** (Tiếng Việt) - Default
 - **en** (English)
 
 Cấu hình trong `src/i18n/config.ts`:
 
 ```typescript
-export const locales = ['en', 'vi'] as const;
-export const defaultLocale = 'vi';
+export const locales = ["en", "vi"] as const;
+export const defaultLocale = "vi";
 ```
 
 Translation files:
+
 - `src/messages/vi.json`
 - `src/messages/en.json`
 
@@ -562,17 +591,20 @@ Translation files:
 Hệ thống sử dụng **Next.js App Router** với route groups:
 
 #### 1. Public Routes `(public)`
+
 - Không yêu cầu authentication
 - Routes: `/auth/login`
 - Layout: Minimal layout
 
 #### 2. Private Routes `(private)`
+
 - Yêu cầu authentication
 - Permission-based access control
 - Routes: dashboard, assets, rentals, inventory, transfers, etc.
 - Layout: Full layout với header + sidebar
 
 #### 3. Admin Routes `(admin)`
+
 - Yêu cầu admin permissions
 - Routes: users, roles, organization, locations, etc.
 - Layout: Admin layout với admin sidebar
@@ -634,12 +666,14 @@ Hệ thống sử dụng **Next.js App Router** với route groups:
 #### TanStack Query
 
 Sử dụng cho:
+
 - Server data fetching
 - Caching
 - Automatic refetching
 - Optimistic updates
 
 Custom hooks:
+
 - `useGet` - GET requests với caching
 - `useMutation` - POST/PUT/PATCH/DELETE requests
 
@@ -650,6 +684,7 @@ Custom hooks:
 File: `src/utils/axiosInstance.ts`
 
 **Features:**
+
 - Automatic token injection
 - Token refresh on 401
 - Request/Response interceptors
@@ -672,29 +707,31 @@ File: `src/utils/axiosInstance.ts`
 File: `src/config/endpoints.ts`
 
 **Static Endpoints:**
+
 ```typescript
-endpoints.ME                    // GET user info
-endpoints.LOGIN                 // POST login
-endpoints.LOGOUT                // POST logout
-endpoints.REFRESH               // POST refresh token
-endpoints.USERS                 // User management
-endpoints.PHYSICAL_ASSETS       // Asset management
-endpoints.RENTALS               // Rental management
-endpoints.TRANSFERS             // Transfer management
-endpoints.AUDIT_SESSIONS        // Audit management
-endpoints.MAINTENANCES          // Maintenance management
-endpoints.LIQUIDATIONS          // Liquidation management
+endpoints.ME; // GET user info
+endpoints.LOGIN; // POST login
+endpoints.LOGOUT; // POST logout
+endpoints.REFRESH; // POST refresh token
+endpoints.USERS; // User management
+endpoints.PHYSICAL_ASSETS; // Asset management
+endpoints.RENTALS; // Rental management
+endpoints.TRANSFERS; // Transfer management
+endpoints.AUDIT_SESSIONS; // Audit management
+endpoints.MAINTENANCES; // Maintenance management
+endpoints.LIQUIDATIONS; // Liquidation management
 // ... và nhiều endpoints khác
 ```
 
 **Dynamic Endpoints:**
+
 ```typescript
-dynamicEndpoints.USER_DETAIL(id)
-dynamicEndpoints.PHYSICAL_ASSET_DETAIL(id)
-dynamicEndpoints.RENTAL_DETAIL(id)
-dynamicEndpoints.TRANSFER_DETAIL(id)
-dynamicEndpoints.WORKFLOW_TASK_COMPLETE(id)
-dynamicEndpoints.AUDIT_APPROVE(id)
+dynamicEndpoints.USER_DETAIL(id);
+dynamicEndpoints.PHYSICAL_ASSET_DETAIL(id);
+dynamicEndpoints.RENTAL_DETAIL(id);
+dynamicEndpoints.TRANSFER_DETAIL(id);
+dynamicEndpoints.WORKFLOW_TASK_COMPLETE(id);
+dynamicEndpoints.AUDIT_APPROVE(id);
 // ... và nhiều dynamic endpoints khác
 ```
 
@@ -705,22 +742,22 @@ dynamicEndpoints.AUDIT_APPROVE(id)
 File: `src/hooks/usePermissions.ts`
 
 ```typescript
-const { 
+const {
   hasPermission,
   hasAnyPermission,
   hasAllPermissions,
   isSuperAdmin,
   permissions,
-  userRole 
+  userRole,
 } = usePermissions();
 
 // Kiểm tra permission
-if (hasPermission('assets:view')) {
+if (hasPermission("assets:view")) {
   // Show assets menu
 }
 
 // Kiểm tra nhiều permissions
-if (hasAnyPermission(['assets:create', 'assets:edit'])) {
+if (hasAnyPermission(["assets:create", "assets:edit"])) {
   // Show create/edit button
 }
 ```
@@ -735,13 +772,13 @@ const sidebarItems = [
     title: "Assets",
     url: "/assets",
     icon: Laptop,
-    permission: "assets:view"  // Chỉ hiện nếu có permission
+    permission: "assets:view", // Chỉ hiện nếu có permission
   },
   {
     title: "Rentals",
     url: "/rentals",
     icon: Key,
-    permission: "rentals:manage"
+    permission: "rentals:manage",
   },
   // ...
 ];
@@ -782,7 +819,7 @@ const handleCreate = async (data) => {
     method: 'post',
     body: data
   });
-  
+
   if (response) {
     toast.success('Created successfully');
     reFetch();
@@ -831,7 +868,7 @@ const MyComponent = () => {
   return (
     <>
       <Button onClick={open}>Open Modal</Button>
-      
+
       <Dialog open={isOpen} onOpenChange={close}>
         {/* Modal content */}
       </Dialog>
@@ -847,17 +884,20 @@ const MyComponent = () => {
 ### Authentication APIs
 
 #### POST `/api/v1/auth/login`
+
 Login vào hệ thống
 
 **Request:**
+
 ```json
 {
-  "username": "admin",
-  "password": "password123"
+  "username": "",
+  "password": ""
 }
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -875,14 +915,17 @@ Login vào hệ thống
 ```
 
 #### GET `/api/v1/auth/me`
+
 Lấy thông tin user hiện tại
 
 **Headers:**
+
 ```
 Authorization: Bearer {access_token}
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -896,9 +939,11 @@ Authorization: Bearer {access_token}
 ```
 
 #### POST `/api/v1/auth/refresh`
+
 Refresh access token
 
 **Request:**
+
 ```json
 {
   "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -906,6 +951,7 @@ Refresh access token
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -918,9 +964,11 @@ Refresh access token
 ### Asset APIs
 
 #### GET `/api/v1/physical-assets`
+
 Lấy danh sách tài sản
 
 **Query Parameters:**
+
 - `page` - Số trang (default: 1)
 - `limit` - Số items per page (default: 10)
 - `search` - Tìm kiếm theo tên
@@ -928,6 +976,7 @@ Lấy danh sách tài sản
 - `location` - Lọc theo địa điểm
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -949,9 +998,11 @@ Lấy danh sách tài sản
 ```
 
 #### GET `/api/v1/physical-assets/{id}`
+
 Lấy chi tiết tài sản
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -969,16 +1020,18 @@ Lấy chi tiết tài sản
       "name": "Electronics"
     },
     "quantity": 5,
-    "unit_price": 1500.00,
+    "unit_price": 1500.0,
     "created_at": "2024-01-01T00:00:00Z"
   }
 }
 ```
 
 #### POST `/api/v1/physical-assets`
+
 Tạo tài sản mới
 
 **Request:**
+
 ```json
 {
   "name": "Laptop Dell XPS 15",
@@ -987,37 +1040,46 @@ Tạo tài sản mới
   "catalog_type_id": 1,
   "location_id": 1,
   "quantity": 5,
-  "unit_price": 1500.00
+  "unit_price": 1500.0
 }
 ```
 
 #### PUT `/api/v1/physical-assets/{id}`
+
 Cập nhật tài sản
 
 #### DELETE `/api/v1/physical-assets/{id}`
+
 Xóa tài sản
 
 #### GET `/api/v1/physical-assets/{id}/lifecycle`
+
 Lấy lịch sử vòng đời tài sản
 
 #### GET `/api/v1/physical-assets/{id}/holders`
+
 Lấy danh sách người đang giữ tài sản
 
 #### GET `/api/v1/physical-assets/{id}/stock`
+
 Lấy thông tin tồn kho của tài sản
 
 ### Rental APIs
 
 #### GET `/api/v1/rentals`
+
 Lấy danh sách cho thuê
 
 #### GET `/api/v1/rentals/{id}`
+
 Chi tiết đơn cho thuê
 
 #### POST `/api/v1/rentals`
+
 Tạo đơn cho thuê mới
 
 **Request:**
+
 ```json
 {
   "customer_id": 1,
@@ -1025,7 +1087,7 @@ Tạo đơn cho thuê mới
     {
       "asset_id": 1,
       "quantity": 2,
-      "rental_price": 100.00
+      "rental_price": 100.0
     }
   ],
   "start_date": "2024-01-01",
@@ -1035,20 +1097,25 @@ Tạo đơn cho thuê mới
 ```
 
 #### POST `/api/v1/rentals/{id}/return`
+
 Trả tài sản cho thuê
 
 ### Transfer APIs
 
 #### GET `/api/v1/transfers`
+
 Danh sách điều chuyển
 
 #### GET `/api/v1/transfers/{id}`
+
 Chi tiết điều chuyển
 
 #### POST `/api/v1/transfers`
+
 Tạo điều chuyển mới
 
 **Request:**
+
 ```json
 {
   "from_location_id": 1,
@@ -1065,64 +1132,80 @@ Tạo điều chuyển mới
 ```
 
 #### POST `/api/v1/transfers/{id}/attachments`
+
 Upload tài liệu đính kèm
 
 ### Audit APIs
 
 #### GET `/api/v1/audit/sessions`
+
 Danh sách phiên kiểm kê
 
 #### GET `/api/v1/audit/sessions/{id}`
+
 Chi tiết phiên kiểm kê
 
 #### POST `/api/v1/audit/sessions`
+
 Tạo phiên kiểm kê mới
 
 #### POST `/api/v1/audit/batch-start`
+
 Bắt đầu kiểm kê hàng loạt
 
 #### POST `/api/v1/audit/{id}/complete`
+
 Hoàn thành kiểm kê
 
 #### POST `/api/v1/audit/{id}/approve`
+
 Phê duyệt kết quả kiểm kê
 
 #### POST `/api/v1/audit/{id}/reject`
+
 Từ chối kết quả kiểm kê
 
 ### Workflow APIs
 
 #### GET `/api/v1/workflows/tasks`
+
 Danh sách công việc
 
 **Query Parameters:**
+
 - `status` - PENDING, APPROVED, REJECTED
 - `assigned_to` - User ID
 
 #### POST `/api/v1/workflows/tasks/{id}/complete`
+
 Hoàn thành công việc (Approve/Reject)
 
 **Request:**
+
 ```json
 {
-  "action": "approve",  // or "reject"
+  "action": "approve", // or "reject"
   "comment": "Approved"
 }
 ```
 
 #### GET `/api/v1/workflows/history/{type}/{id}`
+
 Lịch sử workflow
 
 **Parameters:**
+
 - `type` - rental, transfer, allocation, etc.
 - `id` - Document ID
 
 ### Dashboard APIs
 
 #### GET `/api/v1/dashboard/summary`
+
 Tổng quan dashboard
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -1136,12 +1219,15 @@ Tổng quan dashboard
 ```
 
 #### GET `/api/v1/dashboard/recent-activities`
+
 Hoạt động gần đây
 
 #### GET `/api/v1/dashboard/module-stats`
+
 Thống kê theo module
 
 #### GET `/api/v1/dashboard/status-chart`
+
 Dữ liệu biểu đồ trạng thái
 
 ---
@@ -1202,19 +1288,19 @@ export default function MyComponent({ title, onSubmit }: Props) {
 
 ```typescript
 // 1. React imports
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 // 2. Third-party imports
-import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
+import { useTranslations } from "next-intl";
+
+import { useForm } from "react-hook-form";
 
 // 3. Internal imports - absolute paths
-import { Button } from '@/components/ui/button';
-import { useGet } from '@/hooks/useGet';
-import { endpoints } from '@/config/endpoints';
-
+import { Button } from "@/components/ui/button";
+import { endpoints } from "@/config/endpoints";
+import { useGet } from "@/hooks/useGet";
 // 4. Types
-import type { User } from '@/types/auth';
+import type { User } from "@/types/auth";
 ```
 
 #### 4. Naming Conventions
@@ -1247,7 +1333,7 @@ type ResponseType = {};
 
 ```typescript
 // src/hooks/useMyHook.ts
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 export const useMyHook = (initialValue: string) => {
   const [value, setValue] = useState(initialValue);
@@ -1266,7 +1352,7 @@ export const useMyHook = (initialValue: string) => {
   return {
     value,
     loading,
-    updateValue
+    updateValue,
   };
 };
 ```
@@ -1309,10 +1395,10 @@ export const dynamicEndpoints = {
 
 ```typescript
 // src/components/schemas/my-feature.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 export const myFeatureSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
 });
 ```
@@ -1361,10 +1447,10 @@ export default function Page() {
 const sidebarItems = [
   // ... existing items
   {
-    title: t('my_features'),
-    url: '/my-features',
+    title: t("my_features"),
+    url: "/my-features",
     icon: Star,
-    permission: 'my_features:view'
+    permission: "my_features:view",
   },
 ];
 ```
@@ -1431,7 +1517,7 @@ const HeavyComponent = dynamic(
 // Stale time để giảm refetch
 const { response } = useGet(
   { url: endpoints.USERS },
-  { staleTime: 5 * 60 * 1000 } // 5 minutes
+  { staleTime: 5 * 60 * 1000 }, // 5 minutes
 );
 ```
 
@@ -1451,6 +1537,7 @@ pnpm build
 ### Deploy to Vercel
 
 1. **Push code lên Git repository**
+
 ```bash
 git add .
 git commit -m "Ready for deployment"
@@ -1458,6 +1545,7 @@ git push origin main
 ```
 
 2. **Import vào Vercel**
+
 - Truy cập [vercel.com](https://vercel.com)
 - Click "New Project"
 - Import repository
@@ -1465,6 +1553,7 @@ git push origin main
 - Deploy
 
 3. **Environment Variables trên Vercel**
+
 ```
 NEXT_PUBLIC_API_BASE_URL=https://api.yourdomain.com
 ```
@@ -1565,7 +1654,7 @@ CMD ["node", "server.js"]
 #### docker-compose.yml
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -1603,21 +1692,25 @@ docker-compose up -d
 ## 🔒 Security Best Practices
 
 ### 1. Environment Variables
+
 - Không commit `.env.local` vào Git
 - Sử dụng `.env.example` làm template
 - Sensitive data chỉ lưu trên server
 
 ### 2. Authentication
+
 - Access token lưu trong httpOnly cookies
 - Refresh token rotation
 - Token expiration handling
 
 ### 3. API Security
+
 - CORS configuration
 - Rate limiting
 - Input validation với Zod
 
 ### 4. XSS Protection
+
 - Next.js tự động escape output
 - Sanitize user input
 - Content Security Policy headers
@@ -1729,7 +1822,7 @@ chore: Update dependencies
 
 This project is **private and proprietary**.
 
-© 2024 Asset Management System. All rights reserved.
+© 2026 Asset Management System. All rights reserved.
 
 ---
 
@@ -1743,5 +1836,5 @@ This project is **private and proprietary**.
 
 ---
 
-**Last Updated**: December 2026
+**Last Updated**: 2026
 **Version**: 1.0.0
