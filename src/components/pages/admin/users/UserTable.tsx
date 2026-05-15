@@ -51,6 +51,7 @@ export default function UserTable() {
   const { user } = useSelector((state: RootState) => state.auth);
   const t = useTranslations("page_users");
   const td = useTranslations("page_users.delete");
+  const tc = useTranslations("Common");
 
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
@@ -142,7 +143,7 @@ export default function UserTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                STT
+                {tc("stt")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
                 {t("username")}

@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
@@ -69,6 +68,7 @@ export default function AllocationVoucherModal({
   onSuccess,
 }: Props) {
   const t = useTranslations("page_allocation_recovery");
+  const tCommon = useTranslations("Common");
   const { mutate, pending } = useMutation();
   const dispatch = useDispatch<AppDispatch>();
   const { prefill } = useSelector((state: RootState) => state.allocation);
@@ -248,11 +248,15 @@ export default function AllocationVoucherModal({
                       <Field className="gap-1">
                         <FieldLabel>{t("form.organization")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? 0 : Number(val))
+                          }
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("form.placeholder_unit")} />
+                            <SelectValue
+                              placeholder={t("form.placeholder_unit")}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -395,7 +399,7 @@ export default function AllocationVoucherModal({
                       append({ location_id: 0, asset_id: 0, quantity: 1 })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> {t("form.add_asset")}
+                    {t("form.add_asset")}
                   </Button>
                 </div>
 
@@ -421,6 +425,7 @@ export default function AllocationVoucherModal({
               </div>
               <ApprovalProcessSection
                 control={form.control}
+                title={`3. ${tCommon("approval_process")}`}
                 steps={activeAllocationTemplate?.steps || []}
                 users={users}
               />

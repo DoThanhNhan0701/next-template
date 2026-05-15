@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -296,7 +295,7 @@ export default function StockAdjustmentModal({
                       })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> {t("form.add_item")}
+                    {t("form.add_item")}
                   </Button>
                 </div>
 

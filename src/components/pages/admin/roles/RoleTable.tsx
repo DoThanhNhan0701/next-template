@@ -49,6 +49,7 @@ import RoleFormModal from "./RoleFormModal";
 export default function RoleTable() {
   const t = useTranslations("page_roles");
   const td = useTranslations("page_roles.delete");
+  const tc = useTranslations("Common");
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const [skip, setSkip] = useState(0);
@@ -147,7 +148,7 @@ export default function RoleTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                STT
+                {tc("stt")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[25%]">
                 {t("role_name")}

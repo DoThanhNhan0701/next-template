@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
@@ -251,11 +250,15 @@ export default function RecoveryVoucherModal({
                       <Field className="gap-1">
                         <FieldLabel>{t("form.organization")}</FieldLabel>
                         <Select
-                          onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? 0 : Number(val))
+                          }
                           value={field.value ? field.value.toString() : ""}
                         >
                           <SelectTrigger className="h-9">
-                            <SelectValue placeholder={t("form.placeholder_unit")} />
+                            <SelectValue
+                              placeholder={t("form.placeholder_unit")}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem
@@ -283,7 +286,9 @@ export default function RecoveryVoucherModal({
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
-                        <FieldLabel>{t("form.recovered_from_staff")}</FieldLabel>
+                        <FieldLabel>
+                          {t("form.recovered_from_staff")}
+                        </FieldLabel>
                         <Select
                           onValueChange={(val: string) =>
                             field.onChange(val === "none" ? null : Number(val))
@@ -400,7 +405,7 @@ export default function RecoveryVoucherModal({
                       append({ location_id: 0, asset_id: 0, quantity: 1 })
                     }
                   >
-                    <PlusIcon size={12} className="mr-1" /> {t("form.add_asset")}
+                    {t("form.add_asset")}
                   </Button>
                 </div>
 

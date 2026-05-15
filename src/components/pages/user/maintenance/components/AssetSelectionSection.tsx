@@ -3,7 +3,8 @@
 import { useState } from "react";
 
 import { useTranslations } from "next-intl";
-import { CheckCircle2, PlusIcon, RefreshCcw, Trash, User, Warehouse } from "lucide-react";
+
+import { CheckCircle2, RefreshCcw, Trash, User, Warehouse } from "lucide-react";
 import {
   Controller,
   FieldArrayWithId,
@@ -28,8 +29,11 @@ import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { cn } from "@/lib/utils";
 import { ILocation } from "@/types/location";
-import { IPhysicalAsset } from "@/types/physical-asset";
-import { IAssetHolder, IAssetStock } from "@/types/physical-asset";
+import {
+  IAssetHolder,
+  IAssetStock,
+  IPhysicalAsset,
+} from "@/types/physical-asset";
 
 interface AssetStockSelectorProps {
   assetId: number;
@@ -249,8 +253,8 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
                           key={`s-opt-${i}`}
                           value={s.location_id.toString()}
                         >
-                          [{s.location_code}] {s.location_name} - {t("quantity")}:{" "}
-                          {s.quantity}
+                          [{s.location_code}] {s.location_name} -{" "}
+                          {t("quantity")}: {s.quantity}
                         </SelectItem>
                       ))
                     : holders.map((h, i) => {
@@ -332,7 +336,7 @@ export function AssetSelectionSection({
               })
             }
           >
-            <PlusIcon size={10} className="mr-1" /> {t("add_asset")}
+            {t("add_asset")}
           </Button>
         </div>
       </div>
@@ -436,7 +440,8 @@ export function AssetSelectionSection({
                                     {a.holder_name || "N/A"}
                                     {isUniqueRestricted && (
                                       <span className="ml-2 text-destructive font-medium italic">
-                                        - {t("restricted_maintenance", {
+                                        -{" "}
+                                        {t("restricted_maintenance", {
                                           status: sName,
                                         })}
                                       </span>
@@ -524,9 +529,7 @@ export function AssetSelectionSection({
                       }
                     >
                       <SelectTrigger className="bg-white rounded-md border-border/60 text-xs shadow-none">
-                        <SelectValue
-                          placeholder={t("return_location")}
-                        />
+                        <SelectValue placeholder={t("return_location")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem

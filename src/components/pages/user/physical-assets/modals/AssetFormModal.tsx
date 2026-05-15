@@ -488,7 +488,7 @@ export default function AssetFormModal({
               {/* Section: Tracking & Management */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  2. Tracking & Management
+                  {t("modals.sections.tracking")}
                 </h3>
                 <FieldGroup className="grid grid-cols-3 gap-3">
                   <Controller
@@ -706,7 +706,7 @@ export default function AssetFormModal({
               {/* Section: Purchase & Value */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  3. Purchase & Acquisition
+                  {t("modals.sections.purchase")}
                 </h3>
                 <FieldGroup className="grid grid-cols-3 gap-3">
                   <Controller

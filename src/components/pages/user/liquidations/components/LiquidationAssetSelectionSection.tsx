@@ -1,4 +1,6 @@
-import { PlusIcon, Trash } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import { Trash } from "lucide-react";
 import {
   Controller,
   FieldArrayWithId,
@@ -6,9 +8,9 @@ import {
   UseFieldArrayRemove,
   UseFormReturn,
 } from "react-hook-form";
-import { useTranslations } from "next-intl";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -23,8 +25,6 @@ import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
 import { IPhysicalAsset } from "@/types/physical-asset";
-
-import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 
 interface AssetListItemProps {
   index: number;
@@ -112,7 +112,9 @@ function AssetListItem({
                 <SelectTrigger className="bg-white">
                   <SelectValue
                     placeholder={
-                      assetsPending ? t("loading_assets") : t("placeholder_asset")
+                      assetsPending
+                        ? t("loading_assets")
+                        : t("placeholder_asset")
                     }
                   />
                 </SelectTrigger>
@@ -240,7 +242,7 @@ export function LiquidationAssetSelectionSection({
               })
             }
           >
-            <PlusIcon size={12} className="mr-1" /> {t("add_asset")}
+            {t("add_asset")}
           </Button>
         </div>
       </div>

@@ -43,6 +43,7 @@ import StaffFormModal from "./StaffFormModal";
 
 export default function StaffTable() {
   const t = useTranslations("page_staff");
+  const tc = useTranslations("Common");
   const [skip, setSkip] = useState(0);
   const [limit] = useState(20);
   const [isActive, setIsActive] = useState<string>("all");
@@ -132,7 +133,7 @@ export default function StaffTable() {
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
               <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                STT
+                {tc("stt")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[12%]">
                 {t("staff_code")}
