@@ -145,9 +145,11 @@ export default function AuditDetail({ id }: Props) {
   const onAuditRejectConfirm = async (reason: string) => {
     await mutate(
       {
-        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(Number(activeTask?.id)),
+        url: activeTask?.id
+          ? dynamicEndpoints.WORKFLOW_TASK_COMPLETE(Number(activeTask.id))
+          : dynamicEndpoints.AUDIT_REJECT(Number(id), reason),
         method: "post",
-        body: { comment: reason, status: "REJECTED" },
+        body: activeTask?.id ? { comment: reason, status: "REJECTED" } : {},
       },
       {
         onSuccess: (response) => {
@@ -167,9 +169,11 @@ export default function AuditDetail({ id }: Props) {
   const onAuditApproveConfirm = async (comment: string) => {
     await mutate(
       {
-        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(Number(activeTask?.id)),
+        url: activeTask?.id
+          ? dynamicEndpoints.WORKFLOW_TASK_COMPLETE(Number(activeTask.id))
+          : dynamicEndpoints.AUDIT_APPROVE(Number(id)),
         method: "post",
-        body: { comment, status: "APPROVED" },
+        body: activeTask?.id ? { comment, status: "APPROVED" } : { comment },
       },
       {
         onSuccess: (response) => {
@@ -261,30 +265,31 @@ export default function AuditDetail({ id }: Props) {
               </Button>
             )}
 
-          {activeTask && session.submitted_at && (
-            <>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setIsAuditApproveModalOpen(true)}
-                disabled={mutatePending}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-              >
-                <Check size={14} />
-                {tMyTasks("detail.approval_form.approve")}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsAuditRejectModalOpen(true)}
-                disabled={mutatePending}
-                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-              >
-                <X size={14} />
-                {tMyTasks("detail.approval_form.reject")}
-              </Button>
-            </>
-          )}
+          {((activeTask && session.submitted_at) ||
+            (session?.status_obj?.code === "COMPLETED" && isSuperAdmin)) && (
+              <>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setIsAuditApproveModalOpen(true)}
+                  disabled={mutatePending}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                >
+                  <Check size={14} />
+                  {tMyTasks("detail.approval_form.approve")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAuditRejectModalOpen(true)}
+                  disabled={mutatePending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                >
+                  <X size={14} />
+                  {tMyTasks("detail.approval_form.reject")}
+                </Button>
+              </>
+            )}
         </div>
       </div>
 
