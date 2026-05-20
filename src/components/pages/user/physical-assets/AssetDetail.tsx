@@ -243,7 +243,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         </div>
 
         <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg">
-          <div className="grid grid-cols-2 lg:grid-cols-7 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
+          <div className="grid grid-cols-2 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
             <StatItem
               icon={<Box className="w-4 h-4 text-slate-400" />}
               label={t2("stats.registered")}
@@ -276,12 +276,6 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
               label={t2("stats.liquidated")}
               value={asset.liquidated_quantity}
             />
-            <StatItem
-              icon={<Package className="w-4 h-4 text-indigo-400" />}
-              label={t2("stats.modules")}
-              value={(modules ?? []).length}
-              valueColor="text-indigo-600"
-            />
           </div>
         </Card>
 
@@ -309,6 +303,14 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 <span className="text-sm font-medium">
                   {t("detail.tabs.modules")}
                 </span>
+                {modules && modules.length > 0 && (
+                  <Badge
+                    variant="outline"
+                    className="absolute top-1 right-1 font-medium text-xs w-5 h-5 flex items-center justify-center rounded-full bg-red-600 text-white leading-none"
+                  >
+                    {modules.length}
+                  </Badge>
+                )}
               </TabsTrigger>
               <TabsTrigger
                 value="history"

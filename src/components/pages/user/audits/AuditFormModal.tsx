@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Building2,
@@ -13,10 +15,11 @@ import {
 } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslations } from "next-intl";
 import { z } from "zod";
 
+import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { AuditCreateSchema } from "@/components/schemas/user/audit.schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,18 +58,12 @@ import { updateCount } from "@/redux/slices/task";
 import { IUser } from "@/types/auth";
 import { ILocation } from "@/types/location";
 import { IOrgUnit } from "@/types/org";
+import { ITemplate } from "@/types/template";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
 import { getTodayISO } from "@/utils/date";
 
-type AuditFormValues = {
-  title: string;
-  audit_type: "unit" | "location";
-  unit_ids: number[];
-  location_ids: number[];
-  assignee_id: number | null;
-  due_date: string;
-};
+type AuditFormValues = z.input<typeof AuditCreateSchema>;
 
 interface AuditFormModalProps {
   isOpen: boolean;
@@ -80,32 +77,7 @@ export default function AuditFormModal({
   onSuccess,
 }: AuditFormModalProps) {
   const t = useTranslations("page_audits");
-
-  const AuditSchema = z
-    .object({
-      title: z.string().min(1, t("form.title_required")),
-      audit_type: z.enum(["unit", "location"]),
-      unit_ids: z.array(z.number()),
-      location_ids: z.array(z.number()),
-      assignee_id: z.number().nullable(),
-      due_date: z.string().min(1, t("form.due_date_required")),
-    })
-    .superRefine((data, ctx) => {
-      if (data.audit_type === "unit" && data.unit_ids.length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t("form.unit_required"),
-          path: ["unit_ids"],
-        });
-      }
-      if (data.audit_type === "location" && data.location_ids.length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t("form.location_required"),
-          path: ["location_ids"],
-        });
-      }
-    });
+  const tC = useTranslations("Common");
 
   const [unitDropdownOpen, setUnitDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -125,6 +97,11 @@ export default function AuditFormModal({
     { disabled: !isOpen },
   );
 
+  const { response: activeAuditTemplate } = useGet<ITemplate>(
+    { url: `${endpoints.TEMPLATE_ACTIVE}audit` },
+    { disabled: !isOpen },
+  );
+
   const locations = locRes || [];
   const orgUnits = orgRes || [];
   const users = userRes || [];
@@ -137,7 +114,7 @@ export default function AuditFormModal({
   );
 
   const form = useForm<AuditFormValues>({
-    resolver: zodResolver(AuditSchema),
+    resolver: zodResolver(AuditCreateSchema),
     defaultValues: {
       title: "",
       audit_type: "unit",
@@ -168,15 +145,19 @@ export default function AuditFormModal({
         location_ids: [],
         assignee_id: null,
         due_date: getTodayISO(),
+        approvals: {},
+        required_steps: activeAuditTemplate?.steps?.length || 0,
       });
     }
-  }, [isOpen, form]);
+  }, [isOpen, form, activeAuditTemplate]);
 
   const toggleUnit = (id: number) => {
     const current = form.getValues("unit_ids") || [];
     form.setValue(
       "unit_ids",
-      current.includes(id) ? current.filter((v: number) => v !== id) : [...current, id],
+      current.includes(id)
+        ? current.filter((v: number) => v !== id)
+        : [...current, id],
     );
   };
 
@@ -184,12 +165,33 @@ export default function AuditFormModal({
     const current = form.getValues("location_ids") || [];
     form.setValue(
       "location_ids",
-      current.includes(id) ? current.filter((v: number) => v !== id) : [...current, id],
+      current.includes(id)
+        ? current.filter((v: number) => v !== id)
+        : [...current, id],
     );
   };
 
+  useEffect(() => {
+    if (activeAuditTemplate?.steps?.length) {
+      form.setValue("required_steps", activeAuditTemplate.steps.length);
+    }
+  }, [activeAuditTemplate, form]);
+
   const onSubmit = async (data: AuditFormValues) => {
-    const payload = {
+    const workflow_assignments: { step_id: number; user_id: number }[] = [];
+    if (activeAuditTemplate?.steps?.length) {
+      activeAuditTemplate.steps.forEach((step, idx) => {
+        const userId = data.approvals?.[`step_${idx}`];
+        if (userId && typeof userId === "number") {
+          workflow_assignments.push({
+            step_id: step.id,
+            user_id: userId,
+          });
+        }
+      });
+    }
+
+    const payloadCore = {
       title: data.title,
       due_date: data.due_date ? `${data.due_date}T00:00:00.000Z` : null,
       ...(data.audit_type === "unit"
@@ -197,6 +199,10 @@ export default function AuditFormModal({
         : { location_ids: data.location_ids }),
       ...(data.assignee_id ? { assignee_id: data.assignee_id } : {}),
     };
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { approvals, required_steps, ...rest } = data;
+    const payload = { ...rest, ...payloadCore, workflow_assignments };
 
     await mutate(
       {
@@ -243,9 +249,7 @@ export default function AuditFormModal({
             <div className="flex flex-col gap-1 mb-3">
               <FieldGroup className="grid grid-cols-2 gap-3">
                 <Field className="col-span-2 gap-1">
-                  <FieldLabel>
-                    {t("form.title")}
-                  </FieldLabel>
+                  <FieldLabel>{t("form.title")}</FieldLabel>
                   <Input
                     placeholder={t("table.enter_batch_title")}
                     {...form.register("title")}
@@ -259,9 +263,7 @@ export default function AuditFormModal({
                   control={form.control}
                   render={({ field }) => (
                     <Field className="col-span-2 gap-1 mb-3">
-                      <FieldLabel>
-                        {t("form.audit_type")}
-                      </FieldLabel>
+                      <FieldLabel>{t("form.audit_type")}</FieldLabel>
                       <Tabs
                         value={field.value}
                         onValueChange={(val) => {
@@ -277,7 +279,9 @@ export default function AuditFormModal({
                             className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm w-full"
                           >
                             <Building2 className="w-4 h-4" />
-                            <span className="text-xs font-medium">{t("form.by_unit")}</span>
+                            <span className="text-xs font-medium">
+                              {t("form.by_unit")}
+                            </span>
                           </TabsTrigger>
                           <TabsTrigger
                             value="location"
@@ -297,9 +301,7 @@ export default function AuditFormModal({
                 {/* Multi-select: Unit */}
                 {auditType === "unit" && (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>
-                      {t("filters.select_unit")}
-                    </FieldLabel>
+                    <FieldLabel>{t("filters.select_unit")}</FieldLabel>
                     <DropdownMenu
                       open={unitDropdownOpen}
                       onOpenChange={setUnitDropdownOpen}
@@ -407,9 +409,7 @@ export default function AuditFormModal({
                 {/* Multi-select: Location */}
                 {auditType === "location" && (
                   <Field className="col-span-2 gap-1">
-                    <FieldLabel>
-                      {t("filters.select_location")}
-                    </FieldLabel>
+                    <FieldLabel>{t("filters.select_location")}</FieldLabel>
                     <DropdownMenu
                       open={locationDropdownOpen}
                       onOpenChange={setLocationDropdownOpen}
@@ -532,9 +532,7 @@ export default function AuditFormModal({
                   render={({ field, fieldState }) => (
                     <Field className="gap-1">
                       <div className="flex flex-col gap-1 mb-1">
-                        <FieldLabel>
-                          {t("form.assignee")}
-                        </FieldLabel>
+                        <FieldLabel>{t("form.assignee")}</FieldLabel>
                         <span className="text-[10px] text-muted-foreground/60 leading-none">
                           {t("table.assignment_leader")}
                         </span>
@@ -546,7 +544,9 @@ export default function AuditFormModal({
                         }
                       >
                         <SelectTrigger className="bg-background rounded-md border-muted-foreground/20 shadow-sm">
-                          <SelectValue placeholder={t("form.placeholder_assignee")} />
+                          <SelectValue
+                            placeholder={t("form.placeholder_assignee")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem
@@ -571,15 +571,21 @@ export default function AuditFormModal({
                   name="due_date"
                   render={({ fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel>
-                        {t("form.due_date")}
-                      </FieldLabel>
+                      <FieldLabel>{t("form.due_date")}</FieldLabel>
                       <DatePickerField form={form} name="due_date" />
                       <FieldError errors={[fieldState.error]} />
                     </Field>
                   )}
                 />
               </FieldGroup>
+
+              <ApprovalProcessSection
+                className="gap-1 [&_h3]:text-xs [&_h3]:font-semibold [&_h3]:text-muted-foreground mt-3"
+                title={tC("approval_process")}
+                control={form.control}
+                steps={activeAuditTemplate?.steps || []}
+                users={users}
+              />
             </div>
           </div>
 

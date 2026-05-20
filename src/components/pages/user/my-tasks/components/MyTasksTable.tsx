@@ -18,11 +18,11 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
-import { TablePagination } from "@/components/common/TablePagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -194,17 +194,17 @@ export default function MyTasksTable() {
   }, [tasks, mappedAudits, selectedProcessType, appliedQ]);
 
   const paginatedTasks = useMemo(() => {
-    return allTasks.slice((localCurrentPage - 1) * limit, localCurrentPage * limit);
+    return allTasks.slice(
+      (localCurrentPage - 1) * limit,
+      localCurrentPage * limit,
+    );
   }, [allTasks, localCurrentPage, limit]);
-  const isPending =
-    pending || auditPending || auditPendingApprovalPending;
+  const isPending = pending || auditPending || auditPendingApprovalPending;
 
   const reFetchAudits = useCallback(() => {
     auditReFetch();
     auditPendingApprovalReFetch();
   }, [auditReFetch, auditPendingApprovalReFetch]);
-
-
 
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {
@@ -610,7 +610,9 @@ export default function MyTasksTable() {
                     <div className="flex flex-col gap-0.5 text-xs overflow-hidden items-center">
                       <div className="flex items-center justify-center gap-1.5 text-muted-foreground overflow-hidden">
                         <Clock size={12} className="opacity-60 shrink-0" />
-                        <span className="truncate">{formatDate(task.created_at, "HH:mm")}</span>
+                        <span className="truncate">
+                          {formatDate(task.created_at, "HH:mm")}
+                        </span>
                       </div>
                       <span className="text-[10px] text-muted-foreground/80 font-mono font-medium truncate">
                         {formatDate(task.created_at)}
@@ -634,22 +636,21 @@ export default function MyTasksTable() {
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {["PENDING", "COMPLETED"].includes(task.status) && (
-                        <>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleApprove(task);
-                            }}
-                            className="rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
-                            title={tTable("actions")}
-                          >
-                            <Check size={16} />
-                          </Button>
-                          {(task.document_type !== "audit" ||
-                            task.status === "COMPLETED") && (
+                      {["PENDING", "COMPLETED"].includes(task.status) &&
+                        task.document_type !== "audit" && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleApprove(task);
+                              }}
+                              className="rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
+                              title={tTable("actions")}
+                            >
+                              <Check size={16} />
+                            </Button>
                             <Button
                               variant="ghost"
                               size="icon"
@@ -662,9 +663,8 @@ export default function MyTasksTable() {
                             >
                               <CloseIcon size={16} />
                             </Button>
-                          )}
-                        </>
-                      )}
+                          </>
+                        )}
                     </div>
                   </TableCell>
                 </TableRow>

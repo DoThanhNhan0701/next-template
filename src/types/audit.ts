@@ -29,6 +29,7 @@ export interface IAuditSession {
     assignee: IUser;
     unit_obj: IAuditUnitObj | null;
     location_obj: IAuditLocationObj | null;
+    submitted_at: string | null;
 }
 
 export interface IAuditDetailItem {

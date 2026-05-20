@@ -92,15 +92,27 @@ export default function AuditDetail({ id }: Props) {
     url: dynamicEndpoints.AUDIT_SESSION_DETAILS(Number(id)),
   });
 
-  const { response: historyList, pending: historyPending } = useGet<
-    ApprovalHistory[]
-  >({
+  const {
+    response: historyList,
+    pending: historyPending,
+    reFetch: historyReFetch,
+  } = useGet<ApprovalHistory[]>({
     url: dynamicEndpoints.WORKFLOW_HISTORY("audit", Number(id)),
   });
 
   const { response: myAudits } = useGet<IAuditSession[]>({
     url: endpoints.AUDIT_MY_AUDITS,
   });
+
+  const { response: myTasksResponse, reFetch: myTasksReFetch } = useGet<
+    ITask[]
+  >({
+    url: `${endpoints.WORKFLOW_TASKS}me`,
+  });
+
+  const activeTask = (myTasksResponse || []).find(
+    (t) => t.document_id === Number(id) && t.document_type === "audit",
+  );
 
   const totalItems = items?.length || 0;
   const verifiedItems = items?.filter((item) => item.verified_at).length || 0;
@@ -133,14 +145,17 @@ export default function AuditDetail({ id }: Props) {
   const onAuditRejectConfirm = async (reason: string) => {
     await mutate(
       {
-        url: dynamicEndpoints.AUDIT_REJECT(Number(id), reason),
+        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(Number(activeTask?.id)),
         method: "post",
+        body: { comment: reason, status: "REJECTED" },
       },
       {
         onSuccess: (response) => {
           getApiSuccessMessage(response);
           setIsAuditRejectModalOpen(false);
           sessionReFetch();
+          historyReFetch();
+          myTasksReFetch();
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -152,9 +167,9 @@ export default function AuditDetail({ id }: Props) {
   const onAuditApproveConfirm = async (comment: string) => {
     await mutate(
       {
-        url: dynamicEndpoints.AUDIT_APPROVE(Number(id)),
+        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(Number(activeTask?.id)),
         method: "post",
-        body: { comment },
+        body: { comment, status: "APPROVED" },
       },
       {
         onSuccess: (response) => {
@@ -164,6 +179,8 @@ export default function AuditDetail({ id }: Props) {
           getApiSuccessMessage(response);
           setIsAuditApproveModalOpen(false);
           sessionReFetch();
+          historyReFetch();
+          myTasksReFetch();
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -231,18 +248,20 @@ export default function AuditDetail({ id }: Props) {
         </div>
 
         <div className="flex items-center gap-2">
-          {session?.status_obj?.code === "PENDING" && isMyAudit && (
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => setIsAuditCompleteModalOpen(true)}
-              disabled={mutatePending || progressPercentage < 100}
-            >
-              {t("detail.complete_audit")}
-            </Button>
-          )}
+          {session?.status_obj?.code === "PENDING" &&
+            !session.submitted_at &&
+            isMyAudit && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsAuditCompleteModalOpen(true)}
+                disabled={mutatePending || progressPercentage < 100}
+              >
+                {t("detail.complete_audit")}
+              </Button>
+            )}
 
-          {session?.status_obj?.code === "COMPLETED" && isSuperAdmin && (
+          {activeTask && session.submitted_at && (
             <>
               <Button
                 variant="default"
