@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
-  ArrowRight,
+  ArrowDown,
   Building2,
   Calendar,
   FileText,
@@ -137,7 +137,7 @@ export default function TransfersTable() {
               </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
-                  {o.name}
+                  {o.name} - ({o.code})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -273,20 +273,22 @@ export default function TransfersTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                    <div className="flex items-center gap-2 text-xs">
+                  <TableCell className="px-4 py-1 max-w-0 overflow-hidden">
+                    <div className="flex flex-col gap-0 text-xs leading-tight">
                       <span
                         className={`truncate ${item.from_name ? "font-medium" : "italic text-muted-foreground"}`}
+                        title={item.from_name || "—"}
                       >
                         {item.from_name || "—"}
                       </span>
-                      <ArrowRight
-                        size={12}
-                        className="text-muted-foreground/50 shrink-0"
-                      />
                       <span
-                        className={`truncate ${item.to_name ? "font-medium" : "italic text-muted-foreground"}`}
+                        className={`truncate text-xs text-muted-foreground/70 flex items-center gap-1 mt-0.5`}
+                        title={item.to_name || "—"}
                       >
+                        <ArrowDown
+                          size={10}
+                          className="shrink-0 text-muted-foreground/40"
+                        />
                         {item.to_name || "—"}
                       </span>
                     </div>

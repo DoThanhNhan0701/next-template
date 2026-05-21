@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
@@ -95,7 +96,7 @@ export function GeneralInfoSection({
                   </SelectItem>
                   {orgUnits.map((o) => (
                     <SelectItem key={o.id} value={o.id.toString()}>
-                      {o.name}
+                      {o.name} - ({o.code})
                     </SelectItem>
                   ))}
                 </SelectContent>

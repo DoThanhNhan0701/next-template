@@ -816,7 +816,7 @@
       "approval_form": {
         "request_title": "Duyệt yêu cầu",
         "step_description": "Bạn đang thực hiện bước <b>{step}</b> cho chứng từ này.",
-        "approve": "Duyệt",
+        "approve": "Xác nhận",
         "reject": "Từ chối",
         "comment_placeholder": "e.g. Duyệt có điều kiện",
         "submit_approval": "Xác nhận duyệt",
@@ -1821,6 +1821,7 @@
       "title": "Tiêu đề",
       "type_target": "Loại / Đối tượng",
       "assignee": "Người thực hiện",
+      "creator": "Người tạo",
       "due_date": "Hạn hoàn thành",
       "status": "Trạng thái",
       "current_state": "Trạng thái hiện tại",

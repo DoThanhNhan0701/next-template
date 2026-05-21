@@ -1820,6 +1820,7 @@
       "title": "Title",
       "type_target": "Type / Target",
       "assignee": "Assignee",
+      "creator": "Creator",
       "due_date": "Due date",
       "status": "Status",
       "current_state": "Current state",

@@ -60,81 +60,87 @@ export default function BusinessProcessTab({
           </TableRow>
         </TableHeader>
         <TableBody className="divide-y divide-(--surface-border-color)">
-          {history.map((log, i) => (
-            <TableRow
-              key={log.ref_id + `${i}`}
-              className="group hover:bg-primary/3 transition-colors relative"
-            >
-              <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">
-                {i + 1}
-              </TableCell>
-              <TableCell className="px-4 py-1.5 text-sm text-foreground/80 font-medium">
-                {formatDateTime(log.date)}
-              </TableCell>
-              <TableCell className="px-4 py-1.5">
-                <Badge
-                  variant="outline"
-                  className="px-3 py-1 font-semibold text-xs border-blue-200 bg-blue-50 text-blue-600 rounded-full shadow-none w-fit"
-                >
-                  {log.action_type || "-"}
-                </Badge>
-              </TableCell>
-              <TableCell className="px-4 py-1.5">
-                {log.document_number ? (
-                  <Link
-                    href={getDocumentDetailUrl(log.action_type, log.ref_id)}
-                    className="flex w-fit items-center gap-1.5 text-primary hover:underline font-bold tracking-wide text-sm"
-                  >
-                    {log.document_number} <ExternalLink className="w-3 h-3" />
-                  </Link>
-                ) : (
-                  <span className="text-muted-foreground text-xs italic">
-                    -
-                  </span>
-                )}
-              </TableCell>
-              <TableCell className="px-4 py-1.5">
-                <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1.5 opacity-80 whitespace-nowrap">
-                    <span>
-                      {log.old_location_name ||
-                        log.old_user_name ||
-                        "Warehouse / Default"}
-                    </span>
-                    <ArrowRight className="w-3 h-3 shrink-0" />
-                  </div>
-                  <strong
-                    className="text-foreground text-sm font-bold tracking-wide whitespace-nowrap truncate max-w-[200px]"
-                    title={log.user_name || log.location_name || "—"}
-                  >
-                    {log.user_name || log.location_name || "—"}
-                  </strong>
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-1.5 text-center text-sm font-semibold">
-                {log.quantity ?? "-"}
-              </TableCell>
-              <TableCell className="px-4 py-1.5">
-                {log.doc_status ? (
+          {history.map((log, i) => {
+            const oldUser = log.old_user_name && log.old_user_name !== "N/A" ? log.old_user_name : null;
+            const oldLoc = log.old_location_name && log.old_location_name !== "N/A" ? log.old_location_name : null;
+            const oldDisplayName = oldUser || oldLoc || "Warehouse / Default";
+
+            const newUser = log.user_name && log.user_name !== "N/A" ? log.user_name : null;
+            const newLoc = log.location_name && log.location_name !== "N/A" ? log.location_name : null;
+            const newDisplayName = newUser || newLoc || "—";
+
+            return (
+              <TableRow
+                key={log.ref_id + `${i}`}
+                className="group hover:bg-primary/3 transition-colors relative"
+              >
+                <TableCell className="px-4 py-1.5 text-center font-medium text-muted-foreground text-sm">
+                  {i + 1}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-sm text-foreground/80 font-medium">
+                  {formatDateTime(log.date)}
+                </TableCell>
+                <TableCell className="px-4 py-1.5">
                   <Badge
                     variant="outline"
-                    className="px-2 py-0.5 text-xs font-medium rounded-full"
-                    style={{
-                      backgroundColor: `${log.doc_status_color}1a`,
-                      color: log.doc_status_color ?? undefined,
-                      borderColor: `${log.doc_status_color}40`,
-                    }}
+                    className="px-3 py-1 font-semibold text-xs border-blue-200 bg-blue-50 text-blue-600 rounded-full shadow-none w-fit"
                   >
-                    {log.doc_status}
+                    {log.action_type || "-"}
                   </Badge>
-                ) : (
-                  <span className="text-muted-foreground text-xs italic">
-                    -
-                  </span>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+                <TableCell className="px-4 py-1.5">
+                  {log.document_number ? (
+                    <Link
+                      href={getDocumentDetailUrl(log.action_type, log.ref_id)}
+                      className="flex w-fit items-center gap-1.5 text-primary hover:underline font-bold tracking-wide text-sm"
+                    >
+                      {log.document_number} <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  ) : (
+                    <span className="text-muted-foreground text-xs italic">
+                      -
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell className="px-4 py-1.5">
+                  <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1.5 opacity-80 whitespace-nowrap">
+                      <span>{oldDisplayName}</span>
+                      <ArrowRight className="w-3 h-3 shrink-0" />
+                    </div>
+                    <strong
+                      className="text-foreground text-sm font-bold tracking-wide whitespace-nowrap truncate max-w-[200px]"
+                      title={newDisplayName}
+                    >
+                      {newDisplayName}
+                    </strong>
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-center text-sm font-semibold">
+                  {log.quantity ?? "-"}
+                </TableCell>
+                <TableCell className="px-4 py-1.5">
+                  {log.doc_status ? (
+                    <Badge
+                      variant="outline"
+                      className="px-2 py-0.5 text-xs font-medium rounded-full"
+                      style={{
+                        backgroundColor: `${log.doc_status_color}1a`,
+                        color: log.doc_status_color ?? undefined,
+                        borderColor: `${log.doc_status_color}40`,
+                      }}
+                    >
+                      {log.doc_status}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground text-xs italic">
+                      -
+                    </span>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

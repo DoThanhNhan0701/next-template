@@ -174,7 +174,7 @@ export default function AssetTable() {
               </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
-                  {o.name}
+                  {o.name} - ({o.code})
                 </SelectItem>
               ))}
             </SelectContent>

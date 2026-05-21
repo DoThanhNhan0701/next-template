@@ -154,7 +154,7 @@ export default function InventoryTable() {
               </SelectItem>
               {locations.map((loc) => (
                 <SelectItem key={loc.id} value={loc.id.toString()}>
-                  {loc.name}
+                  {loc.name} - ({loc.code})
                 </SelectItem>
               ))}
             </SelectContent>

@@ -3,7 +3,7 @@ import { z } from "zod";
 export const PhysicalAssetSchema = z.object({
   asset_code: z.string().optional().nullable(),
   name: z.string().min(1, "Field is required!"),
-  serial_number: z.string().nullable().optional(),
+  serial_number: z.string().optional(),
   model: z.string().nullable().optional(),
   request_ticket: z.string().nullable().optional(),
   importance_id: z.coerce.number().int().min(1, "Field is required!"),
@@ -47,15 +47,4 @@ export const PhysicalAssetSchema = z.object({
     message: "Field is required!",
     path: ["quantity"],
   }
-).refine(
-  (data) => {
-    if (data.management_type === "unique") {
-      return !!data.serial_number && data.serial_number.trim().length > 0;
-    }
-    return true;
-  },
-  {
-    message: "Field is required!",
-    path: ["serial_number"],
-  }
-);
+)

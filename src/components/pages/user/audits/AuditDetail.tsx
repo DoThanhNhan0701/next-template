@@ -378,6 +378,12 @@ export default function AuditDetail({ id }: Props) {
             <InfoItem
               icon={User}
               color="bg-emerald-500/10 text-emerald-500"
+              label={t("table.creator")}
+              value={session.creator?.full_name}
+            />
+            <InfoItem
+              icon={User}
+              color="bg-emerald-500/10 text-emerald-500"
               label={t("table.assignee")}
               value={session.assignee?.full_name}
             />

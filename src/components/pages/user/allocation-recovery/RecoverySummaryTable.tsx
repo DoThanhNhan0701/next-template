@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
+  ArrowDown,
   Building2,
   Calendar,
   ClipboardList,
@@ -149,7 +150,7 @@ export default function RecoverySummaryTable() {
               </SelectItem>
               {orgUnits.map((o) => (
                 <SelectItem key={o.id} value={o.id.toString()}>
-                  {o.name}
+                  {o.name} ({o.code})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -327,21 +328,19 @@ export default function RecoverySummaryTable() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
-                      <div className="flex items-center gap-2 text-sm overflow-hidden">
+                    <TableCell className="px-4 py-1 max-w-0 overflow-hidden">
+                      <div className="flex flex-col gap-0 text-xs leading-tight">
                         <span
-                          className="text-muted-foreground truncate"
+                          className={`truncate ${recovery.from_name ? "text-muted-foreground" : "italic text-muted-foreground/60"}`}
                           title={recovery.from_name || "-"}
                         >
                           {recovery.from_name || "-"}
                         </span>
-                        <span className="text-muted-foreground/30 shrink-0">
-                          →
-                        </span>
                         <span
-                          className="text-foreground/80 font-medium truncate"
+                          className={`truncate text-xs text-foreground/80 font-medium flex items-center gap-1 mt-0.5`}
                           title={recovery.to_name || "-"}
                         >
+                          <ArrowDown size={10} className="shrink-0 text-muted-foreground/40" />
                           {recovery.to_name || "-"}
                         </span>
                       </div>

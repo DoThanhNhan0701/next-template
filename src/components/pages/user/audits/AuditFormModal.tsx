@@ -325,7 +325,7 @@ export default function AuditFormModal({
                                     variant="secondary"
                                     className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap"
                                   >
-                                    {unit?.name}
+                                    {unit?.name} - ({unit?.code})
                                     <span
                                       role="button"
                                       onClick={(e) => {

@@ -27,6 +27,7 @@ export interface IAuditSession {
     status_obj: IStatus;
     creator_id: number;
     assignee: IUser;
+    creator: IUser;
     unit_obj: IAuditUnitObj | null;
     location_obj: IAuditLocationObj | null;
     submitted_at: string | null;
