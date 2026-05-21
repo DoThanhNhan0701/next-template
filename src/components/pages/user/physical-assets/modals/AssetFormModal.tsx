@@ -485,6 +485,55 @@ export default function AssetFormModal({
                 </FieldGroup>
               </div>
 
+              {/* Section: Description & Notes */}
+              <div className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold text-primary border-b pb-1">
+                  {t("modals.sections.description")}
+                </h3>
+                <FieldGroup className="flex flex-col gap-3">
+                  <Controller
+                    name="specifications"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1">
+                        <FieldLabel>
+                          {t("modals.fields.specifications")}
+                        </FieldLabel>
+                        <Textarea
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder={t(
+                            "modals.fields.placeholder_specifications",
+                          )}
+                          className="min-h-[100px]"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="notes"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1">
+                        <FieldLabel>{t("modals.fields.notes")}</FieldLabel>
+                        <Textarea
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder={t("modals.fields.placeholder_notes")}
+                          className="min-h-[100px]"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+              </div>
+
               {/* Section: Tracking & Management */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
@@ -849,55 +898,6 @@ export default function AssetFormModal({
                             ))}
                           </SelectContent>
                         </Select>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                </FieldGroup>
-              </div>
-
-              {/* Section: Description & Notes */}
-              <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-semibold text-primary border-b pb-1">
-                  {t("modals.sections.description")}
-                </h3>
-                <FieldGroup className="flex flex-col gap-3">
-                  <Controller
-                    name="specifications"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>
-                          {t("modals.fields.specifications")}
-                        </FieldLabel>
-                        <Textarea
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder={t(
-                            "modals.fields.placeholder_specifications",
-                          )}
-                          className="min-h-[100px]"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="notes"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field className="gap-1">
-                        <FieldLabel>{t("modals.fields.notes")}</FieldLabel>
-                        <Textarea
-                          {...field}
-                          value={field.value ?? ""}
-                          placeholder={t("modals.fields.placeholder_notes")}
-                          className="min-h-[100px]"
-                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

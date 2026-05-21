@@ -1272,9 +1272,9 @@
       "cloned_count": "Cloned count: {count}",
       "sections": {
         "general": "1. General information",
-        "tracking": "2. Tracking & management",
-        "purchase": "3. Purchase & acquisition",
-        "description": "4. Description & notes"
+        "tracking": "3. Tracking & management",
+        "purchase": "4. Purchase & acquisition",
+        "description": "2. Description & notes"
       },
       "fields": {
         "management_method": "Management method",

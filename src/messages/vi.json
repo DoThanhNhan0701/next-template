@@ -1274,9 +1274,9 @@
       "cloned_count": "Số lượng nhân bản: {count}",
       "sections": {
         "general": "1. Thông tin chung",
-        "tracking": "2. Theo dõi & quản lý",
-        "purchase": "3. Mua sắm & tiếp nhận",
-        "description": "4. Mô tả & ghi chú"
+        "tracking": "3. Theo dõi & quản lý",
+        "purchase": "4. Mua sắm & tiếp nhận",
+        "description": "2. Mô tả & ghi chú"
       },
       "fields": {
         "management_method": "Phương thức quản lý",
