@@ -37,7 +37,43 @@
     "suppliers": "Suppliers",
     "customers": "Customers",
     "offices": "Offices",
-    "approval_workflows": "Approval workflows"
+    "approval_workflows": "Approval workflows",
+    "activity_logs": "Activity logs"
+  },
+  "page_activity_logs": {
+    "title": "Activity logs",
+    "description": "View system activity logs",
+    "all_models": "All models",
+    "model_user": "User",
+    "model_staff": "Staff",
+    "model_office": "Office",
+    "model_asset_category": "Asset category",
+    "model_unit": "Unit",
+    "no_logs_found": "No activity logs found",
+    "no_logs_description": "There are no activity logs matching the current filter.",
+    "table": {
+      "no": "No",
+      "action": "Action",
+      "target_model": "Target model",
+      "target_id": "Target ID",
+      "actor": "Actor",
+      "timestamp": "Timestamp",
+      "details": "Details",
+      "actions": "Actions"
+    },
+    "details_modal": {
+      "title": "Activity Log Details",
+      "action": "Action",
+      "actor": "Actor",
+      "time": "Time",
+      "ip_address": "IP Address",
+      "target": "Target",
+      "no_changes": "No changes were recorded.",
+      "field": "Field",
+      "old_value": "Old Value",
+      "new_value": "New Value",
+      "close": "Close"
+    }
   },
   "page_users": {
     "title": "Users",

@@ -57,6 +57,7 @@ export const endpoints = getEndPoint("api/v1", {
   LIQUIDATIONS: "liquidations",
   OFFICES: "offices",
   IMPORTANCES: "asset-classifications/importances",
+  LOGS: "logs",
 });
 
 export const dynamicEndpoints = {

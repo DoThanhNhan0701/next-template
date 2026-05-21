@@ -13,6 +13,7 @@ import {
   Grid,
   MapPin,
   MousePointerClick,
+  ScrollText,
   Shield,
   Store,
   Users,
@@ -55,6 +56,11 @@ export default function AdminLayout({
       title: t("approval_workflows"),
       url: "/admin/workflow-templates",
       icon: GitBranch,
+    },
+    {
+      title: t("activity_logs"),
+      url: "/admin/activity-logs",
+      icon: ScrollText,
     },
   ];
 

@@ -37,7 +37,43 @@
     "suppliers": "Nhà cung cấp",
     "customers": "Khách hàng",
     "offices": "Văn phòng",
-    "approval_workflows": "Quy trình phê duyệt"
+    "approval_workflows": "Quy trình phê duyệt",
+    "activity_logs": "Nhật ký hoạt động"
+  },
+  "page_activity_logs": {
+    "title": "Nhật ký hoạt động",
+    "description": "Xem nhật ký hoạt động hệ thống",
+    "all_models": "Tất cả đối tượng",
+    "model_user": "Người dùng",
+    "model_staff": "Nhân viên",
+    "model_office": "Văn phòng",
+    "model_asset_category": "Loại tài sản",
+    "model_unit": "Đơn vị",
+    "no_logs_found": "Không tìm thấy nhật ký hoạt động",
+    "no_logs_description": "Không có nhật ký hoạt động phù hợp với bộ lọc hiện tại.",
+    "table": {
+      "no": "STT",
+      "action": "Hành động",
+      "target_model": "Đối tượng",
+      "target_id": "Mã đối tượng",
+      "actor": "Người thực hiện",
+      "timestamp": "Thời gian",
+      "details": "Chi tiết",
+      "actions": "Hành động"
+    },
+    "details_modal": {
+      "title": "Chi tiết nhật ký hoạt động",
+      "action": "Hành động",
+      "actor": "Người thực hiện",
+      "time": "Thời gian",
+      "ip_address": "Địa chỉ IP",
+      "target": "Đối tượng",
+      "no_changes": "Không có thay đổi nào được ghi lại.",
+      "field": "Trường dữ liệu",
+      "old_value": "Giá trị cũ",
+      "new_value": "Giá trị mới",
+      "close": "Đóng"
+    }
   },
   "page_users": {
     "title": "Người dùng",
