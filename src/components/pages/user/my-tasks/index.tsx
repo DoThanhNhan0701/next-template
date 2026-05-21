@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { RootState } from "@/redux";
 import { updateCount } from "@/redux/slices/task";
 import { IAuditSession } from "@/types/audit";
 import { ITask } from "@/types/task";
@@ -14,6 +15,7 @@ import MyTasksTable from "./components/MyTasksTable";
 import { SummarySection } from "./components/SummarySection";
 
 export default function MyTasksPage() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const { response: pendingTasks } = useGet<ITask[]>({
     url: `${endpoints.WORKFLOW_TASKS}me?status=PENDING`,
   });
@@ -41,7 +43,14 @@ export default function MyTasksPage() {
     return allAudits.filter((a) => {
       if (status === "PENDING") {
         return (
-          a.status_obj?.code === "PENDING" || a.status_obj?.code === "COMPLETED"
+          a.status_obj?.code === "PENDING" ||
+          (a.status_obj?.code === "COMPLETED" && a.assignee_id !== user?.id)
+        );
+      }
+      if (status === "APPROVED") {
+        return (
+          a.status_obj?.code === "APPROVED" ||
+          (a.status_obj?.code === "COMPLETED" && a.assignee_id === user?.id)
         );
       }
       return a.status_obj?.code === status;

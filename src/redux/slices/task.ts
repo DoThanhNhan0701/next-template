@@ -35,7 +35,7 @@ const getAuditData = (url: string): Promise<AxiosResponse<IAuditSession[]>> => {
   return inFlightRequests[url] as Promise<AxiosResponse<IAuditSession[]>>;
 };
 
-const getAuditCountByStatus = async (status: string): Promise<number> => {
+const getAuditCountByStatus = async (status: string, userId?: number): Promise<number> => {
   const [myAuditsRes, pendingAuditsRes] = await Promise.all([
     getAuditData(endpoints.AUDIT_MY_AUDITS),
     getAuditData(endpoints.AUDIT_PENDING_APPROVAL),
@@ -52,7 +52,18 @@ const getAuditCountByStatus = async (status: string): Promise<number> => {
   const audits = Array.from(uniqueMap.values());
 
   return audits.filter((a) => {
-    if (status === 'PENDING') return a.status_obj?.code === 'PENDING' || a.status_obj?.code === 'COMPLETED';
+    if (status === 'PENDING') {
+      return (
+        a.status_obj?.code === 'PENDING' ||
+        (a.status_obj?.code === 'COMPLETED' && a.assignee_id !== userId)
+      );
+    }
+    if (status === 'APPROVED') {
+      return (
+        a.status_obj?.code === 'APPROVED' ||
+        (a.status_obj?.code === 'COMPLETED' && a.assignee_id === userId)
+      );
+    }
     return a.status_obj?.code === status;
   }).length;
 };
@@ -61,9 +72,11 @@ export const actionFetchPendingCount = createAsyncThunk(
   'task/fetchPendingCount',
   async (_, thunkApi) => {
     try {
+      const { auth } = thunkApi.getState() as { auth: { user: { id: number } | null } };
+      const userId = auth.user?.id;
       const [workflowRes, auditCount] = await Promise.all([
         getTaskCountByStatus('PENDING'),
-        getAuditCountByStatus('PENDING'),
+        getAuditCountByStatus('PENDING', userId),
       ]);
       return (workflowRes.data.length || 0) + auditCount;
     } catch (error) {
@@ -78,6 +91,8 @@ export const actionFetchTaskCounts = createAsyncThunk(
   'task/fetchCounts',
   async (_, thunkApi) => {
     try {
+      const { auth } = thunkApi.getState() as { auth: { user: { id: number } | null } };
+      const userId = auth.user?.id;
       const [
         pending, approved, rejected,
         pendingAudit, approvedAudit, rejectedAudit
@@ -85,9 +100,9 @@ export const actionFetchTaskCounts = createAsyncThunk(
         getTaskCountByStatus('PENDING'),
         getTaskCountByStatus('APPROVED'),
         getTaskCountByStatus('REJECTED'),
-        getAuditCountByStatus('PENDING'),
-        getAuditCountByStatus('APPROVED'),
-        getAuditCountByStatus('REJECTED'),
+        getAuditCountByStatus('PENDING', userId),
+        getAuditCountByStatus('APPROVED', userId),
+        getAuditCountByStatus('REJECTED', userId),
       ]);
 
       return {

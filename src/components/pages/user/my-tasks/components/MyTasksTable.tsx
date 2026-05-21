@@ -4,6 +4,8 @@ import { useCallback, useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux";
 
 import {
   Check,
@@ -62,6 +64,7 @@ export default function MyTasksTable() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [activeTab, setActiveTab] = useState<TaskStatus>(
     (searchParams.get("tab") as TaskStatus) || "PENDING",
   );
@@ -145,12 +148,18 @@ export default function MyTasksTable() {
       if (activeTab === "PENDING") {
         return (
           audit.status_obj.code === "PENDING" ||
-          audit.status_obj.code === "COMPLETED"
+          (audit.status_obj.code === "COMPLETED" && audit.assignee_id !== user?.id)
+        );
+      }
+      if (activeTab === "APPROVED") {
+        return (
+          audit.status_obj.code === "APPROVED" ||
+          (audit.status_obj.code === "COMPLETED" && audit.assignee_id === user?.id)
         );
       }
       return audit.status_obj.code === activeTab;
     });
-  }, [allAuditsCombined, activeTab]);
+  }, [allAuditsCombined, activeTab, user?.id]);
 
   const mappedAudits: ITask[] = useMemo(() => {
     return filteredAudits.map((audit) => ({

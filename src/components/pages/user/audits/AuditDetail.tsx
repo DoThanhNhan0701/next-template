@@ -134,6 +134,12 @@ export default function AuditDetail({ id }: Props) {
           getApiSuccessMessage(response);
           setIsAuditCompleteModalOpen(false);
           sessionReFetch();
+
+          if (!activeTask?.id) {
+            dispatch(
+              updateCount({ status: "PENDING", count: counts.PENDING - 1 }),
+            );
+          }
         },
         onError: (error) => {
           getApiErrorMessage(error);
@@ -267,29 +273,29 @@ export default function AuditDetail({ id }: Props) {
 
           {((activeTask && session.submitted_at) ||
             (session?.status_obj?.code === "COMPLETED" && isSuperAdmin)) && (
-              <>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => setIsAuditApproveModalOpen(true)}
-                  disabled={mutatePending}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-                >
-                  <Check size={14} />
-                  {tMyTasks("detail.approval_form.approve")}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsAuditRejectModalOpen(true)}
-                  disabled={mutatePending}
-                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-                >
-                  <X size={14} />
-                  {tMyTasks("detail.approval_form.reject")}
-                </Button>
-              </>
-            )}
+            <>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsAuditApproveModalOpen(true)}
+                disabled={mutatePending}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+              >
+                <Check size={14} />
+                {tMyTasks("detail.approval_form.approve")}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAuditRejectModalOpen(true)}
+                disabled={mutatePending}
+                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+              >
+                <X size={14} />
+                {tMyTasks("detail.approval_form.reject")}
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

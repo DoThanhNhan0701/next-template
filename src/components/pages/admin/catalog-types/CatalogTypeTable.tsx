@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
 import { EditIcon, Tag } from "lucide-react";
+import { toast } from "sonner";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import {
@@ -38,7 +39,10 @@ import {
 } from "@/components/ui/table";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
+import { useMutation } from "@/hooks/useMutation";
 import { ICatalogType } from "@/types/catalog-type";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 import CatalogTypeFormModal from "./CatalogTypeFormModal";
 
@@ -71,6 +75,81 @@ export default function CatalogTypeTable() {
     useState<ICatalogType | null>(null);
   const [catalogTypeToDelete, setCatalogTypeToDelete] =
     useState<ICatalogType | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const { mutate: importExcel, pending: importPending } = useMutation();
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      const response = await axiosInstance.get(
+        "/api/v1/catalog-types/export/excel",
+        {
+          responseType: "blob",
+        },
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `catalog_types_export_${new Date().getTime()}.xlsx`,
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      getApiErrorMessage(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    if (!extension || !["xls", "xlsx"].includes(extension)) {
+      toast.error(
+        "Format file không hợp lệ. Chỉ chấp nhận các định dạng: xls, xlsx",
+      );
+      e.target.value = "";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    await importExcel(
+      {
+        url: "/api/v1/catalog-types/import/excel",
+        method: "post",
+        body: formData,
+        config: {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      },
+      {
+        onSuccess: (res) => {
+          const typedRes = res as { message?: string } | undefined;
+          toast.success(typedRes?.message || "Nhập dữ liệu thành công");
+          reFetch();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
+      },
+    );
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleSuccess = (responseData?: unknown, method?: string) => {
     if (responseData && method === "patch") {
@@ -122,7 +201,34 @@ export default function CatalogTypeTable() {
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => setIsCreating(true)}>{t("add_type")}</Button>
+        <div className="flex items-center gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImport}
+            accept=".xls,.xlsx"
+            className="hidden"
+          />
+          <Button
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={importPending}
+            className="gap-2"
+          >
+            {t("import_excel")}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="gap-2"
+          >
+            {t("export_excel")}
+          </Button>
+          <Button onClick={() => setIsCreating(true)} className="gap-2">
+            {t("add_type")}
+          </Button>
+        </div>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -173,7 +279,7 @@ export default function CatalogTypeTable() {
                   </TableCell>
                   <TableCell className="px-4 py-1.5">{type.name}</TableCell>
                   <TableCell className="px-4 py-1.5">
-                    {type.catalog_group_name || type.catalog_group?.name}
+                    {type?.description ?? ""}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
                     {type.is_active ? (
