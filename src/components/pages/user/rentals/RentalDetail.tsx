@@ -19,6 +19,7 @@ import {
   MapPin,
   Package,
   Phone,
+  User,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -189,6 +190,12 @@ export default function RentalDetail({ id }: Props) {
                   value={detail.contract_number || "—"}
                 />
                 <InfoItem
+                  icon={User}
+                  color="bg-emerald-500/10 text-emerald-500"
+                  label={t("detail.creator")}
+                  value={detail?.creator?.full_name ?? ""}
+                />
+                <InfoItem
                   icon={Calendar}
                   color="bg-emerald-500/10 text-emerald-500"
                   label={t("detail.lease_date")}
@@ -239,7 +246,6 @@ export default function RentalDetail({ id }: Props) {
                         {t("detail.view_link")}
                       </a>
                     }
-                    fullWidth
                   />
                 )}
                 {detail.notes && (

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserCircle } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -35,6 +36,7 @@ import {
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
+import { IUser } from "@/types/auth";
 import { IOffice } from "@/types/office";
 import { IStaff, IUnit } from "@/types/staff";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -56,12 +58,18 @@ export default function StaffFormModal({
   const isEditing = !!staffToEdit;
   const t = useTranslations("page_staff");
   const { mutate, pending } = useMutation();
+  const { mutate: createUser, pending: creatingUser } = useMutation();
   const { response: units = [] } = useGet<IUnit[]>({
     url: endpoints.ORG_UNITS,
   });
   const { response: offices = [] } = useGet<IOffice[]>({
     url: endpoints.OFFICES,
   });
+  const { response: userRes } = useGet<IUser[]>(
+    { url: endpoints.USERS },
+    { disabled: !isOpen },
+  );
+  const users = userRes || [];
 
   const schema = GetStaffSchema(t);
   const form = useForm({
@@ -74,6 +82,8 @@ export default function StaffFormModal({
       unit_id: "" as unknown as number,
       office_id: "" as unknown as number,
       is_active: true,
+      login_username: "",
+      user_id: null as unknown as number,
     },
   });
 
@@ -88,6 +98,8 @@ export default function StaffFormModal({
           unit_id: staffToEdit.unit_id,
           office_id: staffToEdit.office_id,
           is_active: staffToEdit.is_active,
+          login_username: staffToEdit.login_username || "",
+          user_id: null as unknown as number,
         });
       } else {
         form.reset({
@@ -98,6 +110,8 @@ export default function StaffFormModal({
           unit_id: "" as unknown as number,
           office_id: "" as unknown as number,
           is_active: true,
+          login_username: "",
+          user_id: null as unknown as number,
         });
       }
     }
@@ -108,7 +122,11 @@ export default function StaffFormModal({
       ? dynamicEndpoints.STAFF_DETAIL(staffToEdit.id)
       : endpoints.STAFFS;
     const method = isEditing ? "put" : "post";
-    const payload = { ...data };
+    const payload = {
+      ...data,
+      login_username: data.login_username?.trim() || null,
+      ...(data.user_id ? { user_id: data.user_id } : {}),
+    };
 
     await mutate(
       {
@@ -298,6 +316,101 @@ export default function StaffFormModal({
                 )}
               />
             </FieldGroup>
+
+            {/* Tài khoản hệ thống (Liên kết) */}
+            <div className="mt-4 pt-4 border-t border-dashed border-(--surface-border-color)">
+              <div className="flex items-center gap-2 mb-3">
+                <UserCircle size={18} className="text-muted-foreground" />
+                <span className="text-sm font-semibold text-foreground">
+                  {t("system_account_section")}
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <Controller
+                  name="login_username"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Field className="gap-1">
+                      <FieldLabel className="text-xs text-muted-foreground">
+                        {t("login_username_label")}
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        value={field.value || ""}
+                        placeholder="nphanh"
+                      />
+                    </Field>
+                  )}
+                />
+
+                <div className="flex items-center gap-2">
+                  <Controller
+                    name="user_id"
+                    control={form.control}
+                    render={({ field }) => (
+                      <Field className="gap-1 flex-1">
+                        <Select
+                          onValueChange={(val) =>
+                            field.onChange(val === "none" ? null : Number(val))
+                          }
+                          value={field.value?.toString() || ""}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={t("select_account_placeholder")}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">{t("no_link")}</SelectItem>
+                            {users.map((u) => (
+                              <SelectItem key={u.id} value={u.id.toString()}>
+                                {u.full_name} ({u.username})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="shrink-0"
+                    disabled={!isEditing || creatingUser}
+                    onClick={async () => {
+                      if (!isEditing) return;
+                      const username = form.getValues("login_username");
+                      if (!username) return;
+                      await createUser(
+                        {
+                          url: dynamicEndpoints.STAFF_CREATE_USER(
+                            staffToEdit.id,
+                          ),
+                          method: "post",
+                          body: { username },
+                        },
+                        {
+                          onSuccess: (res) => {
+                            getApiSuccessMessage(res);
+                            onSuccess(res, "put");
+                          },
+                          onError: (err) => {
+                            getApiErrorMessage(err);
+                          },
+                        },
+                      );
+                    }}
+                  >
+                    {creatingUser ? t("saving") : t("create_account")}
+                  </Button>
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                  {t("account_link_hint")}
+                </p>
+              </div>
+            </div>
           </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">

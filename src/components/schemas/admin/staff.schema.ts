@@ -15,4 +15,6 @@ export const GetStaffSchema = (t: TFunction) =>
     unit_id: z.coerce.number().min(1, t("validation.field_required")),
     office_id: z.coerce.number().min(1, t("validation.field_required")),
     is_active: z.boolean(),
+    login_username: z.string().optional().nullable(),
+    user_id: z.coerce.number().optional().nullable(),
   });

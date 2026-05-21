@@ -24,4 +24,5 @@ export interface IStaff {
   created_at: string;
   unit?: IUnit;
   office?: IOffice;
+  login_username: string | null
 }

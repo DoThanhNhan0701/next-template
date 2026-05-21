@@ -108,7 +108,7 @@ export default function StaffTable() {
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (!extension || !["xls", "xlsx"].includes(extension)) {
       toast.error(
-        "Format file không hợp lệ. Chỉ chấp nhận các định dạng: xls, xlsx",
+        t("invalid_file_format"),
       );
       e.target.value = "";
       return;
@@ -131,7 +131,7 @@ export default function StaffTable() {
       {
         onSuccess: (res) => {
           const typedRes = res as { message?: string } | undefined;
-          toast.success(typedRes?.message || "Nhập dữ liệu thành công");
+          toast.success(typedRes?.message || t("import_success"));
           reFetch();
         },
         onError: (err) => {
@@ -248,6 +248,9 @@ export default function StaffTable() {
                 {t("email")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
+                {t("account")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-[15%]">
                 {t("unit")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-[15%]">
@@ -287,6 +290,20 @@ export default function StaffTable() {
                     {staff.full_name}
                   </TableCell>
                   <TableCell className="px-4 py-1.5">{staff.email}</TableCell>
+                  <TableCell className="px-4 py-1.5">
+                    {staff.login_username ? (
+                      <div className="flex flex-col">
+                        <p>{staff.login_username ?? ""}</p>
+                        <span className="text-green-600 text-xs">
+                          {t("linked")}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-red-600 text-xs">
+                        {t("not_linked")}
+                      </span>
+                    )}
+                  </TableCell>
                   <TableCell className="px-4 py-1.5">
                     {staff.unit?.name || "-"}
                   </TableCell>

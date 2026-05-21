@@ -111,6 +111,8 @@
     "placeholder_username": "e.g. nguyen.van.a",
     "placeholder_full_name": "e.g. Nguyễn Văn A",
     "placeholder_email": "e.g. nguyen.van.a@example.com",
+    "staff_code_short": "Mã NV",
+    "not_linked": "Chưa liên kết",
     "validation": {
       "field_required": "Trường này là bắt buộc!",
       "invalid_email": "Email không hợp lệ",
@@ -166,6 +168,17 @@
     "cancel": "Hủy",
     "save": "Lưu",
     "saving": "Đang lưu...",
+    "account": "Tài khoản",
+    "linked": "Đã liên kết",
+    "not_linked": "Chưa liên kết",
+    "invalid_file_format": "Format file không hợp lệ. Chỉ chấp nhận các định dạng: xls, xlsx",
+    "import_success": "Nhập dữ liệu thành công",
+    "system_account_section": "Tài khoản hệ thống (Liên kết)",
+    "login_username_label": "Tên đăng nhập hệ thống (Dùng để tạo mới tài khoản)",
+    "select_account_placeholder": "-- Chọn tài khoản có sẵn để liên kết --",
+    "no_link": "-- Không liên kết --",
+    "create_account": "Tạo mới TK",
+    "account_link_hint": "Chọn tài khoản có sẵn để liên kết, hoặc bấm Lưu Thay đổi để áp dụng. Bạn cũng có thể bấm 'Tạo mới TK' để tự động sinh tài khoản cho nhân viên này.",
     "validation": {
       "field_required": "Trường này là bắt buộc!",
       "invalid_email": "Email không hợp lệ"
@@ -1372,7 +1385,8 @@
       "identifier": "Mã định danh",
       "contract_number": "Số hợp đồng",
       "view_link": "Xem liên kết",
-      "by": "Bởi"
+      "by": "Bởi",
+      "creator": "Người tạo"
     },
     "form": {
       "create_title": "Tạo phiếu thuê tài sản",

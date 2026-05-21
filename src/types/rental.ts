@@ -1,3 +1,4 @@
+import { IUser } from "./auth";
 import { IPhysicalAsset } from "./physical-asset";
 
 export interface IRentalDetail {
@@ -45,6 +46,7 @@ export interface IRentalFull {
   external_link: string;
   attachments: string[];
   status_id: number;
+  creator: IUser
   status_obj: {
     id: number;
     category: string;

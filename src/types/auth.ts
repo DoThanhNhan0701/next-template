@@ -24,5 +24,6 @@ export interface IUser {
 	team_leader_id: number | null;
 	is_active: boolean;
 	role_obj?: IRoleObj;
+	staff_code?: string | null
 	permissions?: string[];
 }

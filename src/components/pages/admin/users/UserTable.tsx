@@ -155,6 +155,9 @@ export default function UserTable() {
                 {t("email")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
+                {t("staff_code_short")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
                 {t("role")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
@@ -191,6 +194,17 @@ export default function UserTable() {
                     {user.full_name}
                   </TableCell>
                   <TableCell className="px-4 py-1.5">{user.email}</TableCell>
+                  <TableCell className="px-4 py-1.5 text-center">
+                    {user.staff_code ? (
+                      <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">
+                        {user.staff_code}
+                      </span>
+                    ) : (
+                      <span className="text-red-600 text-xs">
+                        {t("not_linked")}
+                      </span>
+                    )}
+                  </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
                     <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">
                       {user.role_obj?.name || user.role}

@@ -83,6 +83,7 @@ export const dynamicEndpoints = {
   RENTAL_DETAIL: (id: number) => `/api/v1/rentals/${id}`,
   RENTAL_RETURN: (id: number) => `/api/v1/rentals/${id}/return`,
   STAFF_DETAIL: (id: number) => `/api/v1/staffs/${id}`,
+  STAFF_CREATE_USER: (id: number) => `/api/v1/staffs/${id}/create-user`,
   TRANSFER_DETAIL: (id: number) => `/api/v1/transfers/${id}`,
   TRANSFER_ATTACHMENTS: (id: number) => `/api/v1/transfers/${id}/attachments`,
   WORKFLOW_TASK_COMPLETE: (id: number) => `/api/v1/workflows/tasks/${id}/complete`,
