@@ -2,14 +2,16 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+import { SelectField } from "@/components/common/SelectField";
 import {
   GetOrgUnitSchema,
   IOrgUnitFormValues,
 } from "@/components/schemas/admin/org-unit.schema";
-import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -280,25 +282,18 @@ export default function OrgUnitFormModal({
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>{t("parent_unit")}</FieldLabel>
-                    <Select
-                      onValueChange={(val) =>
+                    <SelectField
+                      disabled={isParentDisabled}
+                      options={(availableParentUnits ?? []).map((unit) => ({
+                        label: `${unit.name} (${unit.code})`,
+                        value: unit.id,
+                      }))}
+                      value={field.value}
+                      onChange={(val: string | number) =>
                         field.onChange(val === "none" ? null : Number(val))
                       }
-                      value={field.value?.toString() || ""}
-                      disabled={isParentDisabled}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("select_parent")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">{t("none_root")}</SelectItem>
-                        {availableParentUnits.map((unit) => (
-                          <SelectItem key={unit.id} value={unit.id.toString()}>
-                            {unit.displayName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder={t("select_parent")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -312,24 +307,18 @@ export default function OrgUnitFormModal({
                 render={({ field, fieldState }) => (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>{t("leader")}</FieldLabel>
-                    <Select
-                      onValueChange={(val) =>
+                    <SelectField
+                      disabled={isParentDisabled}
+                      options={(users ?? []).map((u) => ({
+                        label: `${u.full_name} (${u.username})`,
+                        value: u.id,
+                      }))}
+                      value={field.value}
+                      onChange={(val: string | number) =>
                         field.onChange(val === "none" ? null : Number(val))
                       }
-                      value={field.value?.toString() || ""}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("select_leader")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">{t("none")}</SelectItem>
-                        {users.map((u) => (
-                          <SelectItem key={u.id} value={u.id.toString()}>
-                            {u.full_name} ({u.username})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder={t("select_leader")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

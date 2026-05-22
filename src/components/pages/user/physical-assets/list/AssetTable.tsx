@@ -8,14 +8,13 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Calendar,
-  Filter,
   Laptop,
   RotateCcw,
   Search,
-  Tag,
   X,
 } from "lucide-react";
 
+import { SelectField } from "@/components/common/SelectField";
 import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
@@ -24,13 +23,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -152,107 +144,54 @@ export default function AssetTable() {
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Select
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 min-w-0 flex-1">
+          <SelectField
+            className="w-full min-w-0"
+            options={(orgUnits ?? [])
+              .filter((c) => c.is_active)
+              .map((c) => ({
+                label: `${c.name} (${c.code})`,
+                value: c.id.toString(),
+              }))}
             value={unitId}
-            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Building2
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.organization")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("filters.none")}
-              </SelectItem>
-              {orgUnits.map((o) => (
-                <SelectItem key={o.id} value={o.id.toString()}>
-                  {o.name} - ({o.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setUnitId(val)}
+            placeholder={t("filters.organization")}
+          />
 
-          <Select
+          <SelectField
+            className="w-full min-w-0"
+            options={(categories ?? [])
+              .filter((c) => c.is_active)
+              .map((c) => ({
+                label: `${c.name} (${c.code})`,
+                value: c.id.toString(),
+              }))}
             value={categoryId}
-            onValueChange={(val) => setCategoryId(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Tag size={16} className="text-muted-foreground/70 shrink-0" />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.category")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("filters.none")}
-              </SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c.id} value={c.id.toString()}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setCategoryId(val)}
+            placeholder={t("filters.category")}
+          />
 
-          <Select
+          <SelectField
+            className="w-full min-w-0"
+            options={(statuses ?? []).map((c) => ({
+              label: `${c.name} (${c.code})`,
+              value: c.id.toString(),
+            }))}
             value={statusCode}
-            onValueChange={(val) => setStatusCode(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Filter
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.status")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("filters.none")}
-              </SelectItem>
-              {statuses.map((s) => (
-                <SelectItem key={s.id} value={s.code}>
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setStatusCode(val)}
+            placeholder={t("filters.status")}
+          />
 
-          <Select
+          <SelectField
+            className="w-full min-w-0"
+            options={[
+              { label: t("table.by_code"), value: "unique" },
+              { label: t("table.by_quantity"), value: "bulk" },
+            ]}
             value={managementType}
-            onValueChange={(val) =>
-              setManagementType(val === "none" ? "" : val)
-            }
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Tag size={16} className="text-muted-foreground/70 shrink-0" />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.management_type")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("filters.none")}
-              </SelectItem>
-              <SelectItem value="unique">{t("table.by_code")}</SelectItem>
-              <SelectItem value="bulk">{t("table.by_quantity")}</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(val) => setManagementType(val as "unique" | "bulk")}
+            placeholder={t("filters.management_type")}
+          />
         </div>
 
         <div className="flex items-center gap-2">

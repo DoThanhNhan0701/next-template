@@ -2,11 +2,13 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import { z } from "zod";
 
+import { SelectField } from "@/components/common/SelectField";
 import { GetUserSchema } from "@/components/schemas/admin/user.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,13 +26,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
@@ -127,9 +122,11 @@ export default function UserFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[680px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle>{isEditing ? t("edit_user") : t("add_user")}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? t("edit_user") : t("add_user")}
+          </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
             {isEditing
               ? t("update_profile_permissions")
@@ -149,7 +146,11 @@ export default function UserFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("username")}</FieldLabel>
-                    <Input {...field} disabled={isEditing} placeholder={t("placeholder_username")} />
+                    <Input
+                      {...field}
+                      disabled={isEditing}
+                      placeholder={t("placeholder_username")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -163,7 +164,10 @@ export default function UserFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("full_name")}</FieldLabel>
-                    <Input {...field} placeholder={t("placeholder_full_name")} />
+                    <Input
+                      {...field}
+                      placeholder={t("placeholder_full_name")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -177,7 +181,11 @@ export default function UserFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("email")}</FieldLabel>
-                    <Input {...field} type="email" placeholder={t("placeholder_email")} />
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder={t("placeholder_email")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -192,26 +200,17 @@ export default function UserFormModal({
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className="gap-1">
                       <FieldLabel>{t("role")}</FieldLabel>
-                      <Select
-                        onValueChange={(val) => field.onChange(Number(val))}
-                        value={field.value?.toString() || ""}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={t("select_role")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roles
-                            ?.filter((role) => role.is_active)
-                            .map((role) => (
-                              <SelectItem
-                                key={role.id}
-                                value={role.id.toString()}
-                              >
-                                {role.name}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                      <SelectField
+                        options={(roles ?? [])
+                          .filter((role) => role.is_active)
+                          .map((role) => ({
+                            label: role.name,
+                            value: role.id,
+                          }))}
+                        value={field.value as number}
+                        onChange={(val) => field.onChange(Number(val))}
+                        placeholder={t("select_role")}
+                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}

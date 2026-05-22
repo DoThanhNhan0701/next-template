@@ -10,17 +10,11 @@ import {
 } from "react-hook-form";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { SelectField } from "@/components/common/SelectField";
 import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
@@ -75,24 +69,17 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>{t("location")}</FieldLabel>
-              <Select
-                onValueChange={(val) => {
-                  field.onChange(Number(val));
-                  form.setValue(`items.${index}.asset_id`, 0);
-                }}
-                value={field.value ? field.value.toString() : ""}
-              >
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder={t("placeholder_location")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations.map((loc) => (
-                    <SelectItem key={loc.id} value={loc.id.toString()}>
-                      {loc.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+              <SelectField
+                options={(locations ?? []).map((a) => ({
+                  label: `${a.name} - (${a.code})`,
+                  value: a.id,
+                }))}
+                value={field.value as number}
+                onChange={(val) => field.onChange(Number(val))}
+                placeholder={t("placeholder_location")}
+              />
+
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}
@@ -104,29 +91,18 @@ function AssetListItem({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>{t("asset")}</FieldLabel>
-              <Select
-                onValueChange={(val) => field.onChange(Number(val))}
-                value={field.value ? field.value.toString() : ""}
+
+              <SelectField
+                options={(assets ?? []).map((a) => ({
+                  label: `${a.name} - (${a.asset_code}) Quantity: ${a?.current_stock ?? 0}`,
+                  value: a.id,
+                }))}
+                value={field.value as number}
+                onChange={(val) => field.onChange(Number(val))}
+                placeholder={t("placeholder_asset")}
                 disabled={!selectedLocationId || assetsPending}
-              >
-                <SelectTrigger className="bg-white">
-                  <SelectValue
-                    placeholder={
-                      assetsPending
-                        ? t("loading_assets")
-                        : t("placeholder_asset")
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {assets.map((a) => (
-                    <SelectItem key={a.id} value={a.id.toString()}>
-                      {a.name} ({a.asset_code}) Quantity:{" "}
-                      {a?.current_stock ?? 0}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
+
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}

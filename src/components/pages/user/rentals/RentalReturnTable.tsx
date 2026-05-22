@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import {
   Calendar,
   ClipboardList,
-  Filter,
   Mail,
   MapPin,
   RotateCcw,
@@ -17,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 
+import { SelectField } from "@/components/common/SelectField";
 import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
@@ -25,13 +25,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -116,67 +109,50 @@ export default function RentalReturnTable() {
         </div>
 
         {/* Filters Group */}
-        <div className="flex flex-wrap items-center gap-2">
-          <Select
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 min-w-0 flex-1">
+          <SelectField
+            className="w-full min-w-0"
+            options={(statuses ?? []).map((c) => ({
+              label: `${c.name}`,
+              value: c.id.toString(),
+            }))}
             value={statusCode}
-            onValueChange={(val) => setStatusCode(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Filter
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("all_statuses")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {tRentals("none")}
-              </SelectItem>
-              {statuses.map((s) => (
-                <SelectItem key={s.id} value={s.code}>
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            onChange={(val) => setStatusCode(val)}
+            placeholder={t("all_statuses")}
+          />
 
-        {/* Action Group */}
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => {
-              setSkip(0);
-              setAppliedFilters({
-                q,
-                status_code: statusCode,
-              });
-            }}
-            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {pending ? tRentals("btn_searching") : tRentals("btn_search")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                setSkip(0);
+                setAppliedFilters({
+                  q,
+                  status_code: statusCode,
+                });
+              }}
+              className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
+            >
+              {pending ? tRentals("btn_searching") : tRentals("btn_search")}
+            </Button>
 
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setStatusCode("");
-              setAppliedFilters({
-                q: "",
-                status_code: "",
-              });
-              setSkip(0);
-            }}
-            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setQ("");
+                setStatusCode("");
+                setAppliedFilters({
+                  q: "",
+                  status_code: "",
+                });
+                setSkip(0);
+              }}
+              className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+              title="Clear all filters"
+            >
+              <RotateCcw size={16} className="text-muted-foreground/70" />
+            </Button>
+          </div>
         </div>
       </div>
 

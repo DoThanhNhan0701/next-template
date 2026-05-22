@@ -1,10 +1,13 @@
 "use client";
 
+import { useMemo } from "react";
+
 import { useTranslations } from "next-intl";
 
 import { MapPin, User } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
+import { SelectField } from "@/components/common/SelectField";
 import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import {
   Field,
@@ -12,13 +15,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
@@ -37,6 +33,20 @@ export function SourceInfoSection({
   watchedType,
 }: SourceInfoSectionProps) {
   const t = useTranslations("page_transfers");
+
+  const options = useMemo(() => {
+    if (watchedType === "holder") {
+      return staffs.map((s) => ({
+        label: `${s.full_name} - (${s.staff_code})`,
+        value: s.id,
+      }));
+    }
+    return locations.map((l) => ({
+      label: `${l.name} - (${l.code})`,
+      value: l.id,
+    }));
+  }, [watchedType, staffs, locations]);
+
   return (
     <div className="flex flex-col gap-3 mb-3">
       <h3 className="text-sm font-semibold text-primary tracking-tight">
@@ -66,14 +76,18 @@ export function SourceInfoSection({
                     className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
                   >
                     <User className="w-4 h-4" />
-                    <span className="text-xs font-medium">{t("form.personnel")}</span>
+                    <span className="text-xs font-medium">
+                      {t("form.personnel")}
+                    </span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="location"
                     className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm"
                   >
                     <MapPin className="w-4 h-4" />
-                    <span className="text-xs font-medium">{t("form.location")}</span>
+                    <span className="text-xs font-medium">
+                      {t("form.location")}
+                    </span>
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -91,40 +105,17 @@ export function SourceInfoSection({
                   ? t("form.select_source_personnel")
                   : t("form.select_source_location")}
               </FieldLabel>
-              <Select
-                onValueChange={(val) => {
-                  field.onChange(val === "none" ? 0 : Number(val));
+
+              <SelectField
+                options={options}
+                value={field.value as number}
+                onChange={(val) => {
+                  field.onChange(Number(val));
                   form.setValue("details", [{ asset_id: 0, quantity: 1 }]);
                 }}
-                value={field.value ? field.value.toString() : ""}
-              >
-                <SelectTrigger className="h-12 bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                  <SelectValue placeholder={t("form.select_source_entity")} />
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  <SelectItem value="none" className="text-muted-foreground italic">
-                    {t("filters.none")}
-                  </SelectItem>
-                  {watchedType === "holder" &&
-                    staffs.map((s) => (
-                      <SelectItem
-                        key={`source-staff-${s.id}`}
-                        value={s.id.toString()}
-                      >
-                        {s.full_name} - ({s.staff_code})
-                      </SelectItem>
-                    ))}
-                  {watchedType === "location" &&
-                    locations.map((l) => (
-                      <SelectItem
-                        key={`source-loc-${l.id}`}
-                        value={l.id.toString()}
-                      >
-                        {l.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+                placeholder={t("form.select_source_entity")}
+              />
+
               <FieldError errors={[fieldState.error]} />
             </Field>
           )}

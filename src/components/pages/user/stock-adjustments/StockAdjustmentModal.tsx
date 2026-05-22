@@ -289,7 +289,9 @@ export default function StockAdjustmentModal({
                       append({
                         asset_id: 0,
                         location_id: 0,
-                        adjustment_type: "INCREASE",
+                        adjustment_type: defaultType.toUpperCase() as
+                          | "INCREASE"
+                          | "DECREASE",
                         quantity_diff: 1,
                         notes: "",
                       })

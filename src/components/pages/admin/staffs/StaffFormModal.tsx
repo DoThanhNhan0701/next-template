@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useTranslations } from "next-intl";
 
@@ -9,6 +9,7 @@ import { UserCircle } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { SelectField } from "@/components/common/SelectField";
 import { GetStaffSchema } from "@/components/schemas/admin/staff.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,13 +27,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
@@ -69,7 +63,7 @@ export default function StaffFormModal({
     { url: endpoints.USERS },
     { disabled: !isOpen },
   );
-  const users = userRes || [];
+  const users = useMemo(() => userRes || [], [userRes]);
 
   const schema = GetStaffSchema(t);
   const form = useForm({
@@ -99,7 +93,9 @@ export default function StaffFormModal({
           office_id: staffToEdit.office_id,
           is_active: staffToEdit.is_active,
           login_username: staffToEdit.login_username || "",
-          user_id: null as unknown as number,
+          user_id:
+            users.find((user) => user.username === staffToEdit.login_username)
+              ?.id || null,
         });
       } else {
         form.reset({
@@ -115,7 +111,7 @@ export default function StaffFormModal({
         });
       }
     }
-  }, [isOpen, staffToEdit, form]);
+  }, [isOpen, staffToEdit, form, users]);
 
   const onSubmit = async (data: z.infer<ReturnType<typeof GetStaffSchema>>) => {
     const url = isEditing
@@ -149,7 +145,7 @@ export default function StaffFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[680px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing ? t("edit_staff") : t("add_staff")}
@@ -241,26 +237,17 @@ export default function StaffFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("organization")}</FieldLabel>
-                    <Select
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={field.value?.toString() || ""}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("select_organization")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {units
-                          ?.filter((unit) => unit.is_active)
-                          .map((unit) => (
-                            <SelectItem
-                              key={unit.id}
-                              value={unit.id.toString()}
-                            >
-                              {unit.name} ({unit.code})
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+                    <SelectField
+                      options={(units ?? [])
+                        .filter((unit) => unit.is_active)
+                        .map((unit) => ({
+                          label: `${unit.name} (${unit.code})`,
+                          value: unit.id,
+                        }))}
+                      value={field.value as number}
+                      onChange={(val) => field.onChange(Number(val))}
+                      placeholder={t("select_organization")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -274,23 +261,17 @@ export default function StaffFormModal({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-1">
                     <FieldLabel>{t("office")}</FieldLabel>
-                    <Select
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={field.value?.toString() || ""}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("select_office")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {offices
-                          ?.filter((off) => off.is_active)
-                          .map((off) => (
-                            <SelectItem key={off.id} value={off.id.toString()}>
-                              {off.name} ({off.code})
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+                    <SelectField
+                      options={(offices ?? [])
+                        .filter((office) => office.is_active)
+                        .map((office) => ({
+                          label: `${office.name} (${office.code})`,
+                          value: office.id,
+                        }))}
+                      value={field.value as number}
+                      onChange={(val) => field.onChange(Number(val))}
+                      placeholder={t("select_office")}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -350,26 +331,17 @@ export default function StaffFormModal({
                     control={form.control}
                     render={({ field }) => (
                       <Field className="gap-1 flex-1">
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : Number(val))
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t("select_account_placeholder")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">{t("no_link")}</SelectItem>
-                            {users.map((u) => (
-                              <SelectItem key={u.id} value={u.id.toString()}>
-                                {u.full_name} ({u.username})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <SelectField
+                          options={(users ?? [])
+                            .filter((user) => user.is_active)
+                            .map((user) => ({
+                              label: `${user.username} (${user.full_name})`,
+                              value: user.id,
+                            }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t("select_account_placeholder")}
+                        />
                       </Field>
                     )}
                   />

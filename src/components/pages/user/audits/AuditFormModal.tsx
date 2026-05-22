@@ -1,26 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useTranslations } from "next-intl";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Building2,
-  Check,
-  ChevronsUpDown,
-  MapPin,
-  Search,
-  X,
-} from "lucide-react";
+import { Building2, MapPin } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
+import { SelectField } from "@/components/common/SelectField";
 import { AuditCreateSchema } from "@/components/schemas/user/audit.schema";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,24 +24,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
@@ -79,11 +60,6 @@ export default function AuditFormModal({
   const t = useTranslations("page_audits");
   const tC = useTranslations("Common");
 
-  const [unitDropdownOpen, setUnitDropdownOpen] = useState(false);
-  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [unitSearch, setUnitSearch] = useState("");
-  const [locationSearch, setLocationSearch] = useState("");
-
   const { response: locRes } = useGet<ILocation[]>(
     { url: endpoints.LOCATIONS },
     { disabled: !isOpen },
@@ -105,13 +81,6 @@ export default function AuditFormModal({
   const locations = locRes || [];
   const orgUnits = orgRes || [];
   const users = userRes || [];
-
-  const filteredUnits = orgUnits.filter((u: IOrgUnit) =>
-    u.name.toLowerCase().includes(unitSearch.toLowerCase()),
-  );
-  const filteredLocations = locations.filter((l: ILocation) =>
-    l.name.toLowerCase().includes(locationSearch.toLowerCase()),
-  );
 
   const form = useForm<AuditFormValues>({
     resolver: zodResolver(AuditCreateSchema),
@@ -150,26 +119,6 @@ export default function AuditFormModal({
       });
     }
   }, [isOpen, form, activeAuditTemplate]);
-
-  const toggleUnit = (id: number) => {
-    const current = form.getValues("unit_ids") || [];
-    form.setValue(
-      "unit_ids",
-      current.includes(id)
-        ? current.filter((v: number) => v !== id)
-        : [...current, id],
-    );
-  };
-
-  const toggleLocation = (id: number) => {
-    const current = form.getValues("location_ids") || [];
-    form.setValue(
-      "location_ids",
-      current.includes(id)
-        ? current.filter((v: number) => v !== id)
-        : [...current, id],
-    );
-  };
 
   useEffect(() => {
     if (activeAuditTemplate?.steps?.length) {
@@ -302,100 +251,21 @@ export default function AuditFormModal({
                 {auditType === "unit" && (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>{t("filters.select_unit")}</FieldLabel>
-                    <DropdownMenu
-                      open={unitDropdownOpen}
-                      onOpenChange={setUnitDropdownOpen}
-                    >
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className="w-full px-3 py-2 flex items-center justify-between gap-2 bg-background rounded-md border border-muted-foreground/20 shadow-sm hover:border-primary/50 transition-colors text-left"
-                        >
-                          <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
-                            {selectedUnitIds.length === 0 ? (
-                              <span className="text-sm text-muted-foreground">
-                                {t("filters.select_unit")}
-                              </span>
-                            ) : (
-                              selectedUnitIds.map((id: number) => {
-                                const unit = orgUnits.find((u) => u.id === id);
-                                return (
-                                  <Badge
-                                    key={id}
-                                    variant="secondary"
-                                    className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap"
-                                  >
-                                    {unit?.name} - ({unit?.code})
-                                    <span
-                                      role="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleUnit(id);
-                                      }}
-                                      className="ml-0.5 hover:text-destructive cursor-pointer"
-                                    >
-                                      <X size={10} />
-                                    </span>
-                                  </Badge>
-                                );
-                              })
-                            )}
-                          </div>
-                          <ChevronsUpDown
-                            size={16}
-                            className="text-muted-foreground shrink-0"
-                          />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-[--radix-popper-anchor-width] min-w-[--radix-popper-anchor-width] p-0"
-                        align="start"
-                      >
-                        <div className="p-2 border-b bg-muted/20">
-                          <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              placeholder={t("filters.search_unit")}
-                              value={unitSearch}
-                              onChange={(e) => setUnitSearch(e.target.value)}
-                              className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
-                            />
-                          </div>
-                        </div>
-                        <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
-                          {filteredUnits.length === 0 ? (
-                            <div className="py-6 text-center text-xs text-muted-foreground">
-                              {t("filters.no_unit_found")}
-                            </div>
-                          ) : (
-                            filteredUnits.map((u) => (
-                              <div
-                                key={u.id}
-                                className={`
-                                  flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
-                                  hover:bg-accent hover:text-accent-foreground
-                                  ${selectedUnitIds.includes(u.id) ? "bg-accent/50" : ""}
-                                `}
-                                onClick={() => toggleUnit(u.id)}
-                              >
-                                <div className="p-1.5 rounded-md bg-primary/5 text-primary">
-                                  <Building2 size={14} />
-                                </div>
-                                <span className="flex-1 text-sm font-medium leading-none">
-                                  {u.name}
-                                </span>
-                                {selectedUnitIds.includes(u.id) && (
-                                  <Check
-                                    size={16}
-                                    className="text-primary animate-in zoom-in-50 duration-200"
-                                  />
-                                )}
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <SelectField
+                      multiple
+                      options={orgUnits.map((unit) => ({
+                        label: `${unit.name} - (${unit.code})`,
+                        value: unit.id,
+                      }))}
+                      value={selectedUnitIds}
+                      onChange={(nextVal) =>
+                        form.setValue("unit_ids", nextVal, {
+                          shouldValidate: true,
+                        })
+                      }
+                      placeholder={t("filters.select_unit")}
+                    />
+
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
@@ -410,106 +280,20 @@ export default function AuditFormModal({
                 {auditType === "location" && (
                   <Field className="col-span-2 gap-1">
                     <FieldLabel>{t("filters.select_location")}</FieldLabel>
-                    <DropdownMenu
-                      open={locationDropdownOpen}
-                      onOpenChange={setLocationDropdownOpen}
-                    >
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className="w-full px-3 py-2 flex items-center justify-between gap-2 bg-background rounded-md border border-muted-foreground/20 shadow-sm hover:border-primary/50 transition-colors text-left"
-                        >
-                          <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
-                            {selectedLocationIds.length === 0 ? (
-                              <span className="text-sm text-muted-foreground">
-                                {t("filters.select_location")}
-                              </span>
-                            ) : (
-                              selectedLocationIds.map((id) => {
-                                const loc = locations.find((l) => l.id === id);
-                                return (
-                                  <Badge
-                                    key={id}
-                                    variant="secondary"
-                                    className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap"
-                                  >
-                                    {loc?.name}
-                                    <span
-                                      role="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleLocation(id);
-                                      }}
-                                      className="ml-0.5 hover:text-destructive cursor-pointer"
-                                    >
-                                      <X size={10} />
-                                    </span>
-                                  </Badge>
-                                );
-                              })
-                            )}
-                          </div>
-                          <ChevronsUpDown
-                            size={16}
-                            className="text-muted-foreground shrink-0"
-                          />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        className="w-[--radix-popper-anchor-width] min-w-[--radix-popper-anchor-width] p-0"
-                        align="start"
-                      >
-                        <div className="p-2 border-b bg-muted/20">
-                          <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              placeholder={t("filters.search_location")}
-                              value={locationSearch}
-                              onChange={(e) =>
-                                setLocationSearch(e.target.value)
-                              }
-                              className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
-                            />
-                          </div>
-                        </div>
-                        <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
-                          {filteredLocations.length === 0 ? (
-                            <div className="py-6 text-center text-xs text-muted-foreground">
-                              {t("filters.no_location_found")}
-                            </div>
-                          ) : (
-                            filteredLocations.map((l) => (
-                              <div
-                                key={l.id}
-                                className={`
-                                  flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
-                                  hover:bg-accent hover:text-accent-foreground
-                                  ${
-                                    selectedLocationIds.includes(l.id)
-                                      ? "bg-accent/50"
-                                      : ""
-                                  }
-                                `}
-                                onClick={() => toggleLocation(l.id)}
-                              >
-                                <div className="p-1.5 rounded-md bg-primary/5 text-primary">
-                                  <MapPin size={14} />
-                                </div>
-                                <span className="flex-1 text-sm font-medium leading-none">
-                                  {l.name}
-                                </span>
-                                {selectedLocationIds.includes(l.id) && (
-                                  <Check
-                                    size={16}
-                                    className="text-primary animate-in zoom-in-50 duration-200"
-                                  />
-                                )}
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <SelectField
+                      multiple
+                      options={locations.map((loc) => ({
+                        label: `${loc.name} - (${loc.code})`,
+                        value: loc.id,
+                      }))}
+                      value={selectedLocationIds}
+                      onChange={(nextVal) =>
+                        form.setValue("location_ids", nextVal, {
+                          shouldValidate: true,
+                        })
+                      }
+                      placeholder={t("filters.select_location")}
+                    />
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
@@ -537,31 +321,16 @@ export default function AuditFormModal({
                           {t("table.assignment_leader")}
                         </span>
                       </div>
-                      <Select
-                        value={field.value?.toString() || ""}
-                        onValueChange={(val) =>
-                          field.onChange(val === "none" ? null : Number(val))
-                        }
-                      >
-                        <SelectTrigger className="bg-background rounded-md border-muted-foreground/20 shadow-sm">
-                          <SelectValue
-                            placeholder={t("form.placeholder_assignee")}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem
-                            value="none"
-                            className="text-muted-foreground italic"
-                          >
-                            {t("form.none")}
-                          </SelectItem>
-                          {users.map((u) => (
-                            <SelectItem key={u.id} value={u.id.toString()}>
-                              {u.full_name} ({u.username})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <SelectField
+                        options={(users ?? []).map((a) => ({
+                          label: `${a.full_name} - (${a.username})`,
+                          value: a.id,
+                        }))}
+                        value={field.value as number}
+                        onChange={(val) => field.onChange(Number(val))}
+                        placeholder={t("form.placeholder_assignee")}
+                      />
+
                       <FieldError errors={[fieldState.error]} />
                     </Field>
                   )}

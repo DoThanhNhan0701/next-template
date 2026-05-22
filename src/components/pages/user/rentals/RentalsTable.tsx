@@ -6,17 +6,16 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
-  Building2,
   Calendar,
   ClipboardList,
   RotateCcw,
   Search,
   User,
-  Users,
   X,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { SelectField } from "@/components/common/SelectField";
 import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
@@ -25,13 +24,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -109,7 +101,7 @@ export default function RentalsTable() {
   const rentals = response?.items || [];
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 backdrop-blur-md rounded-md transition-all hover:border-border/80">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-2 backdrop-blur-md rounded-md transition-all hover:border-border/80">
         {/* Search Group */}
         <div className="relative flex-1 min-w-0">
           <Search
@@ -135,98 +127,71 @@ export default function RentalsTable() {
           )}
         </div>
 
-        {/* Filters Group */}
-        <div className="flex flex-wrap items-center gap-2">
-          <Select
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 min-w-0 flex-1">
+          <SelectField
+            className="w-full min-w-0"
+            options={(orgUnits ?? [])
+              .filter((c) => c.is_active)
+              .map((c) => ({
+                label: `${c.name} (${c.code})`,
+                value: c.id.toString(),
+              }))}
             value={unitId}
-            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Building2
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("organization")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("none")}
-              </SelectItem>
-              {orgUnits.map((o) => (
-                <SelectItem key={o.id} value={o.id.toString()}>
-                  {o.name} - ({o.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setUnitId(val)}
+            placeholder={t("organization")}
+          />
 
-          <Select
+          <SelectField
+            className="w-full min-w-0"
+            options={(customers ?? [])
+              .filter((c) => c.is_active)
+              .map((c) => ({
+                label: c.name,
+                value: c.id.toString(),
+              }))}
             value={customerId}
-            onValueChange={(val) => setCustomerId(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Users
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("all_customers")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("none")}
-              </SelectItem>
-              {customers?.map((c) => (
-                <SelectItem key={c.id} value={c.id.toString()}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setUnitId(val)}
+            placeholder={t("all_customers")}
+          />
+
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                setSkip(0);
+                setAppliedFilters({
+                  q,
+                  unit_id: unitId,
+                  customer_id: customerId,
+                });
+              }}
+              className="lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95 w-max"
+            >
+              {pending ? t("btn_searching") : t("btn_search")}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setQ("");
+                setUnitId("");
+                setCustomerId("");
+                setAppliedFilters({
+                  q: "",
+                  unit_id: "",
+                  customer_id: "",
+                });
+                setSkip(0);
+              }}
+              className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+              title="Clear all filters"
+            >
+              <RotateCcw size={16} className="text-muted-foreground/70" />
+            </Button>
+          </div>
         </div>
 
-        {/* Action Group */}
         <div className="flex items-center gap-2">
-          <Button
-            onClick={() => {
-              setSkip(0);
-              setAppliedFilters({
-                q,
-                unit_id: unitId,
-                customer_id: customerId,
-              });
-            }}
-            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {pending ? t("btn_searching") : t("btn_search")}
-          </Button>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setUnitId("");
-              setCustomerId("");
-              setAppliedFilters({
-                q: "",
-                unit_id: "",
-                customer_id: "",
-              });
-              setSkip(0);
-            }}
-            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
           <Button
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"

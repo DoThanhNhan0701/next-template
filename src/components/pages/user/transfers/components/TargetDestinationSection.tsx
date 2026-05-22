@@ -2,21 +2,14 @@
 
 import { useTranslations } from "next-intl";
 
-import { MapPin } from "lucide-react";
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import { SelectField } from "@/components/common/SelectField";
 import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ILocation } from "@/types/location";
 import { IStaff } from "@/types/staff";
@@ -50,27 +43,16 @@ export function TargetDestinationSection({
               render={({ field, fieldState }) => (
                 <Field className="gap-1">
                   <FieldLabel>{t("form.select_specific_personnel")}</FieldLabel>
-                  <Select
-                    onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
-                    value={field.value ? field.value.toString() : ""}
-                  >
-                    <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                      <SelectValue placeholder={t("form.select_specific_personnel")} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      <SelectItem value="none" className="text-muted-foreground italic">
-                        {t("filters.none")}
-                      </SelectItem>
-                      {staffs.map((s) => (
-                        <SelectItem
-                          key={`target-staff-${s.id}`}
-                          value={s.id.toString()}
-                        >
-                          {s.full_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SelectField
+                    options={(staffs ?? []).map((a) => ({
+                      label: `${a.full_name} - (${a?.staff_code ?? ""})`,
+                      value: a.id,
+                    }))}
+                    value={field.value as number}
+                    onChange={(val) => field.onChange(Number(val))}
+                    placeholder={t("form.select_specific_personnel")}
+                  />
+
                   <FieldError errors={[fieldState.error]} />
                 </Field>
               )}
@@ -85,40 +67,23 @@ export function TargetDestinationSection({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field className="gap-1">
-                  <FieldLabel>
-                    {t("form.select_target_location")}
-                  </FieldLabel>
-                  <Select
-                    onValueChange={(val) => field.onChange(val === "none" ? null : Number(val))}
-                    value={field.value ? field.value.toString() : ""}
-                  >
-                    <SelectTrigger className="bg-white rounded-md border-muted-foreground/20 shadow-sm">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <SelectValue placeholder={t("form.select_target_location")} />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      <SelectItem value="none" className="text-muted-foreground italic">
-                        {t("filters.none")}
-                      </SelectItem>
-                      {locations.map((l) => (
-                        <SelectItem
-                          key={`target-location-entity-${l.id}`}
-                          value={l.id.toString()}
-                        >
-                          {l.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FieldLabel>{t("form.select_target_location")}</FieldLabel>
+                  <SelectField
+                    options={(locations ?? []).map((a) => ({
+                      label: `${a.name} - (${a.code})`,
+                      value: a.id,
+                    }))}
+                    value={field.value as number}
+                    onChange={(val) => field.onChange(Number(val))}
+                    placeholder={t("form.select_target_location")}
+                  />
+
                   <FieldError errors={[fieldState.error]} />
                 </Field>
               )}
             />
           </div>
         )}
-
       </div>
 
       <div className="grid grid-cols-3 gap-3">

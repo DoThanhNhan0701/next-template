@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { PlusIcon, RefreshCcw, Trash } from "lucide-react";
+import { RefreshCcw, Trash } from "lucide-react";
 import {
   Controller,
   FieldArrayWithId,
@@ -13,20 +13,10 @@ import {
 } from "react-hook-form";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { SelectField } from "@/components/common/SelectField";
 import { TransferFormValues } from "@/components/schemas/user/transfer.schema";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { IPhysicalAsset } from "@/types/physical-asset";
 
 interface AssetSelectionSectionProps {
@@ -89,7 +79,7 @@ export function AssetSelectionSection({
             className="h-7 text-xs"
             onClick={() => append({ asset_id: 0, quantity: 1 })}
           >
-            <PlusIcon size={12} className="mr-1" /> {t("form.add_asset")}
+            {t("form.add_asset")}
           </Button>
         </div>
       </div>
@@ -115,53 +105,25 @@ export function AssetSelectionSection({
                     return (
                       <Field className="gap-1 min-w-0">
                         <FieldLabel>{t("form.select_asset")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            detailField.onChange(
-                              val === "none" ? 0 : Number(val),
-                            )
-                          }
-                          value={
-                            detailField.value
-                              ? detailField.value.toString()
-                              : ""
-                          }
+
+                        <SelectField
+                          options={(filteredAssets ?? []).map((a) => ({
+                            label: `${a.name} (${a.asset_code}) Quantity: ${
+                              watchedType === "holder"
+                                ? (a?.holding_qty ?? 0)
+                                : (a?.current_stock ?? 0)
+                            }`,
+                            value: a.id.toString(),
+                          }))}
+                          value={detailField.value?.toString()}
+                          onChange={(val) => detailField.onChange(Number(val))}
+                          placeholder={t("form.select_asset")}
                           disabled={
                             assetsPending ||
                             (!assetsPending && assets.length === 0)
                           }
-                        >
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={
-                                assetsPending
-                                  ? t("form.loading")
-                                  : assets.length === 0
-                                    ? t("form.no_assets")
-                                    : t("form.select_asset")
-                              }
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("filters.none")}
-                            </SelectItem>
-                            {filteredAssets.map((a) => (
-                              <SelectItem
-                                key={`asset-${a.id}`}
-                                value={a.id.toString()}
-                              >
-                                {a.name} ({a.asset_code}) {t("form.quantity")}:{" "}
-                                {watchedType === "holder"
-                                  ? (a?.holding_qty ?? 0)
-                                  : (a?.current_stock ?? 0)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        />
+
                         <FieldError errors={[fieldState.error]} />
                       </Field>
                     );

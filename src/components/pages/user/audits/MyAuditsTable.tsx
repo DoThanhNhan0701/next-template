@@ -7,7 +7,6 @@ import {
   Building2,
   Calendar,
   ClipboardList,
-  Filter,
   MapPin,
   RotateCcw,
   Search,
@@ -15,6 +14,8 @@ import {
   X,
 } from "lucide-react";
 
+import { SelectField } from "@/components/common/SelectField";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -22,14 +23,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TablePagination } from "@/components/common/TablePagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -75,7 +68,7 @@ export default function MyAuditsTable() {
   const audits = !auditType
     ? allAudits
     : allAudits.filter((audit) => audit.audit_type === auditType);
-const handleSearch = () => {
+  const handleSearch = () => {
     setQ(searchInput);
     setAuditType(auditTypeInput);
     setSkip(0);
@@ -111,27 +104,16 @@ const handleSearch = () => {
 
         {/* Filter Group */}
         <div className="flex flex-wrap items-center gap-2">
-          <Select
+          <SelectField
+            className="min-w-[200px]"
             value={auditTypeInput}
-            onValueChange={(val) => setAuditTypeInput(val === "all" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-35 max-w-45 w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Filter
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.all_types")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("filters.all_types")}</SelectItem>
-              <SelectItem value="unit">{t("filters.organization")}</SelectItem>
-              <SelectItem value="location">{t("filters.location")}</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(val) => setAuditTypeInput(val)}
+            placeholder={t("filters.all_types")}
+            options={[
+              { label: t("filters.organization"), value: "unit" },
+              { label: t("filters.location"), value: "location" },
+            ]}
+          />
         </div>
 
         {/* Action Group */}
@@ -264,7 +246,10 @@ const handleSearch = () => {
                   </TableCell>
                   <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
                     <div className="flex items-center gap-2 overflow-hidden">
-                      <User size={12} className="text-muted-foreground shrink-0" />
+                      <User
+                        size={12}
+                        className="text-muted-foreground shrink-0"
+                      />
                       <span className="text-sm font-medium text-foreground/80 truncate block">
                         {audit.assignee?.full_name || "—"}
                       </span>
@@ -308,8 +293,8 @@ const handleSearch = () => {
         total={
           Array.isArray(response)
             ? undefined
-            : (response as { total?: number; count?: number })?.total ??
-              (response as { total?: number; count?: number })?.count
+            : ((response as { total?: number; count?: number })?.total ??
+              (response as { total?: number; count?: number })?.count)
         }
         pending={pending}
         onPageChange={setSkip}

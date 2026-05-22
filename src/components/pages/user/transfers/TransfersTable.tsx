@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 
 import {
   ArrowDown,
-  Building2,
   Calendar,
   FileText,
   RotateCcw,
@@ -15,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 
+import { SelectField } from "@/components/common/SelectField";
 import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
@@ -22,13 +22,6 @@ import {
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -115,68 +108,55 @@ export default function TransfersTable() {
         </div>
 
         {/* Filters Group */}
-        <div className="flex flex-wrap items-center gap-2">
-          <Select
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 min-w-0 flex-1">
+          <SelectField
+            className="w-full min-w-0"
+            options={(orgUnits ?? [])
+              .filter((c) => c.is_active)
+              .map((c) => ({
+                label: `${c.name} (${c.code})`,
+                value: c.id.toString(),
+              }))}
             value={unitId}
-            onValueChange={(val) => setUnitId(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-[140px] max-w-[220px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <Building2
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.all_units")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("filters.none")}
-              </SelectItem>
-              {orgUnits.map((o) => (
-                <SelectItem key={o.id} value={o.id.toString()}>
-                  {o.name} - ({o.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setUnitId(val)}
+            placeholder={t("filters.all_units")}
+          />
+
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                setSkip(0);
+                setAppliedFilters({
+                  q,
+                  unit_id: unitId,
+                });
+              }}
+              className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
+            >
+              {pending ? t("filters.searching") : t("filters.search")}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setQ("");
+                setUnitId("");
+                setAppliedFilters({
+                  q: "",
+                  unit_id: "",
+                });
+                setSkip(0);
+              }}
+              className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+              title={t("filters.clear_all")}
+            >
+              <RotateCcw size={16} className="text-muted-foreground/70" />
+            </Button>
+          </div>
         </div>
 
-        {/* Action Group */}
         <div className="flex items-center gap-2">
-          <Button
-            onClick={() => {
-              setSkip(0);
-              setAppliedFilters({
-                q,
-                unit_id: unitId,
-              });
-            }}
-            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {pending ? t("filters.searching") : t("filters.search")}
-          </Button>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setUnitId("");
-              setAppliedFilters({
-                q: "",
-                unit_id: "",
-              });
-              setSkip(0);
-            }}
-            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title={t("filters.clear_all")}
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
-
           <Button
             onClick={() => setIsCreating(true)}
             className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"

@@ -12,6 +12,7 @@ import { z } from "zod";
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
+import { SelectField } from "@/components/common/SelectField";
 import { AllocationCreateSchema } from "@/components/schemas/user/allocation.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,13 +30,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
@@ -247,31 +241,17 @@ export default function AllocationVoucherModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>{t("form.organization")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? 0 : Number(val))
-                          }
-                          value={field.value ? field.value.toString() : ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t("form.placeholder_unit")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("form.none")}
-                            </SelectItem>
-                            {orgUnits.map((o) => (
-                              <SelectItem key={o.id} value={o.id.toString()}>
-                                {o.name} ({o.code})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <SelectField
+                          options={(orgUnits || []).map((l) => ({
+                            label: `${l.name} - (${l.code})`,
+                            value: l.id,
+                          }))}
+                          value={field.value as number}
+                          onChange={(val) => {
+                            field.onChange(Number(val));
+                          }}
+                          placeholder={t("form.placeholder_unit")}
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -285,47 +265,26 @@ export default function AllocationVoucherModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>{t("form.recipient_staff")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : Number(val))
-                          }
-                          value={
-                            field.value !== null && field.value !== undefined
-                              ? field.value.toString()
-                              : ""
-                          }
+                        <SelectField
+                          options={(watchedUnitId && Number(watchedUnitId) !== 0
+                            ? staffs.filter(
+                                (s) => s.unit_id === Number(watchedUnitId),
+                              )
+                            : []
+                          ).map((l) => ({
+                            label: `${l.full_name} - (${l?.staff_code ?? ""})`,
+                            value: l.id,
+                          }))}
+                          value={field.value as number}
+                          onChange={(val) => {
+                            field.onChange(Number(val));
+                          }}
+                          placeholder={t("form.placeholder_staff")}
                           disabled={
                             !watchedUnitId || Number(watchedUnitId) === 0
                           }
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={
-                                !watchedUnitId || Number(watchedUnitId) === 0
-                                  ? t("form.placeholder_unit_first")
-                                  : t("form.placeholder_staff")
-                              }
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("form.none")}
-                            </SelectItem>
-                            {(watchedUnitId && Number(watchedUnitId) !== 0
-                              ? staffs.filter(
-                                  (s) => s.unit_id === Number(watchedUnitId),
-                                )
-                              : []
-                            ).map((s) => (
-                              <SelectItem key={s.id} value={s.id.toString()}>
-                                {s.full_name} ({s.staff_code})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

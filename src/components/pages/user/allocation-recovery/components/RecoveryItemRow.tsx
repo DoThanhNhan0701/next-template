@@ -9,16 +9,10 @@ import { Control, Controller, UseFormSetValue } from "react-hook-form";
 import { z } from "zod";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { SelectField } from "@/components/common/SelectField";
 import { RecoveryCreateSchema } from "@/components/schemas/user/recovery.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILocation } from "@/types/location";
@@ -91,81 +85,42 @@ export function RecoveryItemRow({
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
             <FieldLabel>{t("form.asset")}</FieldLabel>
-            <Select
-              onValueChange={(val) => {
-                const aid = val === "none" ? 0 : Number(val);
-                field.onChange(aid);
-                if (aid !== 0) {
-                  const selectedAsset = assets.find((a) => a.id === aid);
-                  if (selectedAsset?.location_id) {
-                    setValue(
-                      `items.${index}.location_id`,
-                      selectedAsset.location_id,
-                    );
-                  }
-                }
-              }}
-              value={field.value ? field.value.toString() : ""}
+            <SelectField
+              options={(assets ?? []).map((a) => ({
+                label: `${a.name} - (${a.asset_code}) Quantity: ${a?.holding_qty ?? 0}`,
+                value: a.id,
+              }))}
+              value={field.value as number}
+              onChange={(val) => field.onChange(Number(val))}
+              placeholder={t("form.placeholder_asset")}
               disabled={!unitId}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={
-                    !unitId
-                      ? t("form.placeholder_unit_first")
-                      : assetsPending
-                        ? t("form.placeholder_loading")
-                        : t("form.placeholder_asset")
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none" className="text-muted-foreground italic">
-                  {t("form.none")}
-                </SelectItem>
-                {assets.map((a: IPhysicalAsset) => (
-                  <SelectItem key={a.id} value={a.id.toString()}>
-                    {a.name} ({a.asset_code}) {t("form.quantity_label")} {a?.holding_qty ?? 0}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            />
+
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}
       />
 
-      {/* Recovering Locations */}
       <Controller
         name={`items.${index}.location_id`}
         control={control}
         render={({ field, fieldState }) => (
           <Field className="gap-1 flex-1">
             <FieldLabel>{t("form.location")}</FieldLabel>
-            <Select
-              onValueChange={(val) => field.onChange(val === "none" ? 0 : Number(val))}
-              value={field.value ? field.value.toString() : ""}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("form.placeholder_location")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none" className="text-muted-foreground italic">
-                  {t("form.none")}
-                </SelectItem>
-                {locations.map((loc) => (
-                  <SelectItem key={loc.id} value={loc.id.toString()}>
-                    {loc.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SelectField
+              options={(locations ?? []).map((a) => ({
+                label: `${a.name} - (${a.code})`,
+                value: a.id,
+              }))}
+              value={field.value as number}
+              onChange={(val) => field.onChange(Number(val))}
+              placeholder={t("form.placeholder_location")}
+            />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}
       />
 
-      {/* Quantity */}
       <Controller
         name={`items.${index}.quantity`}
         control={control}

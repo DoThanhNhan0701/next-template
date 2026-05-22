@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { SelectField } from "@/components/common/SelectField";
 import { RentalCreateSchema } from "@/components/schemas/user/rental.schema";
 import {
   Field,
@@ -15,13 +16,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ICustomer } from "@/types/customer";
 import { IOrgUnit } from "@/types/org";
@@ -78,29 +72,20 @@ export function GeneralInfoSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>{t("form.organization")}</FieldLabel>
-              <Select
-                onValueChange={(val) =>
-                  field.onChange(val === "none" ? 0 : Number(val))
-                }
-                value={field.value ? field.value.toString() : ""}
-              >
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder={t("form.placeholder_org")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    value="none"
-                    className="text-muted-foreground italic"
-                  >
-                    {t("form.none")}
-                  </SelectItem>
-                  {orgUnits.map((o) => (
-                    <SelectItem key={o.id} value={o.id.toString()}>
-                      {o.name} - ({o.code})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+              <SelectField
+                className="w-full min-w-0"
+                options={(orgUnits ?? [])
+                  .filter((c) => c.is_active)
+                  .map((c) => ({
+                    label: `${c.name} (${c.code})`,
+                    value: c.id,
+                  }))}
+                value={field.value as number}
+                onChange={(val) => field.onChange(Number(val))}
+                placeholder={t("form.placeholder_org")}
+              />
+
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -111,29 +96,19 @@ export function GeneralInfoSection({
           render={({ field, fieldState }) => (
             <Field className="gap-1">
               <FieldLabel>{t("form.customer")}</FieldLabel>
-              <Select
-                onValueChange={(val) =>
-                  field.onChange(val === "none" ? 0 : Number(val))
-                }
-                value={field.value ? field.value.toString() : ""}
-              >
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder={t("form.placeholder_customer")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    value="none"
-                    className="text-muted-foreground italic"
-                  >
-                    {t("form.none")}
-                  </SelectItem>
-                  {customers?.map((c) => (
-                    <SelectItem key={c.id} value={c.id.toString()}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SelectField
+                className="w-full min-w-0"
+                options={(customers ?? [])
+                  .filter((c) => c.is_active)
+                  .map((c) => ({
+                    label: c.name,
+                    value: c.id,
+                  }))}
+                value={field.value as number}
+                onChange={(val) => field.onChange(Number(val))}
+                placeholder={t("form.placeholder_customer")}
+              />
+
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

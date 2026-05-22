@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 
+import { SelectField } from "@/components/common/SelectField";
 import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
@@ -24,13 +25,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -132,35 +126,19 @@ export default function InventoryTable() {
         </div>
 
         {/* Filters Group */}
-        <div className="flex flex-wrap items-center gap-3">
-          <Select
+        <div className="flex flex-wrap items-center gap-3 min-w-0">
+          <SelectField
+            className="min-w-[220px] max-w-[260px] w-full sm:w-auto"
+            options={(locations ?? []).map((c) => ({
+              label: `${c.name} (${c.code})`,
+              value: c.id.toString(),
+            }))}
             value={locationId}
-            onValueChange={(val) => setLocationId(val === "none" ? "" : val)}
-          >
-            <SelectTrigger className="min-w-[140px] max-w-[240px] w-full sm:w-fit h-10 bg-background/50 border-border/50 transition-all hover:bg-background/80">
-              <div className="flex items-center gap-2 overflow-hidden w-full text-left">
-                <MapPin
-                  size={16}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <div className="truncate flex-1 min-w-0">
-                  <SelectValue placeholder={t("filters.all_locations")} />
-                </div>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none" className="text-muted-foreground italic">
-                {t("filters.none")}
-              </SelectItem>
-              {locations.map((loc) => (
-                <SelectItem key={loc.id} value={loc.id.toString()}>
-                  {loc.name} - ({loc.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => setLocationId(val)}
+            placeholder={t("filters.all_locations")}
+          />
 
-          <div className="flex items-center space-x-2 bg-background/50 border border-border/50 h-9 px-3 rounded-md">
+          <div className="flex h-9 items-center space-x-2 bg-background/50 border px-3 rounded-md">
             <Checkbox
               id="show-zero"
               checked={showZero}

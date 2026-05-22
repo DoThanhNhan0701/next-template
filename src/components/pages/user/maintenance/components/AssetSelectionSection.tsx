@@ -14,6 +14,7 @@ import {
 } from "react-hook-form";
 
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { SelectField } from "@/components/common/SelectField";
 import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -514,41 +515,25 @@ export function AssetSelectionSection({
               <Controller
                 name={`items.${index}.return_to_location_id`}
                 control={form.control}
-                render={({ field: locField, fieldState }) => (
+                render={({ field, fieldState }) => (
                   <Field className="gap-1">
                     <FieldLabel>{t("return_location")}</FieldLabel>
                     <p className="text-[10px] text-muted-foreground/70 italic -mt-0.5 mb-1">
                       {t("return_location_hint")}
                     </p>
-                    <Select
-                      onValueChange={(val) =>
-                        locField.onChange(val === "none" ? null : Number(val))
-                      }
-                      value={
-                        locField.value ? locField.value.toString() : "none"
-                      }
-                    >
-                      <SelectTrigger className="bg-white rounded-md border-border/60 text-xs shadow-none">
-                        <SelectValue placeholder={t("return_location")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem
-                          value="none"
-                          className="text-muted-foreground italic text-xs"
-                        >
-                          {t("none_return")}
-                        </SelectItem>
-                        {locations.map((l) => (
-                          <SelectItem
-                            key={l.id}
-                            value={l.id.toString()}
-                            className="text-xs"
-                          >
-                            {l.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+
+                    <SelectField
+                      options={(locations ?? []).map((l) => ({
+                        label: `${l.name} - (${l.code})`,
+                        value: l.id,
+                      }))}
+                      value={field.value as number}
+                      onChange={(val) => {
+                        field.onChange(Number(val));
+                      }}
+                      placeholder={t("return_location")}
+                    />
+
                     <FieldError errors={[fieldState.error]} />
                   </Field>
                 )}

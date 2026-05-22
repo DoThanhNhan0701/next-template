@@ -12,6 +12,7 @@ import { z } from "zod";
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
+import { SelectField } from "@/components/common/SelectField";
 import { PhysicalAssetSchema } from "@/components/schemas/user/physical-asset.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,13 +30,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
@@ -394,33 +388,19 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-1">
                         <FieldLabel>{t("modals.fields.category")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t(
-                                "modals.fields.placeholder_category",
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {categories.map((c) => (
-                              <SelectItem key={c.id} value={c.id.toString()}>
-                                {c.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+
+                        <SelectField
+                          options={(categories ?? [])
+                            .filter((c) => c.is_active)
+                            .map((c) => ({
+                              label: `${c.name} (${c.code})`,
+                              value: c.id,
+                            }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t("modals.fields.placeholder_category")}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -546,31 +526,19 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
                         <FieldLabel>{t("modals.fields.unit")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t("modals.fields.placeholder_unit")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {orgUnits.map((o) => (
-                              <SelectItem key={o.id} value={o.id.toString()}>
-                                {o.name} - ({o.code})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+
+                        <SelectField
+                          options={(orgUnits ?? [])
+                            .filter((c) => c.is_active)
+                            .map((c) => ({
+                              label: `${c.name} (${c.code})`,
+                              value: c.id,
+                            }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t("modals.fields.placeholder_unit")}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -583,33 +551,21 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>{t("modals.fields.usage_mode")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t(
-                                "modals.fields.placeholder_usage_mode",
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {usageModes.map((m) => (
-                              <SelectItem key={m.id} value={m.id.toString()}>
-                                {m.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+
+                        <SelectField
+                          options={(usageModes ?? [])
+                            .filter((c) => c.is_active)
+                            .map((c) => ({
+                              label: `${c.name} (${c.code})`,
+                              value: c.id,
+                            }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t(
+                            "modals.fields.placeholder_usage_mode",
+                          )}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -622,42 +578,18 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>{t("modals.fields.importance")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t(
-                                "modals.fields.placeholder_importance",
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {importances.map((imp) => (
-                              <SelectItem
-                                key={imp.id}
-                                value={imp.id.toString()}
-                              >
-                                <div className="flex items-center gap-1.5">
-                                  <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: imp.color }}
-                                  />
-                                  {imp.name}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <SelectField
+                          options={(importances ?? []).map((c) => ({
+                            label: `${c.name} (${c.code})`,
+                            value: c.id,
+                          }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t(
+                            "modals.fields.placeholder_importance",
+                          )}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -670,34 +602,18 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1">
                         <FieldLabel>{t("modals.fields.location")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
+
+                        <SelectField
                           disabled={hasHolderValue || isEditing}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t(
-                                "modals.fields.placeholder_location",
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {locations.map((l) => (
-                              <SelectItem key={l.id} value={l.id.toString()}>
-                                {l.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          options={(locations ?? []).map((c) => ({
+                            label: `${c.name} (${c.code})`,
+                            value: c.id,
+                          }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t("modals.fields.placeholder_location")}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -710,39 +626,23 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-3">
                         <FieldLabel>{t("modals.fields.holder")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
+
+                        <SelectField
                           disabled={hasLocationValue || isEditing}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t(
-                                "modals.fields.placeholder_holder",
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {(watchedUnitId
-                              ? staffs.filter(
-                                  (s) => s.unit_id === Number(watchedUnitId),
-                                )
-                              : staffs
-                            ).map((s) => (
-                              <SelectItem key={s.id} value={s.id.toString()}>
-                                {s.full_name} ({s.staff_code})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          options={(watchedUnitId
+                            ? staffs.filter(
+                                (s) => s.unit_id === Number(watchedUnitId),
+                              )
+                            : staffs
+                          ).map((c) => ({
+                            label: `${c.full_name} (${c.staff_code})`,
+                            value: c.id,
+                          }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t("modals.fields.placeholder_location")}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}
@@ -871,33 +771,19 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field className="gap-1 col-span-2">
                         <FieldLabel>{t("modals.fields.supplier")}</FieldLabel>
-                        <Select
-                          onValueChange={(val) =>
-                            field.onChange(val === "none" ? null : val)
-                          }
-                          value={field.value?.toString() || ""}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue
-                              placeholder={t(
-                                "modals.fields.placeholder_supplier",
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="none"
-                              className="text-muted-foreground italic"
-                            >
-                              {t("modals.fields.none")}
-                            </SelectItem>
-                            {suppliers.map((s) => (
-                              <SelectItem key={s.id} value={s.id.toString()}>
-                                {s.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+
+                        <SelectField
+                          options={(suppliers ?? [])
+                            .filter((s) => s.is_active)
+                            .map((s) => ({
+                              label: `${s.name}`,
+                              value: s.id,
+                            }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(Number(val))}
+                          placeholder={t("modals.fields.placeholder_supplier")}
+                        />
+
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

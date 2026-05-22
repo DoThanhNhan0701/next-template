@@ -1,17 +1,20 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-import { ApproverSelect } from "@/components/common/ApproverSelect";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { cn } from "@/lib/utils";
 import { IUser } from "@/types/auth";
 import { ITemplateStep } from "@/types/template";
-import { cn } from "@/lib/utils";
+
+import { SelectField } from "./SelectField";
 
 interface ApprovalProcessSectionProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
@@ -31,13 +34,34 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
   steps,
   users,
   title = "3. Approval Process",
-  useApproverSelect = true,
-  showStepNumber = false,
-  triggerClassName,
   className,
   gridClassName,
   fallbackMessage,
 }: ApprovalProcessSectionProps<TFieldValues>) {
+  const availableUsers = useMemo(
+    () => users.filter((u) => u.is_active),
+    [users],
+  );
+
+  const getUserByStep = useCallback(
+    (step: ITemplateStep) => {
+      if (step.default_assignee_user_id) {
+        return availableUsers.filter(
+          (u) => u.id === step.default_assignee_user_id,
+        );
+      }
+
+      if (step.default_assignee_role_id) {
+        return availableUsers.filter(
+          (u) => u.role_id === step.default_assignee_role_id,
+        );
+      }
+
+      return availableUsers;
+    },
+    [availableUsers],
+  );
+
   if (steps.length === 0) {
     if (fallbackMessage) {
       return (
@@ -58,7 +82,9 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
       )}
 
       <div className="bg-muted/20 border rounded-md p-3 space-y-3">
-        <FieldGroup className={cn("grid grid-cols-1 sm:grid-cols-2 gap-3", gridClassName)}>
+        <FieldGroup
+          className={cn("grid grid-cols-1 sm:grid-cols-2 gap-3", gridClassName)}
+        >
           {steps.map((step, idx) => {
             const name = `approvals.step_${idx}` as Path<TFieldValues>;
             return (
@@ -66,37 +92,25 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
                 key={step.id}
                 name={name}
                 control={control}
-                render={({ field, fieldState }) => (
-                  <Field className="gap-1">
-                    <FieldLabel>
-                      {showStepNumber ? `Step ${idx + 1}: ` : ""}
-                      {step.name}
-                    </FieldLabel>
-                    <ApproverSelect
-                      step={step}
-                      allUsers={users}
-                      value={field.value ? field.value.toString() : ""}
-                      onChange={(val) =>
-                        field.onChange(val === "none" ? null : Number(val))
-                      }
-                      placeholder={
-                        useApproverSelect
-                          ? `e.g. ${step.name}`
-                          : `Select ${step.name}`
-                      }
-                      triggerClassName={cn(
-                        "bg-white rounded-md border-muted-foreground/20 shadow-sm transition-all focus:ring-4 focus:ring-primary/5",
-                        useApproverSelect
-                          ? "h-12 hover:border-primary/50"
-                          : "h-12 focus:ring-primary/20",
-                        triggerClassName
+                render={({ field, fieldState }) => {
+                  return (
+                    <Field className="gap-1">
+                      <FieldLabel>{step.name}</FieldLabel>
+                      <SelectField
+                        options={(getUserByStep(step) ?? []).map((c) => ({
+                          label: `${c.full_name} (${c.username})`,
+                          value: c.id,
+                        }))}
+                        value={field.value as number}
+                        onChange={(val) => field.onChange(Number(val))}
+                        placeholder={`e.g. ${step.name}`}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
                       )}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
+                    </Field>
+                  );
+                }}
               />
             );
           })}
