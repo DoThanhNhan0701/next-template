@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { Eye, ScrollText } from "lucide-react";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
@@ -17,15 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -60,7 +52,7 @@ export default function ActivityLogsTable() {
   const tt = useTranslations("page_activity_logs.table");
   const dm = useTranslations("page_activity_logs.details_modal");
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(100);
   const [targetModel, setTargetModel] = useState<string>("all");
   const [selectedLog, setSelectedLog] = useState<IActivityLog | null>(null);
 
@@ -79,9 +71,6 @@ export default function ActivityLogsTable() {
     url: `${endpoints.LOGS}?${queryParams.toString()}`,
   });
   const logs = response?.items || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = logs?.length === limit;
 
   const getActionBadgeClass = (action: string) => {
     const act = action.toUpperCase();
@@ -256,97 +245,15 @@ export default function ActivityLogsTable() {
         </Table>
       </div>
 
-      {logs.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-
-            {currentPage > 1 && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip(0);
-                  }}
-                >
-                  1
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {currentPage > 3 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            {currentPage > 2 && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip((currentPage - 2) * limit);
-                  }}
-                >
-                  {currentPage - 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-
-            {hasMore && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip(currentPage * limit);
-                  }}
-                >
-                  {currentPage + 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {hasMore && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={logs.length}
+        total={response?.total}
+        pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       <Dialog open={!!selectedLog} onOpenChange={() => setSelectedLog(null)}>
         <DialogContent className="sm:max-w-[600px] flex flex-col p-0 overflow-hidden max-h-[85vh]">

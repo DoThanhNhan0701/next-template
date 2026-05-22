@@ -42,7 +42,7 @@ export default function MyAuditsTable() {
   const t = useTranslations("page_audits");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
   const [searchInput, setSearchInput] = useState("");
   const [auditTypeInput, setAuditTypeInput] = useState<string>("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);

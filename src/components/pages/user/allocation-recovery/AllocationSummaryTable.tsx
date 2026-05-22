@@ -46,7 +46,7 @@ export default function AllocationSummaryTable() {
   const t = useTranslations("page_allocation_recovery");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
 
   // Filter state
   const [q, setQ] = useState("");

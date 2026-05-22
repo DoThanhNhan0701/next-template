@@ -52,7 +52,7 @@ export default function RentalsTable() {
   );
 
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
 
   // Filter state
   const [q, setQ] = useState("");

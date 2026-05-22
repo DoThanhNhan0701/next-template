@@ -44,7 +44,7 @@ export default function RentalReturnTable() {
   const tRentals = useTranslations("page_rentals");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
 
   // Filter state
   const [q, setQ] = useState("");

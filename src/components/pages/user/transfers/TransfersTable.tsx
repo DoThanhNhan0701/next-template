@@ -42,7 +42,7 @@ export default function TransfersTable() {
   const router = useRouter();
   const t = useTranslations("page_transfers");
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
 
   // Filter state
   const [q, setQ] = useState("");

@@ -7,20 +7,12 @@ import { useTranslations } from "next-intl";
 import { EditIcon, Mail, Phone, Truck, User } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -47,7 +39,7 @@ export default function SupplierTable() {
   const tt = useTranslations("page_suppliers.table");
   const td = useTranslations("page_suppliers.delete");
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(100);
   const [isActive, setIsActive] = useState<string>("all");
 
   const queryParams = new URLSearchParams({
@@ -62,9 +54,6 @@ export default function SupplierTable() {
     url: `${endpoints.SUPPLIERS}?${queryParams.toString()}`,
   });
   const suppliers = response || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = suppliers.length === limit;
 
   const [isCreating, setIsCreating] = useState(false);
   const [supplierToEdit, setSupplierToEdit] = useState<ISupplier | null>(null);
@@ -221,97 +210,14 @@ export default function SupplierTable() {
         </Table>
       </div>
 
-      {suppliers.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-
-            {currentPage > 1 && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip(0);
-                  }}
-                >
-                  1
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {currentPage > 3 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            {currentPage > 2 && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip((currentPage - 2) * limit);
-                  }}
-                >
-                  {currentPage - 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-
-            {hasMore && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip(currentPage * limit);
-                  }}
-                >
-                  {currentPage + 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {hasMore && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (hasMore && !pending) setSkip(skip + limit);
-                }}
-                className={
-                  !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={suppliers.length}
+        pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       <SupplierFormModal
         isOpen={isCreating || supplierToEdit !== null}

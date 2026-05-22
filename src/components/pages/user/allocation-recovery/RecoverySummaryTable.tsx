@@ -54,7 +54,7 @@ export default function RecoverySummaryTable() {
   const t = useTranslations("page_allocation_recovery");
   const router = useRouter();
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
 
   // Filter state
   const [q, setQ] = useState("");
@@ -340,7 +340,10 @@ export default function RecoverySummaryTable() {
                           className={`truncate text-xs text-foreground/80 font-medium flex items-center gap-1 mt-0.5`}
                           title={recovery.to_name || "-"}
                         >
-                          <ArrowDown size={10} className="shrink-0 text-muted-foreground/40" />
+                          <ArrowDown
+                            size={10}
+                            className="shrink-0 text-muted-foreground/40"
+                          />
                           {recovery.to_name || "-"}
                         </span>
                       </div>

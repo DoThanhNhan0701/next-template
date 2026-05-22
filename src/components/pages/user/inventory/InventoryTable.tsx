@@ -43,7 +43,7 @@ import { IStock } from "@/types/stock";
 export default function InventoryTable() {
   const t = useTranslations("page_inventory");
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 

@@ -4,8 +4,6 @@ import { useCallback, useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux";
 
 import {
   Check,
@@ -19,6 +17,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 import { TablePagination } from "@/components/common/TablePagination";
 import {
@@ -48,6 +47,7 @@ import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { cn } from "@/lib/utils";
+import { RootState } from "@/redux";
 import { IAuditSession } from "@/types/audit";
 import { ITask, TaskStatus } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
@@ -72,7 +72,7 @@ export default function MyTasksTable() {
   const [appliedQ, setAppliedQ] = useState("");
   const [selectedProcessType, setSelectedProcessType] = useState<string>("all");
   const [localCurrentPage, setLocalCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -148,13 +148,15 @@ export default function MyTasksTable() {
       if (activeTab === "PENDING") {
         return (
           audit.status_obj.code === "PENDING" ||
-          (audit.status_obj.code === "COMPLETED" && audit.assignee_id !== user?.id)
+          (audit.status_obj.code === "COMPLETED" &&
+            audit.assignee_id !== user?.id)
         );
       }
       if (activeTab === "APPROVED") {
         return (
           audit.status_obj.code === "APPROVED" ||
-          (audit.status_obj.code === "COMPLETED" && audit.assignee_id === user?.id)
+          (audit.status_obj.code === "COMPLETED" &&
+            audit.assignee_id === user?.id)
         );
       }
       return audit.status_obj.code === activeTab;

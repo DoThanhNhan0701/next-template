@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
+const PAGE_SIZE_OPTIONS = [50, 100, 200, 500];
 
 interface TablePaginationProps {
   skip: number;
@@ -75,11 +75,10 @@ export function TablePagination({
   if (count === 0 && skip === 0) return null;
 
   return (
-    <div className="flex items-center justify-between gap-3 mt-1 flex-wrap">
-      {/* Left: count info + page size selector */}
+    <div className="flex items-center justify-between gap-3 flex-wrap">
       <div className="flex items-center gap-2 text-muted-foreground">
         <span className="font-medium">
-          {from}–{to} {total !== undefined ? `/ ${total}` : ""}
+          {from} – {to} {total !== undefined ? `/ ${total}` : ""}
         </span>
         <Select
           value={limit.toString()}

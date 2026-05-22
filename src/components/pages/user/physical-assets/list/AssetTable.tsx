@@ -53,7 +53,7 @@ export default function AssetTable() {
   const canCreate = hasPermission("asset:create") && hasHydrated;
 
   const [skip, setSkip] = useState(0);
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(100);
 
   const [q, setQ] = useState("");
   const [unitId, setUnitId] = useState<string>("");

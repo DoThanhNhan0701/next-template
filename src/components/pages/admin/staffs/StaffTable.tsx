@@ -7,20 +7,12 @@ import { useTranslations } from "next-intl";
 import { Contact, EditIcon } from "lucide-react";
 import { toast } from "sonner";
 
+import { TablePagination } from "@/components/common/TablePagination";
 import {
   TableEmptyRow,
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -49,7 +41,7 @@ export default function StaffTable() {
   const t = useTranslations("page_staff");
   const tc = useTranslations("Common");
   const [skip, setSkip] = useState(0);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(100);
   const [isActive, setIsActive] = useState<string>("all");
 
   const queryParams = new URLSearchParams({
@@ -62,13 +54,12 @@ export default function StaffTable() {
 
   const { response, pending, reFetch, setResponse } = useGet<{
     items: IStaff[];
+    total?: number;
+    count?: number;
   }>({
     url: `${endpoints.STAFFS}?${queryParams.toString()}`,
   });
   const staffs = response?.items || [];
-
-  const currentPage = Math.floor(skip / limit) + 1;
-  const hasMore = staffs.length === limit;
 
   const [isCreating, setIsCreating] = useState(false);
   const [staffToEdit, setStaffToEdit] = useState<IStaff | null>(null);
@@ -107,9 +98,7 @@ export default function StaffTable() {
 
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (!extension || !["xls", "xlsx"].includes(extension)) {
-      toast.error(
-        t("invalid_file_format"),
-      );
+      toast.error(t("invalid_file_format"));
       e.target.value = "";
       return;
     }
@@ -340,65 +329,15 @@ export default function StaffTable() {
         </Table>
       </div>
 
-      {staffs.length > 0 || skip > 0 ? (
-        <Pagination className="flex w-full justify-end mt-1">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (skip > 0 && !pending) setSkip(Math.max(0, skip - limit));
-                }}
-                className={
-                  skip === 0 || pending ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-
-            {currentPage > 1 && (
-              <PaginationItem>
-                <PaginationLink
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setSkip(0);
-                  }}
-                >
-                  1
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {currentPage > 3 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage}
-              </PaginationLink>
-            </PaginationItem>
-
-            {hasMore && (
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (hasMore && !pending) setSkip(skip + limit);
-                  }}
-                  className={
-                    !hasMore || pending ? "pointer-events-none opacity-50" : ""
-                  }
-                />
-              </PaginationItem>
-            )}
-          </PaginationContent>
-        </Pagination>
-      ) : null}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        count={staffs.length}
+        total={response?.total}
+        pending={pending}
+        onPageChange={setSkip}
+        onLimitChange={setLimit}
+      />
 
       <StaffFormModal
         isOpen={isCreating || staffToEdit !== null}
