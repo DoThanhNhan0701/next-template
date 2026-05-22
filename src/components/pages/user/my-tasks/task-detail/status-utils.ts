@@ -15,7 +15,7 @@ export const getStatusInfo = (statusName: string | undefined) => {
     name.includes("processing")
   )
     return {
-      label: "Pending",
+      label: "Process",
       color: "bg-amber-500/15 text-amber-600 border-amber-500/20",
     };
   if (
@@ -28,7 +28,7 @@ export const getStatusInfo = (statusName: string | undefined) => {
       color: "bg-red-500/15 text-red-600 border-red-500/20",
     };
   return {
-    label: statusName || "Pending",
+    label: statusName || "Process",
     color: "bg-primary/10 text-primary border-primary/20",
   };
 };

@@ -2,17 +2,18 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck, Wrench } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
-  type MaintenanceFormValues,
   GetMaintenanceSchema,
+  type MaintenanceFormValues,
 } from "@/components/schemas/user/maintenance.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,10 +64,11 @@ export default function MaintenanceFormModal({
   const { counts } = useSelector((state: RootState) => state.task);
 
   const form = useForm<MaintenanceFormValues>({
-    resolver: zodResolver(GetMaintenanceSchema(t)) as Resolver<MaintenanceFormValues>,
+    resolver: zodResolver(
+      GetMaintenanceSchema(t),
+    ) as Resolver<MaintenanceFormValues>,
     defaultValues: {
       record_number: "",
-      ticket_number: "",
       reason: "",
       handover_person: "",
       taker_person_name: "",
@@ -144,7 +146,6 @@ export default function MaintenanceFormModal({
 
       form.reset({
         record_number: maintenanceToEdit.record_number || "",
-        ticket_number: maintenanceToEdit.ticket_number || "",
         reason: maintenanceToEdit.reason || "",
         handover_person: maintenanceToEdit.handover_person || "",
         taker_person_name: maintenanceToEdit.taker_person_name || "",
@@ -176,7 +177,6 @@ export default function MaintenanceFormModal({
     } else {
       form.reset({
         record_number: "",
-        ticket_number: "",
         reason: "",
         handover_person: "",
         taker_person_name: "",
@@ -228,7 +228,6 @@ export default function MaintenanceFormModal({
 
     // Construct the payload to match API expectations
     const payload = {
-      ticket_number: data.ticket_number,
       reason: data.reason,
       handover_person: data.handover_person,
       taker_person_name: data.taker_person_name,
@@ -288,7 +287,6 @@ export default function MaintenanceFormModal({
   const hasAssetsErrors = !!errors.items;
   const hasGeneralErrors = !!(
     errors.record_number ||
-    errors.ticket_number ||
     errors.reason ||
     errors.outing_date ||
     errors.handover_person ||

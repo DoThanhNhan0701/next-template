@@ -123,7 +123,9 @@ export default function LiquidationDetail({ id }: Props) {
                 borderColor: `${detail.status_obj?.color}40`,
               }}
             >
-              {detail.status_obj?.name}
+              {detail.status_obj?.name === "PENDING"
+                ? "Process"
+                : detail.status_obj?.name}
             </Badge>
           </div>
         </CardHeader>
@@ -160,7 +162,11 @@ export default function LiquidationDetail({ id }: Props) {
               icon={ClipboardList}
               color="bg-amber-500/10 text-amber-500"
               label={t("type")}
-              value={<Badge variant="secondary" className="font-bold">{detail.liquidation_type}</Badge>}
+              value={
+                <Badge variant="secondary" className="font-bold">
+                  {detail.liquidation_type}
+                </Badge>
+              }
             />
             <InfoItem
               icon={CreditCard}
@@ -181,7 +187,11 @@ export default function LiquidationDetail({ id }: Props) {
               value={
                 <div className="flex flex-wrap gap-1">
                   {detail.committee?.split(",").map((name, idx) => (
-                    <Badge key={idx} variant="outline" className="text-[10px] py-0 px-1 border-border/40">
+                    <Badge
+                      key={idx}
+                      variant="outline"
+                      className="text-[10px] py-0 px-1 border-border/40"
+                    >
                       {name.trim()}
                     </Badge>
                   ))}
@@ -310,7 +320,10 @@ export default function LiquidationDetail({ id }: Props) {
                     {item.remaining_value?.toLocaleString("vi-VN")}
                   </TableCell>
                   <TableCell className="px-3 py-1.5">
-                    <div className="text-[11px] text-muted-foreground italic truncate max-w-[150px]" title={item.notes ?? undefined}>
+                    <div
+                      className="text-[11px] text-muted-foreground italic truncate max-w-[150px]"
+                      title={item.notes ?? undefined}
+                    >
                       {item.notes || "—"}
                     </div>
                   </TableCell>
@@ -358,9 +371,7 @@ export default function LiquidationDetail({ id }: Props) {
 
       <div className="p-2 rounded-lg bg-primary/5 border border-primary/10 text-center">
         <p className="text-[11px] text-muted-foreground/80 italic font-medium">
-          {isPending
-            ? t("status_pending_desc")
-            : t("status_processed_desc")}
+          {isPending ? t("status_pending_desc") : t("status_processed_desc")}
         </p>
       </div>
     </div>

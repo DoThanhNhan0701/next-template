@@ -321,7 +321,9 @@ export default function AuditDetail({ id }: Props) {
                 borderColor: `${session.status_obj?.color}40`,
               }}
             >
-              {session.status_obj?.name}
+              {session.status_obj?.name === "PENDING"
+                ? "Process"
+                : session.status_obj?.name}
             </Badge>
           </div>
         </CardHeader>

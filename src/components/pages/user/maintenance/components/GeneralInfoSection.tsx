@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { Controller, UseFormReturn } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
@@ -40,17 +41,18 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
             </Field>
           )}
         />
+
         <Controller
           control={form.control}
-          name="ticket_number"
+          name="external_link"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>{t("ticket_number")}</FieldLabel>
+              <FieldLabel>{t("external_link")}</FieldLabel>
               <Input
                 {...field}
-                value={field.value ?? ""}
+                value={field.value || ""}
                 className="bg-white"
-                placeholder={t("placeholder_ticket")}
+                placeholder={t("placeholder_link")}
               />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -104,25 +106,6 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
           </Field>
         )}
       />
-
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Controller
-          control={form.control}
-          name="external_link"
-          render={({ field, fieldState }) => (
-            <Field className="gap-1">
-              <FieldLabel>{t("external_link")}</FieldLabel>
-              <Input
-                {...field}
-                value={field.value || ""}
-                className="bg-white"
-                placeholder={t("placeholder_link")}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-      </FieldGroup>
 
       <Controller
         control={form.control}

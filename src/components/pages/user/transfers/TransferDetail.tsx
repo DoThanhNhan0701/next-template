@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
+  ArrowRight,
   ArrowRightLeft,
   Calendar,
   ChevronLeft,
@@ -12,7 +13,6 @@ import {
   LucideIcon,
   MapPin,
   Package,
-  ArrowRight,
   User,
 } from "lucide-react";
 
@@ -135,7 +135,9 @@ export default function TransferDetail({ id }: Props) {
                     borderColor: `${detail.status_obj?.color}40`,
                   }}
                 >
-                  {detail.status_obj?.name}
+                  {detail.status_obj?.name === "PENDING"
+                    ? "Process"
+                    : detail.status_obj?.name}
                 </Badge>
               </div>
             </CardHeader>

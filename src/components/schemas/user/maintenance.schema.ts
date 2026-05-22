@@ -8,7 +8,6 @@ export const GetMaintenanceSchema = (t: TFunction) =>
   z
     .object({
       record_number: z.string().min(1, t("validation.field_required")),
-      ticket_number: z.string().min(1, t("validation.field_required")),
       reason: z.string().min(1, t("validation.field_required")),
       handover_person: z.string().min(1, t("validation.field_required")),
       taker_person_name: z.string().min(1, t("validation.field_required")),
