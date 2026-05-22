@@ -118,12 +118,12 @@ export default function StaffFormModal({
       ? dynamicEndpoints.STAFF_DETAIL(staffToEdit.id)
       : endpoints.STAFFS;
     const method = isEditing ? "put" : "post";
+    const { user_id, login_username, ...rest } = data;
     const payload = {
-      ...data,
-      login_username: data.login_username?.trim() || null,
-      ...(data.user_id ? { user_id: data.user_id } : {}),
+      ...rest,
+      login_username: login_username?.trim() || null,
+      user_id: user_id || null,
     };
-
     await mutate(
       {
         url,
@@ -318,8 +318,9 @@ export default function StaffFormModal({
                       </FieldLabel>
                       <Input
                         {...field}
+                        disabled={!!staffToEdit?.login_username}
                         value={field.value || ""}
-                        placeholder="nphanh"
+                        placeholder="e.g nphanh"
                       />
                     </Field>
                   )}
@@ -339,7 +340,9 @@ export default function StaffFormModal({
                               value: user.id,
                             }))}
                           value={field.value as number}
-                          onChange={(val) => field.onChange(Number(val))}
+                          onChange={(val) => {
+                            field.onChange(val ? Number(val) : null);
+                          }}
                           placeholder={t("select_account_placeholder")}
                         />
                       </Field>

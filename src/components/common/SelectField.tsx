@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 
-import { Check, ChevronsUpDown, Search } from "lucide-react";
+import { Check, ChevronsUpDown, Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +41,8 @@ interface Props<TValue extends string | number = string | number> {
   className?: string;
   /** Hỗ trợ chọn nhiều giá trị */
   multiple?: boolean;
+  /** Cho phép xóa giá trị đã chọn */
+  clearable?: boolean;
 }
 
 /**
@@ -72,12 +74,12 @@ export function SelectField<TValue extends string | number = string | number>({
   disabled = false,
   className,
   multiple = false,
+  clearable = true,
 }: Props<TValue>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Bỏ dấu tiếng Việt để tìm gần đúng
   const removeDiacritics = (str: string) =>
     str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
@@ -143,10 +145,25 @@ export function SelectField<TValue extends string | number = string | number>({
             className,
           )}
         >
-          <span className="truncate">
+          <span className="truncate pr-4">
             {selectedLabel ? selectedLabel : placeholder}
           </span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
+          <div className="flex items-center gap-1 shrink-0 ml-2">
+            {clearable && selectedLabel && !disabled && (
+              <span
+                role="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onChange(multiple ? [] : null);
+                }}
+                className="hover:text-destructive text-muted-foreground/60 transition-colors p-0.5 cursor-pointer rounded-sm hover:bg-muted"
+              >
+                <X className="h-3.5 w-3.5" />
+              </span>
+            )}
+            <ChevronsUpDown className="h-4 w-4 text-muted-foreground/60" />
+          </div>
         </Button>
       </PopoverTrigger>
 
