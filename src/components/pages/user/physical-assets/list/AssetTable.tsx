@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { SelectField } from "@/components/common/SelectField";
 import { TablePagination } from "@/components/common/TablePagination";
@@ -34,12 +35,16 @@ import {
 import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useHasHydrated } from "@/hooks/useHasHydrated";
+import { useMutation } from "@/hooks/useMutation";
 import { usePermissions } from "@/hooks/usePermissions";
 import { cn } from "@/lib/utils";
 import { ICatalogType } from "@/types/catalog-type";
 import { IOrgUnit } from "@/types/org";
 import { IPhysicalAsset } from "@/types/physical-asset";
+import { IStaff } from "@/types/staff";
 import { IStatus } from "@/types/status";
+import { getApiErrorMessage } from "@/utils/api-error";
+import { axiosInstance } from "@/utils/axiosInstance";
 import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
@@ -60,6 +65,7 @@ export default function AssetTable() {
   const [categoryId, setCategoryId] = useState<string>("");
   const [statusCode, setStatusCode] = useState<string>("");
   const [managementType, setManagementType] = useState<string>("");
+  const [staffId, setStaffId] = useState<string>("");
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
@@ -67,6 +73,7 @@ export default function AssetTable() {
     category_id: "",
     status_code: "",
     management_type: "",
+    staff_id: "",
   });
 
   const { response: catalogRes } = useGet<ICatalogType[]>({
@@ -78,10 +85,14 @@ export default function AssetTable() {
   const { response: statusRes } = useGet<IStatus[]>({
     url: endpoints.STATUSES + "?category=asset",
   });
+  const { response: staffRes } = useGet<{ items: IStaff[] }>({
+    url: endpoints.STAFFS + "?limit=1000",
+  });
 
   const categories = catalogRes || [];
   const statuses = statusRes || [];
   const orgUnits = orgRes || [];
+  const staffs = staffRes?.items || [];
   const getStatusInfo = (statusId: number) => {
     return statuses.find((s) => s.id === statusId);
   };
@@ -105,6 +116,8 @@ export default function AssetTable() {
     queryParams.append("status_code", appliedFilters.status_code);
   if (appliedFilters.management_type)
     queryParams.append("management_type", appliedFilters.management_type);
+  if (appliedFilters.staff_id)
+    queryParams.append("staff_id", appliedFilters.staff_id);
 
   const { response, pending, reFetch } = useGet<{
     items: IPhysicalAsset[];
@@ -117,11 +130,92 @@ export default function AssetTable() {
 
   const [isCreating, setIsCreating] = useState(false);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const { mutate: importExcel, pending: importPending } = useMutation();
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      const exportParams = new URLSearchParams();
+      if (appliedFilters.q) exportParams.append("q", appliedFilters.q);
+      if (appliedFilters.unit_id) exportParams.append("unit_id", appliedFilters.unit_id);
+      if (appliedFilters.category_id) exportParams.append("category_id", appliedFilters.category_id);
+      if (appliedFilters.status_code) exportParams.append("status_code", appliedFilters.status_code);
+      if (appliedFilters.management_type) exportParams.append("management_type", appliedFilters.management_type);
+      if (appliedFilters.staff_id) exportParams.append("staff_id", appliedFilters.staff_id);
+
+      const queryString = exportParams.toString();
+      const exportUrl = `${endpoints.PHYSICAL_ASSETS_EXPORT_EXCEL}${queryString ? `?${queryString}` : ""}`;
+
+      const response = await axiosInstance.get(exportUrl, {
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `assets_export_${new Date().getTime()}.xlsx`,
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      getApiErrorMessage(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    if (!extension || !["xls", "xlsx"].includes(extension)) {
+      toast.error(t("invalid_file_format"));
+      e.target.value = "";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    await importExcel(
+      {
+        url: endpoints.PHYSICAL_ASSETS_IMPORT_EXCEL,
+        method: "post",
+        body: formData,
+        config: {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      },
+      {
+        onSuccess: (res) => {
+          const typedRes = res as { message?: string } | undefined;
+          toast.success(typedRes?.message || t("import_success"));
+          reFetch();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+        },
+      },
+    );
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex flex-col gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         {/* Row 1: Search + action buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="relative flex-1 min-w-0">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -155,6 +249,7 @@ export default function AssetTable() {
                 category_id: categoryId,
                 status_code: statusCode,
                 management_type: managementType,
+                staff_id: staffId,
               });
             }}
             className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
@@ -171,12 +266,14 @@ export default function AssetTable() {
               setCategoryId("");
               setStatusCode("");
               setManagementType("");
+              setStaffId("");
               setAppliedFilters({
                 q: "",
                 unit_id: "",
                 category_id: "",
                 status_code: "",
                 management_type: "",
+                staff_id: "",
               });
               setSkip(0);
             }}
@@ -184,6 +281,30 @@ export default function AssetTable() {
             title={t("filters.clear")}
           >
             <RotateCcw size={16} className="text-muted-foreground/70" />
+          </Button>
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImport}
+            accept=".xls,.xlsx"
+            className="hidden"
+          />
+          <Button
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={importPending}
+            className="shrink-0 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
+          >
+            {importPending ? t("filters.searching") : t("import_excel")}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="shrink-0 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
+          >
+            {isExporting ? t("filters.searching") : t("export_excel")}
           </Button>
 
           {canCreate && (
@@ -198,7 +319,7 @@ export default function AssetTable() {
 
         {/* Row 2: Filters + create button on mobile */}
         <div className="flex flex-col sm:flex-row gap-2">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 flex-1 min-w-0">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 flex-1 min-w-0">
             <SelectField
               className="w-full min-w-0"
               options={(orgUnits ?? [])
@@ -245,6 +366,19 @@ export default function AssetTable() {
               value={managementType}
               onChange={(val) => setManagementType(val as "unique" | "bulk")}
               placeholder={t("filters.management_type")}
+            />
+
+            <SelectField
+              className="w-full min-w-0"
+              options={(staffs ?? [])
+                .filter((s) => s.is_active)
+                .map((s) => ({
+                  label: `${s.full_name} (${s.staff_code})`,
+                  value: s.id.toString(),
+                }))}
+              value={staffId}
+              onChange={(val) => setStaffId(val)}
+              placeholder={t("filters.staff")}
             />
           </div>
 

@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 
 interface ScanResult {
@@ -42,9 +43,7 @@ export default function QRScanner({ children }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const hasScannedRef = useRef(false);
 
-  const scanUrl = scannedCode
-    ? `/api/v1/scan/${encodeURIComponent(scannedCode)}/info`
-    : "";
+  const scanUrl = scannedCode ? dynamicEndpoints.SCAN_INFO(scannedCode) : "";
 
   const {
     response: scanResult,

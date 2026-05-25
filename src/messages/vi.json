@@ -1061,6 +1061,10 @@
   "page_physical_assets": {
     "title": "Tài sản",
     "description": "Quản lý tài sản vật chất trong hệ thống",
+    "import_excel": "Nhập excel",
+    "export_excel": "Xuất excel",
+    "invalid_file_format": "Định dạng tệp không hợp lệ. Chỉ chấp nhận các định dạng: xls, xlsx",
+    "import_success": "Nhập dữ liệu thành công",
     "filters": {
       "search_placeholder": "e.g. LAP-001, SN123456",
       "organization": "Đơn vị (Mã)",
@@ -1073,7 +1077,9 @@
       "searching": "Đang tìm...",
       "clear": "Xóa bộ lọc",
       "none": "(Không có)",
-      "management_type": "Loại quản lý"
+      "management_type": "Loại quản lý",
+      "staff": "Nhân viên",
+      "all_staffs": "Tất cả nhân viên"
     },
     "table": {
       "no": "STT",

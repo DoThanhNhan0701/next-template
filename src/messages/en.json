@@ -1061,6 +1061,10 @@
   "page_physical_assets": {
     "title": "Assets",
     "description": "Manage physical assets in the system",
+    "import_excel": "Import excel",
+    "export_excel": "Export excel",
+    "invalid_file_format": "Invalid file format. Only accepted formats: xls, xlsx",
+    "import_success": "Data imported successfully",
     "filters": {
       "search_placeholder": "e.g. LAP-001, SN123456",
       "organization": "Organization (Code)",
@@ -1073,7 +1077,9 @@
       "searching": "Searching...",
       "clear": "Clear filters",
       "none": "(None)",
-      "management_type": "Management type"
+      "management_type": "Management type",
+      "staff": "Staff",
+      "all_staffs": "All staff"
     },
     "table": {
       "no": "No",
