@@ -2203,5 +2203,17 @@
       "status_rejected": "Từ chối",
       "status_pending": "Đang chờ"
     }
+  },
+  "qr_scanner": {
+    "title": "Quét mã QR tài sản",
+    "tooltip": "Quét mã QR",
+    "loading": "Đang tra cứu tài sản...",
+    "starting": "Đang khởi động camera...",
+    "guide": "Đưa mã QR vào khung để quét",
+    "close": "Đóng",
+    "err_permission": "Không có quyền truy cập camera. Vui lòng cấp quyền và thử lại.",
+    "err_start": "Không thể khởi động camera. Vui lòng thử lại.",
+    "err_not_found": "Không tìm thấy tài sản với mã: {code}",
+    "success_found": "Tìm thấy: {name}"
   }
 }

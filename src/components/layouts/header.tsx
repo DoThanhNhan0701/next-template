@@ -28,6 +28,7 @@ import { actionLogout } from "@/redux/slices/auth";
 import { IUser } from "@/types/auth";
 
 import LanguageSwitcher from "../common/LanguageSwitcher";
+import QRScanner from "../common/QRScanner";
 import { type SidebarItem, defaultItems } from "./sidebar";
 
 interface MenuToolbar {
@@ -125,6 +126,7 @@ export default function Header({
           {user?.username}
         </p>
         <LanguageSwitcher />
+        <QRScanner />
         {menuToolbar.map((item) => (
           <Tooltip key={item.name}>
             <TooltipTrigger asChild>

@@ -2202,5 +2202,17 @@
       "status_rejected": "Rejected",
       "status_pending": "Pending"
     }
+  },
+  "qr_scanner": {
+    "title": "Scan Asset QR Code",
+    "tooltip": "Scan QR Code",
+    "loading": "Searching for asset...",
+    "starting": "Starting camera...",
+    "guide": "Align the QR code within the frame to scan",
+    "close": "Close",
+    "err_permission": "Camera access denied. Please grant permission and try again.",
+    "err_start": "Could not start camera. Please try again.",
+    "err_not_found": "No asset found with code: {code}",
+    "success_found": "Found: {name}"
   }
 }

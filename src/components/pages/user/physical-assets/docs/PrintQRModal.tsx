@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
@@ -37,18 +37,12 @@ export default function PrintQRModal({
   isOpen,
   onClose,
   assetCode,
-  assetId,
   holders,
   importanceLevel,
 }: Props) {
   const t = useTranslations("page_physical_assets");
   const [selectedName, setSelectedName] = useState(
     holders.length > 0 ? holders[0].name : "",
-  );
-
-  const assetUrl = useMemo(
-    () => `${window.location.origin}/assets/${assetId}`,
-    [assetId],
   );
 
   const doPrint = () => {
@@ -194,7 +188,7 @@ export default function PrintQRModal({
           >
             {/* QR Code */}
             <div className="shrink-0">
-              <QRCodeSVG value={assetUrl} size={130} level="H" />
+              <QRCodeSVG value={assetCode} size={130} level="H" />
             </div>
 
             {/* Info */}

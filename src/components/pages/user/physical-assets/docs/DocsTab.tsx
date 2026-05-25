@@ -33,7 +33,7 @@ export default function DocsTab({ asset, holders, onPrintQR }: DocsTabProps) {
         {/* QR Code */}
         <div className="shrink-0">
           <QRCodeSVG
-            value={`${window.location.origin}/assets/${asset.id}`}
+            value={asset.asset_code}
             size={160}
             level="H"
           />
