@@ -67,12 +67,13 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
         title: t("assets"),
         url: "/assets",
         icon: Laptop,
-        permission: "assets:view",
+        permission: "assets:manage",
       },
       {
         title: t("inventory"),
         url: "/inventory",
         icon: Package,
+        permission: "inventory:manage",
       },
       {
         title: t("rentals"),
@@ -90,11 +91,13 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
         title: t("stock_in_out"),
         url: "/stock-in-out",
         icon: PackageSearch,
+        permission: "stock-in-out:manage",
       },
       {
         title: t("allocation_recovery"),
         url: "/allocation-recovery",
         icon: BarChart3,
+        permission: "allocation-recovery:manage",
       },
       {
         title: t("audits"),
@@ -150,8 +153,8 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
       isLayoutLoading
         ? []
         : allItems.filter(
-            (item) => !item.permission || hasPermission(item.permission),
-          ),
+          (item) => !item.permission || hasPermission(item.permission),
+        ),
     [isLayoutLoading, allItems, hasPermission],
   );
 
