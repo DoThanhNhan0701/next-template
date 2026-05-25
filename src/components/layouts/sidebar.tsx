@@ -35,17 +35,24 @@ export const defaultItems: SidebarItem[] = [
 interface SidebarProps {
   items?: SidebarItem[];
   loading?: boolean;
+  open?: boolean;
+  onClose?: () => void;
 }
 
-export default function Sidebar({
-  items = defaultItems,
-  loading = false,
-}: SidebarProps) {
+function SidebarContent({
+  items,
+  loading,
+  onClose,
+}: {
+  items: SidebarItem[];
+  loading: boolean;
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <aside className="w-64 shrink-0 border-r border-(--surface-border-color) bg-(--surface-container)">
+    <>
       <Image
         src={Logo}
         alt="Logo"
@@ -54,7 +61,10 @@ export default function Sidebar({
         loading="eager"
         priority
         className="mx-auto cursor-pointer"
-        onClick={() => router.push("/dashboard")}
+        onClick={() => {
+          router.push("/dashboard");
+          onClose?.();
+        }}
         style={{ width: "auto", height: "auto" }}
       />
       <SidebarProvider className="border-t border-(--surface-border-color) p-3">
@@ -62,58 +72,90 @@ export default function Sidebar({
           <SidebarMenu>
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <SidebarMenuItem key={index}>
-                    <div className="flex items-center gap-2 px-2 py-2">
-                      <Skeleton className="size-5 shrink-0" />
-                      <Skeleton className="h-4 w-32" />
-                    </div>
-                  </SidebarMenuItem>
-                ))
+                <SidebarMenuItem key={index}>
+                  <div className="flex items-center gap-2 px-2 py-2">
+                    <Skeleton className="size-5 shrink-0" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                </SidebarMenuItem>
+              ))
               : items.map((item) => {
-                  const matches =
-                    item.url === "/"
-                      ? pathname === "/"
-                      : pathname === item.url ||
-                        pathname.startsWith(item.url + "/");
+                const matches =
+                  item.url === "/"
+                    ? pathname === "/"
+                    : pathname === item.url ||
+                    pathname.startsWith(item.url + "/");
 
-                  // Only active if no other item has a longer (more specific) matching URL
-                  const isActive =
-                    matches &&
-                    !items.some(
-                      (other) =>
-                        other.url !== item.url &&
-                        other.url.length > item.url.length &&
-                        (pathname === other.url ||
-                          pathname.startsWith(other.url + "/")),
-                    );
-
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton
-                        asChild
-                        className={isActive ? "bg-sidebar-accent" : ""}
-                      >
-                        <Link
-                          href={item.url}
-                          className="flex items-center justify-between w-full"
-                        >
-                          <div className="flex items-center gap-2">
-                            <item.icon size={18} />
-                            <span>{item.title}</span>
-                          </div>
-                          {item.badge && item.badge > 0 ? (
-                            <div className="bg-red-500 text-white text-[10px] font-bold rounded-full size-5 flex items-center justify-center shrink-0">
-                              {item.badge}
-                            </div>
-                          ) : null}
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                const isActive =
+                  matches &&
+                  !items.some(
+                    (other) =>
+                      other.url !== item.url &&
+                      other.url.length > item.url.length &&
+                      (pathname === other.url ||
+                        pathname.startsWith(other.url + "/")),
                   );
-                })}
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      className={isActive ? "bg-sidebar-accent" : ""}
+                    >
+                      <Link
+                        href={item.url}
+                        className="flex items-center justify-between w-full"
+                        onClick={onClose}
+                      >
+                        <div className="flex items-center gap-2">
+                          <item.icon size={18} />
+                          <span>{item.title}</span>
+                        </div>
+                        {item.badge && item.badge > 0 ? (
+                          <div className="bg-red-500 text-white text-[10px] font-bold rounded-full size-5 flex items-center justify-center shrink-0">
+                            {item.badge}
+                          </div>
+                        ) : null}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarProvider>
-    </aside>
+    </>
+  );
+}
+
+export default function Sidebar({
+  items = defaultItems,
+  loading = false,
+  open = false,
+  onClose,
+}: SidebarProps) {
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex md:flex-col w-64 shrink-0 border-r border-(--surface-border-color) bg-(--surface-container)">
+        <SidebarContent items={items} loading={loading} />
+      </aside>
+
+      {/* Mobile drawer overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-(--surface-container) border-r border-(--surface-border-color) transition-transform duration-300 ease-in-out md:hidden ${open ? "translate-x-0" : "-translate-x-full"
+          }`}
+      >
+        <SidebarContent items={items} loading={loading} onClose={onClose} />
+      </aside>
+    </>
   );
 }

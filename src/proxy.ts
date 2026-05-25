@@ -27,6 +27,7 @@ export default function proxy(request: NextRequest) {
   if (!isAuthenticated && !isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = '/auth/login';
+    url.searchParams.set('redirect', pathname);
     return NextResponse.redirect(url);
   }
 

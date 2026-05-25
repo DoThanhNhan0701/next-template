@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
@@ -158,13 +158,25 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
     [isLayoutLoading, allItems, hasPermission],
   );
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <AppBootstrap>
       <div className="h-screen flex flex-col overflow-hidden">
-        <Header user={user} items={sidebarItems} loading={isLayoutLoading} />
+        <Header
+          user={user}
+          items={sidebarItems}
+          loading={isLayoutLoading}
+          onMenuClick={() => setSidebarOpen((prev) => !prev)}
+        />
         <div className="flex flex-1 overflow-hidden">
           <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
-            <Sidebar items={sidebarItems} loading={isLayoutLoading} />
+            <Sidebar
+              items={sidebarItems}
+              loading={isLayoutLoading}
+              open={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+            />
             <section className="relative flex-1 p-2 overflow-auto">
               {children}
             </section>

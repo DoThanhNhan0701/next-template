@@ -1,10 +1,8 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
-import { useTranslations } from "next-intl";
-
-import {
+import { useTranslations } from "next-intl"; import {
   Activity,
   Building,
   Building2,
@@ -30,6 +28,7 @@ export default function AdminLayout({
 }: Readonly<{ children: ReactNode }>) {
   const { user } = useSelector((state: RootState) => state.auth);
   const t = useTranslations("layout_admin");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const adminSidebarItems = [
     { title: t("users"), url: "/admin/users", icon: Users },
@@ -67,10 +66,18 @@ export default function AdminLayout({
   return (
     <AppBootstrap>
       <div className="h-screen flex flex-col overflow-hidden">
-        <Header user={user} items={adminSidebarItems} />
+        <Header
+          user={user}
+          items={adminSidebarItems}
+          onMenuClick={() => setSidebarOpen((prev) => !prev)}
+        />
         <div className="flex flex-1 overflow-hidden">
           <main className="flex flex-1 mx-2 mb-2 overflow-hidden rounded-md border border-(--surface-border-color) bg-(--surface-container)">
-            <Sidebar items={adminSidebarItems} />
+            <Sidebar
+              items={adminSidebarItems}
+              open={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+            />
             <section className="relative flex-1 p-2 overflow-auto">
               {children}
             </section>

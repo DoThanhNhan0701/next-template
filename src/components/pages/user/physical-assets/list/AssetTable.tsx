@@ -119,82 +119,33 @@ export default function AssetTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
-        <div className="relative flex-1 min-w-0">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
-            size={16}
-          />
-          <Input
-            placeholder={t("filters.search_placeholder")}
-            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-          {q && (
-            <button
-              onClick={() => {
-                setQ("");
-                setAppliedFilters((prev) => ({ ...prev, q: "" }));
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 min-w-0 flex-1">
-          <SelectField
-            className="w-full min-w-0"
-            options={(orgUnits ?? [])
-              .filter((c) => c.is_active)
-              .map((c) => ({
-                label: `${c.name} (${c.code})`,
-                value: c.id.toString(),
-              }))}
-            value={unitId}
-            onChange={(val) => setUnitId(val)}
-            placeholder={t("filters.organization")}
-          />
-
-          <SelectField
-            className="w-full min-w-0"
-            options={(categories ?? [])
-              .filter((c) => c.is_active)
-              .map((c) => ({
-                label: `${c.name} (${c.code})`,
-                value: c.id.toString(),
-              }))}
-            value={categoryId}
-            onChange={(val) => setCategoryId(val)}
-            placeholder={t("filters.category")}
-          />
-
-          <SelectField
-            className="w-full min-w-0"
-            options={(statuses ?? []).map((c) => ({
-              label: `${c.name} (${c.code})`,
-              value: c.id.toString(),
-            }))}
-            value={statusCode}
-            onChange={(val) => setStatusCode(val)}
-            placeholder={t("filters.status")}
-          />
-
-          <SelectField
-            className="w-full min-w-0"
-            options={[
-              { label: t("table.by_code"), value: "unique" },
-              { label: t("table.by_quantity"), value: "bulk" },
-            ]}
-            value={managementType}
-            onChange={(val) => setManagementType(val as "unique" | "bulk")}
-            placeholder={t("filters.management_type")}
-          />
-        </div>
-
+      <div className="flex flex-col gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
+        {/* Row 1: Search + action buttons */}
         <div className="flex items-center gap-2">
+          <div className="relative flex-1 min-w-0">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
+              size={16}
+            />
+            <Input
+              placeholder={t("filters.search_placeholder")}
+              className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+            {q && (
+              <button
+                onClick={() => {
+                  setQ("");
+                  setAppliedFilters((prev) => ({ ...prev, q: "" }));
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
           <Button
             onClick={() => {
               setSkip(0);
@@ -206,7 +157,7 @@ export default function AssetTable() {
                 management_type: managementType,
               });
             }}
-            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
           >
             {pending ? t("filters.searching") : t("filters.search")}
           </Button>
@@ -238,7 +189,69 @@ export default function AssetTable() {
           {canCreate && (
             <Button
               onClick={() => setIsCreating(true)}
-              className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+              className="shrink-0 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95 hidden sm:flex"
+            >
+              {t("modals.create_title")}
+            </Button>
+          )}
+        </div>
+
+        {/* Row 2: Filters + create button on mobile */}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 flex-1 min-w-0">
+            <SelectField
+              className="w-full min-w-0"
+              options={(orgUnits ?? [])
+                .filter((c) => c.is_active)
+                .map((c) => ({
+                  label: `${c.name} (${c.code})`,
+                  value: c.id.toString(),
+                }))}
+              value={unitId}
+              onChange={(val) => setUnitId(val)}
+              placeholder={t("filters.organization")}
+            />
+
+            <SelectField
+              className="w-full min-w-0"
+              options={(categories ?? [])
+                .filter((c) => c.is_active)
+                .map((c) => ({
+                  label: `${c.name} (${c.code})`,
+                  value: c.id.toString(),
+                }))}
+              value={categoryId}
+              onChange={(val) => setCategoryId(val)}
+              placeholder={t("filters.category")}
+            />
+
+            <SelectField
+              className="w-full min-w-0"
+              options={(statuses ?? []).map((c) => ({
+                label: `${c.name} (${c.code})`,
+                value: c.id.toString(),
+              }))}
+              value={statusCode}
+              onChange={(val) => setStatusCode(val)}
+              placeholder={t("filters.status")}
+            />
+
+            <SelectField
+              className="w-full min-w-0"
+              options={[
+                { label: t("table.by_code"), value: "unique" },
+                { label: t("table.by_quantity"), value: "bulk" },
+              ]}
+              value={managementType}
+              onChange={(val) => setManagementType(val as "unique" | "bulk")}
+              placeholder={t("filters.management_type")}
+            />
+          </div>
+
+          {canCreate && (
+            <Button
+              onClick={() => setIsCreating(true)}
+              className="sm:hidden bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
             >
               {t("modals.create_title")}
             </Button>
@@ -250,25 +263,25 @@ export default function AssetTable() {
         <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-3 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-3 w-12.5 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-[380px]">
+              <TableHead className="font-semibold h-10 px-3 w-95">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-[120px] text-center">
+              <TableHead className="font-semibold h-10 px-3 w-30 text-center">
                 {t("table.asset_code")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-[200px]">
+              <TableHead className="font-semibold h-10 px-3 w-50 hidden lg:table-cell">
                 {t("table.ownership")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-[160px]">
+              <TableHead className="font-semibold h-10 px-3 w-40 hidden lg:table-cell">
                 {t("table.purchase_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-3 w-35 text-center">
                 {t("table.management_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-[220px] text-center">
+              <TableHead className="font-semibold h-10 px-3 w-55 text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -318,7 +331,7 @@ export default function AssetTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 hidden lg:table-cell">
                       <div className="flex items-start gap-2 text-sm text-foreground/80">
                         <Building2
                           size={16}
@@ -326,7 +339,7 @@ export default function AssetTable() {
                         />
                         <div className="flex flex-col gap-1">
                           <span
-                            className="font-medium truncate max-w-[200px]"
+                            className="font-medium truncate max-w-50"
                             title={
                               getOrgUnitLabel(asset.unit_id) || t("table.none")
                             }
@@ -336,18 +349,18 @@ export default function AssetTable() {
                           {(asset?.holding_qty ?? 0) -
                             (asset?.in_stock_quantity ?? 0) >
                             0 && (
-                            <span className="text-[10px] font-semibold text-primary/70 bg-primary/5 px-1.5 py-0.5 rounded-full border border-primary/10 w-fit">
-                              {t("table.holders_count", {
-                                count:
-                                  (asset?.holding_qty ?? 0) -
-                                  (asset?.in_stock_quantity ?? 0),
-                              })}
-                            </span>
-                          )}
+                              <span className="text-[10px] font-semibold text-primary/70 bg-primary/5 px-1.5 py-0.5 rounded-full border border-primary/10 w-fit">
+                                {t("table.holders_count", {
+                                  count:
+                                    (asset?.holding_qty ?? 0) -
+                                    (asset?.in_stock_quantity ?? 0),
+                                })}
+                              </span>
+                            )}
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 hidden lg:table-cell">
                       <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-1.5">
                           <Calendar
@@ -383,7 +396,7 @@ export default function AssetTable() {
                         {((asset.in_stock_quantity ?? 0) > 0 ||
                           (asset.allocated_quantity ?? 0) > 0 ||
                           (asset.rented_quantity ?? 0) > 0) &&
-                        asset.management_type === "bulk" ? (
+                          asset.management_type === "bulk" ? (
                           <div className="flex items-center gap-1 flex-wrap justify-center">
                             {(asset.in_stock_quantity ?? 0) > 0 && (
                               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 whitespace-nowrap">
@@ -407,16 +420,16 @@ export default function AssetTable() {
                             style={
                               status?.color
                                 ? {
-                                    backgroundColor: `${status.color}20`,
-                                    color: status.color,
-                                    borderColor: `${status.color}40`,
-                                  }
+                                  backgroundColor: `${status.color}20`,
+                                  color: status.color,
+                                  borderColor: `${status.color}40`,
+                                }
                                 : {}
                             }
                             className={cn(
                               "px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shadow-none whitespace-nowrap",
                               !status?.color &&
-                                "bg-primary/10 text-primary border-primary/20",
+                              "bg-primary/10 text-primary border-primary/20",
                             )}
                           >
                             {status?.name || `Status ${asset.status_id}`}

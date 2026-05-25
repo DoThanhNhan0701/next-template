@@ -243,7 +243,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
         </div>
 
         <Card className="border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg">
-          <div className="grid grid-cols-2 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-border/40">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 divide-y md:divide-y lg:divide-y-0 lg:divide-x divide-border/40">
             <StatItem
               icon={<Box className="w-4 h-4 text-slate-400" />}
               label={t2("stats.registered")}
@@ -285,22 +285,22 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           className="w-full"
         >
           <div className="w-full pb-3">
-            <TabsList className="grid w-full grid-cols-5 h-16 p-1 bg-muted/40 rounded-lg">
+            <TabsList className="grid w-full grid-cols-5 h-14 sm:h-16 p-1 bg-muted/40 rounded-lg">
               <TabsTrigger
                 value="overview"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Info className="w-4 h-4" />
-                <span className="text-sm font-medium">
+                <span className="hidden sm:block text-sm font-medium">
                   {t("detail.tabs.overview")}
                 </span>
               </TabsTrigger>
               <TabsTrigger
                 value="modules"
-                className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
+                className="relative flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Package className="w-4 h-4" />
-                <span className="text-sm font-medium">
+                <span className="hidden sm:block text-sm font-medium">
                   {t("detail.tabs.modules")}
                 </span>
                 {modules && modules.length > 0 && (
@@ -317,7 +317,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Clock className="w-4 h-4" />
-                <span className="text-sm font-medium">
+                <span className="hidden sm:block text-sm font-medium">
                   {t("detail.tabs.history")}
                 </span>
               </TabsTrigger>
@@ -326,7 +326,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <Wrench className="w-4 h-4" />
-                <span className="text-sm font-medium">
+                <span className="hidden sm:block text-sm font-medium">
                   {t("detail.tabs.specs")}
                 </span>
               </TabsTrigger>
@@ -335,7 +335,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
               >
                 <QrCode className="w-4 h-4" />
-                <span className="text-sm font-medium">
+                <span className="hidden sm:block text-sm font-medium">
                   {t("detail.tabs.docs")}
                 </span>
               </TabsTrigger>

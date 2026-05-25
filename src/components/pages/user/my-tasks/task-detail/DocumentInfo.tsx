@@ -548,7 +548,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
         "bg-violet-500/10 text-violet-500",
         tFields("type"),
         liquidation.liquidation_type.charAt(0).toUpperCase() +
-          liquidation.liquidation_type.slice(1),
+        liquidation.liquidation_type.slice(1),
       );
       addField(
         Package,
@@ -951,13 +951,13 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
 
   return (
     <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
-      <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
+      <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <CardTitle className="text-xs font-semibold text-primary">
             {formattedData.documentTitle}
           </CardTitle>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <span className="text-base font-bold text-foreground tracking-tight">
             {detail.record_number}
           </span>
@@ -971,13 +971,13 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
       </CardHeader>
       <CardContent className="p-3">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
-            {formattedData.fields.map((field, index) => {
-              const IconComponent = field.icon;
-              return (
-                <div
-                  key={index}
-                  className={`flex items-center gap-2 border-b border-border/20 py-1.5 last:border-0 ${field.fullWidth ? "md:col-span-2 lg:col-span-3" : ""}`}
-                >
+          {formattedData.fields.map((field, index) => {
+            const IconComponent = field.icon;
+            return (
+              <div
+                key={index}
+                className={`flex items-center gap-2 border-b border-border/20 py-1.5 last:border-0 ${field.fullWidth ? "md:col-span-2 lg:col-span-3" : ""}`}
+              >
                 <div
                   className={`w-7 h-7 rounded-full ${field.iconColor} flex items-center justify-center shrink-0`}
                 >
@@ -998,7 +998,7 @@ export const DocumentInfo = ({ detail, documentType }: DocumentInfoProps) => {
                     )}
                     <div className="truncate text-xs font-semibold text-foreground">
                       {typeof field.value === "string" ||
-                      typeof field.value === "number"
+                        typeof field.value === "number"
                         ? field.value
                         : field.value}
                     </div>

@@ -388,7 +388,7 @@ export default function MyTasksTable() {
           }}
           className="w-full lg:w-fit h-full"
         >
-          <TabsList className="grid grid-cols-3 p-1 bg-muted/30 w-[360px] h-full!">
+          <TabsList className="grid grid-cols-3 p-1 bg-muted/30 w-full lg:w-90 h-full!">
             <TabsTrigger
               value="PENDING"
               className="flex items-center justify-center gap-0.5 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
@@ -419,95 +419,100 @@ export default function MyTasksTable() {
           </TabsList>
         </Tabs>
 
-        {/* Search Group */}
-        <div className="relative flex-1 min-w-0">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
-            size={16}
-          />
-          <Input
-            placeholder={tFilters("search_placeholder")}
-            className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                setAppliedQ(q);
+        {/* Search + Filter Group */}
+        <div className="flex flex-1 items-center gap-2 min-w-0">
+          {/* Search */}
+          <div className="relative flex-1 min-w-0">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
+              size={16}
+            />
+            <Input
+              placeholder={tFilters("search_placeholder")}
+              className="pl-9 pr-10 bg-background/50 border-border/50 focus-visible:ring-primary/20 transition-all w-full"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setAppliedQ(q);
+                  setLocalCurrentPage(1);
+                }
+              }}
+            />
+            {q && (
+              <button
+                onClick={() => {
+                  setQ("");
+                  setAppliedQ("");
+                  setLocalCurrentPage(1);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Filter Group */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Select
+              value={selectedProcessType}
+              onValueChange={(val) => {
+                setSelectedProcessType(val);
                 setLocalCurrentPage(1);
-              }
-            }}
-          />
-          {q && (
-            <button
+              }}
+            >
+              <SelectTrigger className="h-10 px-4 bg-background/50 border-border/50 text-xs font-semibold hover:bg-background/80 transition-all w-10 sm:min-w-37.5 sm:w-auto overflow-hidden">
+                <div className="flex items-center gap-2">
+                  <Filter
+                    size={14}
+                    className="text-muted-foreground/70 shrink-0"
+                  />
+                  <span className="hidden sm:block truncate">
+                    <SelectValue placeholder={tFilters("all_processes")} />
+                  </span>
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tFilters("all_processes")}</SelectItem>
+                <SelectItem value="allocation">
+                  {tDocTypes("allocation")}
+                </SelectItem>
+                <SelectItem value="audit">{tDocTypes("audit")}</SelectItem>
+                <SelectItem value="liquidation">
+                  {tDocTypes("liquidation")}
+                </SelectItem>
+                <SelectItem value="maintenance">
+                  {tDocTypes("maintenance")}
+                </SelectItem>
+                <SelectItem value="recovery">{tDocTypes("recovery")}</SelectItem>
+                <SelectItem value="rental">{tDocTypes("rental")}</SelectItem>
+                <SelectItem value="rental_return">
+                  {tDocTypes("rental_return")}
+                </SelectItem>
+                <SelectItem value="stock_in">{tDocTypes("stock_in")}</SelectItem>
+                <SelectItem value="stock_out">
+                  {tDocTypes("stock_out")}
+                </SelectItem>
+                <SelectItem value="transfer">{tDocTypes("transfer")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => {
                 setQ("");
                 setAppliedQ("");
                 setLocalCurrentPage(1);
+                setSelectedProcessType("all");
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+              className="order-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-90 shrink-0"
+              title={tFilters("clear_filters")}
             >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        {/* Filter Group */}
-        <div className="flex items-center gap-2">
-          <Select
-            value={selectedProcessType}
-            onValueChange={(val) => {
-              setSelectedProcessType(val);
-              setLocalCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="h-10 px-4 bg-background/50 border-border/50 text-xs font-semibold hover:bg-background/80 transition-all min-w-[150px]">
-              <div className="flex items-center gap-2">
-                <Filter
-                  size={14}
-                  className="text-muted-foreground/70 shrink-0"
-                />
-                <SelectValue placeholder={tFilters("all_processes")} />
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{tFilters("all_processes")}</SelectItem>
-              <SelectItem value="allocation">
-                {tDocTypes("allocation")}
-              </SelectItem>
-              <SelectItem value="audit">{tDocTypes("audit")}</SelectItem>
-              <SelectItem value="liquidation">
-                {tDocTypes("liquidation")}
-              </SelectItem>
-              <SelectItem value="maintenance">
-                {tDocTypes("maintenance")}
-              </SelectItem>
-              <SelectItem value="recovery">{tDocTypes("recovery")}</SelectItem>
-              <SelectItem value="rental">{tDocTypes("rental")}</SelectItem>
-              <SelectItem value="rental_return">
-                {tDocTypes("rental_return")}
-              </SelectItem>
-              <SelectItem value="stock_in">{tDocTypes("stock_in")}</SelectItem>
-              <SelectItem value="stock_out">
-                {tDocTypes("stock_out")}
-              </SelectItem>
-              <SelectItem value="transfer">{tDocTypes("transfer")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setAppliedQ("");
-              setLocalCurrentPage(1);
-              setSelectedProcessType("all");
-            }}
-            className="order-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-90 shrink-0"
-            title={tFilters("clear_filters")}
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
+              <RotateCcw size={16} className="text-muted-foreground/70" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -515,28 +520,28 @@ export default function MyTasksTable() {
         <Table className="table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                 {tTable("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-45 text-center">
                 {tTable("record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[160px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-40 text-center hidden md:table-cell">
                 {tTable("process_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
+              <TableHead className="font-semibold h-10 px-4 w-45 hidden lg:table-cell">
                 {tTable("current_step")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[200px]">
+              <TableHead className="font-semibold h-10 px-4 w-50 hidden lg:table-cell">
                 {tTable("requester")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-35 text-center hidden md:table-cell">
                 {tTable("created_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-30 text-center">
                 {tTable("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[100px] text-right">
+              <TableHead className="font-semibold h-10 px-4 w-25 text-right">
                 {tTable("actions")}
               </TableHead>
             </TableRow>
@@ -587,7 +592,7 @@ export default function MyTasksTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center">
+                  <TableCell className="px-4 py-2 text-center hidden md:table-cell">
                     <div className="flex items-center justify-center gap-2 overflow-hidden text-xs">
                       <div className="bg-primary/5 p-1.5 rounded-lg text-primary shrink-0 opacity-70">
                         {getProcessIcon(task.document_type)}
@@ -599,7 +604,7 @@ export default function MyTasksTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden hidden lg:table-cell">
                     <Badge
                       variant="outline"
                       className="px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70 truncate block text-center"
@@ -607,7 +612,7 @@ export default function MyTasksTable() {
                       {task.step_name}
                     </Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-2 max-w-0 overflow-hidden hidden lg:table-cell">
                     <div className="flex items-center gap-2 text-sm overflow-hidden">
                       <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-bold text-secondary-foreground shrink-0">
                         {task.requester_name.charAt(0)}
@@ -617,7 +622,7 @@ export default function MyTasksTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center">
+                  <TableCell className="px-4 py-2 text-center hidden md:table-cell">
                     <div className="flex flex-col gap-0.5 text-xs overflow-hidden items-center">
                       <div className="flex items-center justify-center gap-1.5 text-muted-foreground overflow-hidden">
                         <Clock size={12} className="opacity-60 shrink-0" />

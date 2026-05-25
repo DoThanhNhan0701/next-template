@@ -99,8 +99,8 @@ export default function InventoryTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
-        {/* Search Group */}
+      <div className="flex items-center gap-2 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
+        {/* Search */}
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -125,10 +125,10 @@ export default function InventoryTable() {
           )}
         </div>
 
-        {/* Filters Group */}
-        <div className="flex flex-wrap items-center gap-3 min-w-0">
+        {/* Location filter */}
+        <div className="hidden sm:block shrink-0 w-55">
           <SelectField
-            className="min-w-[220px] max-w-[260px] w-full sm:w-auto"
+            className="w-full"
             options={(locations ?? []).map((c) => ({
               label: `${c.name} (${c.code})`,
               value: c.id.toString(),
@@ -137,83 +137,81 @@ export default function InventoryTable() {
             onChange={(val) => setLocationId(val)}
             placeholder={t("filters.all_locations")}
           />
-
-          <div className="flex h-9 items-center space-x-2 bg-background/50 border px-3 rounded-md">
-            <Checkbox
-              id="show-zero"
-              checked={showZero}
-              onCheckedChange={(checked) => setShowZero(checked as boolean)}
-            />
-            <label
-              htmlFor="show-zero"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-            >
-              {t("filters.show_zero_quantity")}
-            </label>
-          </div>
         </div>
 
-        {/* Action Group */}
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => {
-              setSkip(0);
-              setAppliedFilters({
-                q,
-                location_id: locationId,
-                show_zero: showZero,
-              });
-            }}
-            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
+        {/* Show zero checkbox */}
+        <div className="hidden md:flex h-9 items-center space-x-2 bg-background/50 border px-3 rounded-md shrink-0">
+          <Checkbox
+            id="show-zero"
+            checked={showZero}
+            onCheckedChange={(checked) => setShowZero(checked as boolean)}
+          />
+          <label
+            htmlFor="show-zero"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer whitespace-nowrap"
           >
-            {pending ? t("filters.searching") : t("filters.search")}
-          </Button>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setLocationId("");
-              setShowZero(false);
-              setAppliedFilters({
-                q: "",
-                location_id: "",
-                show_zero: false,
-              });
-              setSkip(0);
-            }}
-            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title={t("filters.clear")}
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
+            {t("filters.show_zero_quantity")}
+          </label>
         </div>
+
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({
+              q,
+              location_id: locationId,
+              show_zero: showZero,
+            });
+          }}
+          className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {pending ? t("filters.searching") : t("filters.search")}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setQ("");
+            setLocationId("");
+            setShowZero(false);
+            setAppliedFilters({
+              q: "",
+              location_id: "",
+              show_zero: false,
+            });
+            setSkip(0);
+          }}
+          className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+          title={t("filters.clear")}
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
         <Table className="whitespace-nowrap table-fixed w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[300px]">
+              <TableHead className="font-semibold h-10 px-4 w-75">
                 {t("table.asset_information")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[100px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-25 text-center hidden sm:table-cell">
                 {t("table.asset_code")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[220px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-55 text-center hidden sm:table-cell">
                 {t("table.location")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-35 text-center hidden md:table-cell">
                 {t("table.management_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[100px]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-25">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[200px]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-50">
                 {t("table.actions")}
               </TableHead>
             </TableRow>
@@ -249,22 +247,22 @@ export default function InventoryTable() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                     <div className="flex justify-center">
                       <span className="text-muted-foreground/80 font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit">
                         {stock.asset_code}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                     <div className="flex items-center justify-center gap-2 px-2.5 py-1.5 bg-secondary/30 rounded-md w-fit mx-auto">
                       <MapPin size={14} className="text-primary/70 shrink-0" />
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-medium truncate max-w-32">
                         {stock.location_name || t("table.unknown_location")}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden md:table-cell">
                     {stock.management_type === "unique" ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-600">
                         {t("table.by_code")}
@@ -281,11 +279,10 @@ export default function InventoryTable() {
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
                     <div
-                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${
-                        stock.quantity > 0
-                          ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                          : "bg-red-500/10 text-red-600 border border-red-500/20"
-                      }`}
+                      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-bold ${stock.quantity > 0
+                        ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                        : "bg-red-500/10 text-red-600 border border-red-500/20"
+                        }`}
                     >
                       {stock.quantity}
                     </div>
@@ -300,7 +297,7 @@ export default function InventoryTable() {
                         disabled={stock.management_type === "unique"}
                       >
                         <ArrowUpCircle size={14} className="shrink-0" />
-                        {t("table.stock_in")}
+                        <span className="hidden sm:inline">{t("table.stock_in")}</span>
                       </Button>
                       <Button
                         variant="ghost"
@@ -310,7 +307,7 @@ export default function InventoryTable() {
                         disabled={stock.management_type === "unique"}
                       >
                         <ArrowDownCircle size={14} className="shrink-0" />
-                        {t("table.stock_out")}
+                        <span className="hidden sm:inline">{t("table.stock_out")}</span>
                       </Button>
                     </div>
                   </TableCell>

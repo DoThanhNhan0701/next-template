@@ -29,7 +29,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
       <CardContent className="p-3">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between pb-2 border-b border-border/20 last:border-0 last:pb-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
                 <User className="w-3.5 h-3.5" />
               </div>
@@ -37,7 +37,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
                 {t("creator")}
               </span>
             </div>
-            <span className="text-xs font-semibold text-foreground">
+            <span className="text-xs font-semibold text-foreground truncate ml-2 text-right">
               {detail.creator?.full_name ||
                 (isAllocationDocument(detail)
                   ? (detail as AllocationDocument).issuer_name
@@ -46,7 +46,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
           </div>
 
           <div className="flex items-center justify-between pb-2 border-b border-border/20 last:border-0 last:pb-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
                 <Clock className="w-3.5 h-3.5" />
               </div>
@@ -54,8 +54,8 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
                 {t("created_time")}
               </span>
             </div>
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-semibold text-foreground">
+            <div className="flex flex-col items-end ml-2">
+              <span className="text-xs font-semibold text-foreground text-right">
                 {formatDateTime(detail.created_at)}
               </span>
             </div>
@@ -64,7 +64,7 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
           {isAllocationDocument(detail) &&
             (detail as AllocationDocument).issuer && (
               <div className="flex items-center justify-between pb-2 border-b border-border/20 last:border-0 last:pb-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
                     <User className="w-3.5 h-3.5" />
                   </div>
@@ -72,8 +72,8 @@ export const SidebarInfo = ({ detail }: SidebarInfoProps) => {
                     {t("issuer_details")}
                   </span>
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-xs font-semibold text-foreground">
+                <div className="flex flex-col items-end ml-2">
+                  <span className="text-xs font-semibold text-foreground truncate">
                     {(detail as AllocationDocument).issuer.full_name}
                   </span>
                   <span className="text-[10px] text-muted-foreground uppercase">

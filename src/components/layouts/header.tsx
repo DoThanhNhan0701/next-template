@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { LogOut, LucideIcon, MoonIcon, SunIcon, User } from "lucide-react";
+import { LogOut, LucideIcon, Menu, MoonIcon, SunIcon, User } from "lucide-react";
 import { useDispatch } from "react-redux";
 
 import { Button } from "@/components/ui/button";
@@ -40,12 +40,14 @@ interface Props {
   user?: IUser | null;
   items?: SidebarItem[];
   loading?: boolean;
+  onMenuClick?: () => void;
 }
 
 export default function Header({
   user,
   items = defaultItems,
   loading = false,
+  onMenuClick,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -77,18 +79,27 @@ export default function Header({
   const activeItem =
     items && items.length > 0
       ? [...items]
-          .filter((item) =>
-            item.url === "/"
-              ? pathname === "/"
-              : pathname === item.url || pathname.startsWith(item.url + "/"),
-          )
-          .sort((a, b) => b.url.length - a.url.length)[0] || items[0]
+        .filter((item) =>
+          item.url === "/"
+            ? pathname === "/"
+            : pathname === item.url || pathname.startsWith(item.url + "/"),
+        )
+        .sort((a, b) => b.url.length - a.url.length)[0] || items[0]
       : undefined;
 
   const { hasPermission } = usePermissions();
 
   return (
     <header className="flex items-center px-4 min-h-10">
+      {/* Hamburger button - mobile only */}
+      <Button
+        type="button"
+        onClick={onMenuClick}
+        className="md:hidden p-0! cursor-pointer size-6 bg-transparent text-primary dark:hover:bg-primary/10 hover:bg-primary/10 mr-2"
+        aria-label="Open menu"
+      >
+        <Menu size={18} />
+      </Button>
       <div className="h-full flex-1">
         {loading ? (
           <div className="flex items-center gap-1 h-full">

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Logo from "@public/icons/logo.png";
@@ -43,6 +43,7 @@ interface LoginApiResponse {
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -82,7 +83,8 @@ export default function LoginPage() {
           dispatch(actionFetchUser());
           getApiSuccessMessage(response);
 
-          router.replace("/dashboard");
+          const redirectTo = searchParams.get("redirect") || "/dashboard";
+          router.replace(redirectTo);
           router.refresh();
         },
         onError: (error) => {
@@ -210,7 +212,7 @@ export default function LoginPage() {
                         <button
                           type="button"
                           className="text-xs font-semibold text-primary hover:underline transition-all"
-                          onClick={() => {}} // Placeholder for forgot password
+                          onClick={() => { }} // Placeholder for forgot password
                         >
                           Forgot password?
                         </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
@@ -37,6 +37,7 @@ export default function PrintQRModal({
   isOpen,
   onClose,
   assetCode,
+  assetId,
   holders,
   importanceLevel,
 }: Props) {
@@ -45,10 +46,23 @@ export default function PrintQRModal({
     holders.length > 0 ? holders[0].name : "",
   );
 
+  const assetUrl = useMemo(
+    () => `${window.location.origin}/assets/${assetId}`,
+    [assetId],
+  );
+
   const doPrint = () => {
-    const svg =
-      document.getElementById("print-qr-svg")?.querySelector("svg")
-        ?.outerHTML ?? "";
+    const svgEl =
+      document.getElementById("print-qr-svg")?.querySelector("svg");
+    if (!svgEl) return;
+
+    // Đảm bảo SVG có kích thước rõ ràng khi in
+    const svgClone = svgEl.cloneNode(true) as SVGElement;
+    svgClone.setAttribute("width", "160");
+    svgClone.setAttribute("height", "160");
+    svgClone.style.imageRendering = "crisp-edges";
+    const svg = svgClone.outerHTML;
+
     const win = window.open("", "_blank", "width=600,height=400");
     if (!win) return;
     win.document.write(`
@@ -180,7 +194,7 @@ export default function PrintQRModal({
           >
             {/* QR Code */}
             <div className="shrink-0">
-              <QRCodeSVG value={assetCode} size={130} level="H" />
+              <QRCodeSVG value={assetUrl} size={130} level="H" />
             </div>
 
             {/* Info */}
@@ -236,11 +250,10 @@ export default function PrintQRModal({
                     onClick={() =>
                       setSelectedName(selectedName === h.name ? "" : h.name)
                     }
-                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
-                      selectedName === h.name
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                    }`}
+                    className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${selectedName === h.name
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                      }`}
                   >
                     {h.name}
                   </button>

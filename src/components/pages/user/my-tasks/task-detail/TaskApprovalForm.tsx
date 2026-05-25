@@ -55,7 +55,7 @@ export const TaskApprovalForm = ({
 
           {/* Action Controls */}
           {activeTask?.status === "PENDING" && (
-            <div className="md:w-[360px] p-2 bg-muted/30 flex flex-col gap-2">
+            <div className="md:w-[360px] p-2 bg-muted/30 flex flex-col gap-2 shrink-0">
               <div className="relative group">
                 <MessageSquare className="absolute top-2.5 left-2.5 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-primary transition-all duration-200" />
                 <Textarea
