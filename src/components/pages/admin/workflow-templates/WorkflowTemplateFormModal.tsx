@@ -95,7 +95,7 @@ function StepAssigneeFields({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3 col-span-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 col-span-full">
       <Field className="gap-1">
         <FieldLabel>{t("assignee_type_label")}</FieldLabel>
         <Select
@@ -391,7 +391,7 @@ export default function WorkflowTemplateFormModal({
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Controller
                   name="is_active"
                   control={form.control}
@@ -469,14 +469,14 @@ export default function WorkflowTemplateFormModal({
                         </span>
                       </div>
 
-                      <div className="flex-1 grid grid-cols-2 gap-3">
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <Controller
                           name={`steps.${index}.name`}
                           control={form.control}
                           render={({ field: f, fieldState }) => (
                             <Field
                               data-invalid={fieldState.invalid}
-                              className="gap-1 col-span-2"
+                              className="gap-1 col-span-full"
                             >
                               <FieldLabel>{t("step_name_label")}</FieldLabel>
                               <Input

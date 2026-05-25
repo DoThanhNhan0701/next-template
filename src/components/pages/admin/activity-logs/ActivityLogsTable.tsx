@@ -120,127 +120,59 @@ export default function ActivityLogsTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-between w-full">
-        <Select
-          value={targetModel}
-          onValueChange={(val) => {
-            setTargetModel(val);
-            setSkip(0);
-          }}
-        >
-          <SelectTrigger className="w-[200px] h-9">
-            <SelectValue placeholder={t("all_models")} />
-          </SelectTrigger>
+      <div className="flex items-center justify-between w-full gap-2 flex-wrap">
+        <Select value={targetModel} onValueChange={(val) => { setTargetModel(val); setSkip(0); }}>
+          <SelectTrigger className="w-44 h-9"><SelectValue placeholder={t("all_models")} /></SelectTrigger>
           <SelectContent>
             {TARGET_MODELS.map((model) => (
-              <SelectItem key={model.value} value={model.value}>
-                {t(model.labelKey)}
-              </SelectItem>
+              <SelectItem key={model.value} value={model.value}>{t(model.labelKey)}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                {tt("no")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {tt("timestamp")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {tt("actor")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {tt("action")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                {tt("target_model")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                {tt("details")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-right">
-                {tt("actions") || "Actions"}
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">{tt("no")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">{tt("timestamp")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{tt("actor")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden sm:table-cell">{tt("action")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">{tt("target_model")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden lg:table-cell">{tt("details")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions") || "Actions"}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
-            ) : logs.length === 0 ? (
-              <TableEmptyRow
-                colSpan={7}
-                icon={ScrollText}
-                message={t("no_logs_found")}
-                description={t("no_logs_description")}
-              />
-            ) : (
-              logs.map((log, index) => (
-                <TableRow
-                  key={log.id}
-                  className="hover:bg-primary/5 transition-colors"
-                >
-                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                    {skip + index + 1}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-muted-foreground text-sm">
-                    {formatDate(log.created_at, "DD/MM/YYYY HH:mm:ss")}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-foreground">
-                        {log.user?.full_name ||
-                          log.username ||
-                          `User #${log.user_id}`}
-                      </span>
-                      {log.ip_address && (
-                        <span className="text-xs text-muted-foreground">
-                          {log.ip_address}
-                        </span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${getActionBadgeClass(log.action)}`}
-                    >
-                      {log.action}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-foreground">
-                        {log.target_model}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {log.target_name
-                          ? `${log.target_name} (#${log.target_id})`
-                          : `ID: ${log.target_id}`}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm max-w-[250px] truncate text-muted-foreground">
-                    {log.target_name
-                      ? `${log.action} ${log.target_model}: ${log.target_name}`
-                      : `${log.action} ${log.target_model}`}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-foreground"
-                      onClick={() => setSelectedLog(log)}
-                    >
-                      <Eye size={14} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+            {pending ? <TableLoadingRows colSpan={7} rows={6} /> : logs.length === 0 ? (
+              <TableEmptyRow colSpan={7} icon={ScrollText} message={t("no_logs_found")} description={t("no_logs_description")} />
+            ) : logs.map((log, index) => (
+              <TableRow key={log.id} className="hover:bg-primary/5 transition-colors">
+                <TableCell className="px-4 py-1.5 text-center text-muted-foreground">{skip + index + 1}</TableCell>
+                <TableCell className="px-4 py-1.5 text-muted-foreground text-sm hidden md:table-cell">{formatDate(log.created_at, "DD/MM/YYYY HH:mm:ss")}</TableCell>
+                <TableCell className="px-4 py-1.5">
+                  <div className="flex flex-col">
+                    <span className="font-medium text-foreground">{log.user?.full_name || log.username || `User #${log.user_id}`}</span>
+                    {log.ip_address && <span className="text-xs text-muted-foreground">{log.ip_address}</span>}
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-1.5 hidden sm:table-cell">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${getActionBadgeClass(log.action)}`}>{log.action}</span>
+                </TableCell>
+                <TableCell className="px-4 py-1.5 hidden md:table-cell">
+                  <div className="flex flex-col">
+                    <span className="font-medium text-foreground">{log.target_model}</span>
+                    <span className="text-xs text-muted-foreground">{log.target_name ? `${log.target_name} (#${log.target_id})` : `ID: ${log.target_id}`}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-sm max-w-[250px] truncate text-muted-foreground hidden lg:table-cell">
+                  {log.target_name ? `${log.action} ${log.target_model}: ${log.target_name}` : `${log.action} ${log.target_model}`}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-right">
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setSelectedLog(log)}><Eye size={14} /></Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

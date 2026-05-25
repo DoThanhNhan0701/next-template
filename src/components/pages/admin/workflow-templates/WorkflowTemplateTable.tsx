@@ -77,91 +77,41 @@ export default function WorkflowTemplateTable() {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                {tt("no")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[45%]">
-                {tt("workflow_name")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                {tt("document_type")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                {tt("steps")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-center">
-                {tt("status")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[10%] text-right">
-                {tt("actions")}
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">{tt("no")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{tt("workflow_name")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden sm:table-cell">{tt("document_type")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-16 text-center hidden sm:table-cell">{tt("steps")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-24 text-center hidden sm:table-cell">{tt("status")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
-            ) : templates.length === 0 ? (
-              <TableEmptyRow
-                colSpan={7}
-                icon={GitBranch}
-                message={tt("no_workflows_found")}
-                description={tt("add_first_workflow")}
-              />
-            ) : (
-              templates.map((item, index) => (
-                <TableRow
-                  key={item.id}
-                  className="hover:bg-primary/5 transition-colors"
-                >
-                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 font-medium">
-                    <div className="flex flex-col">
-                      <span>{item.name}</span>
-                      {item.description && (
-                        <span className="text-xs text-muted-foreground font-normal truncate max-w-[260px]">
-                          {item.description}
-                        </span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm">
-                    {docTypeLabels[item.document_type] ?? item.document_type}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center text-sm">
-                    {item.steps?.length ?? 0}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    {item.is_active ? (
-                      <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("active")}
-                      </span>
-                    ) : (
-                      <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("inactive")}
-                      </span>
-                    )}
-                  </TableCell>
-
-                  <TableCell className="px-4 py-1.5 text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setTemplateToEdit(item)}
-                      >
-                        <EditIcon size={14} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+            {pending ? <TableLoadingRows colSpan={6} rows={6} /> : templates.length === 0 ? (
+              <TableEmptyRow colSpan={6} icon={GitBranch} message={tt("no_workflows_found")} description={tt("add_first_workflow")} />
+            ) : templates.map((item, index) => (
+              <TableRow key={item.id} className="hover:bg-primary/5 transition-colors">
+                <TableCell className="px-4 py-1.5 text-center text-muted-foreground">{index + 1}</TableCell>
+                <TableCell className="px-4 py-1.5 font-medium">
+                  <div className="flex flex-col">
+                    <span>{item.name}</span>
+                    {item.description && <span className="text-xs text-muted-foreground font-normal truncate max-w-[260px]">{item.description}</span>}
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-sm hidden sm:table-cell">{docTypeLabels[item.document_type] ?? item.document_type}</TableCell>
+                <TableCell className="px-4 py-1.5 text-center text-sm hidden sm:table-cell">{item.steps?.length ?? 0}</TableCell>
+                <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
+                  {item.is_active ? <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("active")}</span> : <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("inactive")}</span>}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setTemplateToEdit(item)}><EditIcon size={14} /></Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

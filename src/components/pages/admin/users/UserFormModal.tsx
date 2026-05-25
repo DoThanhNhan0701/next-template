@@ -193,7 +193,7 @@ export default function UserFormModal({
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Controller
                   name="role_id"
                   control={form.control}

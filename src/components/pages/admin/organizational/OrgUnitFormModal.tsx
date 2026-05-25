@@ -222,12 +222,12 @@ export default function OrgUnitFormModal({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 px-6 pb-6 overflow-y-auto">
-            <FieldGroup className="grid grid-cols-2 gap-3">
+            <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Controller
                 name="name"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("unit_name")}</FieldLabel>
                     <Input {...field} placeholder={t("name_placeholder")} />
                     {fieldState.invalid && (
@@ -280,7 +280,7 @@ export default function OrgUnitFormModal({
                 name="parent_id"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("parent_unit")}</FieldLabel>
                     <SelectField
                       disabled={isParentDisabled}
@@ -305,7 +305,7 @@ export default function OrgUnitFormModal({
                 name="leader_id"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("leader")}</FieldLabel>
                     <SelectField
                       disabled={isParentDisabled}
@@ -330,7 +330,7 @@ export default function OrgUnitFormModal({
                 name="address"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("address")}</FieldLabel>
                     <Input
                       {...field}
@@ -348,7 +348,7 @@ export default function OrgUnitFormModal({
                 name="description"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("description")}</FieldLabel>
                     <Textarea
                       {...field}

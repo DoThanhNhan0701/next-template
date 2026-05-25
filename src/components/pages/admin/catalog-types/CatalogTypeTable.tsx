@@ -150,8 +150,8 @@ export default function CatalogTypeTable() {
         setResponse((prev: ICatalogType[] | null) =>
           prev
             ? prev.map((u: ICatalogType) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            )
             : null,
         );
         return;
@@ -173,129 +173,53 @@ export default function CatalogTypeTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-between w-full">
-        <Select
-          value={isActive}
-          onValueChange={(val) => {
-            setIsActive(val);
-            setSkip(0);
-          }}
-        >
-          <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder={t("all_statuses")} />
-          </SelectTrigger>
+      <div className="flex items-center justify-between w-full gap-2 flex-wrap">
+        <Select value={isActive} onValueChange={(val) => { setIsActive(val); setSkip(0); }}>
+          <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("all_statuses")}</SelectItem>
             <SelectItem value="true">{t("active")}</SelectItem>
             <SelectItem value="false">{t("inactive")}</SelectItem>
           </SelectContent>
         </Select>
-        <div className="flex items-center gap-2">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImport}
-            accept=".xls,.xlsx"
-            className="hidden"
-          />
-          <Button
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={importPending}
-            className="gap-2"
-          >
-            {t("import_excel")}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            disabled={isExporting}
-            className="gap-2"
-          >
-            {t("export_excel")}
-          </Button>
-          <Button onClick={() => setIsCreating(true)} className="gap-2">
-            {t("add_type")}
-          </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xls,.xlsx" className="hidden" />
+          <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={importPending} className="gap-2">{t("import_excel")}</Button>
+          <Button variant="outline" onClick={handleExport} disabled={isExporting} className="gap-2">{t("export_excel")}</Button>
+          <Button onClick={() => setIsCreating(true)} className="gap-2">{t("add_type")}</Button>
         </div>
       </div>
-
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                {tt("no")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {tt("code")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                {tt("name")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                {tt("group")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                {tt("status")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right w-[10%]">
-                {tt("actions")}
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">{tt("no")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden sm:table-cell">{tt("code")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{tt("name")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">{tt("group")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">{tt("status")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
-            ) : catalogTypes.length === 0 ? (
-              <TableEmptyRow
-                colSpan={6}
-                icon={Tag}
-                message={tt("no_types_found")}
-                description={tt("add_first_type")}
-              />
-            ) : (
-              catalogTypes.map((type, index) => (
-                <TableRow
-                  key={type.id}
-                  className="hover:bg-primary/5 transition-colors"
-                >
-                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                    {skip + index + 1}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
-                    {type.code}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">{type.name}</TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    {type?.description ?? ""}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    {type.is_active ? (
-                      <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("active")}
-                      </span>
-                    ) : (
-                      <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("inactive")}
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setCatalogTypeToEdit(type)}
-                      >
-                        <EditIcon size={14} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+            {pending ? <TableLoadingRows colSpan={6} rows={6} /> : catalogTypes.length === 0 ? (
+              <TableEmptyRow colSpan={6} icon={Tag} message={tt("no_types_found")} description={tt("add_first_type")} />
+            ) : catalogTypes.map((type, index) => (
+              <TableRow key={type.id} className="hover:bg-primary/5 transition-colors">
+                <TableCell className="px-4 py-1.5 text-center text-muted-foreground">{skip + index + 1}</TableCell>
+                <TableCell className="px-4 py-1.5 font-medium text-foreground hidden sm:table-cell">{type.code}</TableCell>
+                <TableCell className="px-4 py-1.5">{type.name}</TableCell>
+                <TableCell className="px-4 py-1.5 hidden md:table-cell">{type?.description ?? ""}</TableCell>
+                <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
+                  {type.is_active ? <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("active")}</span> : <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("inactive")}</span>}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setCatalogTypeToEdit(type)}><EditIcon size={14} /></Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

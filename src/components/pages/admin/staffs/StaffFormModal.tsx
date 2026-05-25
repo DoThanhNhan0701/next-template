@@ -161,7 +161,7 @@ export default function StaffFormModal({
         >
           <div className="flex-1 px-6 pb-6 overflow-y-auto">
             <FieldGroup className="gap-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Controller
                   name="staff_code"
                   control={form.control}

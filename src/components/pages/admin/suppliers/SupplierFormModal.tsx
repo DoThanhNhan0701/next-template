@@ -136,14 +136,14 @@ export default function SupplierFormModal({
           className="flex-1 flex flex-col overflow-hidden"
         >
           <div className="flex-1 px-6 pb-6 overflow-y-auto">
-            <FieldGroup className="grid grid-cols-2 gap-x-4 gap-y-3">
+            <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
               <Controller
                 name="name"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field
                     data-invalid={fieldState.invalid}
-                    className="gap-1 col-span-2"
+                    className="gap-1 col-span-full"
                   >
                     <FieldLabel>{t("name_label")}</FieldLabel>
                     <Input {...field} placeholder={t("name_placeholder")} />
@@ -232,7 +232,7 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field
                     data-invalid={fieldState.invalid}
-                    className="gap-1 col-span-2"
+                    className="gap-1 col-span-full"
                   >
                     <FieldLabel>{t("address_label")}</FieldLabel>
                     <Input
@@ -253,7 +253,7 @@ export default function SupplierFormModal({
                 render={({ field, fieldState }) => (
                   <Field
                     data-invalid={fieldState.invalid}
-                    className="gap-1 col-span-2"
+                    className="gap-1 col-span-full"
                   >
                     <FieldLabel>{t("description_label")}</FieldLabel>
                     <Input
@@ -272,7 +272,7 @@ export default function SupplierFormModal({
                 name="is_active"
                 control={form.control}
                 render={({ field }) => (
-                  <Field className="gap-1 flex justify-start items-center col-span-2 mt-2">
+                  <Field className="gap-1 flex justify-start items-center col-span-full mt-2">
                     <label className="flex items-center gap-2 text-sm text-foreground">
                       <input
                         type="checkbox"

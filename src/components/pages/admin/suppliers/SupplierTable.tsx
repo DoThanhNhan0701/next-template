@@ -78,7 +78,7 @@ export default function SupplierTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full gap-2 flex-wrap">
         <Select
           value={isActive}
           onValueChange={(val) => {
@@ -86,7 +86,7 @@ export default function SupplierTable() {
             setSkip(0);
           }}
         >
-          <SelectTrigger className="w-[180px] h-9">
+          <SelectTrigger className="w-40 h-9">
             <SelectValue placeholder={t("all_statuses")} />
           </SelectTrigger>
           <SelectContent>
@@ -99,28 +99,28 @@ export default function SupplierTable() {
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">
                 {tt("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%] text-left">
+              <TableHead className="font-semibold h-10 px-4">
                 {tt("supplier")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">
                 {tt("contact")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
+              <TableHead className="font-semibold h-10 px-4 hidden lg:table-cell">
                 {tt("tax_code")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
+              <TableHead className="font-semibold h-10 px-4 hidden lg:table-cell">
                 {tt("address")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
+              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">
                 {tt("status")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right w-[10%]">
+              <TableHead className="font-semibold h-10 px-4 text-right">
                 {tt("actions")}
               </TableHead>
             </TableRow>
@@ -152,7 +152,7 @@ export default function SupplierTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
+                  <TableCell className="px-4 py-1.5 hidden md:table-cell">
                     <div className="flex flex-col gap-1 text-sm">
                       {item.contact_name && (
                         <div className="flex items-center gap-1.5">
@@ -174,13 +174,13 @@ export default function SupplierTable() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5">
+                  <TableCell className="px-4 py-1.5 hidden lg:table-cell">
                     {item.tax_code || "-"}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-[200px] truncate underline decoration-muted-foreground/30 underline-offset-2">
+                  <TableCell className="px-4 py-1.5 max-w-[200px] truncate hidden lg:table-cell">
                     {item.address || "-"}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                     {item.is_active ? (
                       <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
                         {t("active")}

@@ -73,8 +73,8 @@ export default function LocationTable() {
         setResponse((prev: ILocation[] | null) =>
           prev
             ? prev.map((loc: ILocation) =>
-                loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
-              )
+              loc.id === updatedItem?.id ? { ...loc, ...updatedItem } : loc,
+            )
             : null,
         );
         return;
@@ -109,17 +109,9 @@ export default function LocationTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-between w-full">
-        <Select
-          value={isActiveFilter}
-          onValueChange={(val) => {
-            setIsActiveFilter(val);
-            setSkip(0);
-          }}
-        >
-          <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder={t("all_statuses")} />
-          </SelectTrigger>
+      <div className="flex items-center justify-between w-full gap-2 flex-wrap">
+        <Select value={isActiveFilter} onValueChange={(val) => { setIsActiveFilter(val); setSkip(0); }}>
+          <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("all_statuses")}</SelectItem>
             <SelectItem value="true">{t("active")}</SelectItem>
@@ -128,85 +120,37 @@ export default function LocationTable() {
         </Select>
         <Button onClick={() => setIsCreating(true)}>{t("add_location")}</Button>
       </div>
-
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                {tt("no")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                {tt("code")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[35%]">
-                {tt("name")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[20%]">
-                {tt("description")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                {tt("status")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right w-[10%]">
-                {tt("actions")}
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">{tt("no")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden sm:table-cell">{tt("code")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{tt("name")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">{tt("description")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">{tt("status")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
-              <TableLoadingRows colSpan={6} rows={6} />
-            ) : locations.length === 0 ? (
-              <TableEmptyRow
-                colSpan={6}
-                icon={MapPin}
-                message={tt("no_locations_found")}
-                description={tt("add_first_location")}
-              />
-            ) : (
-              locations.map((loc, index) => (
-                <TableRow
-                  key={loc.id}
-                  className="hover:bg-primary/5 transition-colors"
-                >
-                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                    {skip + index + 1}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
-                    {loc.code}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
-                    {loc.name}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    {loc.description}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    {loc.is_active ? (
-                      <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("active")}
-                      </span>
-                    ) : (
-                      <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("inactive")}
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setLocationToEdit(loc)}
-                      >
-                        <EditIcon size={14} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+            {pending ? <TableLoadingRows colSpan={6} rows={6} /> : locations.length === 0 ? (
+              <TableEmptyRow colSpan={6} icon={MapPin} message={tt("no_locations_found")} description={tt("add_first_location")} />
+            ) : locations.map((loc, index) => (
+              <TableRow key={loc.id} className="hover:bg-primary/5 transition-colors">
+                <TableCell className="px-4 py-1.5 text-center text-muted-foreground">{skip + index + 1}</TableCell>
+                <TableCell className="px-4 py-1.5 font-medium text-foreground hidden sm:table-cell">{loc.code}</TableCell>
+                <TableCell className="px-4 py-1.5 font-medium text-foreground">{loc.name}</TableCell>
+                <TableCell className="px-4 py-1.5 hidden md:table-cell">{loc.description}</TableCell>
+                <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
+                  {loc.is_active ? <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("active")}</span> : <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("inactive")}</span>}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setLocationToEdit(loc)}><EditIcon size={14} /></Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

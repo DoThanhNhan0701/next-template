@@ -86,8 +86,8 @@ export default function UserTable() {
         setResponse((prev: IUser[] | null) =>
           prev
             ? prev.map((u: IUser) =>
-                u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
-              )
+              u.id === updatedItem?.id ? { ...u, ...updatedItem } : u,
+            )
             : null,
         );
         return;
@@ -107,17 +107,9 @@ export default function UserTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-between w-full">
-        <Select
-          value={isActive}
-          onValueChange={(val) => {
-            setIsActive(val);
-            setSkip(0);
-          }}
-        >
-          <SelectTrigger className="w-[180px] h-9">
-            <SelectValue placeholder={t("all_statuses")} />
-          </SelectTrigger>
+      <div className="flex items-center justify-between w-full gap-2 flex-wrap">
+        <Select value={isActive} onValueChange={(val) => { setIsActive(val); setSkip(0); }}>
+          <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("all_statuses")}</SelectItem>
             <SelectItem value="true">{t("active")}</SelectItem>
@@ -126,121 +118,47 @@ export default function UserTable() {
         </Select>
         <Button onClick={() => setIsCreating(true)}>{t("add_user")}</Button>
       </div>
-
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="whitespace-nowrap">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[5%] text-center">
-                {tc("stt")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[15%]">
-                {t("username")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                {t("full_name")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[25%]">
-                {t("email")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                {t("staff_code_short")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                {t("role")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[10%]">
-                {t("status")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right w-[15%]">
-                {t("actions")}
-              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">{tc("stt")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4">{t("full_name")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden sm:table-cell">{t("username")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">{t("email")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center hidden md:table-cell">{t("staff_code_short")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">{t("role")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">{t("status")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">{t("actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
-              <TableLoadingRows colSpan={7} rows={6} />
-            ) : users.length === 0 ? (
-              <TableEmptyRow
-                colSpan={7}
-                icon={UserCog}
-                message={t("no_users_found")}
-                description={t("add_first_user_description")}
-              />
-            ) : (
-              users.map((user, index) => (
-                <TableRow
-                  key={user.id}
-                  className="hover:bg-primary/5 transition-colors"
-                >
-                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
-                    {skip + index + 1}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
-                    {user.username}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">
-                    {user.full_name}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5">{user.email}</TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    {user.staff_code ? (
-                      <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">
-                        {user.staff_code}
-                      </span>
-                    ) : (
-                      <span className="text-red-600 text-xs">
-                        {t("not_linked")}
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">
-                      {user.role_obj?.name || user.role}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
-                    {user.is_active ? (
-                      <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("active")}
-                      </span>
-                    ) : (
-                      <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
-                        {t("inactive")}
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="px-4 py-1.5 text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setUserToPwChange(user)}
-                      >
-                        <Key size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setUserToResetPw(user)}
-                      >
-                        <RotateCcw size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={() => setUserToEdit(user)}
-                      >
-                        <EditIcon size={14} />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+            {pending ? <TableLoadingRows colSpan={8} rows={6} /> : users.length === 0 ? (
+              <TableEmptyRow colSpan={8} icon={UserCog} message={t("no_users_found")} description={t("add_first_user_description")} />
+            ) : users.map((user, index) => (
+              <TableRow key={user.id} className="hover:bg-primary/5 transition-colors">
+                <TableCell className="px-4 py-1.5 text-center text-muted-foreground">{skip + index + 1}</TableCell>
+                <TableCell className="px-4 py-1.5 font-medium text-foreground">{user.full_name}</TableCell>
+                <TableCell className="px-4 py-1.5 hidden sm:table-cell">{user.username}</TableCell>
+                <TableCell className="px-4 py-1.5 hidden md:table-cell">{user.email}</TableCell>
+                <TableCell className="px-4 py-1.5 text-center hidden md:table-cell">
+                  {user.staff_code ? <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">{user.staff_code}</span> : <span className="text-red-600 text-xs">{t("not_linked")}</span>}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
+                  <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm font-medium">{user.role_obj?.name || user.role}</span>
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
+                  {user.is_active ? <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("active")}</span> : <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("inactive")}</span>}
+                </TableCell>
+                <TableCell className="px-4 py-1.5 text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setUserToPwChange(user)}><Key size={14} /></Button>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setUserToResetPw(user)}><RotateCcw size={14} /></Button>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setUserToEdit(user)}><EditIcon size={14} /></Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
