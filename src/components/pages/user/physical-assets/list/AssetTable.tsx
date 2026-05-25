@@ -259,29 +259,29 @@ export default function AssetTable() {
         </div>
       </div>
 
-      <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-auto">
-        <Table className="table-fixed w-full">
+      <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-3 w-12.5 text-center">
+              <TableHead className="font-semibold h-10 px-3 w-12 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-95">
+              <TableHead className="font-semibold h-10 px-3">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-30 text-center">
+              <TableHead className="font-semibold h-10 px-3 w-28 text-center hidden sm:table-cell">
                 {t("table.asset_code")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-50 hidden lg:table-cell">
+              <TableHead className="font-semibold h-10 px-3 w-48 hidden lg:table-cell">
                 {t("table.ownership")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-40 hidden lg:table-cell">
+              <TableHead className="font-semibold h-10 px-3 w-36 hidden lg:table-cell">
                 {t("table.purchase_info")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-35 text-center">
+              <TableHead className="font-semibold h-10 px-3 w-32 text-center hidden sm:table-cell">
                 {t("table.management_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-3 w-55 text-center">
+              <TableHead className="font-semibold h-10 px-3 w-44 text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -321,7 +321,7 @@ export default function AssetTable() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
+                    <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                       <div className="flex justify-center">
                         <span
                           className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
@@ -376,7 +376,7 @@ export default function AssetTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
+                    <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                       <Badge
                         variant="outline"
                         className={cn(

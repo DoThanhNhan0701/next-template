@@ -234,7 +234,7 @@ export default function AllocationVoucherModal({
                 <h3 className="text-sm font-semibold text-primary">
                   {t("form.general_info")}
                 </h3>
-                <FieldGroup className="grid grid-cols-2 gap-3">
+                <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Controller
                     name="unit_id"
                     control={form.control}
@@ -268,8 +268,8 @@ export default function AllocationVoucherModal({
                         <SelectField
                           options={(watchedUnitId && Number(watchedUnitId) !== 0
                             ? staffs.filter(
-                                (s) => s.unit_id === Number(watchedUnitId),
-                              )
+                              (s) => s.unit_id === Number(watchedUnitId),
+                            )
                             : []
                           ).map((l) => ({
                             label: `${l.full_name} - (${l?.staff_code ?? ""})`,
@@ -328,7 +328,7 @@ export default function AllocationVoucherModal({
                     name="reason"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-2">
+                      <Field className="gap-1 col-span-full">
                         <FieldLabel>{t("form.allocation_reason")}</FieldLabel>
                         <Textarea
                           {...field}

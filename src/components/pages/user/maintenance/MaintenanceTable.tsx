@@ -61,8 +61,7 @@ export default function MaintenanceTable() {
   const maintenances = response?.items || [];
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
-        {/* Search Group */}
+      <div className="flex items-center gap-2 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -87,70 +86,63 @@ export default function MaintenanceTable() {
           )}
         </div>
 
-        {/* Action Group */}
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => {
-              setSkip(0);
-              setAppliedFilters({
-                q,
-              });
-            }}
-            className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {pending ? t("searching") : t("btn_search")}
-          </Button>
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({ q });
+          }}
+          className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {pending ? t("searching") : t("btn_search")}
+        </Button>
 
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setAppliedFilters({
-                q: "",
-              });
-              setSkip(0);
-            }}
-            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title={t("btn_clear_filters")}
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
-          <Button
-            onClick={() => setIsCreating(true)}
-            className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {t("btn_create")}
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setQ("");
+            setAppliedFilters({ q: "" });
+            setSkip(0);
+          }}
+          className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+          title={t("btn_clear_filters")}
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
+        <Button
+          onClick={() => setIsCreating(true)}
+          className="shrink-0 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {t("btn_create")}
+        </Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12 text-center">
                 {t("no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-28 text-center hidden sm:table-cell">
                 {t("record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-28 text-center hidden md:table-cell">
                 {t("ticket_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[160px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-40 text-center hidden md:table-cell">
                 {t("date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[320px]">
+              <TableHead className="font-semibold h-10 px-4">
                 {t("asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
+              <TableHead className="font-semibold h-10 px-4 w-44 hidden lg:table-cell">
                 {t("service_provider")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-20 text-center hidden sm:table-cell">
                 {t("quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center">
                 {t("status")}
               </TableHead>
             </TableRow>
@@ -175,7 +167,7 @@ export default function MaintenanceTable() {
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center">
+                  <TableCell className="px-4 py-2 text-center hidden sm:table-cell">
                     <div className="flex justify-center">
                       <span
                         className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
@@ -185,10 +177,10 @@ export default function MaintenanceTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center text-xs">
+                  <TableCell className="px-4 py-1.5 text-center text-xs hidden md:table-cell">
                     {item.ticket_number}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm text-center">
+                  <TableCell className="px-4 py-1.5 text-sm text-center hidden md:table-cell">
                     <div className="flex flex-col gap-1 overflow-hidden items-center">
                       <div className="flex items-center gap-1.5 overflow-hidden">
                         <Calendar
@@ -233,7 +225,7 @@ export default function MaintenanceTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 text-sm max-w-0 overflow-hidden hidden lg:table-cell">
                     <span
                       className="truncate block"
                       title={item.service_provider_name}
@@ -241,7 +233,7 @@ export default function MaintenanceTable() {
                       {item.service_provider_name || t("none")}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm font-medium text-center">
+                  <TableCell className="px-4 py-1.5 text-sm font-medium text-center hidden sm:table-cell">
                     {item.total_assets}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">

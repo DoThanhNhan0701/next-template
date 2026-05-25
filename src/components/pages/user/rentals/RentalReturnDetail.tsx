@@ -273,84 +273,84 @@ export default function RentalReturnDetail({ id }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold tracking-wider">
                     {t("detail.lease_date")}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground text-right">
                   {formatDate(detail.rental.lease_date)}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                   <Calendar size={15} />
                   <span className="text-xs font-semibold tracking-wider">
                     {t("detail.return_date")}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground text-right">
                   {formatDate(detail.return_date)}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                   <MapPin size={15} />
                   <span className="text-xs font-semibold tracking-wider">
                     {t("detail.to_location")}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground text-right truncate ml-2">
                   {detail.to_location.name}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                   <FileText size={15} />
                   <span className="text-xs font-semibold tracking-wider">
                     {t("detail.contract")}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground text-right">
                   {detail.rental.contract_number}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                   <FileText size={15} />
                   <span className="text-xs font-semibold tracking-wider">
                     {t("detail.rental_record")}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground text-right">
                   {detail.rental.record_number}
                 </span>
               </div>
               {detail.creator && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                     <User size={15} />
                     <span className="text-xs font-semibold tracking-wider">
                       {t("detail.creator")}
                     </span>
                   </div>
-                  <span className="text-sm font-semibold text-foreground">
+                  <span className="text-sm font-semibold text-foreground text-right truncate ml-2">
                     {detail.creator.full_name}
                   </span>
                 </div>
               )}
               {detail.created_at && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-muted-foreground shrink-0">
                     <Clock size={15} />
                     <span className="text-xs font-semibold tracking-wider">
                       {t("detail.created_at")}
                     </span>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-sm font-semibold text-foreground">
+                    <span className="text-sm font-semibold text-foreground text-right">
                       {formatDateTime(detail.created_at)}
                     </span>
                   </div>
@@ -424,7 +424,7 @@ export default function RentalReturnDetail({ id }: Props) {
               ))}
             </div>
           ) : !historyList || historyList.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
+            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2 px-3">
               <Clock className="w-8 h-8 opacity-30" />
               <p className="text-sm italic">{t("detail.no_history")}</p>
             </div>
@@ -435,16 +435,16 @@ export default function RentalReturnDetail({ id }: Props) {
                   <TableHead className="px-4 h-10 text-xs font-semibold">
                     {t("table.step")}
                   </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
+                  <TableHead className="px-4 h-10 text-xs font-semibold hidden sm:table-cell">
                     {t("table.approver")}
                   </TableHead>
                   <TableHead className="px-4 h-10 text-xs font-semibold text-center">
                     {t("table.status")}
                   </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
+                  <TableHead className="px-4 h-10 text-xs font-semibold hidden md:table-cell">
                     {t("table.comment")}
                   </TableHead>
-                  <TableHead className="px-4 h-10 text-xs font-semibold">
+                  <TableHead className="px-4 h-10 text-xs font-semibold hidden md:table-cell">
                     {t("table.date")}
                   </TableHead>
                 </TableRow>
@@ -458,12 +458,12 @@ export default function RentalReturnDetail({ id }: Props) {
                     <TableCell className="px-4 py-1.5 text-sm font-semibold">
                       {hist.step_name}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 hidden sm:table-cell">
                       <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
+                        <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold shrink-0">
                           {hist.requester_name?.charAt(0)}
                         </div>
-                        <span className="text-sm">{hist.requester_name}</span>
+                        <span className="text-sm truncate">{hist.requester_name}</span>
                       </div>
                     </TableCell>
                     <TableCell className="px-4 py-1.5 text-center">
@@ -482,10 +482,10 @@ export default function RentalReturnDetail({ id }: Props) {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
+                    <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic hidden md:table-cell">
                       {hist.comment || "—"}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">
+                    <TableCell className="px-4 py-1.5 text-xs text-muted-foreground hidden md:table-cell">
                       {formatDate(hist.action_date)}
                     </TableCell>
                   </TableRow>

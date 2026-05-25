@@ -84,7 +84,7 @@ export function WorkflowHistory({
             ))}
           </div>
         ) : !historyList || historyList.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2">
+          <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-2 px-3">
             <Clock className="w-8 h-8 opacity-30" />
             <p className="text-sm italic">{emptyMessage || t("no_history")}</p>
           </div>

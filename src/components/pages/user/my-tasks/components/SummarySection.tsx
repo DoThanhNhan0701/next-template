@@ -57,7 +57,7 @@ function SummaryCard({
   return (
     <div
       className={cn(
-        "relative overflow-hidden group p-5 rounded-xl border backdrop-blur-xl transition-all duration-300 hover:shadow-lg hover:border-border/80 bg-background/5",
+        "relative overflow-hidden group p-3 sm:p-5 rounded-xl border backdrop-blur-xl transition-all duration-300 hover:shadow-lg hover:border-border/80 bg-background/5",
         colors.bg,
         colors.border,
         className,
@@ -66,18 +66,18 @@ function SummaryCard({
       <div className="flex flex-col gap-1 relative z-10">
         <span
           className={cn(
-            "text-[10px] font-bold uppercase tracking-widest opacity-80",
+            "text-[9px] sm:text-[10px] font-bold uppercase tracking-widest opacity-80",
             colors.label,
           )}
         >
           {label}
         </span>
-        <span className="text-4xl font-bold text-foreground/90 tracking-tight">
+        <span className="text-2xl sm:text-4xl font-bold text-foreground/90 tracking-tight">
           {value}
         </span>
         <div
           className={cn(
-            "mt-3 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border w-fit text-[10px] font-semibold",
+            "mt-1 sm:mt-3 hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border w-fit text-[10px] font-semibold",
             colors.badge,
           )}
         >
@@ -86,7 +86,7 @@ function SummaryCard({
       </div>
       <Icon
         className={cn(
-          "absolute -right-2 -bottom-2 w-20 h-20 transition-transform duration-500 group-hover:scale-110 opacity-20",
+          "absolute -right-2 -bottom-2 w-12 h-12 sm:w-20 sm:h-20 transition-transform duration-500 group-hover:scale-110 opacity-20",
           colors.icon,
         )}
       />
@@ -100,7 +100,7 @@ interface SummarySectionProps {
   rejectedCount?: number;
 }
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 export function SummarySection({
   pendingCount = 0,
@@ -121,7 +121,7 @@ export function SummarySection({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <SummaryCard
           label={t("pending")}
           value={displayPending}

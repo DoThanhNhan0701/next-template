@@ -80,7 +80,7 @@ export default function StockAdjustmentTable({
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
       {/* Toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 z-10 w-full">
+      <div className="flex items-center gap-2 z-10 w-full">
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -105,36 +105,34 @@ export default function StockAdjustmentTable({
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2"></div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => {
-              setSkip(0);
-              setAppliedFilters({ q });
-            }}
-          >
-            {pending ? t("table.searching") : t("table.search")}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setQ("");
-              setAppliedFilters({ q: "" });
-              setSkip(0);
-            }}
-            title={t("table.clear_filters")}
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
-          <Button
-            onClick={() => setIsManualOpen(true)}
-            className="bg-primary/95 hover:bg-primary"
-          >
-            {t("table.create")}
-          </Button>
-        </div>
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({ q });
+          }}
+          className="shrink-0"
+        >
+          {pending ? t("table.searching") : t("table.search")}
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setQ("");
+            setAppliedFilters({ q: "" });
+            setSkip(0);
+          }}
+          title={t("table.clear_filters")}
+          className="shrink-0"
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
+        <Button
+          onClick={() => setIsManualOpen(true)}
+          className="shrink-0 bg-primary/95 hover:bg-primary"
+        >
+          {t("table.create")}
+        </Button>
       </div>
 
       <StockAdjustmentModal
@@ -148,28 +146,28 @@ export default function StockAdjustmentTable({
 
       {/* Table */}
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center hidden sm:table-cell">
                 {t("table.record_no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[320px]">
+              <TableHead className="font-semibold h-10 px-4">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-28 text-center hidden md:table-cell">
                 {t("table.type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[90px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-20 text-center hidden sm:table-cell">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center hidden md:table-cell">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -194,7 +192,7 @@ export default function StockAdjustmentTable({
                   <TableCell className="px-4 py-2 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center">
+                  <TableCell className="px-4 py-2 text-center hidden sm:table-cell">
                     <div className="flex justify-center">
                       <span
                         className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
@@ -212,7 +210,7 @@ export default function StockAdjustmentTable({
                       {item.asset_names}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center">
+                  <TableCell className="px-4 py-2 text-center hidden md:table-cell">
                     {item.adjustment_type === "INCREASE" ? (
                       <span className="inline-flex items-center gap-1 text-green-600 text-xs font-semibold">
                         <ArrowUpCircle size={14} /> {t("table.increase")}
@@ -223,10 +221,10 @@ export default function StockAdjustmentTable({
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center font-medium">
+                  <TableCell className="px-4 py-2 text-center font-medium hidden sm:table-cell">
                     {item.total_quantity}
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-center">
+                  <TableCell className="px-4 py-2 text-center hidden md:table-cell">
                     <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}

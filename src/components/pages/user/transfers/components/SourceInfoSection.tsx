@@ -52,12 +52,12 @@ export function SourceInfoSection({
       <h3 className="text-sm font-semibold text-primary tracking-tight">
         {t("form.source_info")}
       </h3>
-      <FieldGroup className="grid grid-cols-2 gap-3">
+      <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Controller
           name="source_type"
           control={form.control}
           render={({ field }) => (
-            <Field className="col-span-2 gap-1 mb-3">
+            <Field className="col-span-full gap-1 mb-3">
               <FieldLabel>{t("form.transfer_type")}</FieldLabel>
               <Tabs
                 value={field.value}
@@ -99,7 +99,7 @@ export function SourceInfoSection({
           name="source_id"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field className="col-span-2 gap-1">
+            <Field className="col-span-full gap-1">
               <FieldLabel>
                 {watchedType === "holder"
                   ? t("form.select_source_personnel")

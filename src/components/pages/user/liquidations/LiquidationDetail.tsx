@@ -103,14 +103,14 @@ export default function LiquidationDetail({ id }: Props) {
       </div>
 
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
-        <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <FileText className="w-4 h-4 text-primary" />
             <CardTitle className="text-xs font-semibold text-primary tracking-wider">
               {t("record_number")}
             </CardTitle>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="text-base font-bold text-foreground tracking-tight">
               {detail.record_number}
             </span>

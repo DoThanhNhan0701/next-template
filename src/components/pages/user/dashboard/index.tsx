@@ -148,7 +148,7 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
             {t.rich("welcome_back", {
               name: user?.full_name || "User",
               important: (chunks: React.ReactNode) => (
@@ -165,7 +165,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {stats.map((stat, i) => (
           <Card
             key={i}
@@ -205,7 +205,7 @@ export default function DashboardPage() {
                 <h3 className="text-sm font-bold text-muted-foreground tracking-tight">
                   {stat.title}
                 </h3>
-                <p className="text-2xl font-bold tracking-tighter">
+                <p className="text-xl sm:text-2xl font-bold tracking-tighter">
                   {stat.value}
                 </p>
               </div>

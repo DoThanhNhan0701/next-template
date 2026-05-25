@@ -324,12 +324,13 @@ export default function MaintenanceFormModal({
             className="flex-1 flex flex-col overflow-hidden"
           >
             <div className="px-4 pb-4">
-              <TabsList className="grid w-full grid-cols-4 h-16 p-1 bg-muted/30 z-10">
+              <TabsList className="grid w-full grid-cols-4 h-14 sm:h-16 p-1 bg-muted/30 z-10">
                 <TabsTrigger
                   value="assets"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <Package size={16} /> {t("tab_assets")}
+                  <Package size={16} />
+                  <span className="hidden sm:block">{t("tab_assets")}</span>
                   {hasAssetsErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -338,7 +339,8 @@ export default function MaintenanceFormModal({
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <ClipboardList size={16} /> {t("tab_general")}
+                  <ClipboardList size={16} />
+                  <span className="hidden sm:block">{t("tab_general")}</span>
                   {hasGeneralErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -347,7 +349,8 @@ export default function MaintenanceFormModal({
                   value="service"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <Wrench size={16} /> {t("tab_service")}
+                  <Wrench size={16} />
+                  <span className="hidden sm:block">{t("tab_service")}</span>
                   {hasServiceErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -356,7 +359,8 @@ export default function MaintenanceFormModal({
                   value="approval"
                   className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
                 >
-                  <UserCheck size={16} /> {t("tab_approval")}
+                  <UserCheck size={16} />
+                  <span className="hidden sm:block">{t("tab_approval")}</span>
                   {hasApprovalErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}

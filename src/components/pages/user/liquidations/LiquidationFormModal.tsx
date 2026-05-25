@@ -156,27 +156,27 @@ export default function LiquidationFormModal({
         attachments: liquidationToEdit.attachments || [],
         items: Array.isArray(liquidationToEdit.details)
           ? liquidationToEdit.details.map((item) => ({
-              asset_id: item.asset_id || 0,
-              quantity: item.quantity || 1,
-              unit_value: item.unit_value || 0,
-              remaining_value: item.remaining_value || 0,
-              notes: item.notes ?? null,
-              from_location_id: item.from_location_id || 0,
-              from_staff_id: 0, // Not in details
-              from_unit_id: 0, // Not in details
-            }))
+            asset_id: item.asset_id || 0,
+            quantity: item.quantity || 1,
+            unit_value: item.unit_value || 0,
+            remaining_value: item.remaining_value || 0,
+            notes: item.notes ?? null,
+            from_location_id: item.from_location_id || 0,
+            from_staff_id: 0, // Not in details
+            from_unit_id: 0, // Not in details
+          }))
           : [
-              {
-                asset_id: 0,
-                quantity: 1,
-                unit_value: 0,
-                remaining_value: 0,
-                notes: "",
-                from_location_id: 0,
-                from_staff_id: 0,
-                from_unit_id: 0,
-              },
-            ],
+            {
+              asset_id: 0,
+              quantity: 1,
+              unit_value: 0,
+              remaining_value: 0,
+              notes: "",
+              from_location_id: 0,
+              from_staff_id: 0,
+              from_unit_id: 0,
+            },
+          ],
         approvals,
         required_steps: activeTemplate?.steps?.length || 0,
         workflow_assignments: liquidationToEdit.workflow_assignments || [],
@@ -334,12 +334,13 @@ export default function LiquidationFormModal({
             className="flex-1 flex flex-col overflow-hidden"
           >
             <div className="px-4 pb-4">
-              <TabsList className="grid w-full grid-cols-3 h-16 p-1 bg-muted/30 z-10">
+              <TabsList className="grid w-full grid-cols-3 h-14 sm:h-16 p-1 bg-muted/30 z-10">
                 <TabsTrigger
                   value="assets"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <Package size={16} /> {t("tab_assets")}
+                  <Package size={16} />
+                  <span className="hidden sm:block">{t("tab_assets")}</span>
                   {hasAssetsErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -349,7 +350,8 @@ export default function LiquidationFormModal({
                   value="general"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <ClipboardList size={16} /> {t("tab_general")}
+                  <ClipboardList size={16} />
+                  <span className="hidden sm:block">{t("tab_general")}</span>
                   {hasGeneralErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}
@@ -359,7 +361,8 @@ export default function LiquidationFormModal({
                   value="approval"
                   className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
                 >
-                  <UserCheck size={16} /> {t("tab_approval")}
+                  <UserCheck size={16} />
+                  <span className="hidden sm:block">{t("tab_approval")}</span>
                   {hasApprovalErrors && (
                     <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                   )}

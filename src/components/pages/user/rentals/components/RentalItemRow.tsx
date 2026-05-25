@@ -74,7 +74,7 @@ export function RentalItemRow({
 
   return (
     <div className="bg-muted/30 border rounded-lg p-3 flex items-end gap-2">
-      <div className="grid grid-cols-[0.7fr_1.3fr_110px_110px] gap-2 flex-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[0.7fr_1.3fr_110px_110px] gap-2 flex-1">
         <Field className="gap-1 min-w-0">
           <FieldLabel>{t("form.location")}</FieldLabel>
 
@@ -103,9 +103,8 @@ export function RentalItemRow({
 
               <SelectField
                 options={(assets ?? []).map((a) => ({
-                  label: `${a.name} (${a.asset_code}) Quantity: ${
-                    a?.current_stock ?? 0
-                  }`,
+                  label: `${a.name} (${a.asset_code}) Quantity: ${a?.current_stock ?? 0
+                    }`,
                   value: a.id,
                 }))}
                 value={field.value as number}

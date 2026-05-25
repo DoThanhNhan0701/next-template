@@ -81,8 +81,8 @@ export default function TransfersTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
-        {/* Search Group */}
+      <div className="flex items-center gap-2 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
+        {/* Search */}
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -107,10 +107,10 @@ export default function TransfersTable() {
           )}
         </div>
 
-        {/* Filters Group */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 min-w-0 flex-1">
+        {/* Unit filter */}
+        <div className="hidden md:block shrink-0 w-44">
           <SelectField
-            className="w-full min-w-0"
+            className="w-full"
             options={(orgUnits ?? [])
               .filter((c) => c.is_active)
               .map((c) => ({
@@ -121,77 +121,67 @@ export default function TransfersTable() {
             onChange={(val) => setUnitId(val)}
             placeholder={t("filters.all_units")}
           />
-
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => {
-                setSkip(0);
-                setAppliedFilters({
-                  q,
-                  unit_id: unitId,
-                });
-              }}
-              className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-            >
-              {pending ? t("filters.searching") : t("filters.search")}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                setQ("");
-                setUnitId("");
-                setAppliedFilters({
-                  q: "",
-                  unit_id: "",
-                });
-                setSkip(0);
-              }}
-              className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-              title={t("filters.clear_all")}
-            >
-              <RotateCcw size={16} className="text-muted-foreground/70" />
-            </Button>
-          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => setIsCreating(true)}
-            className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {t("filters.create")}
-          </Button>
-        </div>
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({ q, unit_id: unitId });
+          }}
+          className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {pending ? t("filters.searching") : t("filters.search")}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setQ("");
+            setUnitId("");
+            setAppliedFilters({ q: "", unit_id: "" });
+            setSkip(0);
+          }}
+          className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+          title={t("filters.clear_all")}
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
+
+        <Button
+          onClick={() => setIsCreating(true)}
+          className="shrink-0 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {t("filters.create")}
+        </Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32.5 text-center hidden sm:table-cell">
                 {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[110px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-27.5 text-center hidden md:table-cell">
                 {t("table.transfer_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-30 text-center hidden md:table-cell">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[320px]">
+              <TableHead className="font-semibold h-10 px-4">
                 {t("table.asset_details")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[240px]">
+              <TableHead className="font-semibold h-10 px-4 w-60 hidden lg:table-cell">
                 {t("table.from_to")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-20 text-center hidden sm:table-cell">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[120px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-30 text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -216,7 +206,7 @@ export default function TransfersTable() {
                   <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                     {skip + index + 1}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                     <div className="flex justify-center">
                       <span
                         className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
@@ -226,12 +216,12 @@ export default function TransfersTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden md:table-cell">
                     <span className="text-xs text-muted-foreground font-medium">
                       {item.transfer_type}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm text-center">
+                  <TableCell className="px-4 py-1.5 text-sm text-center hidden md:table-cell">
                     <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}
@@ -253,7 +243,7 @@ export default function TransfersTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1 max-w-0 overflow-hidden hidden lg:table-cell">
                     <div className="flex flex-col gap-0 text-xs leading-tight">
                       <span
                         className={`truncate ${item.from_name ? "font-medium" : "italic text-muted-foreground"}`}
@@ -262,7 +252,7 @@ export default function TransfersTable() {
                         {item.from_name || "—"}
                       </span>
                       <span
-                        className={`truncate text-xs text-muted-foreground/70 flex items-center gap-1 mt-0.5`}
+                        className="truncate text-xs text-muted-foreground/70 flex items-center gap-1 mt-0.5"
                         title={item.to_name || "—"}
                       >
                         <ArrowDown
@@ -273,7 +263,7 @@ export default function TransfersTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center font-medium">
+                  <TableCell className="px-4 py-1.5 text-center font-medium hidden sm:table-cell">
                     {item.total_assets}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">

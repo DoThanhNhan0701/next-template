@@ -76,8 +76,7 @@ export default function MyAuditsTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 backdrop-blur-md rounded-md transition-all hover:border-border/80">
-        {/* Search Group */}
+      <div className="flex items-center gap-2 backdrop-blur-md rounded-md transition-all hover:border-border/80">
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -102,10 +101,8 @@ export default function MyAuditsTable() {
           )}
         </div>
 
-        {/* Filter Group */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="hidden sm:block shrink-0 w-44">
           <SelectField
-            className="min-w-[200px]"
             value={auditTypeInput}
             onChange={(val) => setAuditTypeInput(val)}
             placeholder={t("filters.all_types")}
@@ -116,60 +113,57 @@ export default function MyAuditsTable() {
           />
         </div>
 
-        {/* Action Group */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="default"
-            onClick={handleSearch}
-            className="transition-all active:scale-95 shrink-0"
-          >
-            {t("filters.btn_search")}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              setSearchInput("");
-              setAuditTypeInput("");
-              setQ("");
-              setAuditType("");
-              setSkip(0);
-            }}
-            className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-            title="Clear all filters"
-          >
-            <RotateCcw size={16} className="text-muted-foreground/70" />
-          </Button>
-          <Button
-            variant="default"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="transition-all active:scale-95 shrink-0"
-          >
-            {t("filters.btn_create")}
-          </Button>
-        </div>
+        <Button
+          variant="default"
+          onClick={handleSearch}
+          className="shrink-0 transition-all active:scale-95"
+        >
+          {t("filters.btn_search")}
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setSearchInput("");
+            setAuditTypeInput("");
+            setQ("");
+            setAuditType("");
+            setSkip(0);
+          }}
+          className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+          title="Clear all filters"
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
+        <Button
+          variant="default"
+          onClick={() => setIsCreateModalOpen(true)}
+          className="shrink-0 transition-all active:scale-95"
+        >
+          {t("filters.btn_create")}
+        </Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[300px]">
+              <TableHead className="font-semibold h-10 px-4">
                 {t("table.title")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[250px]">
+              <TableHead className="font-semibold h-10 px-4 w-52 hidden md:table-cell">
                 {t("table.type_target")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
+              <TableHead className="font-semibold h-10 px-4 w-40 hidden md:table-cell">
                 {t("table.assignee")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center hidden sm:table-cell">
                 {t("table.due_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -209,7 +203,7 @@ export default function MyAuditsTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden hidden md:table-cell">
                     <div className="flex flex-col gap-1 overflow-hidden">
                       <Badge
                         variant="outline"
@@ -244,7 +238,7 @@ export default function MyAuditsTable() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                  <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden hidden md:table-cell">
                     <div className="flex items-center gap-2 overflow-hidden">
                       <User
                         size={12}
@@ -255,7 +249,7 @@ export default function MyAuditsTable() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-center">
+                  <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
                     <div className="flex items-center justify-center gap-1.5">
                       <Calendar
                         size={12}

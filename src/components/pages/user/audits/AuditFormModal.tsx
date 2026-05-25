@@ -196,8 +196,8 @@ export default function AuditFormModal({
         >
           <div className="flex-1 px-6 pb-6 space-y-6 overflow-y-auto">
             <div className="flex flex-col gap-1 mb-3">
-              <FieldGroup className="grid grid-cols-2 gap-3">
-                <Field className="col-span-2 gap-1">
+              <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field className="col-span-full gap-1">
                   <FieldLabel>{t("form.title")}</FieldLabel>
                   <Input
                     placeholder={t("table.enter_batch_title")}
@@ -211,7 +211,7 @@ export default function AuditFormModal({
                   name="audit_type"
                   control={form.control}
                   render={({ field }) => (
-                    <Field className="col-span-2 gap-1 mb-3">
+                    <Field className="col-span-full gap-1 mb-3">
                       <FieldLabel>{t("form.audit_type")}</FieldLabel>
                       <Tabs
                         value={field.value}
@@ -249,7 +249,7 @@ export default function AuditFormModal({
 
                 {/* Multi-select: Unit */}
                 {auditType === "unit" && (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("filters.select_unit")}</FieldLabel>
                     <SelectField
                       multiple
@@ -269,8 +269,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
-                          | { message?: string }
-                          | undefined,
+                        | { message?: string }
+                        | undefined,
                       ]}
                     />
                   </Field>
@@ -278,7 +278,7 @@ export default function AuditFormModal({
 
                 {/* Multi-select: Location */}
                 {auditType === "location" && (
-                  <Field className="col-span-2 gap-1">
+                  <Field className="col-span-full gap-1">
                     <FieldLabel>{t("filters.select_location")}</FieldLabel>
                     <SelectField
                       multiple
@@ -297,8 +297,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
-                          | { message?: string }
-                          | undefined,
+                        | { message?: string }
+                        | undefined,
                       ]}
                     />
                   </Field>
@@ -308,7 +308,7 @@ export default function AuditFormModal({
 
             {/* Section 2: Assignment & Deadline */}
             <div className="flex flex-col gap-1">
-              <FieldGroup className="grid grid-cols-2 gap-3 items-end">
+              <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
                 {/* Assignee */}
                 <Controller
                   name="assignee_id"

@@ -66,7 +66,8 @@ export function RecoveryItemRow({
   }, [prefillAssetId, assetsPending, assets, index, setValue]);
 
   return (
-    <div className="relative bg-muted/30 border rounded-lg p-3 flex flex-row items-start gap-3 shadow-sm transition-all hover:bg-muted/40">
+    <div className="relative bg-muted/30 border rounded-lg p-3 shadow-sm transition-all hover:bg-muted/40">
+      {/* Delete button */}
       <Button
         type="button"
         variant="ghost"
@@ -78,66 +79,69 @@ export function RecoveryItemRow({
         <Trash size={12} />
       </Button>
 
-      {/* Asset */}
-      <Controller
-        name={`items.${index}.asset_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
-            <FieldLabel>{t("form.asset")}</FieldLabel>
-            <SelectField
-              options={(assets ?? []).map((a) => ({
-                label: `${a.name} - (${a.asset_code}) Quantity: ${a?.holding_qty ?? 0}`,
-                value: a.id,
-              }))}
-              value={field.value as number}
-              onChange={(val) => field.onChange(Number(val))}
-              placeholder={t("form.placeholder_asset")}
-              disabled={!unitId}
-            />
+      <div className="flex flex-col sm:flex-row sm:items-start gap-3 pr-7">
+        {/* Asset */}
+        <Controller
+          name={`items.${index}.asset_id`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className="gap-1 flex-1 min-w-0">
+              <FieldLabel>{t("form.asset")}</FieldLabel>
+              <SelectField
+                options={(assets ?? []).map((a) => ({
+                  label: `${a.name} - (${a.asset_code}) Quantity: ${a?.holding_qty ?? 0}`,
+                  value: a.id,
+                }))}
+                value={field.value as number}
+                onChange={(val) => field.onChange(Number(val))}
+                placeholder={t("form.placeholder_asset")}
+                disabled={!unitId}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
+        {/* Location */}
+        <Controller
+          name={`items.${index}.location_id`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className="gap-1 flex-1 min-w-0">
+              <FieldLabel>{t("form.location")}</FieldLabel>
+              <SelectField
+                options={(locations ?? []).map((a) => ({
+                  label: `${a.name} - (${a.code})`,
+                  value: a.id,
+                }))}
+                value={field.value as number}
+                onChange={(val) => field.onChange(Number(val))}
+                placeholder={t("form.placeholder_location")}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
-      <Controller
-        name={`items.${index}.location_id`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 flex-1">
-            <FieldLabel>{t("form.location")}</FieldLabel>
-            <SelectField
-              options={(locations ?? []).map((a) => ({
-                label: `${a.name} - (${a.code})`,
-                value: a.id,
-              }))}
-              value={field.value as number}
-              onChange={(val) => field.onChange(Number(val))}
-              placeholder={t("form.placeholder_location")}
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      <Controller
-        name={`items.${index}.quantity`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field className="gap-1 w-32">
-            <FieldLabel>{t("form.quantity")}</FieldLabel>
-            <FormattedNumberInput
-              {...field}
-              value={field.value as number | string | null}
-              onChange={(val) => field.onChange(val ?? 0)}
-              placeholder={t("form.placeholder_quantity_value")}
-              className="h-9 text-xs font-medium"
-            />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
+        {/* Quantity */}
+        <Controller
+          name={`items.${index}.quantity`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field className="gap-1 sm:w-32">
+              <FieldLabel>{t("form.quantity")}</FieldLabel>
+              <FormattedNumberInput
+                {...field}
+                value={field.value as number | string | null}
+                onChange={(val) => field.onChange(val ?? 0)}
+                placeholder={t("form.placeholder_quantity_value")}
+                className="h-9 text-xs font-medium"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </div>
     </div>
   );
 }

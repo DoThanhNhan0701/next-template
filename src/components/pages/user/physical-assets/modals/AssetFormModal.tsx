@@ -289,12 +289,12 @@ export default function AssetFormModal({
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
                   {t("modals.sections.general")}
                 </h3>
-                <FieldGroup className="grid grid-cols-2 gap-3">
+                <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Controller
                     name="management_type"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-2 col-span-2">
+                      <Field className="gap-2 col-span-full">
                         <FieldLabel>
                           {t("modals.fields.management_method")}
                         </FieldLabel>
@@ -368,7 +368,7 @@ export default function AssetFormModal({
                     render={({ field, fieldState }) => (
                       <Field
                         data-invalid={fieldState.invalid}
-                        className="gap-1 col-span-2"
+                        className="gap-1 col-span-full"
                       >
                         <FieldLabel>{t("modals.fields.name")}</FieldLabel>
                         <Input
@@ -519,12 +519,12 @@ export default function AssetFormModal({
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
                   {t("modals.sections.tracking")}
                 </h3>
-                <FieldGroup className="grid grid-cols-3 gap-3">
+                <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   <Controller
                     name="unit_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-3">
+                      <Field className="gap-1 col-span-full">
                         <FieldLabel>{t("modals.fields.unit")}</FieldLabel>
 
                         <SelectField
@@ -624,15 +624,15 @@ export default function AssetFormModal({
                     name="staff_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-3">
+                      <Field className="gap-1 col-span-full">
                         <FieldLabel>{t("modals.fields.holder")}</FieldLabel>
 
                         <SelectField
                           disabled={hasLocationValue || isEditing}
                           options={(watchedUnitId
                             ? staffs.filter(
-                                (s) => s.unit_id === Number(watchedUnitId),
-                              )
+                              (s) => s.unit_id === Number(watchedUnitId),
+                            )
                             : staffs
                           ).map((c) => ({
                             label: `${c.full_name} (${c.staff_code})`,
@@ -657,7 +657,7 @@ export default function AssetFormModal({
                 <h3 className="text-sm font-semibold text-primary border-b pb-1">
                   {t("modals.sections.purchase")}
                 </h3>
-                <FieldGroup className="grid grid-cols-3 gap-3">
+                <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   <Controller
                     name="cost"
                     control={form.control}
@@ -680,7 +680,7 @@ export default function AssetFormModal({
                     name="quantity"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-2">
+                      <Field className="gap-1 sm:col-span-1 md:col-span-2">
                         <FieldLabel>{t("modals.fields.quantity")}</FieldLabel>
                         <Input
                           type="number"
@@ -769,7 +769,7 @@ export default function AssetFormModal({
                     name="supplier_id"
                     control={form.control}
                     render={({ field, fieldState }) => (
-                      <Field className="gap-1 col-span-2">
+                      <Field className="gap-1 sm:col-span-2 md:col-span-2">
                         <FieldLabel>{t("modals.fields.supplier")}</FieldLabel>
 
                         <SelectField

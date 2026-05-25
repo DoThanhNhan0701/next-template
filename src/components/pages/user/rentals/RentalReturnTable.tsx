@@ -82,8 +82,8 @@ export default function RentalReturnTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 z-10 w-full transition-all">
-        {/* Search Group */}
+      <div className="flex items-center gap-2 z-10 w-full transition-all">
+        {/* Search */}
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -108,10 +108,10 @@ export default function RentalReturnTable() {
           )}
         </div>
 
-        {/* Filters Group */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 min-w-0 flex-1">
+        {/* Status filter */}
+        <div className="hidden sm:block shrink-0 w-44">
           <SelectField
-            className="w-full min-w-0"
+            className="w-full"
             options={(statuses ?? []).map((c) => ({
               label: `${c.name}`,
               value: c.id.toString(),
@@ -120,65 +120,63 @@ export default function RentalReturnTable() {
             onChange={(val) => setStatusCode(val)}
             placeholder={t("all_statuses")}
           />
-
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => {
-                setSkip(0);
-                setAppliedFilters({
-                  q,
-                  status_code: statusCode,
-                });
-              }}
-              className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-            >
-              {pending ? tRentals("btn_searching") : tRentals("btn_search")}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                setQ("");
-                setStatusCode("");
-                setAppliedFilters({
-                  q: "",
-                  status_code: "",
-                });
-                setSkip(0);
-              }}
-              className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-              title="Clear all filters"
-            >
-              <RotateCcw size={16} className="text-muted-foreground/70" />
-            </Button>
-          </div>
         </div>
+
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({
+              q,
+              status_code: statusCode,
+            });
+          }}
+          className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {pending ? tRentals("btn_searching") : tRentals("btn_search")}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setQ("");
+            setStatusCode("");
+            setAppliedFilters({
+              q: "",
+              status_code: "",
+            });
+            setSkip(0);
+          }}
+          className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+          title="Clear all filters"
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-35 text-center">
                 {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[220px]">
+              <TableHead className="font-semibold h-10 px-4 w-55 hidden sm:table-cell">
                 {t("table.customer")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-35 text-center hidden md:table-cell">
                 {t("table.contract")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
+              <TableHead className="font-semibold h-10 px-4 w-45 hidden lg:table-cell">
                 {t("table.return_location")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32.5 text-center hidden md:table-cell">
                 {t("table.return_date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center w-[140px]">
+              <TableHead className="font-semibold h-10 px-4 text-center w-35">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -216,7 +214,7 @@ export default function RentalReturnTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden hidden sm:table-cell">
                       <div className="flex flex-col gap-1 text-sm">
                         <div className="flex items-center gap-2">
                           <User
@@ -240,23 +238,23 @@ export default function RentalReturnTable() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
+                    <TableCell className="px-4 py-1.5 text-center hidden md:table-cell">
                       <span className="text-sm font-medium">
                         {rentalReturn.rental.contract_number}
                       </span>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5">
+                    <TableCell className="px-4 py-1.5 hidden lg:table-cell">
                       <div className="flex items-center gap-1.5">
                         <MapPin
                           size={12}
                           className="text-muted-foreground/60"
                         />
-                        <span className="text-sm">
+                        <span className="text-sm truncate">
                           {rentalReturn.to_location.name}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
+                    <TableCell className="px-4 py-1.5 text-center hidden md:table-cell">
                       <div className="flex items-center justify-center gap-1.5">
                         <Calendar
                           size={12}

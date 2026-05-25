@@ -86,7 +86,7 @@ export function TargetDestinationSection({
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <Controller
           name="transfer_date"
           control={form.control}
@@ -103,7 +103,7 @@ export function TargetDestinationSection({
           name="external_link"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field className="col-span-2 gap-1">
+            <Field className="sm:col-span-1 md:col-span-2 gap-1">
               <FieldLabel>{t("form.external_link")}</FieldLabel>
               <Input
                 placeholder={t("form.placeholder_link")}
@@ -120,7 +120,7 @@ export function TargetDestinationSection({
           name="reason"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field className="col-span-3 gap-1">
+            <Field className="col-span-full gap-1">
               <FieldLabel>{t("form.reason_notes")}</FieldLabel>
               <Textarea
                 placeholder={t("form.enter_reason")}

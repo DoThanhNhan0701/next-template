@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   Box,
+  ChevronDown,
   Clock,
   Info,
   Package,
@@ -23,6 +24,12 @@ import { useDispatch } from "react-redux";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints } from "@/config/endpoints";
@@ -216,29 +223,62 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2 md:justify-end">
-            <Button variant="outline" onClick={handleRental}>
-              {t("detail.rentals")}
-            </Button>
-            <Button variant="outline" onClick={handleDispatch}>
-              {t("detail.allocation")}
-            </Button>
-            <Button variant="outline" onClick={handleRecovery}>
-              {t("detail.recovery")}
-            </Button>
-            {asset.management_type === "unique" && (
-              <Button
-                variant="outline"
-                onClick={() => setIsCloneModalOpen(true)}
-              >
-                {t("detail.clone")}
+          <div className="flex items-center gap-2 md:justify-end">
+            {/* Mobile: dropdown */}
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    {t("detail.actions")}
+                    <ChevronDown className="w-3.5 h-3.5 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleRental}>
+                    {t("detail.rentals")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDispatch}>
+                    {t("detail.allocation")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleRecovery}>
+                    {t("detail.recovery")}
+                  </DropdownMenuItem>
+                  {asset.management_type === "unique" && (
+                    <DropdownMenuItem onClick={() => setIsCloneModalOpen(true)}>
+                      {t("detail.clone")}
+                    </DropdownMenuItem>
+                  )}
+                  {canEdit && (
+                    <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+                      {t("detail.edit")}
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Desktop: full buttons */}
+            <div className="hidden md:flex items-center gap-2">
+              <Button variant="outline" onClick={handleRental}>
+                {t("detail.rentals")}
               </Button>
-            )}
-            {canEdit && (
-              <Button onClick={() => setIsEditOpen(true)}>
-                {t("detail.edit")}
+              <Button variant="outline" onClick={handleDispatch}>
+                {t("detail.allocation")}
               </Button>
-            )}
+              <Button variant="outline" onClick={handleRecovery}>
+                {t("detail.recovery")}
+              </Button>
+              {asset.management_type === "unique" && (
+                <Button variant="outline" onClick={() => setIsCloneModalOpen(true)}>
+                  {t("detail.clone")}
+                </Button>
+              )}
+              {canEdit && (
+                <Button onClick={() => setIsEditOpen(true)}>
+                  {t("detail.edit")}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

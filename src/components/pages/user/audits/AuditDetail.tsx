@@ -202,20 +202,20 @@ export default function AuditDetail({ id }: Props) {
   const mockTask: ITask | null =
     (isMyAudit || isSuperAdmin) && session
       ? {
-          id: Number(id) + 1000000,
-          instance_id: Number(id),
-          step_id: 0,
-          user_id: session.assignee_id || 0,
-          status: session.status_obj?.code as TaskStatus,
-          created_at: session.created_at || "",
-          document_id: Number(id),
-          document_record_number: session.title || "",
-          document_type: "audit",
-          requester_name: session.assignee?.full_name || "",
-          step_name:
-            session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
-          reason: "",
-        }
+        id: Number(id) + 1000000,
+        instance_id: Number(id),
+        step_id: 0,
+        user_id: session.assignee_id || 0,
+        status: session.status_obj?.code as TaskStatus,
+        created_at: session.created_at || "",
+        document_id: Number(id),
+        document_record_number: session.title || "",
+        document_type: "audit",
+        requester_name: session.assignee?.full_name || "",
+        step_name:
+          session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+        reason: "",
+      }
       : null;
 
   if (sessionPending && !session) {
@@ -236,8 +236,7 @@ export default function AuditDetail({ id }: Props) {
 
   return (
     <div className="flex flex-col px-3 pb-3 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
@@ -257,7 +256,7 @@ export default function AuditDetail({ id }: Props) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {session?.status_obj?.code === "PENDING" &&
             !session.submitted_at &&
             isMyAudit && (
@@ -273,42 +272,42 @@ export default function AuditDetail({ id }: Props) {
 
           {((activeTask && session.submitted_at) ||
             (session?.status_obj?.code === "COMPLETED" && isSuperAdmin)) && (
-            <>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setIsAuditApproveModalOpen(true)}
-                disabled={mutatePending}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-              >
-                <Check size={14} />
-                {tMyTasks("detail.approval_form.approve")}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsAuditRejectModalOpen(true)}
-                disabled={mutatePending}
-                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-              >
-                <X size={14} />
-                {tMyTasks("detail.approval_form.reject")}
-              </Button>
-            </>
-          )}
+              <>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setIsAuditApproveModalOpen(true)}
+                  disabled={mutatePending}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                >
+                  <Check size={14} />
+                  {tMyTasks("detail.approval_form.approve")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAuditRejectModalOpen(true)}
+                  disabled={mutatePending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                >
+                  <X size={14} />
+                  {tMyTasks("detail.approval_form.reject")}
+                </Button>
+              </>
+            )}
         </div>
       </div>
 
       {/* Main Info Card */}
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
-        <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 py-2 px-3 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <ClipboardList className="w-4 h-4 text-primary" />
             <CardTitle className="text-xs font-semibold text-primary tracking-wider">
               {t("detail.record_number")}
             </CardTitle>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="text-base font-bold text-foreground tracking-tight">
               #{session.id}
             </span>

@@ -96,7 +96,7 @@ export default function AllocationSummaryTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 p-3 gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 z-10 w-full transition-all">
+      <div className="flex items-center gap-2 z-10 w-full transition-all">
         <div className="relative flex-1 min-w-0">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70"
@@ -121,10 +121,9 @@ export default function AllocationSummaryTable() {
           )}
         </div>
 
-        {/* Filters Group */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 min-w-0 flex-1">
+        <div className="hidden md:flex items-center gap-2 shrink-0">
           <SelectField
-            className="w-full min-w-0"
+            className="w-40"
             options={(orgUnits ?? [])
               .filter((c) => c.is_active)
               .map((c) => ({
@@ -137,7 +136,7 @@ export default function AllocationSummaryTable() {
           />
 
           <SelectField
-            className="w-full min-w-0"
+            className="w-40"
             options={(statuses ?? []).map((c) => ({
               label: c.name,
               value: c.id.toString(),
@@ -146,80 +145,76 @@ export default function AllocationSummaryTable() {
             onChange={(val) => setStatusCode(val)}
             placeholder={t("table.all_statuses")}
           />
-
-          <div className="flex items-center gap-1">
-            <Button
-              onClick={() => {
-                setSkip(0);
-                setAppliedFilters({
-                  q,
-                  unit_id: unitId,
-                  status_code: statusCode,
-                });
-              }}
-              className="flex-1 lg:flex-none shadow-sm hover:shadow-md transition-all active:scale-95"
-            >
-              {pending ? t("table.searching") : t("table.search")}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                setQ("");
-                setUnitId("");
-                setStatusCode("");
-                setAppliedFilters({
-                  q: "",
-                  unit_id: "",
-                  status_code: "",
-                });
-                setSkip(0);
-              }}
-              className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
-              title={t("table.clear_filters")}
-            >
-              <RotateCcw size={16} className="text-muted-foreground/70" />
-            </Button>
-          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => setIsManualOpen(true)}
-            className="flex-1 lg:flex-none bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
-          >
-            {t("table.create")}
-          </Button>
-        </div>
+        <Button
+          onClick={() => {
+            setSkip(0);
+            setAppliedFilters({
+              q,
+              unit_id: unitId,
+              status_code: statusCode,
+            });
+          }}
+          className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {pending ? t("table.searching") : t("table.search")}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            setQ("");
+            setUnitId("");
+            setStatusCode("");
+            setAppliedFilters({
+              q: "",
+              unit_id: "",
+              status_code: "",
+            });
+            setSkip(0);
+          }}
+          className="border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 shrink-0"
+          title={t("table.clear_filters")}
+        >
+          <RotateCcw size={16} className="text-muted-foreground/70" />
+        </Button>
+
+        <Button
+          onClick={() => setIsManualOpen(true)}
+          className="shrink-0 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+        >
+          {t("table.create")}
+        </Button>
       </div>
 
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-[50px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-12 text-center">
                 {t("table.no")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[120px]">
+              <TableHead className="font-semibold h-10 px-4 w-30 hidden sm:table-cell">
                 {t("table.record_number")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[320px]">
+              <TableHead className="font-semibold h-10 px-4">
                 {t("table.asset")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[180px]">
+              <TableHead className="font-semibold h-10 px-4 w-44 hidden md:table-cell">
                 {t("table.allocated_to")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[200px]">
+              <TableHead className="font-semibold h-10 px-4 w-44 hidden lg:table-cell">
                 {t("table.from_to")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[80px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-20 text-center hidden sm:table-cell">
                 {t("table.quantity")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[130px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center hidden md:table-cell">
                 {t("table.date")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-[140px] text-center">
+              <TableHead className="font-semibold h-10 px-4 w-32 text-center">
                 {t("table.status")}
               </TableHead>
             </TableRow>
@@ -249,7 +244,7 @@ export default function AllocationSummaryTable() {
                     <TableCell className="px-4 py-1.5 text-center text-sm text-muted-foreground">
                       {skip + index + 1}
                     </TableCell>
-                    <TableCell className="px-4 py-2 text-center">
+                    <TableCell className="px-4 py-2 text-center hidden sm:table-cell">
                       <div className="flex justify-center">
                         <span
                           className="text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit"
@@ -267,12 +262,12 @@ export default function AllocationSummaryTable() {
                         >
                           {alloc.asset_name || "-"}
                         </span>
-                        <span className="text-muted-foreground font-mono">
+                        <span className="text-muted-foreground font-mono text-xs">
                           {alloc.asset_code || "-"}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden">
+                    <TableCell className="px-4 py-1.5 max-w-0 overflow-hidden hidden md:table-cell">
                       <div className="flex flex-col gap-0.5 text-sm">
                         <span className="font-medium text-foreground/80 truncate block">
                           {alloc.allocated_to_name || t("table.unassigned")}
@@ -282,7 +277,7 @@ export default function AllocationSummaryTable() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1 max-w-0 overflow-hidden">
+                    <TableCell className="px-4 py-1 max-w-0 overflow-hidden hidden lg:table-cell">
                       <div className="flex flex-col gap-0 text-xs leading-tight">
                         <span
                           className={`truncate ${alloc.from_name ? "text-muted-foreground" : "italic text-muted-foreground/60"}`}
@@ -291,7 +286,7 @@ export default function AllocationSummaryTable() {
                           {alloc.from_name || "-"}
                         </span>
                         <span
-                          className={`truncate text-xs text-foreground/80 font-medium flex items-center gap-1 mt-0.5`}
+                          className="truncate text-xs text-foreground/80 font-medium flex items-center gap-1 mt-0.5"
                           title={alloc.to_name || "-"}
                         >
                           <ArrowDown
@@ -302,10 +297,10 @@ export default function AllocationSummaryTable() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center font-medium">
+                    <TableCell className="px-4 py-1.5 text-center font-medium hidden sm:table-cell">
                       {alloc.total_quantity || 0}
                     </TableCell>
-                    <TableCell className="px-4 py-1.5 text-center">
+                    <TableCell className="px-4 py-1.5 text-center hidden md:table-cell">
                       <div className="flex items-center justify-center gap-1.5 text-xs">
                         <Calendar
                           size={12}
