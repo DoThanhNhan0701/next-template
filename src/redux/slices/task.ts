@@ -55,13 +55,17 @@ const getAuditCountByStatus = async (status: string, userId?: number): Promise<n
     if (status === 'PENDING') {
       return (
         (a.status_obj?.code === 'PENDING' && !a.submitted_at) ||
-        (a.status_obj?.code === 'COMPLETED' && a.assignee_id !== userId)
+        (a.status_obj?.code === 'COMPLETED' &&
+          !!userId &&
+          Number(a.assignee_id) !== Number(userId))
       );
     }
     if (status === 'APPROVED') {
       return (
         a.status_obj?.code === 'APPROVED' ||
-        (a.status_obj?.code === 'COMPLETED' && a.assignee_id === userId)
+        (a.status_obj?.code === 'COMPLETED' &&
+          !!userId &&
+          Number(a.assignee_id) === Number(userId))
       );
     }
     return a.status_obj?.code === status;

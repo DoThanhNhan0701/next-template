@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/config/constants';
+import { ACCESS_TOKEN, IS_ADMIN, REFRESH_TOKEN } from '@/config/constants';
 
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -36,6 +36,16 @@ export default function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
+  }
+
+  // Case 3: Non-admin user trying to access admin routes
+  if (isAuthenticated && pathname.startsWith('/admin')) {
+    const isAdmin = request.cookies.get(IS_ADMIN);
+    if (!isAdmin) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    }
   }
 
   return NextResponse.next();

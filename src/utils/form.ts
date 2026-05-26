@@ -15,3 +15,16 @@ export const cleanFormData = <T extends Record<string, unknown>>(data: T): Parti
     return { ...acc, [key]: value };
   }, {} as Partial<T>);
 };
+
+/**
+ * Safe conversion of select/combobox field value to number or null.
+ * Handles null, undefined, empty strings, and "none" string safely, returning null
+ * instead of 0 (which Number(null) or Number("") would yield).
+ */
+export const parseSelectNumber = (val: string | number | null | undefined): number | null => {
+  if (val === null || val === undefined || val === "" || val === "none") {
+    return null;
+  }
+  const num = Number(val);
+  return isNaN(num) ? null : num;
+};

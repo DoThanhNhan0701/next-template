@@ -6,7 +6,14 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { LogOut, LucideIcon, Menu, MoonIcon, SunIcon, User } from "lucide-react";
+import {
+  LogOut,
+  LucideIcon,
+  Menu,
+  MoonIcon,
+  SunIcon,
+  User,
+} from "lucide-react";
 import { useDispatch } from "react-redux";
 
 import { Button } from "@/components/ui/button";
@@ -80,12 +87,12 @@ export default function Header({
   const activeItem =
     items && items.length > 0
       ? [...items]
-        .filter((item) =>
-          item.url === "/"
-            ? pathname === "/"
-            : pathname === item.url || pathname.startsWith(item.url + "/"),
-        )
-        .sort((a, b) => b.url.length - a.url.length)[0] || items[0]
+          .filter((item) =>
+            item.url === "/"
+              ? pathname === "/"
+              : pathname === item.url || pathname.startsWith(item.url + "/"),
+          )
+          .sort((a, b) => b.url.length - a.url.length)[0] || items[0]
       : undefined;
 
   const { hasPermission } = usePermissions();

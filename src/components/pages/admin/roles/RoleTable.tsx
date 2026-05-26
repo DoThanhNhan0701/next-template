@@ -92,8 +92,8 @@ export default function RoleTable() {
         setResponse((prev: IRole[] | null) =>
           prev
             ? prev.map((r: IRole) =>
-              r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
-            )
+                r.id === updatedItem?.id ? { ...r, ...updatedItem } : r,
+              )
             : null,
         );
         return;
@@ -114,8 +114,16 @@ export default function RoleTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full gap-2 flex-wrap">
-        <Select value={isActiveFilter} onValueChange={(val) => { setIsActiveFilter(val); setSkip(0); }}>
-          <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
+        <Select
+          value={isActiveFilter}
+          onValueChange={(val) => {
+            setIsActiveFilter(val);
+            setSkip(0);
+          }}
+        >
+          <SelectTrigger className="w-40 h-9">
+            <SelectValue placeholder={t("all_statuses")} />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("all_statuses")}</SelectItem>
             <SelectItem value="true">{t("active")}</SelectItem>
@@ -128,31 +136,74 @@ export default function RoleTable() {
         <Table className="w-full">
           <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10 shadow-sm">
             <TableRow>
-              <TableHead className="font-semibold h-10 px-4 w-10 text-center">{tc("stt")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4">{t("role_name")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">{t("description_label")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">{t("status")}</TableHead>
-              <TableHead className="font-semibold h-10 px-4 text-right">{t("actions")}</TableHead>
+              <TableHead className="font-semibold h-10 px-4 w-10 text-center">
+                {tc("stt")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4">
+                {t("role_name")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 hidden md:table-cell">
+                {t("description_label")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-center hidden sm:table-cell">
+                {t("status")}
+              </TableHead>
+              <TableHead className="font-semibold h-10 px-4 text-right">
+                {t("actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? <TableLoadingRows colSpan={5} rows={6} /> : roles.length === 0 ? (
-              <TableEmptyRow colSpan={5} icon={Shield} message={t("no_roles_found")} description={t("add_first_role_description")} />
-            ) : roles.map((role, index) => (
-              <TableRow key={role.id} className="hover:bg-primary/5 transition-colors">
-                <TableCell className="px-4 py-1.5 text-center text-muted-foreground">{skip + index + 1}</TableCell>
-                <TableCell className="px-4 py-1.5 font-medium text-foreground">{role.name}</TableCell>
-                <TableCell className="px-4 py-1.5 hidden md:table-cell">{role.description}</TableCell>
-                <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
-                  {role.is_active ? <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("active")}</span> : <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">{t("inactive")}</span>}
-                </TableCell>
-                <TableCell className="px-4 py-1.5 text-right">
-                  <div className="flex justify-end gap-1">
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => setRoleToEdit(role)}><EditIcon size={14} /></Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {pending ? (
+              <TableLoadingRows colSpan={5} rows={6} />
+            ) : roles.length === 0 ? (
+              <TableEmptyRow
+                colSpan={5}
+                icon={Shield}
+                message={t("no_roles_found")}
+                description={t("add_first_role_description")}
+              />
+            ) : (
+              roles.map((role, index) => (
+                <TableRow
+                  key={role.id}
+                  className="hover:bg-primary/5 transition-colors"
+                >
+                  <TableCell className="px-4 py-1.5 text-center text-muted-foreground">
+                    {skip + index + 1}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5 font-medium text-foreground">
+                    {role.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5 hidden md:table-cell">
+                    {role.description}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5 text-center hidden sm:table-cell">
+                    {role.is_active ? (
+                      <span className="text-green-600 bg-green-500/10 px-2 py-1 rounded-md text-sm font-medium">
+                        {t("active")}
+                      </span>
+                    ) : (
+                      <span className="text-red-600 bg-red-500/10 px-2 py-1 rounded-md text-sm font-medium">
+                        {t("inactive")}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="px-4 py-1.5 text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-foreground"
+                        onClick={() => setRoleToEdit(role)}
+                      >
+                        <EditIcon size={14} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

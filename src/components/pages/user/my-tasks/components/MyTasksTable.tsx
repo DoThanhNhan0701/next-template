@@ -93,28 +93,21 @@ export default function MyTasksTable() {
   const tTable = useTranslations("page_my_tasks.table");
   const tDocTypes = useTranslations("page_workflow_templates.table.doc_types");
 
-  const { response, pending, reFetch } = useGet<ITask[]>(
-    { url: `${endpoints.WORKFLOW_TASKS}me?${queryParamsString}` },
-    { staleTime: 0 },
-  );
+  const { response, pending, reFetch } = useGet<ITask[]>({
+    url: `${endpoints.WORKFLOW_TASKS}me?${queryParamsString}`,
+  });
 
   const {
     response: auditResponse,
     pending: auditPending,
     reFetch: auditReFetch,
-  } = useGet<IAuditSession[]>(
-    { url: endpoints.AUDIT_MY_AUDITS },
-    { staleTime: 0 },
-  );
+  } = useGet<IAuditSession[]>({ url: endpoints.AUDIT_MY_AUDITS });
 
   const {
     response: auditPendingApprovalResponse,
     pending: auditPendingApprovalPending,
     reFetch: auditPendingApprovalReFetch,
-  } = useGet<IAuditSession[]>(
-    { url: endpoints.AUDIT_PENDING_APPROVAL },
-    { staleTime: 0 },
-  );
+  } = useGet<IAuditSession[]>({ url: endpoints.AUDIT_PENDING_APPROVAL });
 
   const { mutate, pending: mutatePending } = useMutation();
 
@@ -149,7 +142,8 @@ export default function MyTasksTable() {
         return (
           (audit.status_obj.code === "PENDING" && !audit.submitted_at) ||
           (audit.status_obj.code === "COMPLETED" &&
-            audit.assignee_id !== user?.id)
+            !!user?.id &&
+            Number(audit.assignee_id) !== Number(user.id))
         );
       }
       if (activeTab === "APPROVED") {
@@ -157,12 +151,13 @@ export default function MyTasksTable() {
           audit.status_obj.code === "APPROVED" ||
           (audit.status_obj.code === "PENDING" && audit.submitted_at) ||
           (audit.status_obj.code === "COMPLETED" &&
-            audit.assignee_id === user?.id)
+            !!user?.id &&
+            Number(audit.assignee_id) === Number(user.id))
         );
       }
       return audit.status_obj.code === activeTab;
     });
-  }, [allAuditsCombined, activeTab, user?.id]);
+  }, [allAuditsCombined, activeTab, user]);
 
   const mappedAudits: ITask[] = useMemo(() => {
     return filteredAudits.map((audit) => ({

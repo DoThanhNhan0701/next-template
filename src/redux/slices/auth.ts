@@ -2,8 +2,8 @@ import { type PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/tool
 
 import { endpoints } from '@/config/endpoints';
 import { axiosInstance } from '@/utils/axiosInstance';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/config/constants';
-import { cleanClientCookie, getClientCookie, setClientCookie } from '@/utils/cookiesStore';
+import { ACCESS_TOKEN, IS_ADMIN, REFRESH_TOKEN } from '@/config/constants';
+import { cleanClientCookie, getClientCookie, removeClientCookie, setClientCookie } from '@/utils/cookiesStore';
 import type { IUser } from '@/types/auth';
 
 export const actionFetchUser = createAsyncThunk('auth/fetchUser', async (_, thunkApi) => {
@@ -73,6 +73,14 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.loading = false;
         state.isInitialized = true;
+
+        // Sync admin cookie for proxy-level route protection
+        const permissions: string[] = action.payload?.permissions || [];
+        if (permissions.includes('admin:manage')) {
+          setClientCookie(IS_ADMIN, '1');
+        } else {
+          removeClientCookie(IS_ADMIN);
+        }
       })
       .addCase(actionFetchUser.pending, (state) => {
         state.loading = true;
@@ -80,6 +88,7 @@ const authSlice = createSlice({
       .addCase(actionFetchUser.rejected, (state) => {
         state.loading = false;
         state.isInitialized = true;
+        removeClientCookie(IS_ADMIN);
       });
 
 

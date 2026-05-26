@@ -126,14 +126,9 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
     response: asset,
     pending,
     reFetch,
-  } = useGet<IPhysicalAssetDetail>(
-    {
-      url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
-    },
-    {
-      staleTime: 0,
-    },
-  );
+  } = useGet<IPhysicalAssetDetail>({
+    url: dynamicEndpoints.PHYSICAL_ASSET_DETAIL(Number(id)),
+  });
 
   const { response: holders } = useGet<IAssetHolder[]>(
     { url: dynamicEndpoints.PHYSICAL_ASSET_HOLDERS(Number(id)) },

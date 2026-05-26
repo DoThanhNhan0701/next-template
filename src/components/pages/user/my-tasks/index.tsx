@@ -44,13 +44,17 @@ export default function MyTasksPage() {
       if (status === "PENDING") {
         return (
           (a.status_obj?.code === "PENDING" && !a.submitted_at) ||
-          (a.status_obj?.code === "COMPLETED" && a.assignee_id !== user?.id)
+          (a.status_obj?.code === "COMPLETED" &&
+            !!user?.id &&
+            Number(a.assignee_id) !== Number(user.id))
         );
       }
       if (status === "APPROVED") {
         return (
           a.status_obj?.code === "APPROVED" ||
-          (a.status_obj?.code === "COMPLETED" && a.assignee_id === user?.id)
+          (a.status_obj?.code === "COMPLETED" &&
+            !!user?.id &&
+            Number(a.assignee_id) === Number(user.id))
         );
       }
       return a.status_obj?.code === status;

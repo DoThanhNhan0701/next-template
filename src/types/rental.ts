@@ -78,6 +78,7 @@ export interface IRentalFull {
     id: number;
   };
   details: IRentalDetail[];
+  is_renewed: boolean
 }
 
 export interface IRentalCreateItemPayload {

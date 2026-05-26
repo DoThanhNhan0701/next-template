@@ -1,4 +1,3 @@
-import QueryProvider from "@/components/libs/query-provider";
 import StoreProvider from "@/components/libs/store-provider";
 import { ThemeProvider } from "@/components/libs/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -63,12 +62,10 @@ export default async function RootLayout({
       <body className="text-[14px]">
         <NextIntlClientProvider messages={messages}>
           <StoreProvider>
-            <QueryProvider>
-              <ThemeProvider>
-                <Toaster position="top-center" />
-                {children}
-              </ThemeProvider>
-            </QueryProvider>
+            <ThemeProvider>
+              <Toaster position="top-center" />
+              {children}
+            </ThemeProvider>
           </StoreProvider>
         </NextIntlClientProvider>
       </body>

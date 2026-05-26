@@ -2,7 +2,9 @@
 
 import { ReactNode, useState } from "react";
 
-import { useTranslations } from "next-intl"; import {
+import { useTranslations } from "next-intl";
+
+import {
   Activity,
   Building,
   Building2,
@@ -37,7 +39,6 @@ export default function AdminLayout({
     { title: t("organization"), url: "/admin/organization", icon: Building2 },
     { title: t("offices"), url: "/admin/offices", icon: Building },
     { title: t("locations"), url: "/admin/locations", icon: MapPin },
-    // { title: t("asset_groups"), url: "/admin/asset-groups", icon: Layers },
     { title: t("catalog_types"), url: "/admin/catalog-types", icon: Grid },
     {
       title: t("asset_statuses"),

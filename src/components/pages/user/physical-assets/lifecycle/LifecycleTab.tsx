@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { ILifecycleLog } from "@/types/physical-asset";
+
 import BusinessProcessTab from "./BusinessProcessTab";
 import SystemLogTab from "./SystemLogTab";
 
@@ -18,7 +19,7 @@ export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
     process_history?: ILifecycleLog[];
   }>({
     url: dynamicEndpoints.PHYSICAL_ASSET_LIFECYCLE(assetId),
-  }, { staleTime: 0 });
+  });
 
   const processHistory = data?.process_history || [];
   const changeLog = data?.change_log || [];
@@ -44,10 +45,16 @@ export default function LifecycleTab({ assetId }: Readonly<LifecycleTabProps>) {
             </TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="process" className="m-0 border-none outline-none flex flex-col flex-1 min-h-0 overflow-hidden">
+        <TabsContent
+          value="process"
+          className="m-0 border-none outline-none flex flex-col flex-1 min-h-0 overflow-hidden"
+        >
           <BusinessProcessTab history={processHistory} />
         </TabsContent>
-        <TabsContent value="system" className="m-0 border-none outline-none flex flex-col flex-1 min-h-0 overflow-hidden">
+        <TabsContent
+          value="system"
+          className="m-0 border-none outline-none flex flex-col flex-1 min-h-0 overflow-hidden"
+        >
           <SystemLogTab logs={changeLog} />
         </TabsContent>
       </Tabs>

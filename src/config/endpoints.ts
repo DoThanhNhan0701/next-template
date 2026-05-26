@@ -84,6 +84,7 @@ export const dynamicEndpoints = {
   PHYSICAL_ASSET_MODULES_DETAIL: (asset_id: number, module_id: number) => `/api/v1/physical-assets/${asset_id}/modules/${module_id}`,
   RENTAL_DETAIL: (id: number) => `/api/v1/rentals/${id}`,
   RENTAL_RETURN: (id: number) => `/api/v1/rentals/${id}/return`,
+  RENTAL_RENEW: (id: number) => `/api/v1/rentals/${id}/renew`,
   STAFF_DETAIL: (id: number) => `/api/v1/staffs/${id}`,
   STAFF_CREATE_USER: (id: number) => `/api/v1/staffs/${id}/create-user`,
   TRANSFER_DETAIL: (id: number) => `/api/v1/transfers/${id}`,

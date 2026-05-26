@@ -49,6 +49,7 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
+import RentalRenewModal from "./RentalRenewModal";
 import RentalReturnModal from "./RentalReturnModal";
 
 interface Props {
@@ -59,6 +60,7 @@ export default function RentalDetail({ id }: Props) {
   const t = useTranslations("page_rentals");
   const router = useRouter();
   const [showReturnModal, setShowReturnModal] = useState(false);
+  const [showRenewModal, setShowRenewModal] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const currentUser = useSelector((state: RootState) => state.auth.user);
@@ -79,6 +81,35 @@ export default function RentalDetail({ id }: Props) {
   });
   const { mutate: updateRental, pending: updatePending } = useMutation();
   const { mutate: mutateReturn, pending: returnPending } = useMutation();
+  const { mutate: mutateRenew, pending: renewPending } = useMutation();
+
+  const handleRenewAction = async (data: {
+    new_contract_number: string;
+    new_lease_date: string;
+    new_duration_days: number;
+    new_total_revenue: number;
+    notes?: string;
+  }) => {
+    const payload = {
+      new_contract_number: data.new_contract_number,
+      new_lease_date: data.new_lease_date,
+      new_duration_days: data.new_duration_days,
+      new_total_revenue: data.new_total_revenue,
+      notes: data.notes,
+    };
+    const { response: res, error } = await mutateRenew({
+      url: dynamicEndpoints.RENTAL_RENEW(Number(id)),
+      method: "post",
+      body: payload,
+    });
+    if (error) {
+      getApiErrorMessage(error);
+    } else {
+      getApiSuccessMessage(res);
+      setShowRenewModal(false);
+      reFetch();
+    }
+  };
 
   const handleReturnAction = async (data: Record<string, unknown>) => {
     const { response: res, error } = await mutateReturn({
@@ -147,11 +178,22 @@ export default function RentalDetail({ id }: Props) {
           </div>
         </div>
 
-        {isActive && (
-          <Button onClick={() => setShowReturnModal(true)} size="sm">
-            {t("detail.btn_return")}
-          </Button>
-        )}
+        <div className="flex gap-2 items-center">
+          {isActive && (
+            <Button onClick={() => setShowReturnModal(true)} size="sm">
+              {t("detail.btn_return")}
+            </Button>
+          )}
+
+          {detail.status_obj?.code !== "PENDING" &&
+            detail.status_obj?.code !== "REJECTED" &&
+            detail.status_obj?.code !== "RENEWED" &&
+            !detail.is_renewed && (
+              <Button onClick={() => setShowRenewModal(true)} size="sm">
+                Tái ký hợp đồng
+              </Button>
+            )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
@@ -444,6 +486,14 @@ export default function RentalDetail({ id }: Props) {
         onClose={() => setShowReturnModal(false)}
         onConfirm={handleReturnAction}
         pending={returnPending}
+        rentalDetail={detail}
+      />
+
+      <RentalRenewModal
+        isOpen={showRenewModal}
+        onClose={() => setShowRenewModal(false)}
+        onConfirm={handleRenewAction}
+        pending={renewPending}
         rentalDetail={detail}
       />
     </div>

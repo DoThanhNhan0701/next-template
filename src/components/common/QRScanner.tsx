@@ -49,10 +49,7 @@ export default function QRScanner({ children }: QRScannerProps) {
     response: scanResult,
     pending: loading,
     error: scanError,
-  } = useGet<ScanResult>(
-    { url: scanUrl },
-    { disabled: !scannedCode, staleTime: 0 },
-  );
+  } = useGet<ScanResult>({ url: scanUrl }, { disabled: !scannedCode });
 
   const stopScanner = async () => {
     if (scannerRef.current) {

@@ -44,7 +44,7 @@ import { IUser } from "@/types/auth";
 import { IOrgUnit } from "@/types/org";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { cleanFormData } from "@/utils/form";
+import { cleanFormData, parseSelectNumber } from "@/utils/form";
 
 interface Props {
   unitToEdit?: IOrgUnit | null;
@@ -289,8 +289,8 @@ export default function OrgUnitFormModal({
                         value: unit.id,
                       }))}
                       value={field.value}
-                      onChange={(val: string | number) =>
-                        field.onChange(val === "none" ? null : Number(val))
+                      onChange={(val: string | number | null | undefined) =>
+                        field.onChange(parseSelectNumber(val))
                       }
                       placeholder={t("select_parent")}
                     />
@@ -314,8 +314,8 @@ export default function OrgUnitFormModal({
                         value: u.id,
                       }))}
                       value={field.value}
-                      onChange={(val: string | number) =>
-                        field.onChange(val === "none" ? null : Number(val))
+                      onChange={(val: string | number | null | undefined) =>
+                        field.onChange(parseSelectNumber(val))
                       }
                       placeholder={t("select_leader")}
                     />
