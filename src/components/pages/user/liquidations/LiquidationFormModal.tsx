@@ -127,69 +127,7 @@ export default function LiquidationFormModal({
   const users = usersRes || [];
 
   useEffect(() => {
-    if (!isOpen) return;
-
-    if (liquidationToEdit) {
-      const approvals: Record<string, number> = {};
-
-      // Map existing assignments to the approvals record if they exist
-      if (liquidationToEdit.workflow_assignments) {
-        liquidationToEdit.workflow_assignments.forEach((assignment, idx) => {
-          approvals[`step_${idx}`] = assignment.user_id;
-        });
-      }
-
-      form.reset({
-        record_number: liquidationToEdit.record_number || "",
-        reason: liquidationToEdit.reason || "",
-        notes: liquidationToEdit.notes || null,
-        liquidation_date: liquidationToEdit.liquidation_date || getTodayISO(),
-        liquidation_type: liquidationToEdit.liquidation_type || "sell",
-        committee: liquidationToEdit.committee
-          ? typeof liquidationToEdit.committee === "string"
-            ? [] // Simplified for now since committee logic is complex
-            : []
-          : [],
-        total_value: liquidationToEdit.total_value || 0,
-        buyer_name: liquidationToEdit.buyer_name || null,
-        external_link: liquidationToEdit.external_link || null,
-        attachments: liquidationToEdit.attachments || [],
-        items: Array.isArray(liquidationToEdit.details)
-          ? liquidationToEdit.details.map((item) => ({
-            asset_id: item.asset_id || 0,
-            quantity: item.quantity || 1,
-            unit_value: item.unit_value || 0,
-            remaining_value: item.remaining_value || 0,
-            notes: item.notes ?? null,
-            from_location_id: item.from_location_id || 0,
-            from_staff_id: 0, // Not in details
-            from_unit_id: 0, // Not in details
-          }))
-          : [
-            {
-              asset_id: 0,
-              quantity: 1,
-              unit_value: 0,
-              remaining_value: 0,
-              notes: "",
-              from_location_id: 0,
-              from_staff_id: 0,
-              from_unit_id: 0,
-            },
-          ],
-        approvals,
-        required_steps: activeTemplate?.steps?.length || 0,
-        workflow_assignments: liquidationToEdit.workflow_assignments || [],
-      });
-    } else {
-      const requiredSteps = activeTemplate?.steps?.length || 0;
-      const initialApprovals: Record<string, number> = {};
-      if (activeTemplate?.steps) {
-        activeTemplate.steps.forEach((_, idx) => {
-          initialApprovals[`step_${idx}`] = 0;
-        });
-      }
-
+    if (isOpen) {
       form.reset({
         record_number: "",
         reason: "",
@@ -213,12 +151,17 @@ export default function LiquidationFormModal({
             from_unit_id: 0,
           },
         ],
-        approvals: initialApprovals,
-        required_steps: requiredSteps,
-        workflow_assignments: [],
+        approvals: {},
+        required_steps: activeTemplate?.steps?.length || 0,
       });
     }
   }, [isOpen, liquidationToEdit, form, activeTemplate]);
+
+  useEffect(() => {
+    if (activeTemplate?.steps?.length) {
+      form.setValue("required_steps", activeTemplate.steps.length);
+    }
+  }, [activeTemplate, form]);
 
   const onSubmit = async (data: LiquidationFormValues) => {
     const url = isEditing
@@ -398,10 +341,6 @@ export default function LiquidationFormModal({
                   control={form.control}
                   steps={activeTemplate?.steps || []}
                   users={users}
-                  title={null}
-                  useApproverSelect={false}
-                  showStepNumber={true}
-                  fallbackMessage={t("approval_workflow_fallback")}
                 />
               </TabsContent>
             </div>

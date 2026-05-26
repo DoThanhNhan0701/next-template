@@ -800,7 +800,8 @@
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected",
-      "completed": "Completed"
+      "completed": "Completed",
+      "pending_approval": "Pending approval"
     },
     "filters": {
       "search_placeholder": "e.g. REC2024, John Doe",

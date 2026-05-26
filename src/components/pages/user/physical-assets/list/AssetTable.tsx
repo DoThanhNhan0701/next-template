@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Calendar,
+  Filter,
   Laptop,
   RotateCcw,
   Search,
@@ -66,6 +67,7 @@ export default function AssetTable() {
   const [statusCode, setStatusCode] = useState<string>("");
   const [managementType, setManagementType] = useState<string>("");
   const [staffId, setStaffId] = useState<string>("");
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   const [appliedFilters, setAppliedFilters] = useState({
     q: "",
@@ -214,7 +216,7 @@ export default function AssetTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex flex-col gap-3 bg-card/60 backdrop-blur-md p-3 rounded-md border border-border/50 transition-all hover:border-border/80">
-        {/* Row 1: Search + action buttons */}
+        {/* Row 1: Search + main action buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <div className="relative flex-1 min-w-0">
             <Search
@@ -252,9 +254,16 @@ export default function AssetTable() {
                 staff_id: staffId,
               });
             }}
-            className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95"
+            className="shrink-0 shadow-sm hover:shadow-md transition-all active:scale-95 gap-1.5"
           >
-            {pending ? t("filters.searching") : t("filters.search")}
+            {pending ? (
+              t("filters.searching")
+            ) : (
+              <>
+                <Search size={16} className="md:hidden" />
+                <span className="hidden md:inline">{t("filters.search")}</span>
+              </>
+            )}
           </Button>
 
           <Button
@@ -283,43 +292,58 @@ export default function AssetTable() {
             <RotateCcw size={16} className="text-muted-foreground/70" />
           </Button>
 
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImport}
-            accept=".xls,.xlsx"
-            className="hidden"
-          />
           <Button
             variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={importPending}
-            className="shrink-0 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
+            onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+            className="md:hidden shrink-0 border-border/50 bg-background/50 hover:bg-background/80 gap-1.5"
           >
-            {importPending ? t("filters.searching") : t("import_excel")}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            disabled={isExporting}
-            className="shrink-0 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
-          >
-            {isExporting ? t("filters.searching") : t("export_excel")}
+            <Filter size={16} className={isFilterExpanded ? "text-primary" : "text-muted-foreground/70"} />
+            <span className="text-xs font-medium">Lọc</span>
           </Button>
 
-          {canCreate && (
+          {/* Desktop-only secondary action buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImport}
+              accept=".xls,.xlsx"
+              className="hidden"
+            />
             <Button
-              onClick={() => setIsCreating(true)}
-              className="shrink-0 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95 hidden sm:flex"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={importPending}
+              className="shrink-0 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
             >
-              {t("modals.create_title")}
+              {importPending ? t("filters.searching") : t("import_excel")}
             </Button>
-          )}
+            <Button
+              variant="outline"
+              onClick={handleExport}
+              disabled={isExporting}
+              className="shrink-0 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
+            >
+              {isExporting ? t("filters.searching") : t("export_excel")}
+            </Button>
+
+            {canCreate && (
+              <Button
+                onClick={() => setIsCreating(true)}
+                className="shrink-0 bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
+              >
+                {t("modals.create_title")}
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Row 2: Filters + create button on mobile */}
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 flex-1 min-w-0">
+        {/* Row 2: Collapsible Filters panel */}
+        <div className={cn(
+          "md:flex flex-col gap-2 transition-all duration-200 overflow-hidden",
+          isFilterExpanded ? "flex h-auto opacity-100" : "hidden md:flex"
+        )}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 w-full">
             <SelectField
               className="w-full min-w-0"
               options={(orgUnits ?? [])
@@ -382,14 +406,35 @@ export default function AssetTable() {
             />
           </div>
 
-          {canCreate && (
-            <Button
-              onClick={() => setIsCreating(true)}
-              className="sm:hidden bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95"
-            >
-              {t("modals.create_title")}
-            </Button>
-          )}
+          {/* Mobile-only secondary action buttons inside collapsible section */}
+          <div className="flex md:hidden flex-col gap-2 mt-1">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importPending}
+                className="flex-1 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
+              >
+                {importPending ? t("filters.searching") : t("import_excel")}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleExport}
+                disabled={isExporting}
+                className="flex-1 border-border/50 bg-background/50 hover:bg-background/80 transition-all active:scale-95 text-xs h-9 px-3"
+              >
+                {isExporting ? t("filters.searching") : t("export_excel")}
+              </Button>
+            </div>
+            {canCreate && (
+              <Button
+                onClick={() => setIsCreating(true)}
+                className="w-full bg-primary/95 hover:bg-primary shadow-sm hover:shadow-md transition-all active:scale-95 text-xs h-9"
+              >
+                {t("modals.create_title")}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 

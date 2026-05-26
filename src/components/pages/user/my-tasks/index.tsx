@@ -43,7 +43,7 @@ export default function MyTasksPage() {
     return allAudits.filter((a) => {
       if (status === "PENDING") {
         return (
-          a.status_obj?.code === "PENDING" ||
+          (a.status_obj?.code === "PENDING" && !a.submitted_at) ||
           (a.status_obj?.code === "COMPLETED" && a.assignee_id !== user?.id)
         );
       }

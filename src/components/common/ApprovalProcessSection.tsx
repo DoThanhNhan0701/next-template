@@ -91,6 +91,7 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
               <Controller
                 key={step.id}
                 name={name}
+                defaultValue={(step?.default_assignee_user_id ?? undefined) as never}
                 control={control}
                 render={({ field, fieldState }) => {
                   return (

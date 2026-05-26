@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Package, Plus } from "lucide-react";
+import { Package } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,6 @@ export default function ModulesTable({
       <div className="space-y-4">
         <div className="flex justify-end">
           <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
             <span className="text-sm font-semibold">
               {t("detail.modules.form.add_button")}
             </span>
@@ -95,15 +94,12 @@ export default function ModulesTable({
     <div className="space-y-2">
       <div className="flex justify-end">
         <Button onClick={() => setIsFormOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          <span className="text-sm font-semibold">
-            {t("detail.modules.form.add_button")}
-          </span>
+          {t("detail.modules.form.add_button")}
         </Button>
       </div>
 
-      <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden overflow-x-auto">
-        <Table>
+      <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
+        <Table className="whitespace-nowrap">
           <TableHeader>
             <TableRow className="bg-muted/30 border-b border-border/50 hover:bg-muted/30">
               <TableHead className="w-[50px] text-center font-semibold h-11 px-2 whitespace-nowrap">

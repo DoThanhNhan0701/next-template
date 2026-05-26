@@ -800,7 +800,8 @@
       "pending": "Chờ xử lý",
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối",
-      "completed": "Hoàn tất"
+      "completed": "Hoàn tất",
+      "pending_approval": "Chờ phê duyệt"
     },
     "filters": {
       "search_placeholder": "e.g. REC2024, Nguyễn Văn A",

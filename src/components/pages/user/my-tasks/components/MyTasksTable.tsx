@@ -147,7 +147,7 @@ export default function MyTasksTable() {
     return allAuditsCombined.filter((audit) => {
       if (activeTab === "PENDING") {
         return (
-          audit.status_obj.code === "PENDING" ||
+          (audit.status_obj.code === "PENDING" && !audit.submitted_at) ||
           (audit.status_obj.code === "COMPLETED" &&
             audit.assignee_id !== user?.id)
         );
@@ -155,6 +155,7 @@ export default function MyTasksTable() {
       if (activeTab === "APPROVED") {
         return (
           audit.status_obj.code === "APPROVED" ||
+          (audit.status_obj.code === "PENDING" && audit.submitted_at) ||
           (audit.status_obj.code === "COMPLETED" &&
             audit.assignee_id === user?.id)
         );
@@ -169,7 +170,10 @@ export default function MyTasksTable() {
       instance_id: audit.id,
       step_id: 0,
       user_id: audit.assignee_id,
-      status: audit.status_obj.code as TaskStatus,
+      status:
+        audit.status_obj.code === "PENDING" && audit.submitted_at
+          ? "PENDING_APPROVAL"
+          : (audit.status_obj.code as TaskStatus),
       created_at: audit.created_at,
       document_id: audit.id,
       document_record_number: audit.title,
@@ -221,6 +225,8 @@ export default function MyTasksTable() {
     switch (status) {
       case "PENDING":
         return "bg-orange-500/10 text-orange-600 border-orange-200/50";
+      case "PENDING_APPROVAL":
+        return "bg-yellow-500/10 text-yellow-600 border-yellow-200/50";
       case "APPROVED":
         return "bg-emerald-500/10 text-emerald-600 border-emerald-200/50";
       case "REJECTED":
@@ -485,16 +491,22 @@ export default function MyTasksTable() {
                 <SelectItem value="maintenance">
                   {tDocTypes("maintenance")}
                 </SelectItem>
-                <SelectItem value="recovery">{tDocTypes("recovery")}</SelectItem>
+                <SelectItem value="recovery">
+                  {tDocTypes("recovery")}
+                </SelectItem>
                 <SelectItem value="rental">{tDocTypes("rental")}</SelectItem>
                 <SelectItem value="rental_return">
                   {tDocTypes("rental_return")}
                 </SelectItem>
-                <SelectItem value="stock_in">{tDocTypes("stock_in")}</SelectItem>
+                <SelectItem value="stock_in">
+                  {tDocTypes("stock_in")}
+                </SelectItem>
                 <SelectItem value="stock_out">
                   {tDocTypes("stock_out")}
                 </SelectItem>
-                <SelectItem value="transfer">{tDocTypes("transfer")}</SelectItem>
+                <SelectItem value="transfer">
+                  {tDocTypes("transfer")}
+                </SelectItem>
               </SelectContent>
             </Select>
 

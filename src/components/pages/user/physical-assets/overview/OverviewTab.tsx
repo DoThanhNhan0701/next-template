@@ -37,6 +37,8 @@ export default function OverviewTab({
   stocks: IAssetStock[];
 }>) {
   const t = useTranslations("page_physical_assets.overview");
+  const t3 = useTranslations("page_physical_assets");
+
   const { mutate: updateAsset, pending: updatePending } = useMutation();
 
   return (
@@ -60,19 +62,23 @@ export default function OverviewTab({
                 />
                 <InfoRow
                   icon="🗂️"
-                  label={t("fields.catalog_group")}
-                  value={
-                    (asset as unknown as { catalog_group_name?: string })
-                      .catalog_group_name || "-"
-                  }
+                  label={t3("detail.specs.model")}
+                  value={asset.model || "-"}
                 />
                 <InfoRow
                   icon="🏷️"
-                  label={t("fields.asset_group")}
-                  value={
-                    (asset as unknown as { group_name?: string }).group_name ||
-                    "-"
-                  }
+                  label={t3("detail.specs.serial_number")}
+                  value={asset.serial_number || "-"}
+                />
+                <InfoRow
+                  icon="👤"
+                  label={t3("detail.specs.management_type")}
+                  value={asset.management_type || "-"}
+                />
+                <InfoRow
+                  icon="📍"
+                  label={t3("detail.specs.quantity")}
+                  value={asset.quantity?.toLocaleString() || "-"}
                 />
                 <InfoRow
                   icon="🛡️"
@@ -96,15 +102,11 @@ export default function OverviewTab({
                   value={asset.unit?.name || "-"}
                 />
                 <InfoRow
-                  icon="👤"
-                  label={t("fields.holder")}
-                  value={asset.holder_name || "-"}
+                  icon="🏢"
+                  label={t3("detail.specs.title")}
+                  value={asset.specifications || "-"}
                 />
-                <InfoRow
-                  icon="📍"
-                  label={t("fields.location")}
-                  value={asset.location_obj?.name || "-"}
-                />
+
                 {(holders.length > 0 || stocks.length > 0) &&
                   (() => {
                     const userHolders = holders.filter(

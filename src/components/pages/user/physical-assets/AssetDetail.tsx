@@ -58,10 +58,6 @@ const AssetModulesTable = dynamic(() => import("./modules/AssetModulesTable"), {
   ssr: false,
 });
 
-const SpecsTab = dynamic(() => import("./specs/SpecsTab"), {
-  ssr: false,
-});
-
 const DocsTab = dynamic(() => import("./docs/DocsTab"), {
   ssr: false,
 });
@@ -269,7 +265,10 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 {t("detail.recovery")}
               </Button>
               {asset.management_type === "unique" && (
-                <Button variant="outline" onClick={() => setIsCloneModalOpen(true)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsCloneModalOpen(true)}
+                >
                   {t("detail.clone")}
                 </Button>
               )}
@@ -325,7 +324,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           className="w-full"
         >
           <div className="w-full pb-3">
-            <TabsList className="grid w-full grid-cols-5 h-14 sm:h-16 p-1 bg-muted/40 rounded-lg">
+            <TabsList className="grid w-full grid-cols-4 h-14 sm:h-16 p-1 bg-muted/40 rounded-lg">
               <TabsTrigger
                 value="overview"
                 className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
@@ -359,15 +358,6 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
                 <Clock className="w-4 h-4" />
                 <span className="hidden sm:block text-sm font-medium">
                   {t("detail.tabs.history")}
-                </span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="specs"
-                className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-md"
-              >
-                <Wrench className="w-4 h-4" />
-                <span className="hidden sm:block text-sm font-medium">
-                  {t("detail.tabs.specs")}
                 </span>
               </TabsTrigger>
               <TabsTrigger
@@ -407,12 +397,7 @@ export default function AssetDetail({ id }: Readonly<{ id: string }>) {
           >
             <LifecycleTab assetId={Number(id)} />
           </TabsContent>
-          <TabsContent
-            value="specs"
-            className="mt-3 outline-none focus-visible:ring-0"
-          >
-            <SpecsTab asset={asset} />
-          </TabsContent>
+
           <TabsContent
             value="docs"
             className="mt-3 outline-none focus-visible:ring-0"

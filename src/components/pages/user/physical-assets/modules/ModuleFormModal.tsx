@@ -162,7 +162,7 @@ export default function ModuleFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[900px] h-fit max-h-[90vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[900px] h-[90dvh] sm:h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {moduleToEdit
@@ -180,7 +180,7 @@ export default function ModuleFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <div className="flex-1 overflow-y-auto px-6 pb-6 mt-3">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4 sm:pb-6 mt-3">
             <div className="flex flex-col gap-3">
               {/* Section: Module Information */}
               <div className="flex flex-col gap-3">
@@ -381,7 +381,7 @@ export default function ModuleFormModal({
                     name="purchase_date"
                     control={form.control}
                     render={({ fieldState }) => (
-                      <Field className="gap-1 col-span-1">
+                      <Field className="gap-1 col-span-2 sm:col-span-1">
                         <FieldLabel>
                           {t("detail.modules.form.fields.purchase_date")}
                         </FieldLabel>
@@ -397,7 +397,7 @@ export default function ModuleFormModal({
                     name="warranty_expiration"
                     control={form.control}
                     render={({ fieldState }) => (
-                      <Field className="gap-1 col-span-1">
+                      <Field className="gap-1 col-span-2 sm:col-span-1">
                         <FieldLabel>
                           {t("detail.modules.form.fields.warranty")}
                         </FieldLabel>
