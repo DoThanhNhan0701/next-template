@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { ReactNode, useMemo, useRef, useState } from "react";
 
 import { Check, ChevronsUpDown, Search, X } from "lucide-react";
 
@@ -19,6 +19,8 @@ export interface SelectOption<
   label: string;
   value: TValue;
   disabled?: boolean;
+  /** Nội dung JSX hiển thị trong dropdown list (không ảnh hưởng đến search) */
+  customRender?: ReactNode;
 }
 
 interface Props<TValue extends string | number = string | number> {
@@ -211,7 +213,9 @@ export function SelectField<TValue extends string | number = string | number>({
                     isSelected(opt.value) ? "opacity-100" : "opacity-0",
                   )}
                 />
-                <span className="truncate">{opt.label}</span>
+                <span className="truncate w-full text-left">
+                  {opt.customRender ?? opt.label}
+                </span>
               </button>
             ))
           ) : (

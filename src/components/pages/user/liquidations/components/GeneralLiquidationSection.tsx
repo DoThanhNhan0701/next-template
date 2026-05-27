@@ -1,23 +1,11 @@
-import { useState } from "react";
-
-import {
-  Check,
-  ChevronsUpDown,
-  Search,
-  User as UserIcon,
-  X,
-} from "lucide-react";
-import { Controller, UseFormReturn, useWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
+
+import { Controller, UseFormReturn, useWatch } from "react-hook-form";
 
 import { DatePickerField } from "@/components/common/DatePickerField";
 import { FormattedNumberInput } from "@/components/common/FormattedNumberInput";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { SelectField } from "@/components/common/SelectField";
+import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
 import {
   Field,
   FieldError,
@@ -35,8 +23,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { IStaff } from "@/types/staff";
 
-import { LiquidationFormValues } from "@/components/schemas/user/liquidation.schema";
-
 interface GeneralLiquidationSectionProps {
   form: UseFormReturn<LiquidationFormValues>;
   users: IStaff[];
@@ -47,30 +33,12 @@ export function GeneralLiquidationSection({
   users,
 }: GeneralLiquidationSectionProps) {
   const t = useTranslations("page_liquidations.form");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const selectedUserIds =
     useWatch({
       control: form.control,
       name: "committee",
     }) || [];
-
-  const filteredUsers = users.filter((u) =>
-    u.full_name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  const toggleUser = (id: number) => {
-    const current = form.getValues("committee");
-    if (current.includes(id)) {
-      form.setValue(
-        "committee",
-        current.filter((v) => v !== id),
-      );
-    } else {
-      form.setValue("committee", [...current, id]);
-    }
-  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -80,9 +48,7 @@ export function GeneralLiquidationSection({
           name="record_number"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                {t("record_number")}
-              </FieldLabel>
+              <FieldLabel>{t("record_number")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -98,9 +64,7 @@ export function GeneralLiquidationSection({
           name="liquidation_date"
           render={({ fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                {t("liquidation_date")}
-              </FieldLabel>
+              <FieldLabel>{t("liquidation_date")}</FieldLabel>
               <DatePickerField form={form} name="liquidation_date" />
               <FieldError errors={[fieldState.error]} />
             </Field>
@@ -114,9 +78,7 @@ export function GeneralLiquidationSection({
           name="liquidation_type"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                {t("liquidation_method")}
-              </FieldLabel>
+              <FieldLabel>{t("liquidation_method")}</FieldLabel>
               <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <SelectTrigger className="bg-white shadow-sm">
                   <SelectValue placeholder={t("placeholder_method")} />
@@ -137,9 +99,7 @@ export function GeneralLiquidationSection({
           name="total_value"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                {t("total_value")}
-              </FieldLabel>
+              <FieldLabel>{t("total_value")}</FieldLabel>
               <FormattedNumberInput
                 {...field}
                 value={field.value ?? 0}
@@ -152,100 +112,19 @@ export function GeneralLiquidationSection({
       </FieldGroup>
 
       <Field className="gap-1">
-        <FieldLabel>
-          {t("committee")}
-        </FieldLabel>
-        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="w-full px-3 py-2 flex items-center justify-between gap-2 rounded-md border border-input shadow-sm hover:border-primary/50 transition-all text-left min-h-[44px]"
-            >
-              <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
-                {selectedUserIds.length === 0 ? (
-                  <span className="text-sm text-muted-foreground">
-                    {t("placeholder_committee")}
-                  </span>
-                ) : (
-                  selectedUserIds.map((id) => {
-                    const user = users.find((u) => u.id === id);
-                    return (
-                      <Badge
-                        key={id}
-                        variant="secondary"
-                        className="flex items-center gap-1 pr-1 text-xs whitespace-nowrap bg-primary/10 text-primary border-none hover:bg-primary/20"
-                      >
-                        {user?.full_name}
-                        <span
-                          role="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleUser(id);
-                          }}
-                          className="ml-0.5 hover:text-destructive cursor-pointer"
-                        >
-                          <X size={10} />
-                        </span>
-                      </Badge>
-                    );
-                  })
-                )}
-              </div>
-              <ChevronsUpDown
-                size={16}
-                className="text-muted-foreground shrink-0"
-              />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-popper-anchor-width] min-w-[--radix-popper-anchor-width] p-0"
-            align="start"
-          >
-            <div className="p-2 border-b bg-muted/20">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={t("search_member")}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 h-9 bg-background focus-visible:ring-1"
-                />
-              </div>
-            </div>
-            <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
-              {filteredUsers.length === 0 ? (
-                <div className="py-6 text-center text-xs text-muted-foreground">
-                  {t("no_members")}
-                </div>
-              ) : (
-                filteredUsers.map((u) => (
-                  <div
-                    key={u.id}
-                    className={`
-                      flex items-center gap-2.5 px-3 py-2.5 rounded-sm cursor-pointer transition-colors
-                      hover:bg-accent hover:text-accent-foreground
-                      ${selectedUserIds.includes(u.id) ? "bg-accent/50" : ""}
-                    `}
-                    onClick={() => toggleUser(u.id)}
-                  >
-                    <div className="p-1.5 rounded-md bg-primary/5 text-primary">
-                      <UserIcon size={14} />
-                    </div>
-                    <span className="flex-1 text-sm font-medium leading-none">
-                      {u.full_name}
-                    </span>
-                    {selectedUserIds.includes(u.id) && (
-                      <Check
-                        size={16}
-                        className="text-primary animate-in zoom-in-50 duration-200"
-                      />
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <FieldLabel>{t("committee")}</FieldLabel>
+        <SelectField
+          options={users.map((u) => ({
+            label: `${u.full_name} - (${u.staff_code})`,
+            value: u.id,
+          }))}
+          value={selectedUserIds}
+          onChange={(val) => form.setValue("committee", val)}
+          placeholder={t("placeholder_committee")}
+          searchable
+          searchPlaceholder={t("search_member")}
+          multiple
+        />
         <FieldError errors={[form.formState.errors.committee]} />
       </Field>
 
@@ -255,9 +134,7 @@ export function GeneralLiquidationSection({
           name="buyer_name"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                {t("buyer")}
-              </FieldLabel>
+              <FieldLabel>{t("buyer")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -273,9 +150,7 @@ export function GeneralLiquidationSection({
           name="external_link"
           render={({ field, fieldState }) => (
             <Field className="gap-1">
-              <FieldLabel>
-                {t("doc_link")}
-              </FieldLabel>
+              <FieldLabel>{t("doc_link")}</FieldLabel>
               <Input
                 {...field}
                 value={field.value ?? ""}
@@ -293,9 +168,7 @@ export function GeneralLiquidationSection({
         name="reason"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>
-              {t("reason")}
-            </FieldLabel>
+            <FieldLabel>{t("reason")}</FieldLabel>
             <Textarea
               {...field}
               value={field.value ?? ""}
@@ -312,9 +185,7 @@ export function GeneralLiquidationSection({
         name="notes"
         render={({ field, fieldState }) => (
           <Field className="gap-1">
-            <FieldLabel>
-              {t("notes")}
-            </FieldLabel>
+            <FieldLabel>{t("notes")}</FieldLabel>
             <Textarea
               {...field}
               value={field.value || ""}

@@ -28,7 +28,7 @@
     "users": "Users",
     "staff": "Staff",
     "roles": "Roles",
-    "organization": "Organization (Code)",
+    "organization": "Organization",
     "locations": "Storage locations",
     "asset_groups": "Asset groups",
     "catalog_types": "Catalog types",
@@ -2060,6 +2060,7 @@
     },
     "detail": {
       "title": "Maintenance detail",
+      "record_return": "Record Return",
       "subtitle": "Equipment service record",
       "record_number": "Record number",
       "ticket_number": "Ticket number",
@@ -2248,5 +2249,22 @@
     "preview": "Preview",
     "view": "View",
     "remove": "Remove"
+  },
+  "MaintenanceReturnModal": {
+    "title": "Record asset return",
+    "return_date": "Return Date",
+    "return_handover_person": "Return Receiver (Our Side)",
+    "placeholder_person": "Select return receiver...",
+    "actual_cost": "Actual Cost ($)",
+    "notes": "Notes",
+    "placeholder_notes": "Enter notes...",
+    "info_note": "After confirmation, the asset status will automatically change to <inuse>In Use</inuse> or <available>Available</available> depending on the current holder.",
+    "cancel": "Cancel",
+    "confirm": "Confirm Return",
+    "processing": "Processing...",
+    "validation": {
+      "return_date_required": "Return date is required!",
+      "return_handover_person_required": "Please select a return receiver!"
+    }
   }
 }

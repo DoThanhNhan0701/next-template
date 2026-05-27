@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -45,6 +47,8 @@ import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
 import { formatNumberWithCommas } from "@/utils/number";
 
+import MaintenanceReturnModal from "./MaintenanceReturnModal";
+
 interface Props {
   id: string;
 }
@@ -52,6 +56,7 @@ interface Props {
 export default function MaintenanceDetail({ id }: Props) {
   const router = useRouter();
   const t = useTranslations("page_maintenance.detail");
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
 
   const {
     response: detail,
@@ -62,12 +67,48 @@ export default function MaintenanceDetail({ id }: Props) {
   });
 
   const { mutate: updateMaintenance, pending: updatePending } = useMutation();
+  const { mutate: recordReturn, pending: returnPending } = useMutation();
+
+  const handleReturn = async (data: {
+    return_date: string;
+    return_handover_person: string;
+    actual_cost: number;
+    notes?: string;
+  }) => {
+    await recordReturn(
+      {
+        url: dynamicEndpoints.MAINTENANCE_DETAIL(Number(id)),
+        method: "put",
+        body: {
+          return_date: data.return_date,
+          return_handover_person: data.return_handover_person,
+          actual_cost: data.actual_cost,
+          notes: data.notes,
+        },
+      },
+      {
+        onSuccess: (res) => {
+          getApiSuccessMessage(res);
+          setIsReturnModalOpen(false);
+          reFetch();
+        },
+        onError: (err) => {
+          getApiErrorMessage(err);
+          throw err;
+        },
+      },
+    );
+  };
 
   const { response: historyList, pending: historyPending } = useGet<
     ApprovalHistory[]
   >({
     url: dynamicEndpoints.WORKFLOW_HISTORY("maintenance", Number(id)),
   });
+
+  const isReturned = !!detail?.return_date;
+  const isRejected = detail?.status_obj?.code === "REJECTED";
+  const isActive = !isRejected && !isReturned;
 
   if (pending && !detail) {
     return (
@@ -108,6 +149,14 @@ export default function MaintenanceDetail({ id }: Props) {
             {t("subtitle")}
           </span>
         </div>
+
+        {isActive && (
+          <div className="ml-auto">
+            <Button onClick={() => setIsReturnModalOpen(true)}>
+              {t("record_return")}
+            </Button>
+          </div>
+        )}
       </div>
 
       <Card className="shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md">
@@ -405,6 +454,13 @@ export default function MaintenanceDetail({ id }: Props) {
             : t("status_ongoing_desc")}
         </p>
       </div>
+
+      <MaintenanceReturnModal
+        isOpen={isReturnModalOpen}
+        onClose={() => setIsReturnModalOpen(false)}
+        onConfirm={handleReturn}
+        pending={returnPending}
+      />
     </div>
   );
 }

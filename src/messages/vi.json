@@ -2061,6 +2061,7 @@
     },
     "detail": {
       "title": "Chi tiết bảo trì",
+      "record_return": "Ghi nhận nhận lại",
       "subtitle": "Bảo trì",
       "record_number": "Mã bảo trì",
       "ticket_number": "Số Ticket",
@@ -2249,5 +2250,22 @@
     "preview": "Xem trước",
     "view": "Xem",
     "remove": "Xóa"
+  },
+  "MaintenanceReturnModal": {
+    "title": "Ghi nhận nhận lại tài sản",
+    "return_date": "Ngày nhận lại",
+    "return_handover_person": "Người nhận lại (phía mình)",
+    "placeholder_person": "Chọn người nhận lại...",
+    "actual_cost": "Chi phí thực tế (đ)",
+    "notes": "Ghi chú",
+    "placeholder_notes": "Nhập ghi chú...",
+    "info_note": "Sau khi xác nhận, trạng thái tài sản sẽ tự động chuyển về <inuse>Đang sử dụng</inuse> hoặc <available>Sẵn dùng</available> tùy theo người giữ hiện tại.",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận nhận lại",
+    "processing": "Đang xử lý...",
+    "validation": {
+      "return_date_required": "Ngày nhận lại là bắt buộc!",
+      "return_handover_person_required": "Vui lòng chọn người nhận lại!"
+    }
   }
 }

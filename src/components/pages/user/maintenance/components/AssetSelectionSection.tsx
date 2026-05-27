@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
 import { useTranslations } from "next-intl";
 
-import { CheckCircle2, RefreshCcw, Trash, User, Warehouse } from "lucide-react";
+import { RefreshCcw, Trash, User, Warehouse } from "lucide-react";
 import {
   Controller,
   FieldArrayWithId,
@@ -19,16 +17,8 @@ import { MaintenanceFormValues } from "@/components/schemas/user/maintenance.sch
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { dynamicEndpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { cn } from "@/lib/utils";
 import { ILocation } from "@/types/location";
 import {
   IAssetHolder,
@@ -38,14 +28,9 @@ import {
 
 interface AssetStockSelectorProps {
   assetId: number;
-  index: number;
-  form: UseFormReturn<MaintenanceFormValues>;
 }
 
-function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
-  const t = useTranslations("page_maintenance.form");
-  const [sourceType, setSourceType] = useState<"stock" | "holder">("stock");
-
+function AssetStockSelector({ assetId }: AssetStockSelectorProps) {
   const { response: stockRes, pending: stockPending } = useGet<IAssetStock[]>(
     { url: dynamicEndpoints.PHYSICAL_ASSET_STOCK(assetId) },
     { disabled: !assetId, deps: [assetId] },
@@ -61,216 +46,54 @@ function AssetStockSelector({ assetId, index, form }: AssetStockSelectorProps) {
   const stocks = stockRes || [];
   const holders = holderRes || [];
 
-  const currentSelection = form.watch(`items.${index}`);
-  const isSelected = (id: number, type: "stock" | "holder") => {
-    if (type === "stock")
-      return (
-        currentSelection.from_location_id === id &&
-        currentSelection.from_staff_id === 0
-      );
-    const holderId = id; // holder ID passed is staff_id or unit_id
-    return (
-      currentSelection.from_staff_id === holderId ||
-      currentSelection.from_unit_id === holderId
-    );
-  };
-
   if (!assetId) return null;
 
   return (
-    <div className="mt-3 p-3 bg-muted/30 rounded-xl border border-border/40 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-      <div className="space-y-3">
-        <label className="text-xs font-semibold text-primary flex items-center gap-2">
-          <CheckCircle2 size={12} className="text-primary" />
-          {t("asset_source")}
-        </label>
-
-        {/* Source Pills Container */}
-        <div className="flex flex-wrap gap-2">
-          {stockPending || holderPending ? (
-            <div className="flex gap-2">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="h-7 w-24 bg-muted animate-pulse rounded-full"
-                />
-              ))}
-            </div>
-          ) : (
-            <>
-              {stocks.map((s, i) => (
-                <button
-                  key={`stock-pill-${i}`}
-                  type="button"
-                  onClick={() => {
-                    form.setValue(
-                      `items.${index}.from_location_id`,
-                      s.location_id,
-                    );
-                    form.setValue(`items.${index}.from_staff_id`, 0);
-                    form.setValue(`items.${index}.from_unit_id`, 0);
-                    setSourceType("stock");
-                  }}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-medium transition-all",
-                    isSelected(s.location_id, "stock")
-                      ? "bg-emerald-600 border-emerald-600 text-white shadow-md scale-105"
-                      : "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100",
-                  )}
-                >
-                  <Warehouse size={12} />
-                  {s.location_name}:{" "}
-                  <span className="font-bold">{s.quantity}</span>
-                </button>
-              ))}
-
-              {holders.map((h, i) => {
-                const holderId = h.staff_id || h.unit_id || 0;
-                return (
-                  <button
-                    key={`holder-pill-${i}`}
-                    type="button"
-                    onClick={() => {
-                      form.setValue(`items.${index}.from_location_id`, 0);
-                      form.setValue(
-                        `items.${index}.from_staff_id`,
-                        h.staff_id || 0,
-                      );
-                      form.setValue(
-                        `items.${index}.from_unit_id`,
-                        h.unit_id || 0,
-                      );
-                      setSourceType("holder");
-                    }}
-                    className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-medium transition-all",
-                      isSelected(holderId, "holder")
-                        ? "bg-blue-600 border-blue-600 text-white shadow-md scale-105"
-                        : "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100",
-                    )}
-                  >
-                    <User size={12} />
-                    {h.name}: <span className="font-bold">{h.quantity}</span>
-                  </button>
-                );
-              })}
-            </>
-          )}
-        </div>
-
-        {/* Action Toggle Buttons */}
-        <div className="flex items-center gap-3 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setSourceType("stock")}
-            className={cn(
-              "px-4 rounded-lg flex items-center gap-2 font-bold transition-all",
-              sourceType === "stock"
-                ? "bg-emerald-600 text-white border-emerald-600 shadow-lg scale-105"
-                : "border-primary/20 text-muted-foreground bg-white",
-            )}
-          >
-            <Warehouse size={16} /> {t("source_warehouse")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setSourceType("holder")}
-            className={cn(
-              "px-4 rounded-lg flex items-center gap-2 font-bold transition-all",
-              sourceType === "holder"
-                ? "bg-blue-600 text-white border-blue-600 shadow-lg scale-105"
-                : "border-primary/20 text-muted-foreground bg-white",
-            )}
-          >
-            <User size={16} /> {t("source_holder")}
-          </Button>
-        </div>
-
-        {/* Source Dropdown Selector */}
-        <Field className="gap-1.5 pt-2">
-          <FieldLabel
-            className={cn(
-              sourceType === "stock" ? "text-emerald-700" : "text-blue-700",
-            )}
-          >
-            {sourceType === "stock"
-              ? t("select_source_warehouse")
-              : t("select_source_holder")}
-          </FieldLabel>
-          <Controller
-            name={
-              sourceType === "stock"
-                ? `items.${index}.from_location_id`
-                : `items.${index}.from_staff_id`
-            }
-            control={form.control}
-            render={({ field: selectField }) => (
-              <Select
-                onValueChange={(val) => {
-                  const id = Number(val);
-                  if (sourceType === "stock") {
-                    form.setValue(`items.${index}.from_location_id`, id);
-                    form.setValue(`items.${index}.from_staff_id`, 0);
-                    form.setValue(`items.${index}.from_unit_id`, 0);
-                  } else {
-                    const holder = holders.find(
-                      (h) => (h.staff_id || h.unit_id) === id,
-                    );
-                    form.setValue(`items.${index}.from_location_id`, 0);
-                    form.setValue(
-                      `items.${index}.from_staff_id`,
-                      holder?.staff_id || 0,
-                    );
-                    form.setValue(
-                      `items.${index}.from_unit_id`,
-                      holder?.unit_id || 0,
-                    );
-                  }
-                }}
-                value={selectField.value ? selectField.value.toString() : ""}
-                disabled={
-                  sourceType === "stock"
-                    ? stocks.length === 0
-                    : holders.length === 0
-                }
+    <div className="mt-2 rounded-md border border-border/50 bg-muted/20 p-3">
+      <div className="flex flex-wrap gap-2 text-[11px]">
+        {stockPending || holderPending ? (
+          <>
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-6 w-28 rounded-md bg-muted animate-pulse"
+              />
+            ))}
+          </>
+        ) : (
+          <>
+            {stocks.map((s, i) => (
+              <div
+                key={`stock-${i}`}
+                className="flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-emerald-700"
               >
-                <SelectTrigger className="bg-white rounded-md border-border/60 shadow-none transition-all">
-                  <SelectValue
-                    placeholder={
-                      sourceType === "stock"
-                        ? t("placeholder_warehouse")
-                        : t("placeholder_holder")
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {sourceType === "stock"
-                    ? stocks.map((s, i) => (
-                        <SelectItem
-                          key={`s-opt-${i}`}
-                          value={s.location_id.toString()}
-                        >
-                          [{s.location_code}] {s.location_name} -{" "}
-                          {t("quantity")}: {s.quantity}
-                        </SelectItem>
-                      ))
-                    : holders.map((h, i) => {
-                        const id = h.staff_id || h.unit_id || 0;
-                        return (
-                          <SelectItem key={`h-opt-${i}`} value={id.toString()}>
-                            {h.name} ({h.type}) - {t("quantity")}: {h.quantity}
-                          </SelectItem>
-                        );
-                      })}
-                </SelectContent>
-              </Select>
+                <Warehouse size={11} />
+                <span className="truncate max-w-[140px]">
+                  {s.location_name}
+                </span>
+                <span className="font-semibold">({s.quantity})</span>
+              </div>
+            ))}
+
+            {holders.map((h, i) => (
+              <div
+                key={`holder-${i}`}
+                className="flex items-center gap-1 rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-blue-700"
+              >
+                <User size={11} />
+                <span className="truncate max-w-[140px]">{h.name}</span>
+                <span className="font-semibold">({h.quantity})</span>
+              </div>
+            ))}
+
+            {stocks.length === 0 && holders.length === 0 && (
+              <div className="text-[11px] text-muted-foreground">
+                Không tìm thấy thông tin tồn kho hoặc người đang sử dụng tài
+                sản.
+              </div>
             )}
-          />
-        </Field>
+          </>
+        )}
       </div>
     </div>
   );
@@ -367,124 +190,53 @@ export function AssetSelectionSection({
                   render={({ field: detailField, fieldState }) => (
                     <Field className="gap-1">
                       <FieldLabel>{t("select_asset")}</FieldLabel>
-                      <Select
-                        onValueChange={(val) => {
-                          const assetId = Number(val);
-                          detailField.onChange(assetId);
+                      <SelectField
+                        value={detailField.value}
+                        disabled={assetsPending}
+                        placeholder={t("placeholder_select_asset")}
+                        searchable
+                        options={assets.map((a) => {
+                          const status = a.status_obj?.name ?? "-";
+                          const holder = a.holder_name ?? "-";
 
-                          // Handle unique asset rules
-                          const selectedAsset = assets.find(
-                            (a) => a.id === assetId,
-                          );
-                          const statusName =
-                            selectedAsset?.status_obj?.name || "";
-                          const isRestricted =
-                            selectedAsset?.management_type === "unique" &&
-                            statusName === "Đang cho thuê";
-
-                          if (isRestricted) {
-                            const noteText = t("restricted_maintenance", {
-                              status: statusName,
-                            });
-                            form.setValue(`items.${index}.notes`, noteText);
-                          }
-
-                          // Reset stock selection when asset changes
+                          return {
+                            value: a.id,
+                            label: `${a.name} (${a.asset_code}) | ${status} | ${holder}`,
+                            customRender: (
+                              <div className="flex flex-col gap-1 py-0.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-foreground">
+                                    {a.name}
+                                  </span>
+                                  <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                                    {a.asset_code}
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                                  <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-emerald-700">
+                                    {status}
+                                  </span>
+                                  <span className="rounded bg-blue-100 px-1.5 py-0.5 text-blue-700">
+                                    {a.management_type}
+                                  </span>
+                                  <span className="rounded bg-orange-100 px-1.5 py-0.5 text-orange-700">
+                                    {holder}
+                                  </span>
+                                </div>
+                              </div>
+                            ),
+                          };
+                        })}
+                        onChange={(val) => {
+                          detailField.onChange(val);
                           form.setValue(`items.${index}.from_location_id`, 0);
                           form.setValue(`items.${index}.from_staff_id`, 0);
                           form.setValue(`items.${index}.from_unit_id`, 0);
                         }}
-                        value={
-                          detailField.value ? detailField.value.toString() : ""
-                        }
-                        disabled={
-                          assetsPending ||
-                          (!assetsPending && assets.length === 0)
-                        }
-                      >
-                        <SelectTrigger className="bg-white rounded-md border-border/60 shadow-none">
-                          <SelectValue
-                            placeholder={
-                              assetsPending
-                                ? t("loading_assets")
-                                : assets.length === 0
-                                  ? t("no_assets")
-                                  : t("placeholder_select_asset")
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
-                          {assets.map((a) => {
-                            const sName = a.status_obj?.name || "";
-                            const isUniqueRestricted =
-                              a.management_type === "unique" &&
-                              sName === "Đang cho thuê";
-
-                            return (
-                              <SelectItem
-                                key={`asset-${a.id}`}
-                                value={a.id.toString()}
-                              >
-                                <div className="flex flex-col items-start text-xs py-0.5">
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-sm">
-                                      {a.name}
-                                    </span>
-                                    {a.management_type === "unique" && (
-                                      <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">
-                                        Unique
-                                      </span>
-                                    )}
-                                  </div>
-                                  <span className="text-muted-foreground opacity-80 mt-0.5">
-                                    {a.asset_code} | Holder:{" "}
-                                    {a.holder_name || "N/A"}
-                                    {isUniqueRestricted && (
-                                      <span className="ml-2 text-destructive font-medium italic">
-                                        -{" "}
-                                        {t("restricted_maintenance", {
-                                          status: sName,
-                                        })}
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                      {/* Visual indicator for unique assets */}
-                      {(() => {
-                        const selAsset = detailField.value
-                          ? assets.find((a) => a.id === detailField.value)
-                          : null;
-                        const sName = selAsset?.status_obj?.name || "";
-                        const isRestricted =
-                          selAsset?.management_type === "unique" &&
-                          sName === "Đang cho thuê";
-
-                        if (!isRestricted) return null;
-
-                        return (
-                          <div className="mt-1.5 flex items-center gap-2 bg-amber-50/50 border border-amber-100 px-3 py-1.5 rounded-md">
-                            <span className="text-[10px] text-amber-700 font-bold uppercase tracking-wide">
-                              Note:
-                            </span>
-                            <span className="text-[11px] text-amber-600 font-medium italic">
-                              {t("restricted_maintenance", { status: sName })}
-                            </span>
-                          </div>
-                        );
-                      })()}
+                      />
                       <FieldError errors={[fieldState.error]} />
-
                       {detailField.value > 0 && (
-                        <AssetStockSelector
-                          assetId={detailField.value}
-                          index={index}
-                          form={form}
-                        />
+                        <AssetStockSelector assetId={detailField.value} />
                       )}
                     </Field>
                   )}
