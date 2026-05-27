@@ -47,19 +47,19 @@ export function WorkflowHistory({
     switch (status) {
       case "APPROVED":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] bg-emerald-500/10 text-emerald-600">
             <CheckCircle2 size={12} /> {t("approved")}
           </span>
         );
       case "REJECTED":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-500">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] bg-red-500/10 text-red-500">
             <XCircle size={12} /> {t("rejected")}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] bg-amber-500/10 text-amber-600">
             <Clock size={12} /> {t("pending")}
           </span>
         );
@@ -72,7 +72,7 @@ export function WorkflowHistory({
     >
       <CardHeader className="flex flex-row items-center gap-2 border-b border-border/50 py-2 px-3">
         <History className="w-4 h-4 text-amber-500" />
-        <CardTitle className="text-sm font-semibold text-primary">
+        <CardTitle className="text-xs font-semibold text-primary">
           {title || t("title")}
         </CardTitle>
       </CardHeader>
@@ -117,21 +117,21 @@ export function WorkflowHistory({
                   key={hist.id}
                   className="border-border/50 hover:bg-muted/30"
                 >
-                  <TableCell className="px-4 py-1.5 text-sm font-semibold">
+                  <TableCell className="px-4 py-1.5 text-xs font-semibold">
                     {hist.step_name}
                   </TableCell>
                   <TableCell className="px-4 py-1.5">
                     <div className="flex items-center gap-2">
-                      <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
+                      <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-[9px]">
                         {hist.requester_name?.charAt(0)}
                       </div>
-                      <span className="text-sm">{hist.requester_name}</span>
+                      <span className="text-xs">{hist.requester_name}</span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-center">
                     {getStatusBadge(hist.status)}
                   </TableCell>
-                  <TableCell className="px-4 py-1.5 text-sm text-muted-foreground italic">
+                  <TableCell className="px-4 py-1.5 text-xs text-muted-foreground italic">
                     {hist.comment || "—"}
                   </TableCell>
                   <TableCell className="px-4 py-1.5 text-xs text-muted-foreground">

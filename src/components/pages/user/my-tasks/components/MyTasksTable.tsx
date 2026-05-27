@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +9,6 @@ import {
   Check,
   CheckCircle2,
   Clock,
-  X as CloseIcon,
   FileText,
   Filter,
   RotateCcw,
@@ -43,22 +42,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
-import { useMutation } from "@/hooks/useMutation";
 import { cn } from "@/lib/utils";
 import { RootState } from "@/redux";
 import { IAuditSession } from "@/types/audit";
 import { ITask, TaskStatus } from "@/types/task";
-import { getApiErrorMessage } from "@/utils/api-error";
-import { getApiSuccessMessage } from "@/utils/api-success";
 import { formatDate } from "@/utils/date";
-
-import { ApproveAuditModal } from "./ApproveAuditModal";
-import { ApproveTaskModal } from "./ApproveTaskModal";
-import { CompleteAuditModal } from "./CompleteAuditModal";
-import { RejectAuditModal } from "./RejectAuditModal";
-import { RejectTaskModal } from "./RejectTaskModal";
 
 export default function MyTasksTable() {
   const router = useRouter();
@@ -73,13 +63,6 @@ export default function MyTasksTable() {
   const [selectedProcessType, setSelectedProcessType] = useState<string>("all");
   const [localCurrentPage, setLocalCurrentPage] = useState(1);
   const [limit, setLimit] = useState(100);
-  const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
-  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [isAuditCompleteModalOpen, setIsAuditCompleteModalOpen] =
-    useState(false);
-  const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
-  const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
   const queryParamsString = useMemo(() => {
     const params = new URLSearchParams();
@@ -93,23 +76,18 @@ export default function MyTasksTable() {
   const tTable = useTranslations("page_my_tasks.table");
   const tDocTypes = useTranslations("page_workflow_templates.table.doc_types");
 
-  const { response, pending, reFetch } = useGet<ITask[]>({
+  const { response, pending } = useGet<ITask[]>({
     url: `${endpoints.WORKFLOW_TASKS}me?${queryParamsString}`,
   });
 
-  const {
-    response: auditResponse,
-    pending: auditPending,
-    reFetch: auditReFetch,
-  } = useGet<IAuditSession[]>({ url: endpoints.AUDIT_MY_AUDITS });
+  const { response: auditResponse, pending: auditPending } = useGet<
+    IAuditSession[]
+  >({ url: endpoints.AUDIT_MY_AUDITS });
 
   const {
     response: auditPendingApprovalResponse,
     pending: auditPendingApprovalPending,
-    reFetch: auditPendingApprovalReFetch,
   } = useGet<IAuditSession[]>({ url: endpoints.AUDIT_PENDING_APPROVAL });
-
-  const { mutate, pending: mutatePending } = useMutation();
 
   const tasks = useMemo(() => response || [], [response]);
 
@@ -211,11 +189,6 @@ export default function MyTasksTable() {
   }, [allTasks, localCurrentPage, limit]);
   const isPending = pending || auditPending || auditPendingApprovalPending;
 
-  const reFetchAudits = useCallback(() => {
-    auditReFetch();
-    auditPendingApprovalReFetch();
-  }, [auditReFetch, auditPendingApprovalReFetch]);
-
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {
       case "PENDING":
@@ -236,142 +209,6 @@ export default function MyTasksTable() {
       return <FileText size={14} className="text-blue-500" />;
     }
     return <Check size={14} className="text-emerald-500" />;
-  };
-
-  const handleApprove = useCallback((task: ITask) => {
-    setSelectedTask(task);
-    if (task.document_type === "audit") {
-      if (task.status === "COMPLETED") {
-        setIsAuditApproveModalOpen(true);
-      } else {
-        setIsAuditCompleteModalOpen(true);
-      }
-    } else {
-      setIsApproveModalOpen(true);
-    }
-  }, []);
-
-  const onAuditApproveConfirm = async (comment: string) => {
-    if (!selectedTask) return;
-
-    await mutate(
-      {
-        url: dynamicEndpoints.AUDIT_APPROVE(selectedTask.instance_id),
-        method: "post",
-        body: { comment },
-      },
-      {
-        onSuccess: (response) => {
-          getApiSuccessMessage(response);
-          setIsAuditApproveModalOpen(false);
-          reFetchAudits();
-        },
-        onError: (error) => {
-          getApiErrorMessage(error);
-        },
-      },
-    );
-  };
-
-  const onAuditCompleteConfirm = async () => {
-    if (!selectedTask) return;
-
-    await mutate(
-      {
-        url: dynamicEndpoints.AUDIT_COMPLETE(selectedTask.instance_id),
-        method: "post",
-      },
-      {
-        onSuccess: (response) => {
-          getApiSuccessMessage(response);
-          setIsAuditCompleteModalOpen(false);
-          reFetchAudits();
-        },
-        onError: (error) => {
-          getApiErrorMessage(error);
-        },
-      },
-    );
-  };
-
-  const onApproveConfirm = async (comment: string) => {
-    if (!selectedTask) return;
-
-    await mutate(
-      {
-        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(selectedTask.id),
-        method: "post",
-        body: {
-          status: "APPROVED",
-          comment: comment,
-        },
-      },
-      {
-        onSuccess: (response) => {
-          getApiSuccessMessage(response);
-          setIsApproveModalOpen(false);
-          reFetch();
-        },
-        onError: (error) => {
-          getApiErrorMessage(error);
-        },
-      },
-    );
-  };
-
-  const handleReject = useCallback((task: ITask) => {
-    setSelectedTask(task);
-    if (task.document_type === "audit") {
-      setIsAuditRejectModalOpen(true);
-    } else {
-      setIsRejectModalOpen(true);
-    }
-  }, []);
-
-  const onAuditRejectConfirm = async (reason: string) => {
-    if (!selectedTask) return;
-
-    await mutate(
-      {
-        url: dynamicEndpoints.AUDIT_REJECT(selectedTask.instance_id, reason),
-        method: "post",
-      },
-      {
-        onSuccess: (response) => {
-          getApiSuccessMessage(response);
-          setIsAuditRejectModalOpen(false);
-          reFetchAudits();
-        },
-        onError: (error) => {
-          getApiErrorMessage(error);
-        },
-      },
-    );
-  };
-
-  const onRejectConfirm = async (comment: string) => {
-    if (!selectedTask) return;
-
-    await mutate(
-      {
-        url: dynamicEndpoints.WORKFLOW_TASK_COMPLETE(selectedTask.id),
-        method: "post",
-        body: {
-          status: "REJECTED",
-          comment: comment,
-        },
-      },
-      {
-        onSuccess: (response) => {
-          getApiSuccessMessage(response);
-          setIsRejectModalOpen(false);
-          reFetch();
-        },
-        onError: (error) => {
-          getApiErrorMessage(error);
-        },
-      },
-    );
   };
 
   return (
@@ -536,7 +373,7 @@ export default function MyTasksTable() {
               <TableHead className="font-semibold h-10 px-4 w-40 text-center hidden md:table-cell">
                 {tTable("process_type")}
               </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-45 hidden lg:table-cell">
+              <TableHead className="font-semibold h-10 px-4 w-45 text-center hidden lg:table-cell">
                 {tTable("current_step")}
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-50 hidden lg:table-cell">
@@ -547,9 +384,6 @@ export default function MyTasksTable() {
               </TableHead>
               <TableHead className="font-semibold h-10 px-4 w-30 text-center">
                 {tTable("status")}
-              </TableHead>
-              <TableHead className="font-semibold h-10 px-4 w-25 text-right">
-                {tTable("actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -614,7 +448,7 @@ export default function MyTasksTable() {
                   <TableCell className="px-4 py-2 max-w-0 overflow-hidden hidden lg:table-cell">
                     <Badge
                       variant="outline"
-                      className="px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70 truncate block text-center"
+                      className="max-w-max mx-auto px-2.5 py-0.5 rounded-md bg-secondary/30 border-secondary/50 text-[10px] font-bold text-foreground/70 truncate block text-center"
                     >
                       {task.step_name}
                     </Badge>
@@ -657,39 +491,6 @@ export default function MyTasksTable() {
                       )}
                     </Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-2 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      {["PENDING", "COMPLETED"].includes(task.status) &&
-                        task.document_type !== "audit" && (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleApprove(task);
-                              }}
-                              className="rounded-full hover:bg-emerald-50 text-emerald-600 transition-all active:scale-90"
-                              title={tTable("actions")}
-                            >
-                              <Check size={16} />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleReject(task);
-                              }}
-                              className="rounded-full hover:bg-red-50 text-red-600 transition-all active:scale-90"
-                              title={tTable("actions")}
-                            >
-                              <CloseIcon size={16} />
-                            </Button>
-                          </>
-                        )}
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))
             )}
@@ -707,46 +508,6 @@ export default function MyTasksTable() {
           setLocalCurrentPage(Math.floor(newSkip / limit) + 1)
         }
         onLimitChange={setLimit}
-      />
-
-      <ApproveTaskModal
-        task={selectedTask}
-        isOpen={isApproveModalOpen}
-        onClose={() => setIsApproveModalOpen(false)}
-        onConfirm={onApproveConfirm}
-        isSubmitting={mutatePending}
-      />
-
-      <RejectTaskModal
-        task={selectedTask}
-        isOpen={isRejectModalOpen}
-        onClose={() => setIsRejectModalOpen(false)}
-        onConfirm={onRejectConfirm}
-        isSubmitting={mutatePending}
-      />
-
-      <CompleteAuditModal
-        task={selectedTask}
-        isOpen={isAuditCompleteModalOpen}
-        onClose={() => setIsAuditCompleteModalOpen(false)}
-        onConfirm={onAuditCompleteConfirm}
-        isSubmitting={mutatePending}
-      />
-
-      <RejectAuditModal
-        task={selectedTask}
-        isOpen={isAuditRejectModalOpen}
-        onClose={() => setIsAuditRejectModalOpen(false)}
-        onConfirm={onAuditRejectConfirm}
-        isSubmitting={mutatePending}
-      />
-
-      <ApproveAuditModal
-        task={selectedTask}
-        isOpen={isAuditApproveModalOpen}
-        onClose={() => setIsAuditApproveModalOpen(false)}
-        onConfirm={onAuditApproveConfirm}
-        isSubmitting={mutatePending}
       />
     </div>
   );

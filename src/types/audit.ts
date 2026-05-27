@@ -47,6 +47,7 @@ export interface IAuditDetailItem {
     target_location_id: number | null;
     verified_at: string;
     status_obj: IStatus;
+    assignee: IUser | null
     asset: {
         id: number;
         asset_code: string;

@@ -158,8 +158,14 @@ export default function AuditFormModal({
       title: data.title,
       due_date: data.due_date ? `${data.due_date}T00:00:00.000Z` : null,
       ...(data.audit_type === "unit"
-        ? { unit_ids: data.unit_ids, all_active_units: data.all_active_units ?? false }
-        : { location_ids: data.location_ids, all_active_locations: data.all_active_locations ?? false }),
+        ? {
+            unit_ids: data.unit_ids,
+            all_active_units: data.all_active_units ?? false,
+          }
+        : {
+            location_ids: data.location_ids,
+            all_active_locations: data.all_active_locations ?? false,
+          }),
       ...(data.assignee_id ? { assignee_id: data.assignee_id } : {}),
     };
 
@@ -176,8 +182,6 @@ export default function AuditFormModal({
       {
         onSuccess: (res) => {
           getApiSuccessMessage(res);
-
-          // If the current user is the assignee, increment their PENDING task count
           if (data.assignee_id === currentUser?.id) {
             dispatch(
               updateCount({ status: "PENDING", count: counts.PENDING + 1 }),
@@ -263,7 +267,6 @@ export default function AuditFormModal({
                   )}
                 />
 
-                {/* Multi-select: Unit */}
                 {auditType === "unit" && (
                   <Field className="col-span-full gap-1">
                     <div className="flex justify-between items-center w-full">
@@ -310,8 +313,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.unit_ids as
-                        | { message?: string }
-                        | undefined,
+                          | { message?: string }
+                          | undefined,
                       ]}
                     />
                   </Field>
@@ -332,11 +335,9 @@ export default function AuditFormModal({
                           className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
                           onCheckedChange={(checked) => {
                             const isChecked = checked === true;
-                            form.setValue(
-                              "all_active_locations",
-                              isChecked,
-                              { shouldValidate: true },
-                            );
+                            form.setValue("all_active_locations", isChecked, {
+                              shouldValidate: true,
+                            });
                             if (isChecked) {
                               form.setValue("location_ids", [], {
                                 shouldValidate: true,
@@ -365,8 +366,8 @@ export default function AuditFormModal({
                     <FieldError
                       errors={[
                         form.formState.errors.location_ids as
-                        | { message?: string }
-                        | undefined,
+                          | { message?: string }
+                          | undefined,
                       ]}
                     />
                   </Field>

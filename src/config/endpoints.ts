@@ -119,5 +119,6 @@ export const dynamicEndpoints = {
   },
   UPLOAD_ATTACHMENTS: (documentType: string, id: number) => `/api/v1/${documentType}/${id}/attachments`,
   AUDIT_DETAIL_UPDATE: (id: number) => `/api/v1/audit/details/${id}`,
+  AUDIT_DETAIL_ASSIGN: () => `/api/v1/audit/details/assign`,
   SCAN_INFO: (code: string) => `/api/v1/scan/${encodeURIComponent(code)}/info`,
 };

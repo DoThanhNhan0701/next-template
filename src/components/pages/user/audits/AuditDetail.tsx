@@ -17,14 +17,17 @@ import {
   MapPin,
   Package,
   User,
+  UserCheck,
   X,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { SelectField } from "@/components/common/SelectField";
 import { WorkflowHistory } from "@/components/common/WorkflowHistory";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -46,6 +49,7 @@ import {
   IAuditDetailsResponse,
   IAuditSession,
 } from "@/types/audit";
+import { IUser } from "@/types/auth";
 import { ApprovalHistory, ITask, TaskStatus } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
@@ -65,7 +69,7 @@ export default function AuditDetail({ id }: Props) {
   const tMyTasks = useTranslations("page_my_tasks");
   const dispatch = useDispatch<AppDispatch>();
   const { counts } = useSelector((state: RootState) => state.task);
-  const { isSuperAdmin } = usePermissions();
+  const { user } = usePermissions();
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState<IAuditDetailItem | null>(
     null,
@@ -76,6 +80,10 @@ export default function AuditDetail({ id }: Props) {
   const [isAuditRejectModalOpen, setIsAuditRejectModalOpen] = useState(false);
   const [isAuditApproveModalOpen, setIsAuditApproveModalOpen] = useState(false);
 
+  const [selectedItemIds, setSelectedItemIds] = useState<Set<number>>(
+    new Set(),
+  );
+  const [assignUserId, setAssignUserId] = useState<number | null>(null);
   const {
     response: session,
     pending: sessionPending,
@@ -85,7 +93,7 @@ export default function AuditDetail({ id }: Props) {
   });
 
   const {
-    response: items,
+    response: itemsDetail,
     pending: itemsPending,
     reFetch: itemsReFetch,
   } = useGet<IAuditDetailsResponse>({
@@ -116,28 +124,74 @@ export default function AuditDetail({ id }: Props) {
     return [auditTaskHistory, ...(historyList || [])];
   }, [historyList, session]);
 
-  const { response: myAudits } = useGet<IAuditSession[]>({
-    url: endpoints.AUDIT_MY_AUDITS,
-  });
-
   const { response: myTasksResponse, reFetch: myTasksReFetch } = useGet<
     ITask[]
   >({
     url: `${endpoints.WORKFLOW_TASKS}me`,
   });
 
+  const { response: usersRes } = useGet<IUser[]>({
+    url: endpoints.USERS,
+  });
   const activeTask = (myTasksResponse || []).find(
     (t) => t.document_id === Number(id) && t.document_type === "audit",
   );
 
-  const totalItems = items?.length || 0;
-  const verifiedItems = items?.filter((item) => item.verified_at).length || 0;
+  const totalItems = itemsDetail?.length || 0;
+  const verifiedItems =
+    itemsDetail?.filter((item) => item.verified_at).length || 0;
   const progressPercentage =
     totalItems > 0 ? (verifiedItems / totalItems) * 100 : 0;
 
   const { mutate, pending: mutatePending } = useMutation();
 
-  const isMyAudit = myAudits?.some((audit) => audit.id === Number(id));
+  const isCreator = user?.username === session?.creator?.username;
+  const canAssign = isCreator && session?.status_obj?.code === "PENDING";
+
+  const allItemIds = (itemsDetail || []).map((item) => item.id);
+  const isAllSelected =
+    allItemIds.length > 0 && allItemIds.every((id) => selectedItemIds.has(id));
+  const isIndeterminate = selectedItemIds.size > 0 && !isAllSelected;
+
+  const toggleItem = (itemId: number) => {
+    setSelectedItemIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (isAllSelected) {
+      setSelectedItemIds(new Set());
+    } else {
+      setSelectedItemIds(new Set(allItemIds));
+    }
+  };
+
+  const handleAssign = async () => {
+    if (!assignUserId || selectedItemIds.size === 0) return;
+    await mutate(
+      {
+        url: dynamicEndpoints.AUDIT_DETAIL_ASSIGN(),
+        method: "post",
+        body: {
+          detail_ids: Array.from(selectedItemIds),
+          assignee_id: assignUserId,
+        },
+      },
+      {
+        onSuccess: (response) => {
+          getApiSuccessMessage(response);
+          itemsReFetch();
+          setSelectedItemIds(new Set());
+          setAssignUserId(null);
+        },
+        onError: (error) => getApiErrorMessage(error),
+      },
+    );
+  };
 
   const onAuditCompleteConfirm = async () => {
     await mutate(
@@ -215,24 +269,23 @@ export default function AuditDetail({ id }: Props) {
     );
   };
 
-  const mockTask: ITask | null =
-    (isMyAudit || isSuperAdmin) && session
-      ? {
-          id: Number(id) + 1000000,
-          instance_id: Number(id),
-          step_id: 0,
-          user_id: session.assignee_id || 0,
-          status: session.status_obj?.code as TaskStatus,
-          created_at: session.created_at || "",
-          document_id: Number(id),
-          document_record_number: session.title || "",
-          document_type: "audit",
-          requester_name: session.assignee?.full_name || "",
-          step_name:
-            session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
-          reason: "",
-        }
-      : null;
+  const mockTask: ITask | null = session
+    ? {
+        id: Number(id) + 1000000,
+        instance_id: Number(id),
+        step_id: 0,
+        user_id: session.assignee_id || 0,
+        status: session.status_obj?.code as TaskStatus,
+        created_at: session.created_at || "",
+        document_id: Number(id),
+        document_record_number: session.title || "",
+        document_type: "audit",
+        requester_name: session.assignee?.full_name || "",
+        step_name:
+          session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+        reason: "",
+      }
+    : null;
 
   if (sessionPending && !session) {
     return (
@@ -273,24 +326,22 @@ export default function AuditDetail({ id }: Props) {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {session?.status_obj?.code === "PENDING" &&
-            !session.submitted_at &&
-            isMyAudit && (
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setIsAuditCompleteModalOpen(true)}
-                disabled={
-                  mutatePending ||
-                  (progressPercentage < 100 && (items ?? [])?.length > 0)
-                }
-              >
-                {t("detail.complete_audit")}
-              </Button>
-            )}
+          {session?.status_obj?.code === "PENDING" && !session.submitted_at && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setIsAuditCompleteModalOpen(true)}
+              disabled={
+                mutatePending ||
+                (progressPercentage < 100 && (itemsDetail ?? [])?.length > 0)
+              }
+            >
+              {t("detail.complete_audit")}
+            </Button>
+          )}
 
           {((activeTask && session.submitted_at) ||
-            (session?.status_obj?.code === "COMPLETED" && isSuperAdmin)) && (
+            session?.status_obj?.code === "COMPLETED") && (
             <>
               <Button
                 variant="default"
@@ -352,7 +403,7 @@ export default function AuditDetail({ id }: Props) {
                 {t("detail.total_items")}
               </span>
               <span className="text-sm font-bold text-primary tracking-tight">
-                {items?.length || 0}
+                {itemsDetail?.length || 0}
               </span>
             </div>
             <div className="md:col-span-1 lg:col-span-2 bg-muted/30 rounded-lg p-3 border border-border/40 flex flex-col gap-2">
@@ -463,6 +514,17 @@ export default function AuditDetail({ id }: Props) {
           <Table className="whitespace-nowrap">
             <TableHeader className="bg-muted/30 border-b border-border/40">
               <TableRow className="hover:bg-transparent">
+                <TableHead className="px-3 h-8 w-10">
+                  {canAssign && (
+                    <Checkbox
+                      checked={isAllSelected}
+                      data-state={isIndeterminate ? "indeterminate" : undefined}
+                      onCheckedChange={toggleAll}
+                      aria-label="Chọn tất cả"
+                      className="translate-y-0"
+                    />
+                  )}
+                </TableHead>
                 <TableHead className="font-bold h-8 px-3 w-[50px] text-center text-[10px]">
                   {t("table.no")}
                 </TableHead>
@@ -481,6 +543,9 @@ export default function AuditDetail({ id }: Props) {
                 <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.notes")}
                 </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold">
+                  Người yêu cầu
+                </TableHead>
                 <TableHead className="px-3 h-8 text-[10px] font-bold text-right">
                   {t("table.verified")}
                 </TableHead>
@@ -490,22 +555,22 @@ export default function AuditDetail({ id }: Props) {
               {itemsPending ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell colSpan={7} className="p-3">
+                    <TableCell colSpan={9} className="p-3">
                       <Skeleton className="h-10 w-full" />
                     </TableCell>
                   </TableRow>
                 ))
-              ) : !items || items.length === 0 ? (
+              ) : !itemsDetail || itemsDetail.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={9}
                     className="h-32 text-center text-muted-foreground italic text-xs"
                   >
                     {t("table.no_items_found")}
                   </TableCell>
                 </TableRow>
               ) : (
-                items.map((item: IAuditDetailItem, index) => (
+                itemsDetail.map((item: IAuditDetailItem, index) => (
                   <TableRow
                     key={item.id}
                     className="border-border/20 hover:bg-muted/30 group cursor-pointer"
@@ -514,6 +579,18 @@ export default function AuditDetail({ id }: Props) {
                       setIsViewModalOpen(true);
                     }}
                   >
+                    <TableCell
+                      className="px-3 py-1.5"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {canAssign && (
+                        <Checkbox
+                          checked={selectedItemIds.has(item.id)}
+                          onCheckedChange={() => toggleItem(item.id)}
+                          aria-label={`Chọn ${item.asset.name}`}
+                        />
+                      )}
+                    </TableCell>
                     <TableCell className="px-3 py-1.5 text-center text-[11px] font-medium text-muted-foreground">
                       {index + 1}
                     </TableCell>
@@ -600,14 +677,20 @@ export default function AuditDetail({ id }: Props) {
                       </div>
                     </TableCell>
 
+                    <TableCell className="px-3 py-1.5">
+                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-medium">
+                        <User size={10} className="text-primary/60 shrink-0" />
+                        <span className="truncate max-w-[120px]">
+                          {item?.assignee?.full_name || "—"}
+                        </span>
+                      </div>
+                    </TableCell>
+
                     <TableCell className="px-3 py-1.5 text-right">
                       {item.verified_at ? (
                         <div className="flex flex-col items-end gap-0.5">
                           <span className="text-[11px] font-bold text-foreground/80">
                             {formatDate(item.verified_at)}
-                          </span>
-                          <span className="text-[9px] font-black uppercase text-primary tracking-wider">
-                            {t("table.edit")}
                           </span>
                         </div>
                       ) : (
@@ -630,6 +713,62 @@ export default function AuditDetail({ id }: Props) {
         className="rounded-md"
       />
 
+      {canAssign && selectedItemIds.size > 0 && (
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md border border-border/60 shadow-2xl rounded-2xl px-3 py-2">
+            {/* Badge đếm */}
+            <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl px-3 py-1.5">
+              <UserCheck className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span className="text-xs font-semibold text-primary whitespace-nowrap">
+                {selectedItemIds.size} tài sản
+              </span>
+            </div>
+
+            <span className="text-[11px] text-muted-foreground whitespace-nowrap hidden sm:block">
+              Phân công cho
+            </span>
+
+            {/* SelectField */}
+            <SelectField
+              options={(usersRes ?? []).map((s) => ({
+                label: `${s.full_name} - (${s.username})`,
+                value: s.id,
+              }))}
+              value={assignUserId}
+              onChange={(v) => setAssignUserId(v as number | null)}
+              placeholder="Chọn người quét..."
+              searchable
+              searchPlaceholder="Tìm nhân viên..."
+              className="h-8 w-56 text-xs"
+            />
+
+            {/* Giao việc */}
+            <Button
+              size="sm"
+              className="h-8 px-4 text-xs font-semibold gap-1.5 shrink-0"
+              disabled={!assignUserId || mutatePending}
+              onClick={handleAssign}
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              {mutatePending ? "Đang giao..." : "Giao việc"}
+            </Button>
+
+            {/* Divider + Hủy */}
+            <div className="w-px h-5 bg-border/60 shrink-0" />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-lg shrink-0"
+              onClick={() => {
+                setSelectedItemIds(new Set());
+                setAssignUserId(null);
+              }}
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          </div>
+        </div>
+      )}
       {/* Modals */}
       <ViewAuditItemModal
         key={`${selectedItem?.id}-${isViewModalOpen}`}
@@ -637,6 +776,8 @@ export default function AuditDetail({ id }: Props) {
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
         assigneeUsername={session?.assignee?.username}
+        creatorUsername={session?.creator?.username}
+        itemAssigneeUsername={selectedItem?.assignee?.username}
         onRefresh={itemsReFetch}
         isLocked={session.status_obj?.code !== "PENDING"}
       />
