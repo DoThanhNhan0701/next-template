@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import {
+  Building2,
   FileArchive,
   FileSpreadsheet,
   FileText,
@@ -49,7 +51,6 @@ interface RecordAttachmentsCardProps {
   initialAttachments?: string[];
   onSave: (newAttachments: string[]) => Promise<void>;
   isPending?: boolean;
-  emptyMessage?: string;
   className?: string;
 }
 
@@ -58,7 +59,6 @@ export function RecordAttachmentsCard({
   initialAttachments = [],
   onSave,
   isPending = false,
-  emptyMessage = "No attached documents. Click to upload.",
   className = "border-border/40 shadow-sm bg-card/40 backdrop-blur-md rounded-lg border-dashed",
 }: RecordAttachmentsCardProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -68,6 +68,7 @@ export function RecordAttachmentsCard({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync state if initialAttachments changes from outside
+  const t = useTranslations("RecordAttachmentsCard");
   useEffect(() => {
     setAttachments(initialAttachments);
   }, [initialAttachments]);
@@ -173,10 +174,10 @@ export function RecordAttachmentsCard({
   };
 
   return (
-    <Card className={className}>
+    <Card className={`text-card-foreground border shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md overflow-hidden ${className}`}>
       <CardHeader className="py-2 px-3 border-b border-border/40 bg-muted/5 flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+        <CardTitle className="flex items-center gap-2 text-xs font-semibold text-primary">
+          <Building2 className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
           {title}
         </CardTitle>
         <input
@@ -194,10 +195,10 @@ export function RecordAttachmentsCard({
           disabled={isPending || uploadPending}
         >
           {uploadPending ? <Loader2 className="animate-spin w-3 h-3" /> : null}
-          Upload
+          {t("upload")}
         </Button>
       </CardHeader>
-      <CardContent className="p-3">
+      <CardContent className="p-3 bg-card/60">
         {attachments.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {attachments.map((url, i) => {
@@ -219,7 +220,7 @@ export function RecordAttachmentsCard({
                       }
                     }}
                     className="truncate max-w-[200px] hover:underline hover:text-primary transition-colors cursor-pointer"
-                    title={isImage(url) ? "Click to preview" : "Click to view"}
+                    title={isImage(url) ? t("preview") : t("view")}
                   >
                     {getDisplayName(url)}
                   </a>
@@ -233,7 +234,7 @@ export function RecordAttachmentsCard({
                       handleSave(newArr);
                     }}
                     className="text-destructive opacity-0 group-hover:opacity-100 transition-all hover:text-destructive/80 shrink-0 ml-1"
-                    title="Remove attachment"
+                    title={t("remove")}
                   >
                     <Trash2 size={14} />
                   </button>
@@ -243,14 +244,14 @@ export function RecordAttachmentsCard({
           </div>
         ) : (
           <div
-            className="rounded-lg border border-dashed border-border/50 bg-muted/10 min-h-30 flex flex-col items-center justify-center gap-2 hover:bg-muted/20 transition-colors cursor-pointer group"
+            className="text-card-foreground border shadow-sm border-border/50 bg-card/60 backdrop-blur-md h-full rounded-md  border-dashed min-h-30 flex flex-col items-center justify-center gap-2 cursor-pointer group"
             onClick={() => fileInputRef.current?.click()}
           >
             <div className="w-8 h-8 rounded-full bg-background/60 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
               <ImageIcon className="w-3.5 h-3.5 text-muted-foreground/60" />
             </div>
-            <span className="text-sm font-medium text-muted-foreground/60">
-              {emptyMessage}
+            <span className="text-xs font-medium text-muted-foreground/60">
+              {t("emptyMessage")}
             </span>
           </div>
         )}

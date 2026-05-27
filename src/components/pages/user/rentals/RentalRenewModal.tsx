@@ -23,6 +23,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { IRentalFull } from "@/types/rental";
 import { getTodayISO } from "@/utils/date";
@@ -69,6 +70,7 @@ export default function RentalRenewModal({
     },
   });
 
+  const t = useTranslations('RentalRenewModal');
   useEffect(() => {
     if (isOpen && rentalDetail) {
       form.reset({
@@ -94,14 +96,9 @@ export default function RentalRenewModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden">
-        {/* Custom Header Design */}
         <DialogHeader className="p-3 shrink-0 border-b">
-          <DialogTitle className="text-base font-bold">
-            Tái ký & Gia hạn Hợp đồng
-          </DialogTitle>
-          <DialogDescription className="text-xs text-muted-foreground">
-            Gia hạn thuê các tài sản hiện tại sang hợp đồng mới
-          </DialogDescription>
+          <DialogTitle className="text-base font-bold">{t('title')}</DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">{t('description')}</DialogDescription>
         </DialogHeader>
 
         <form
@@ -110,10 +107,9 @@ export default function RentalRenewModal({
         >
           <div className="flex-1 px-6 py-4 overflow-y-auto flex flex-col gap-4">
             <FieldGroup className="flex flex-col gap-3">
-              {/* Customer Information (Read-only) */}
               <Field className="gap-1">
-                <FieldLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  Khách hàng thuê
+                <FieldLabel className="text-[10px] font-bold text-muted-foreground tracking-wider">
+                  {t('customer_info')}
                 </FieldLabel>
                 <Input
                   value={rentalDetail.customer?.name || ""}
@@ -128,9 +124,8 @@ export default function RentalRenewModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="gap-1">
-                    <FieldLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                      Số hợp đồng mới{" "}
-                      <span className="text-destructive">*</span>
+                    <FieldLabel className="text-[10px] font-bold text-muted-foreground tracking-wider">
+                      {t('new_contract_number')} <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Input
                       {...field}
@@ -152,8 +147,8 @@ export default function RentalRenewModal({
                   control={form.control}
                   render={({ fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                        Ngày bắt đầu <span className="text-destructive">*</span>
+                      <FieldLabel className="text-[10px] font-bold text-muted-foreground tracking-wider">
+                        {t('lease_date')} <span className="text-destructive">*</span>
                       </FieldLabel>
                       <div className="[&_input]:h-10 [&_button]:h-10">
                         <DatePickerField form={form} name="lease_date" />
@@ -170,9 +165,8 @@ export default function RentalRenewModal({
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field className="gap-1">
-                      <FieldLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                        Thời hạn thuê (Ngày){" "}
-                        <span className="text-destructive">*</span>
+                      <FieldLabel className="text-[10px] font-bold text-muted-foreground tracking-wider">
+                        {t('duration_days')} <span className="text-destructive">*</span>
                       </FieldLabel>
                       <Input
                         type="number"
@@ -201,8 +195,8 @@ export default function RentalRenewModal({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="gap-1">
-                    <FieldLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                      Tổng doanh thu mới (VNĐ)
+                    <FieldLabel className="text-[10px] font-bold text-muted-foreground tracking-wider">
+                      {t('total_revenue')}
                     </FieldLabel>
                     <div className="relative flex items-center">
                       <span className="absolute left-3 text-muted-foreground text-sm font-semibold select-none">
@@ -230,8 +224,8 @@ export default function RentalRenewModal({
                 control={form.control}
                 render={({ field }) => (
                   <Field className="gap-1">
-                    <FieldLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                      Ghi chú gia hạn
+                    <FieldLabel className="text-[10px] font-bold text-muted-foreground tracking-wider">
+                      {t('notes')}
                     </FieldLabel>
                     <Textarea
                       {...field}
@@ -246,14 +240,7 @@ export default function RentalRenewModal({
             {/* Warning Alert Container */}
             <div className="flex gap-2.5 items-start bg-amber-500/5 text-amber-800 border border-amber-500/20 rounded-lg p-3 text-xs leading-relaxed mt-1">
               <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <span>
-                Hành động này sẽ đóng hợp đồng hiện tại (
-                <strong className="font-semibold text-amber-900">
-                  {rentalDetail.record_number}
-                </strong>
-                ) và tạo hợp đồng mới. Quyền nắm giữ của các tài sản chưa trả sẽ
-                được chuyển tiếp hoàn toàn.
-              </span>
+              <span>{t('warning_message', { record_number: rentalDetail.record_number })}</span>
             </div>
           </div>
 
@@ -265,11 +252,11 @@ export default function RentalRenewModal({
               onClick={onClose}
               disabled={pending}
             >
-              Hủy
+              {t('cancel')}
             </Button>
             <Button type="submit" disabled={pending}>
               <ClipboardCheck className="h-4 w-4 mr-2" />
-              {pending ? "Đang xử lý..." : "Xác nhận"}
+              {pending ? t('processing') : t('confirm')}
             </Button>
           </DialogFooter>
         </form>

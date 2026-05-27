@@ -15,6 +15,7 @@ import { DatePickerField } from "@/components/common/DatePickerField";
 import { SelectField } from "@/components/common/SelectField";
 import { AuditCreateSchema } from "@/components/schemas/user/audit.schema";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -89,6 +90,8 @@ export default function AuditFormModal({
       audit_type: "unit",
       unit_ids: [],
       location_ids: [],
+      all_active_units: false,
+      all_active_locations: false,
       assignee_id: null,
       due_date: getTodayISO(),
     },
@@ -104,17 +107,28 @@ export default function AuditFormModal({
     useWatch({ control: form.control, name: "unit_ids" }) || [];
   const selectedLocationIds =
     useWatch({ control: form.control, name: "location_ids" }) || [];
+  const allActiveUnits =
+    useWatch({ control: form.control, name: "all_active_units" }) || false;
+  const allActiveLocations =
+    useWatch({ control: form.control, name: "all_active_locations" }) || false;
 
   useEffect(() => {
     if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeAuditTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
       form.reset({
         title: "",
         audit_type: "unit",
         unit_ids: [],
         location_ids: [],
+        all_active_units: false,
+        all_active_locations: false,
         assignee_id: null,
         due_date: getTodayISO(),
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeAuditTemplate?.steps?.length || 0,
       });
     }
@@ -144,8 +158,8 @@ export default function AuditFormModal({
       title: data.title,
       due_date: data.due_date ? `${data.due_date}T00:00:00.000Z` : null,
       ...(data.audit_type === "unit"
-        ? { unit_ids: data.unit_ids }
-        : { location_ids: data.location_ids }),
+        ? { unit_ids: data.unit_ids, all_active_units: data.all_active_units ?? false }
+        : { location_ids: data.location_ids, all_active_locations: data.all_active_locations ?? false }),
       ...(data.assignee_id ? { assignee_id: data.assignee_id } : {}),
     };
 
@@ -182,7 +196,7 @@ export default function AuditFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[560px] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[800px] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>{t("table.audit_batch_title")}</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
@@ -219,6 +233,8 @@ export default function AuditFormModal({
                           field.onChange(val);
                           form.setValue("unit_ids", []);
                           form.setValue("location_ids", []);
+                          form.setValue("all_active_units", false);
+                          form.setValue("all_active_locations", false);
                         }}
                         className="w-full"
                       >
@@ -250,9 +266,34 @@ export default function AuditFormModal({
                 {/* Multi-select: Unit */}
                 {auditType === "unit" && (
                   <Field className="col-span-full gap-1">
-                    <FieldLabel>{t("filters.select_unit")}</FieldLabel>
+                    <div className="flex justify-between items-center w-full">
+                      <FieldLabel>{t("filters.select_unit")}</FieldLabel>
+                      <label
+                        htmlFor="all_active_units"
+                        className="flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground font-normal"
+                      >
+                        <Checkbox
+                          id="all_active_units"
+                          checked={allActiveUnits}
+                          className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
+                          onCheckedChange={(checked) => {
+                            const isChecked = checked === true;
+                            form.setValue("all_active_units", isChecked, {
+                              shouldValidate: true,
+                            });
+                            if (isChecked) {
+                              form.setValue("unit_ids", [], {
+                                shouldValidate: true,
+                              });
+                            }
+                          }}
+                        />
+                        {t("filters.auto_select_all_units")}
+                      </label>
+                    </div>
                     <SelectField
                       multiple
+                      disabled={allActiveUnits}
                       options={orgUnits.map((unit) => ({
                         label: `${unit.name} - (${unit.code})`,
                         value: unit.id,
@@ -279,9 +320,36 @@ export default function AuditFormModal({
                 {/* Multi-select: Location */}
                 {auditType === "location" && (
                   <Field className="col-span-full gap-1">
-                    <FieldLabel>{t("filters.select_location")}</FieldLabel>
+                    <div className="flex justify-between items-center w-full">
+                      <FieldLabel>{t("filters.select_location")}</FieldLabel>
+                      <label
+                        htmlFor="all_active_locations"
+                        className="flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground font-normal"
+                      >
+                        <Checkbox
+                          id="all_active_locations"
+                          checked={allActiveLocations}
+                          className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
+                          onCheckedChange={(checked) => {
+                            const isChecked = checked === true;
+                            form.setValue(
+                              "all_active_locations",
+                              isChecked,
+                              { shouldValidate: true },
+                            );
+                            if (isChecked) {
+                              form.setValue("location_ids", [], {
+                                shouldValidate: true,
+                              });
+                            }
+                          }}
+                        />
+                        {t("filters.auto_select_all_locations")}
+                      </label>
+                    </div>
                     <SelectField
                       multiple
+                      disabled={allActiveLocations}
                       options={locations.map((loc) => ({
                         label: `${loc.name} - (${loc.code})`,
                         value: loc.id,

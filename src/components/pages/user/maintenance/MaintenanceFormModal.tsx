@@ -134,47 +134,12 @@ export default function MaintenanceFormModal({
   const assets = assetRes?.items || [];
 
   useEffect(() => {
-    if (!isOpen) return;
-
-    if (maintenanceToEdit) {
-      const initialApprovals: Record<string, number> = {};
-      if (maintenanceToEdit.workflow_assignments) {
-        maintenanceToEdit.workflow_assignments.forEach((assignment, index) => {
-          initialApprovals[`step_${index}`] = assignment.user_id;
-        });
-      }
-
-      form.reset({
-        record_number: maintenanceToEdit.record_number || "",
-        reason: maintenanceToEdit.reason || "",
-        handover_person: maintenanceToEdit.handover_person || "",
-        taker_person_name: maintenanceToEdit.taker_person_name || "",
-        taker_phone: maintenanceToEdit.taker_phone,
-        service_provider_name: maintenanceToEdit.service_provider_name || "",
-        service_provider_address: maintenanceToEdit.service_provider_address,
-        notes: maintenanceToEdit.notes,
-        expected_cost: maintenanceToEdit.expected_cost || 0,
-        actual_cost: maintenanceToEdit.actual_cost || 0,
-        external_link: maintenanceToEdit.external_link,
-        outing_date: maintenanceToEdit.outing_date
-          ? new Date(maintenanceToEdit.outing_date).toISOString().split("T")[0]
-          : getTodayISO(),
-        items:
-          maintenanceToEdit.items?.map((item) => ({
-            asset_id: item.asset_id,
-            quantity: item.quantity,
-            notes: item.notes,
-            from_location_id: item.from_location_id,
-            from_staff_id: item.from_staff_id,
-            from_unit_id: item.from_unit_id,
-            return_to_location_id: item.return_to_location_id,
-          })) || [],
-        attachments: maintenanceToEdit.attachments || [],
-        approvals: initialApprovals,
-        required_steps: activeTemplate?.steps?.length || 0,
-        workflow_assignments: [],
+    if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
       });
-    } else {
+
       form.reset({
         record_number: "",
         reason: "",
@@ -200,7 +165,7 @@ export default function MaintenanceFormModal({
           },
         ],
         attachments: [],
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeTemplate?.steps?.length || 0,
         workflow_assignments: [],
       });
@@ -411,9 +376,7 @@ export default function MaintenanceFormModal({
                   steps={activeTemplate?.steps || []}
                   users={users}
                   title={null}
-                  useApproverSelect={false}
                   showStepNumber={true}
-                  fallbackMessage={t("approval_workflow_fallback")}
                 />
               </TabsContent>
             </div>

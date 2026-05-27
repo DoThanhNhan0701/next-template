@@ -128,6 +128,11 @@ export default function LiquidationFormModal({
 
   useEffect(() => {
     if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
       form.reset({
         record_number: "",
         reason: "",
@@ -151,7 +156,7 @@ export default function LiquidationFormModal({
             from_unit_id: 0,
           },
         ],
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeTemplate?.steps?.length || 0,
       });
     }

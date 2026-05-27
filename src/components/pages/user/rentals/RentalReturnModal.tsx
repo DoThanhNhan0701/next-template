@@ -118,23 +118,21 @@ export default function RentalReturnModal({
         selected: true,
       }));
 
-      const requiredSteps = activeTemplate?.steps?.length || 0;
-      const initialApprovals: Record<string, number> = {};
-      if (activeTemplate?.steps) {
-        activeTemplate.steps.forEach((_, idx) => {
-          initialApprovals[`step_${idx}`] = 0;
-        });
-      }
+      const defaultApprovals: Record<string, number | null> = {};
+      activeTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
 
       replace(initialItems);
+
       form.reset({
         return_date: getTodayISO(),
         notes: "",
         items: initialItems,
         to_location_id:
           rentalDetail.details[0]?.from_location_id?.toString() || "",
-        approvals: initialApprovals,
-        required_steps: requiredSteps,
+        approvals: defaultApprovals,
+        required_steps: activeTemplate?.steps?.length || 0,
         workflow_assignments: [],
       });
     }

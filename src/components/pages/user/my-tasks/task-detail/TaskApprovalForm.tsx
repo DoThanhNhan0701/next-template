@@ -41,7 +41,7 @@ export const TaskApprovalForm = ({
                 <h2 className="text-xs font-semibold text-primary/80">
                   {t("request_title")}
                 </h2>
-                <p className="text-sm font-medium text-foreground">
+                <p className="text-xs font-medium text-foreground">
                   {t.rich("step_description", {
                     step: activeTask?.step_name ?? t("processing"),
                     b: (chunks) => (

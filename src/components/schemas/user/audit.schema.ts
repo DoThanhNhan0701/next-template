@@ -6,6 +6,8 @@ export const AuditCreateSchema = z
     audit_type: z.enum(["unit", "location"]),
     unit_ids: z.array(z.number()),
     location_ids: z.array(z.number()),
+    all_active_units: z.boolean().optional(),
+    all_active_locations: z.boolean().optional(),
     assignee_id: z.number().nullable(),
     due_date: z.string().min(1, "Field is required!"),
     required_steps: z.number().default(0),
@@ -24,14 +26,14 @@ export const AuditCreateSchema = z
         });
       }
     }
-    if (data.audit_type === "unit" && data.unit_ids.length === 0) {
+    if (data.audit_type === "unit" && !data.all_active_units && data.unit_ids.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Field is required!",
         path: ["unit_ids"],
       });
     }
-    if (data.audit_type === "location" && data.location_ids.length === 0) {
+    if (data.audit_type === "location" && !data.all_active_locations && data.location_ids.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Field is required!",

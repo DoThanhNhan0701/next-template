@@ -337,11 +337,11 @@ export default function RentalDetail({ id }: Props) {
                 <div className="space-y-1.5 border-t border-border/40 pt-2">
                   <SidebarContactItem
                     icon={Phone}
-                    value={detail.customer.phone}
+                    value={detail.customer.phone || "—"}
                   />
                   <SidebarContactItem
                     icon={Mail}
-                    value={detail.customer.email}
+                    value={detail.customer.email || "—"}
                   />
                   <SidebarContactItem
                     icon={MapPin}
@@ -449,7 +449,7 @@ export default function RentalDetail({ id }: Props) {
 
       <RecordAttachmentsCard
         title={t("detail.attachments")}
-        className="rounded-md"
+        className="rounded-md bg-card/60 backdrop-blur-md"
         initialAttachments={detail.attachments}
         isPending={updatePending}
         onSave={async (newAttachments) => {

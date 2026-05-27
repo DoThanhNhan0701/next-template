@@ -1884,7 +1884,9 @@
       "select_unit": "Chọn đơn vị...",
       "select_location": "Chọn kho...",
       "no_unit_found": "Không tìm thấy đơn vị",
-      "no_location_found": "Không tìm thấy kho"
+      "no_location_found": "Không tìm thấy kho",
+      "auto_select_all_units": "Tự động chọn tất cả đơn vị có tài sản",
+      "auto_select_all_locations": "Tự động chọn tất cả địa điểm có tài sản"
     },
     "form": {
       "title": "Tiêu đề",
@@ -2222,5 +2224,30 @@
     "err_start": "Không thể khởi động camera. Vui lòng thử lại.",
     "err_not_found": "Không tìm thấy tài sản với mã: {code}",
     "success_found": "Tìm thấy: {name}"
+  },
+  "RentalRenewModal": {
+    "title": "Gia hạn hợp đồng",
+    "description": "Gia hạn hợp đồng thuê hiện tại thành hợp đồng mới",
+    "customer_info": "Thông tin khách hàng",
+    "new_contract_number": "Số hợp đồng mới",
+    "lease_date": "Ngày bắt đầu",
+    "duration_days": "Thời hạn (ngày)",
+    "total_revenue": "Tổng doanh thu",
+    "notes": "Ghi chú",
+    "cancel": "Hủy",
+    "processing": "Đang xử lý...",
+    "confirm": "Xác nhận",
+    "preview": "Xem trước",
+    "view": "Xem",
+    "remove": "Xóa",
+    "warning_message": "Hành động này sẽ đóng hợp đồng hiện tại ({record_number}) và tạo một hợp đồng mới. Quyền sở hữu các tài sản chưa trả sẽ được chuyển giao đầy đủ."
+  },
+  "RecordAttachmentsCard": {
+    "title": "Tài liệu & Hình ảnh",
+    "upload": "Tải lên",
+    "emptyMessage": "Không có tài liệu đính kèm. Nhấn để tải lên.",
+    "preview": "Xem trước",
+    "view": "Xem",
+    "remove": "Xóa"
   }
 }

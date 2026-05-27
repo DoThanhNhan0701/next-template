@@ -162,25 +162,26 @@ export default function TransferFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      if (transferToEdit) {
-        // Handle edit if needed
-      } else {
-        form.reset({
-          source_type: "holder",
-          source_id: 0,
-          target_unit_id: null,
-          target_id: null,
-          location_id: null,
-          approvals: {},
-          transfer_date: getTodayISO(),
-          external_link: "",
-          reason: "",
-          attachments: [],
-          details: [{ asset_id: 0, quantity: 1 }],
-        });
-      }
+      const defaultApprovals: Record<string, number | null> = {};
+      activeTransferTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
+      form.reset({
+        source_type: "holder",
+        source_id: 0,
+        target_unit_id: null,
+        target_id: null,
+        location_id: null,
+        approvals: defaultApprovals,
+        transfer_date: getTodayISO(),
+        external_link: "",
+        reason: "",
+        attachments: [],
+        details: [{ asset_id: 0, quantity: 1 }],
+      });
     }
-  }, [isOpen, transferToEdit, form]);
+  }, [isOpen, form, activeTransferTemplate]);
 
   useEffect(() => {
     form.setValue("required_steps", activeTransferTemplate?.steps?.length || 0);

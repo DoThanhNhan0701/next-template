@@ -1883,7 +1883,9 @@
       "select_unit": "Select unit...",
       "select_location": "Select location...",
       "no_unit_found": "No unit found",
-      "no_location_found": "No location found"
+      "no_location_found": "No location found",
+      "auto_select_all_units": "Auto-select all units with assets",
+      "auto_select_all_locations": "Auto-select all locations with assets"
     },
     "form": {
       "title": "Title",
@@ -2221,5 +2223,30 @@
     "err_start": "Could not start camera. Please try again.",
     "err_not_found": "No asset found with code: {code}",
     "success_found": "Found: {name}"
+  },
+  "RentalRenewModal": {
+    "title": "Renew Contract",
+    "description": "Renew the current rental to a new contract",
+    "customer_info": "Customer Info",
+    "new_contract_number": "New Contract Number",
+    "lease_date": "Lease Date",
+    "duration_days": "Duration (days)",
+    "total_revenue": "Total Revenue",
+    "notes": "Notes",
+    "cancel": "Cancel",
+    "processing": "Processing...",
+    "confirm": "Confirm",
+    "preview": "Preview",
+    "view": "View",
+    "remove": "Remove",
+    "warning_message": "This action will close the current contract ({record_number}) and create a new one. Ownership of unreturned assets will be fully transferred."
+  },
+  "RecordAttachmentsCard": {
+    "title": "Documents & Images",
+    "upload": "Upload",
+    "emptyMessage": "No attached documents. Click to upload.",
+    "preview": "Preview",
+    "view": "View",
+    "remove": "Remove"
   }
 }

@@ -91,7 +91,6 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
               <Controller
                 key={step.id}
                 name={name}
-                defaultValue={(step?.default_assignee_user_id ?? undefined) as never}
                 control={control}
                 render={({ field, fieldState }) => {
                   return (
@@ -103,7 +102,10 @@ export function ApprovalProcessSection<TFieldValues extends FieldValues>({
                           value: c.id,
                         }))}
                         value={field.value as number}
-                        onChange={(val) => field.onChange(Number(val))}
+                        onChange={(val) => {
+                          const num = Number(val);
+                          field.onChange(isNaN(num) ? null : num);
+                        }}
                         placeholder={`e.g. ${step.name}`}
                       />
                       {fieldState.invalid && (

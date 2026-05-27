@@ -121,6 +121,11 @@ export default function StockAdjustmentModal({
 
   useEffect(() => {
     if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
       form.reset({
         adjustment_date: getTodayISO(),
         reason: "",
@@ -135,7 +140,7 @@ export default function StockAdjustmentModal({
             notes: "",
           },
         ],
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeTemplate?.steps?.length || 0,
       });
     }

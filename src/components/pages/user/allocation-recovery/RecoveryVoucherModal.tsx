@@ -137,6 +137,11 @@ export default function RecoveryVoucherModal({
 
   useEffect(() => {
     if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
       form.reset({
         recovered_from_type: "user",
         unit_id: prefill?.unit_id ?? 0,
@@ -153,7 +158,7 @@ export default function RecoveryVoucherModal({
           },
         ],
         attachments: [],
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeTemplate?.steps?.length || 0,
       });
     }

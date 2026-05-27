@@ -133,6 +133,11 @@ export default function AllocationVoucherModal({
 
   useEffect(() => {
     if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeAllocationTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
       form.reset({
         allocated_to_type: "user",
         unit_id: prefill?.unit_id ?? 0,
@@ -149,7 +154,7 @@ export default function AllocationVoucherModal({
           },
         ],
         attachments: [],
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeAllocationTemplate?.steps?.length || 0,
       });
     }

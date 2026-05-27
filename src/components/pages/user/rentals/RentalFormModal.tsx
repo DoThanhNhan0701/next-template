@@ -116,6 +116,11 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
 
   useEffect(() => {
     if (isOpen) {
+      const defaultApprovals: Record<string, number | null> = {};
+      activeRentalTemplate?.steps?.forEach((step, idx) => {
+        defaultApprovals[`step_${idx}`] = step.default_assignee_user_id ?? null;
+      });
+
       form.reset({
         unit_id: prefill?.unit_id ?? 0,
         customer_id: 0,
@@ -127,7 +132,7 @@ export default function RentalFormModal({ isOpen, onClose, onSuccess }: Props) {
         notes: "",
         external_link: "",
         attachments: [],
-        approvals: {},
+        approvals: defaultApprovals,
         required_steps: activeRentalTemplate?.steps?.length || 0,
         items: [
           {
