@@ -49,6 +49,7 @@ import { RootState } from "@/redux";
 import { IAuditSession } from "@/types/audit";
 import { ITask, TaskStatus } from "@/types/task";
 import { formatDate } from "@/utils/date";
+import { getAuditDerivedStatus } from "@/utils/audit";
 
 export default function MyTasksTable() {
   const router = useRouter();
@@ -125,35 +126,8 @@ export default function MyTasksTable() {
 
   const filteredAudits = useMemo(() => {
     return allAuditsCombined.filter((audit) => {
-      if (activeTab === "PENDING") {
-        return (
-          (audit.status_obj.code === "PENDING" && !audit.submitted_at) ||
-          (audit.status_obj.code === "IN_PROGRESS" &&
-            !audit.is_personal_completed) ||
-          (audit.status_obj.code === "COMPLETED" &&
-            !!user?.id &&
-            Number(audit.assignee_id) !== Number(user.id))
-        );
-      }
-
-      if (activeTab === "PENDING_APPROVAL") {
-        return (
-          audit._isPendingApproval ||
-          (audit.status_obj.code === "PENDING" && !!audit.submitted_at) ||
-          (audit.status_obj.code === "IN_PROGRESS" &&
-            audit.is_personal_completed)
-        );
-      }
-
-      if (activeTab === "APPROVED") {
-        return (
-          audit.status_obj.code === "APPROVED" ||
-          (audit.status_obj.code === "COMPLETED" &&
-            !!user?.id &&
-            Number(audit.assignee_id) === Number(user.id))
-        );
-      }
-      return audit.status_obj.code === activeTab;
+      const derivedStatus = getAuditDerivedStatus(audit, user?.id);
+      return derivedStatus === activeTab;
     });
   }, [allAuditsCombined, activeTab, user]);
 
@@ -163,14 +137,7 @@ export default function MyTasksTable() {
       instance_id: audit.id,
       step_id: 0,
       user_id: audit.assignee_id,
-      status:
-        audit._isPendingApproval ||
-        (audit.status_obj.code === "PENDING" && !!audit.submitted_at) ||
-        (audit.status_obj.code === "IN_PROGRESS" && audit.is_personal_completed)
-          ? "PENDING_APPROVAL"
-          : audit.status_obj.code === "IN_PROGRESS"
-            ? "PENDING"
-            : (audit.status_obj.code as TaskStatus),
+      status: getAuditDerivedStatus(audit, user?.id),
       created_at: audit.created_at,
       document_id: audit.id,
       document_record_number: audit.title,
@@ -180,7 +147,7 @@ export default function MyTasksTable() {
       reason: "",
       waiting_for_approval: audit._isPendingApproval,
     }));
-  }, [filteredAudits]);
+  }, [filteredAudits, user]);
 
   const allTasks = useMemo(() => {
     return [...tasks, ...mappedAudits]

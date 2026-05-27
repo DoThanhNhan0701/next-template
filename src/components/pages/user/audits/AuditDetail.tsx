@@ -271,20 +271,20 @@ export default function AuditDetail({ id }: Props) {
 
   const mockTask: ITask | null = session
     ? {
-        id: Number(id) + 1000000,
-        instance_id: Number(id),
-        step_id: 0,
-        user_id: session.assignee_id || 0,
-        status: session.status_obj?.code as TaskStatus,
-        created_at: session.created_at || "",
-        document_id: Number(id),
-        document_record_number: session.title || "",
-        document_type: "audit",
-        requester_name: session.assignee?.full_name || "",
-        step_name:
-          session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
-        reason: "",
-      }
+      id: Number(id) + 1000000,
+      instance_id: Number(id),
+      step_id: 0,
+      user_id: session.assignee_id || 0,
+      status: session.status_obj?.code as TaskStatus,
+      created_at: session.created_at || "",
+      document_id: Number(id),
+      document_record_number: session.title || "",
+      document_type: "audit",
+      requester_name: session.assignee?.full_name || "",
+      step_name:
+        session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+      reason: "",
+    }
     : null;
 
   if (sessionPending && !session) {
@@ -344,30 +344,30 @@ export default function AuditDetail({ id }: Props) {
             )}
 
           {((activeTask && session.submitted_at) ||
-            session?.status_obj?.code === "COMPLETED") && (
-            <>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setIsAuditApproveModalOpen(true)}
-                disabled={mutatePending}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-              >
-                <Check size={14} />
-                {tMyTasks("detail.approval_form.approve")}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsAuditRejectModalOpen(true)}
-                disabled={mutatePending}
-                className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-              >
-                <X size={14} />
-                {tMyTasks("detail.approval_form.reject")}
-              </Button>
-            </>
-          )}
+            ["COMPLETED", "WAITING_APPROVAL"].includes(session?.status_obj?.code)) && (
+              <>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setIsAuditApproveModalOpen(true)}
+                  disabled={mutatePending}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                >
+                  <Check size={14} />
+                  {tMyTasks("detail.approval_form.approve")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAuditRejectModalOpen(true)}
+                  disabled={mutatePending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                >
+                  <X size={14} />
+                  {tMyTasks("detail.approval_form.reject")}
+                </Button>
+              </>
+            )}
         </div>
       </div>
 
@@ -393,9 +393,9 @@ export default function AuditDetail({ id }: Props) {
                 borderColor: `${session.status_obj?.color}40`,
               }}
             >
-              {session.status_obj?.name === "PENDING"
+              {session.status_obj?.code === "PENDING"
                 ? "Process"
-                : session.status_obj?.name}
+                : session.status_obj?.code}
             </Badge>
           </div>
         </CardHeader>

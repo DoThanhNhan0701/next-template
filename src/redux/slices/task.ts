@@ -3,13 +3,12 @@ import { endpoints } from '@/config/endpoints';
 import { axiosInstance } from '@/utils/axiosInstance';
 import { AxiosResponse } from 'axios';
 import { IAuditSession } from '@/types/audit';
+import { getAuditDerivedStatus } from '@/utils/audit';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const inFlightRequests: Record<string, Promise<AxiosResponse<any>>> = {};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
-  const url = `${endpoints.WORKFLOW_TASKS}me?status=${status}`;
+const fetchWithInFlight = <T>(url: string): Promise<AxiosResponse<T>> => {
   if (!inFlightRequests[url]) {
     inFlightRequests[url] = axiosInstance.get(url).then(res => {
       delete inFlightRequests[url];
@@ -19,66 +18,36 @@ const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
       throw err;
     });
   }
-  return inFlightRequests[url];
+  return inFlightRequests[url] as Promise<AxiosResponse<T>>;
 };
 
-const getAuditData = (url: string): Promise<AxiosResponse<IAuditSession[]>> => {
-  if (!inFlightRequests[url]) {
-    inFlightRequests[url] = axiosInstance.get(url).then(res => {
-      delete inFlightRequests[url];
-      return res;
-    }).catch(err => {
-      delete inFlightRequests[url];
-      throw err;
-    });
-  }
-  return inFlightRequests[url] as Promise<AxiosResponse<IAuditSession[]>>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
+  return fetchWithInFlight(`${endpoints.WORKFLOW_TASKS}me?status=${status}`);
 };
 
 const getAuditCountByStatus = async (status: string, userId?: number): Promise<number> => {
-  let audits: IAuditSession[] = [];
-  if (status === 'PENDING_APPROVAL') {
-    const [myAuditsRes, pendingAuditsRes] = await Promise.all([
-      getAuditData(endpoints.AUDIT_MY_AUDITS),
-      getAuditData(endpoints.AUDIT_PENDING_APPROVAL),
-    ]);
-    const combined = [
-      ...(myAuditsRes.data || []),
-      ...(pendingAuditsRes.data || []),
-    ];
-    const uniqueMap = new Map<number, IAuditSession>();
-    combined.forEach((a) => uniqueMap.set(a.id, a));
-    audits = Array.from(uniqueMap.values());
-  } else {
-    const res = await getAuditData(endpoints.AUDIT_MY_AUDITS);
-    audits = res.data || [];
-  }
+  const [myAuditsRes, pendingAuditsRes] = await Promise.all([
+    fetchWithInFlight<IAuditSession[]>(endpoints.AUDIT_MY_AUDITS),
+    status === 'PENDING_APPROVAL'
+      ? fetchWithInFlight<IAuditSession[]>(endpoints.AUDIT_PENDING_APPROVAL)
+      : Promise.resolve({ data: [] } as unknown as AxiosResponse<IAuditSession[]>),
+  ]);
 
-  return audits.filter((a) => {
-    if (status === 'PENDING') {
-      return (
-        (a.status_obj?.code === 'PENDING' && !a.submitted_at) ||
-        (a.status_obj?.code === 'IN_PROGRESS' && !a.is_personal_completed) ||
-        (a.status_obj?.code === 'COMPLETED' &&
-          !!userId &&
-          Number(a.assignee_id) !== Number(userId))
-      );
+  const combined = [
+    ...(myAuditsRes.data || []).map(a => ({ ...a, _isPendingApproval: false })),
+    ...(pendingAuditsRes.data || []).map(a => ({ ...a, _isPendingApproval: true })),
+  ];
+
+  const uniqueMap = new Map<number, IAuditSession & { _isPendingApproval: boolean }>();
+  combined.forEach((a) => {
+    if (!uniqueMap.has(a.id) || a._isPendingApproval) {
+      uniqueMap.set(a.id, a);
     }
-    if (status === 'APPROVED') {
-      return (
-        a.status_obj?.code === 'APPROVED' ||
-        (a.status_obj?.code === 'COMPLETED' &&
-          !!userId &&
-          Number(a.assignee_id) === Number(userId))
-      );
-    }
-    if (status === 'PENDING_APPROVAL') {
-      return (
-        (a.status_obj?.code === 'IN_PROGRESS' && a.is_personal_completed) ||
-        (a.status_obj?.code === 'PENDING' && !!a.submitted_at)
-      );
-    }
-    return a.status_obj?.code === status;
+  });
+
+  return Array.from(uniqueMap.values()).filter((a) => {
+    return getAuditDerivedStatus(a, userId) === status;
   }).length;
 };
 
