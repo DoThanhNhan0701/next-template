@@ -53,7 +53,7 @@ import { IUser } from "@/types/auth";
 import { ApprovalHistory, ITask, TaskStatus } from "@/types/task";
 import { getApiErrorMessage } from "@/utils/api-error";
 import { getApiSuccessMessage } from "@/utils/api-success";
-import { formatDate } from "@/utils/date";
+import { formatDate, formatDateTime } from "@/utils/date";
 
 import { ApproveAuditModal } from "../my-tasks/components/ApproveAuditModal";
 import { CompleteAuditModal } from "../my-tasks/components/CompleteAuditModal";
@@ -145,8 +145,8 @@ export default function AuditDetail({ id }: Props) {
 
   const { mutate, pending: mutatePending } = useMutation();
 
-  const isCreator = user?.username === session?.creator?.username;
-  const canAssign = isCreator && session?.status_obj?.code === "PENDING";
+  const isCreator = user?.id === session?.assignee_id;
+  const canAssign = isCreator && (session?.status_obj?.code === "PENDING" || session?.status_obj?.code === "IN_PROGRESS");
 
   const allItemIds = (itemsDetail || []).map((item) => item.id);
   const isAllSelected =
@@ -326,19 +326,22 @@ export default function AuditDetail({ id }: Props) {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {session?.status_obj?.code === "PENDING" && !session.submitted_at && (
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => setIsAuditCompleteModalOpen(true)}
-              disabled={
-                mutatePending ||
-                (progressPercentage < 100 && (itemsDetail ?? [])?.length > 0)
-              }
-            >
-              {t("detail.complete_audit")}
-            </Button>
-          )}
+          {(session?.status_obj?.code === "PENDING" ||
+            session?.status_obj?.code === "IN_PROGRESS") &&
+            !session.submitted_at &&
+            isCreator && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsAuditCompleteModalOpen(true)}
+                disabled={
+                  mutatePending ||
+                  (progressPercentage < 100 && (itemsDetail ?? [])?.length > 0)
+                }
+              >
+                {t("detail.complete_audit")}
+              </Button>
+            )}
 
           {((activeTask && session.submitted_at) ||
             session?.status_obj?.code === "COMPLETED") && (
@@ -537,14 +540,12 @@ export default function AuditDetail({ id }: Props) {
                 <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
                   {t("table.audit_result")}
                 </TableHead>
-                <TableHead className="px-3 h-8 text-[10px] font-bold">
-                  {t("table.action_target")}
-                </TableHead>
+
                 <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.notes")}
                 </TableHead>
                 <TableHead className="px-3 h-8 text-[10px] font-bold">
-                  Người yêu cầu
+                  {t("table.user_request")}
                 </TableHead>
                 <TableHead className="px-3 h-8 text-[10px] font-bold text-right">
                   {t("table.verified")}
@@ -644,31 +645,6 @@ export default function AuditDetail({ id }: Props) {
                     </TableCell>
 
                     <TableCell className="px-3 py-1.5">
-                      <div className="flex flex-col gap-0.5 max-w-[150px]">
-                        {item.proposed_action ? (
-                          <>
-                            <span className="text-[10px] font-bold text-amber-500 leading-none mb-1">
-                              {item.proposed_action}
-                            </span>
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-medium truncate">
-                              {item.target_staff && <User size={10} />}
-                              {item.target_location_id && <MapPin size={10} />}
-                              <span className="truncate">
-                                {item.target_staff?.full_name ||
-                                  item.target_holder_name ||
-                                  t("table.system_update")}
-                              </span>
-                            </div>
-                          </>
-                        ) : (
-                          <span className="text-[10px] text-muted-foreground italic opacity-60">
-                            {t("table.no_action_required")}
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-
-                    <TableCell className="px-3 py-1.5">
                       <div
                         className="text-[11px] text-muted-foreground italic truncate max-w-[120px]"
                         title={item.notes ?? undefined}
@@ -690,7 +666,7 @@ export default function AuditDetail({ id }: Props) {
                       {item.verified_at ? (
                         <div className="flex flex-col items-end gap-0.5">
                           <span className="text-[11px] font-bold text-foreground/80">
-                            {formatDate(item.verified_at)}
+                            {formatDateTime(item.verified_at)}
                           </span>
                         </div>
                       ) : (
@@ -716,7 +692,6 @@ export default function AuditDetail({ id }: Props) {
       {canAssign && selectedItemIds.size > 0 && (
         <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-300">
           <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md border border-border/60 shadow-2xl rounded-2xl px-3 py-2">
-            {/* Badge đếm */}
             <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl px-3 py-1.5">
               <UserCheck className="w-3.5 h-3.5 text-primary shrink-0" />
               <span className="text-xs font-semibold text-primary whitespace-nowrap">
@@ -727,8 +702,6 @@ export default function AuditDetail({ id }: Props) {
             <span className="text-[11px] text-muted-foreground whitespace-nowrap hidden sm:block">
               Phân công cho
             </span>
-
-            {/* SelectField */}
             <SelectField
               options={(usersRes ?? []).map((s) => ({
                 label: `${s.full_name} - (${s.username})`,
@@ -742,7 +715,6 @@ export default function AuditDetail({ id }: Props) {
               className="h-8 w-56 text-xs"
             />
 
-            {/* Giao việc */}
             <Button
               size="sm"
               className="h-8 px-4 text-xs font-semibold gap-1.5 shrink-0"
@@ -753,7 +725,6 @@ export default function AuditDetail({ id }: Props) {
               {mutatePending ? "Đang giao..." : "Giao việc"}
             </Button>
 
-            {/* Divider + Hủy */}
             <div className="w-px h-5 bg-border/60 shrink-0" />
             <Button
               size="sm"
@@ -769,7 +740,6 @@ export default function AuditDetail({ id }: Props) {
           </div>
         </div>
       )}
-      {/* Modals */}
       <ViewAuditItemModal
         key={`${selectedItem?.id}-${isViewModalOpen}`}
         item={selectedItem}
@@ -779,7 +749,7 @@ export default function AuditDetail({ id }: Props) {
         creatorUsername={session?.creator?.username}
         itemAssigneeUsername={selectedItem?.assignee?.username}
         onRefresh={itemsReFetch}
-        isLocked={session.status_obj?.code !== "PENDING"}
+        isLocked={session.status_obj?.code !== "PENDING" && session.status_obj?.code !== "IN_PROGRESS"}
       />
 
       <CompleteAuditModal

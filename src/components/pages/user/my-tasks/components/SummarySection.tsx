@@ -13,7 +13,7 @@ interface SummaryCardProps {
   value: number | string;
   description: string;
   icon: React.ElementType;
-  color: "orange" | "green" | "red";
+  color: "orange" | "green" | "red" | "yellow";
   className?: string;
 }
 
@@ -49,6 +49,14 @@ function SummaryCard({
       icon: "text-red-500/10",
       badge: "bg-red-500/10 text-red-400 border-red-500/20",
       label: "text-red-500/80",
+    },
+    yellow: {
+      bg: "bg-yellow-500/5",
+      border: "border-yellow-500/20",
+      text: "text-yellow-500",
+      icon: "text-yellow-500/10",
+      badge: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+      label: "text-yellow-500/80",
     },
   };
 
@@ -98,14 +106,16 @@ interface SummarySectionProps {
   pendingCount?: number;
   approvedCount?: number;
   rejectedCount?: number;
+  pendingApprovalCount?: number;
 }
 
-const emptySubscribe = () => () => { };
+const emptySubscribe = () => () => {};
 
 export function SummarySection({
   pendingCount = 0,
   approvedCount = 0,
   rejectedCount = 0,
+  pendingApprovalCount = 0,
 }: SummarySectionProps) {
   const isClient = useSyncExternalStore(
     emptySubscribe,
@@ -116,18 +126,26 @@ export function SummarySection({
   const displayPending = isClient ? pendingCount : 0;
   const displayApproved = isClient ? approvedCount : 0;
   const displayRejected = isClient ? rejectedCount : 0;
+  const displayPendingApproval = isClient ? pendingApprovalCount : 0;
 
   const t = useTranslations("page_my_tasks.summary");
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-4 gap-2 md:gap-3">
         <SummaryCard
           label={t("pending")}
           value={displayPending}
           description={t("pending_desc")}
           icon={Clock}
           color="orange"
+        />
+        <SummaryCard
+          label={t("pending_approval")}
+          value={displayPendingApproval}
+          description={t("pending_approval_desc")}
+          icon={XCircle}
+          color="yellow"
         />
         <SummaryCard
           label={t("completed")}

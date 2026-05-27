@@ -31,6 +31,7 @@ export interface IAuditSession {
     unit_obj: IAuditUnitObj | null;
     location_obj: IAuditLocationObj | null;
     submitted_at: string | null;
+    is_personal_completed: boolean
 }
 
 export interface IAuditDetailItem {

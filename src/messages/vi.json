@@ -794,7 +794,9 @@
       "completed": "Đã hoàn thành",
       "completed_desc": "Hiệu suất tốt",
       "rejected": "Đã từ chối",
-      "rejected_desc": "Xem lý do"
+      "rejected_desc": "Xem lý do",
+      "pending_approval": "Chờ phê duyệt",
+      "pending_approval_desc": "Cần phê duyệt"
     },
     "tabs": {
       "pending": "Chờ xử lý",
@@ -1849,6 +1851,7 @@
       "current_state": "Trạng thái hiện tại",
       "audit_result": "Kết quả kiểm kê",
       "action_target": "Xử lý & Đối tượng",
+      "user_request": "Người xử lý",
       "notes": "Ghi chú",
       "verified": "Xác nhận",
       "no_audits_found": "Không tìm thấy đợt kiểm kê nào",

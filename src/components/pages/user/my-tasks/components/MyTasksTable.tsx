@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -76,9 +76,10 @@ export default function MyTasksTable() {
   const tTable = useTranslations("page_my_tasks.table");
   const tDocTypes = useTranslations("page_workflow_templates.table.doc_types");
 
-  const { response, pending } = useGet<ITask[]>({
-    url: `${endpoints.WORKFLOW_TASKS}me?${queryParamsString}`,
-  });
+  const { response, pending, setResponse } = useGet<ITask[]>(
+    { url: `${endpoints.WORKFLOW_TASKS}me?${queryParamsString}` },
+    { disabled: activeTab === "PENDING_APPROVAL" },
+  );
 
   const { response: auditResponse, pending: auditPending } = useGet<
     IAuditSession[]
@@ -87,7 +88,15 @@ export default function MyTasksTable() {
   const {
     response: auditPendingApprovalResponse,
     pending: auditPendingApprovalPending,
-  } = useGet<IAuditSession[]>({ url: endpoints.AUDIT_PENDING_APPROVAL });
+  } = useGet<IAuditSession[]>(
+    { url: endpoints.AUDIT_PENDING_APPROVAL },
+    { disabled: activeTab !== "PENDING_APPROVAL" },
+  );
+
+  // Clear stale workflow data immediately when switching tabs
+  useEffect(() => {
+    setResponse(null);
+  }, [activeTab, setResponse]);
 
   const tasks = useMemo(() => response || [], [response]);
 
@@ -119,15 +128,26 @@ export default function MyTasksTable() {
       if (activeTab === "PENDING") {
         return (
           (audit.status_obj.code === "PENDING" && !audit.submitted_at) ||
+          (audit.status_obj.code === "IN_PROGRESS" &&
+            !audit.is_personal_completed) ||
           (audit.status_obj.code === "COMPLETED" &&
             !!user?.id &&
             Number(audit.assignee_id) !== Number(user.id))
         );
       }
+
+      if (activeTab === "PENDING_APPROVAL") {
+        return (
+          audit._isPendingApproval ||
+          (audit.status_obj.code === "PENDING" && !!audit.submitted_at) ||
+          (audit.status_obj.code === "IN_PROGRESS" &&
+            audit.is_personal_completed)
+        );
+      }
+
       if (activeTab === "APPROVED") {
         return (
           audit.status_obj.code === "APPROVED" ||
-          (audit.status_obj.code === "PENDING" && audit.submitted_at) ||
           (audit.status_obj.code === "COMPLETED" &&
             !!user?.id &&
             Number(audit.assignee_id) === Number(user.id))
@@ -144,9 +164,13 @@ export default function MyTasksTable() {
       step_id: 0,
       user_id: audit.assignee_id,
       status:
-        audit.status_obj.code === "PENDING" && audit.submitted_at
+        audit._isPendingApproval ||
+        (audit.status_obj.code === "PENDING" && !!audit.submitted_at) ||
+        (audit.status_obj.code === "IN_PROGRESS" && audit.is_personal_completed)
           ? "PENDING_APPROVAL"
-          : (audit.status_obj.code as TaskStatus),
+          : audit.status_obj.code === "IN_PROGRESS"
+            ? "PENDING"
+            : (audit.status_obj.code as TaskStatus),
       created_at: audit.created_at,
       document_id: audit.id,
       document_record_number: audit.title,
@@ -187,6 +211,7 @@ export default function MyTasksTable() {
       localCurrentPage * limit,
     );
   }, [allTasks, localCurrentPage, limit]);
+
   const isPending = pending || auditPending || auditPendingApprovalPending;
 
   const getStatusBadge = (status: TaskStatus) => {
@@ -226,7 +251,7 @@ export default function MyTasksTable() {
           }}
           className="w-full lg:w-fit h-full"
         >
-          <TabsList className="grid grid-cols-3 p-1 bg-muted/30 w-full lg:w-90 h-full!">
+          <TabsList className="grid grid-cols-4 p-1 bg-muted/30 w-full lg:w-[480px] h-full!">
             <TabsTrigger
               value="PENDING"
               className="flex items-center justify-center gap-0.5 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
@@ -234,6 +259,15 @@ export default function MyTasksTable() {
               <Clock size={14} />
               <span className="text-[10px] font-bold tracking-tight">
                 {tTabs("pending")}
+              </span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="PENDING_APPROVAL"
+              className="flex items-center justify-center gap-0.5 h-full data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+            >
+              <Clock size={14} />
+              <span className="text-[10px] font-bold tracking-tight">
+                {tTabs("pending_approval")}
               </span>
             </TabsTrigger>
             <TabsTrigger

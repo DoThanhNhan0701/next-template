@@ -108,7 +108,7 @@ export default function Header({
       >
         <Menu size={18} />
       </Button>
-      <div className="h-full flex-1">
+      <div className="h-full flex-1 min-w-0">
         {loading ? (
           <div className="flex items-center gap-1 h-full">
             <Skeleton className="size-4 shrink-0" />
@@ -116,9 +116,9 @@ export default function Header({
           </div>
         ) : (
           activeItem && (
-            <section className="flex items-center gap-1 h-full cursor-pointer">
-              {activeItem.icon && <activeItem.icon size={13} />}
-              <p className="text-sm leading-none">{activeItem.title}</p>
+            <section className="flex items-center gap-1 h-full cursor-pointer min-w-0">
+              {activeItem.icon && <activeItem.icon size={13} className="shrink-0" />}
+              <p className="text-sm leading-none truncate">{activeItem.title}</p>
               {activeItem.badge && activeItem.badge > 0 ? (
                 <div className="bg-red-500 text-white text-[9px] font-bold rounded-full size-4 flex items-center justify-center shrink-0 ml-1">
                   {activeItem.badge}

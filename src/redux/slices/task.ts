@@ -36,25 +36,29 @@ const getAuditData = (url: string): Promise<AxiosResponse<IAuditSession[]>> => {
 };
 
 const getAuditCountByStatus = async (status: string, userId?: number): Promise<number> => {
-  const [myAuditsRes, pendingAuditsRes] = await Promise.all([
-    getAuditData(endpoints.AUDIT_MY_AUDITS),
-    getAuditData(endpoints.AUDIT_PENDING_APPROVAL),
-  ]);
-
-  const combined = [
-    ...(myAuditsRes.data || []),
-    ...(pendingAuditsRes.data || []),
-  ];
-
-  // Remove duplicates based on ID
-  const uniqueMap = new Map<number, IAuditSession>();
-  combined.forEach((a) => uniqueMap.set(a.id, a));
-  const audits = Array.from(uniqueMap.values());
+  let audits: IAuditSession[] = [];
+  if (status === 'PENDING_APPROVAL') {
+    const [myAuditsRes, pendingAuditsRes] = await Promise.all([
+      getAuditData(endpoints.AUDIT_MY_AUDITS),
+      getAuditData(endpoints.AUDIT_PENDING_APPROVAL),
+    ]);
+    const combined = [
+      ...(myAuditsRes.data || []),
+      ...(pendingAuditsRes.data || []),
+    ];
+    const uniqueMap = new Map<number, IAuditSession>();
+    combined.forEach((a) => uniqueMap.set(a.id, a));
+    audits = Array.from(uniqueMap.values());
+  } else {
+    const res = await getAuditData(endpoints.AUDIT_MY_AUDITS);
+    audits = res.data || [];
+  }
 
   return audits.filter((a) => {
     if (status === 'PENDING') {
       return (
         (a.status_obj?.code === 'PENDING' && !a.submitted_at) ||
+        (a.status_obj?.code === 'IN_PROGRESS' && !a.is_personal_completed) ||
         (a.status_obj?.code === 'COMPLETED' &&
           !!userId &&
           Number(a.assignee_id) !== Number(userId))
@@ -66,6 +70,12 @@ const getAuditCountByStatus = async (status: string, userId?: number): Promise<n
         (a.status_obj?.code === 'COMPLETED' &&
           !!userId &&
           Number(a.assignee_id) === Number(userId))
+      );
+    }
+    if (status === 'PENDING_APPROVAL') {
+      return (
+        (a.status_obj?.code === 'IN_PROGRESS' && a.is_personal_completed) ||
+        (a.status_obj?.code === 'PENDING' && !!a.submitted_at)
       );
     }
     return a.status_obj?.code === status;
@@ -99,7 +109,7 @@ export const actionFetchTaskCounts = createAsyncThunk(
       const userId = auth.user?.id;
       const [
         pending, approved, rejected,
-        pendingAudit, approvedAudit, rejectedAudit
+        pendingAudit, approvedAudit, rejectedAudit, pendingApprovalAudit
       ] = await Promise.all([
         getTaskCountByStatus('PENDING'),
         getTaskCountByStatus('APPROVED'),
@@ -107,12 +117,14 @@ export const actionFetchTaskCounts = createAsyncThunk(
         getAuditCountByStatus('PENDING', userId),
         getAuditCountByStatus('APPROVED', userId),
         getAuditCountByStatus('REJECTED', userId),
+        getAuditCountByStatus('PENDING_APPROVAL', userId),
       ]);
 
       return {
         PENDING: (pending.data.length || 0) + pendingAudit,
         APPROVED: (approved.data.length || 0) + approvedAudit,
         REJECTED: (rejected.data.length || 0) + rejectedAudit,
+        PENDING_APPROVAL: pendingApprovalAudit,
       };
     } catch (error) {
       return thunkApi.rejectWithValue({
@@ -134,6 +146,7 @@ export const actionFetchTaskCounts = createAsyncThunk(
 interface TaskState {
   counts: {
     PENDING: number;
+    PENDING_APPROVAL: number;
     APPROVED: number;
     REJECTED: number;
   };
@@ -144,6 +157,7 @@ interface TaskState {
 const initialState: TaskState = {
   counts: {
     PENDING: 0,
+    PENDING_APPROVAL: 0,
     APPROVED: 0,
     REJECTED: 0,
   },
@@ -157,7 +171,7 @@ const taskSlice = createSlice({
   reducers: {
     updateCount: (state, action: PayloadAction<{ status: string; count: number }>) => {
       const { status, count } = action.payload;
-      if (status === 'PENDING' || status === 'APPROVED' || status === 'REJECTED') {
+      if (status === 'PENDING' || status === 'APPROVED' || status === 'REJECTED' || status === 'PENDING_APPROVAL') {
         state.counts[status] = count;
       }
     },

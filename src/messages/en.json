@@ -794,7 +794,9 @@
       "completed": "Completed",
       "completed_desc": "Good performance",
       "rejected": "Rejected",
-      "rejected_desc": "Review reason"
+      "rejected_desc": "Review reason",
+      "pending_approval": "Pending approval",
+      "pending_approval_desc": "Need approval"
     },
     "tabs": {
       "pending": "Pending",
@@ -1848,6 +1850,7 @@
       "current_state": "Current state",
       "audit_result": "Audit result",
       "action_target": "Action & target",
+      "user_request": "User request",
       "notes": "Notes",
       "verified": "Verified",
       "no_audits_found": "No audits found",
