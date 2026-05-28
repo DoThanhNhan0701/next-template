@@ -32,6 +32,8 @@ export interface IAuditSession {
     location_obj: IAuditLocationObj | null;
     submitted_at: string | null;
     is_personal_completed: boolean
+    personal_completed_assigned: number
+    personal_total_assigned: number
 }
 
 export interface IAuditDetailItem {

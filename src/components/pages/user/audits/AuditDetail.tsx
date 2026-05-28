@@ -146,7 +146,11 @@ export default function AuditDetail({ id }: Props) {
   const { mutate, pending: mutatePending } = useMutation();
 
   const isCreator = user?.id === session?.assignee_id;
-  const canAssign = isCreator && (session?.status_obj?.code === "PENDING" || session?.status_obj?.code === "IN_PROGRESS");
+  const isApprove = activeTask?.user_id === user?.id;
+  const canAssign =
+    isCreator &&
+    (session?.status_obj?.code === "PENDING" ||
+      session?.status_obj?.code === "IN_PROGRESS");
 
   const allItemIds = (itemsDetail || []).map((item) => item.id);
   const isAllSelected =
@@ -271,20 +275,20 @@ export default function AuditDetail({ id }: Props) {
 
   const mockTask: ITask | null = session
     ? {
-      id: Number(id) + 1000000,
-      instance_id: Number(id),
-      step_id: 0,
-      user_id: session.assignee_id || 0,
-      status: session.status_obj?.code as TaskStatus,
-      created_at: session.created_at || "",
-      document_id: Number(id),
-      document_record_number: session.title || "",
-      document_type: "audit",
-      requester_name: session.assignee?.full_name || "",
-      step_name:
-        session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
-      reason: "",
-    }
+        id: Number(id) + 1000000,
+        instance_id: Number(id),
+        step_id: 0,
+        user_id: session.assignee_id || 0,
+        status: session.status_obj?.code as TaskStatus,
+        created_at: session.created_at || "",
+        document_id: Number(id),
+        document_record_number: session.title || "",
+        document_type: "audit",
+        requester_name: session.assignee?.full_name || "",
+        step_name:
+          session.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+        reason: "",
+      }
     : null;
 
   if (sessionPending && !session) {
@@ -326,8 +330,7 @@ export default function AuditDetail({ id }: Props) {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {(session?.status_obj?.code === "PENDING" ||
-            session?.status_obj?.code === "IN_PROGRESS") &&
+          {["PENDING", "IN_PROGRESS"].includes(session.status_obj?.code) &&
             !session.submitted_at &&
             isCreator && (
               <Button
@@ -343,8 +346,10 @@ export default function AuditDetail({ id }: Props) {
               </Button>
             )}
 
-          {((activeTask && session.submitted_at) ||
-            ["COMPLETED", "WAITING_APPROVAL"].includes(session?.status_obj?.code)) && (
+          {["COMPLETED", "WAITING_APPROVAL"].includes(
+            session.status_obj?.code,
+          ) &&
+            isApprove && (
               <>
                 <Button
                   variant="default"
@@ -393,7 +398,9 @@ export default function AuditDetail({ id }: Props) {
                 borderColor: `${session.status_obj?.color}40`,
               }}
             >
-              {session.status_obj?.code === "PENDING"
+              {["WAITING_APPROVAL", "PENDING", "IN_PROGRESS"].includes(
+                session.status_obj?.code,
+              )
                 ? "Process"
                 : session.status_obj?.code}
             </Badge>
@@ -749,7 +756,10 @@ export default function AuditDetail({ id }: Props) {
         creatorUsername={session?.creator?.username}
         itemAssigneeUsername={selectedItem?.assignee?.username}
         onRefresh={itemsReFetch}
-        isLocked={session.status_obj?.code !== "PENDING" && session.status_obj?.code !== "IN_PROGRESS"}
+        isLocked={
+          session.status_obj?.code !== "PENDING" &&
+          session.status_obj?.code !== "IN_PROGRESS"
+        }
       />
 
       <CompleteAuditModal

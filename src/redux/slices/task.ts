@@ -4,6 +4,7 @@ import { axiosInstance } from '@/utils/axiosInstance';
 import { AxiosResponse } from 'axios';
 import { IAuditSession } from '@/types/audit';
 import { getAuditDerivedStatus } from '@/utils/audit';
+import { IUser } from '@/types/auth';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const inFlightRequests: Record<string, Promise<AxiosResponse<any>>> = {};
@@ -26,7 +27,7 @@ const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
   return fetchWithInFlight(`${endpoints.WORKFLOW_TASKS}me?status=${status}`);
 };
 
-const getAuditCountByStatus = async (status: string, userId?: number): Promise<number> => {
+const getAuditCountByStatus = async (status: string, user?: IUser | null): Promise<number> => {
   const [myAuditsRes, pendingAuditsRes] = await Promise.all([
     fetchWithInFlight<IAuditSession[]>(endpoints.AUDIT_MY_AUDITS),
     status === 'PENDING_APPROVAL'
@@ -47,7 +48,7 @@ const getAuditCountByStatus = async (status: string, userId?: number): Promise<n
   });
 
   return Array.from(uniqueMap.values()).filter((a) => {
-    return getAuditDerivedStatus(a, userId) === status;
+    return getAuditDerivedStatus(a, user) === status;
   }).length;
 };
 
@@ -55,11 +56,11 @@ export const actionFetchPendingCount = createAsyncThunk(
   'task/fetchPendingCount',
   async (_, thunkApi) => {
     try {
-      const { auth } = thunkApi.getState() as { auth: { user: { id: number } | null } };
-      const userId = auth.user?.id;
+      const { auth } = thunkApi.getState() as { auth: { user: IUser | null } };
+      const user = auth.user;
       const [workflowRes, auditCount] = await Promise.all([
         getTaskCountByStatus('PENDING'),
-        getAuditCountByStatus('PENDING', userId),
+        getAuditCountByStatus('PENDING', user),
       ]);
       return (workflowRes.data.length || 0) + auditCount;
     } catch (error) {
@@ -74,8 +75,8 @@ export const actionFetchTaskCounts = createAsyncThunk(
   'task/fetchCounts',
   async (_, thunkApi) => {
     try {
-      const { auth } = thunkApi.getState() as { auth: { user: { id: number } | null } };
-      const userId = auth.user?.id;
+      const { auth } = thunkApi.getState() as { auth: { user: IUser | null } };
+      const user = auth.user;
       const [
         pending, approved, rejected,
         pendingAudit, approvedAudit, rejectedAudit, pendingApprovalAudit
@@ -83,10 +84,10 @@ export const actionFetchTaskCounts = createAsyncThunk(
         getTaskCountByStatus('PENDING'),
         getTaskCountByStatus('APPROVED'),
         getTaskCountByStatus('REJECTED'),
-        getAuditCountByStatus('PENDING', userId),
-        getAuditCountByStatus('APPROVED', userId),
-        getAuditCountByStatus('REJECTED', userId),
-        getAuditCountByStatus('PENDING_APPROVAL', userId),
+        getAuditCountByStatus('PENDING', user),
+        getAuditCountByStatus('APPROVED', user),
+        getAuditCountByStatus('REJECTED', user),
+        getAuditCountByStatus('PENDING_APPROVAL', user),
       ]);
 
       return {

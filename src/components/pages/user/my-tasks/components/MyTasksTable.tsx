@@ -126,7 +126,7 @@ export default function MyTasksTable() {
 
   const filteredAudits = useMemo(() => {
     return allAuditsCombined.filter((audit) => {
-      const derivedStatus = getAuditDerivedStatus(audit, user?.id);
+      const derivedStatus = getAuditDerivedStatus(audit, user);
       return derivedStatus === activeTab;
     });
   }, [allAuditsCombined, activeTab, user]);
@@ -137,7 +137,7 @@ export default function MyTasksTable() {
       instance_id: audit.id,
       step_id: 0,
       user_id: audit.assignee_id,
-      status: getAuditDerivedStatus(audit, user?.id),
+      status: getAuditDerivedStatus(audit, user),
       created_at: audit.created_at,
       document_id: audit.id,
       document_record_number: audit.title,
