@@ -1,7 +1,8 @@
 {
   "layout_user": {
     "dashboard": "Tổng quan",
-    "my_tasks": "Công việc của tôi",
+    "my_tasks": "Nhiệm vụ của tôi",
+    "all_tasks": "Tất cả nhiệm vụ",
     "assets": "Tài sản",
     "rentals": "Thuê tài sản",
     "inventory": "Tồn kho",
@@ -787,9 +788,9 @@
     }
   },
   "page_my_tasks": {
-    "title": "Công việc của tôi",
+    "title": "Nhiệm vụ của tôi",
     "summary": {
-      "pending": "Chờ xử lý",
+      "pending": "Đang xử lý",
       "pending_desc": "Cần ưu tiên xử lý",
       "completed": "Đã hoàn thành",
       "completed_desc": "Hiệu suất tốt",
@@ -800,7 +801,7 @@
       "history_desc": "Lịch sử công việc"
     },
     "tabs": {
-      "pending": "Chờ xử lý",
+      "pending": "Đang xử lý",
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối",
       "completed": "Hoàn tất",
@@ -811,6 +812,7 @@
       "approval": "Phê duyệt",
       "workflow_tasks": "Công việc quy trình",
       "my_audits": "Kiểm kê của tôi",
+      "all_audits": "Kiểm kê",
       "audits_pending_approval": "Kiểm kê chờ phê duyệt"
     },
     "filters": {

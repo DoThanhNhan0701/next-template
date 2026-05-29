@@ -64,6 +64,11 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
         badge: counts.PENDING,
       },
       {
+        title: t("all_tasks"),
+        url: "/all-tasks",
+        icon: ClipboardList,
+      },
+      {
         title: t("assets"),
         url: "/assets",
         icon: Laptop,

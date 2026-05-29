@@ -156,13 +156,13 @@ export default function MyTasksTable() {
       if (!workflowProcessingResponse) return 0;
       return Array.isArray(workflowProcessingResponse)
         ? workflowProcessingResponse.length
-        : workflowProcessingResponse.items?.length ?? 0;
+        : workflowProcessingResponse.total ?? workflowProcessingResponse.items?.length ?? 0;
     }
     if (activeStatusTab === "history") {
       if (!workflowHistoryResponse) return 0;
       return Array.isArray(workflowHistoryResponse)
         ? workflowHistoryResponse.length
-        : workflowHistoryResponse.items?.length ?? 0;
+        : workflowHistoryResponse.total ?? workflowHistoryResponse.items?.length ?? 0;
     }
     return 0;
   }, [activeStatusTab, auditType, workflowProcessingResponse, workflowHistoryResponse]);
@@ -460,7 +460,38 @@ export default function MyTasksTable() {
       {/* Main content scroll container containing both tables */}
       <div className="flex-1 overflow-y-auto flex flex-col gap-6 pr-1">
         
-        {!isWorkflowPending && !isAuditPending && workflowTasks.length === 0 && currentAudits.length === 0 ? (
+        {isWorkflowPending || isAuditPending ? (
+          <div className="flex flex-col gap-6 animate-pulse">
+            {/* Skeleton for Table 1 */}
+            <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
+              <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
+                <div className="h-4 w-32 bg-muted/60 rounded" />
+                <div className="h-4 w-20 bg-muted/60 rounded" />
+              </div>
+              <div className="border border-(--surface-border-color) rounded-lg overflow-hidden h-[360px]">
+                <Table className="w-full">
+                  <TableBody>
+                    <TableLoadingRows colSpan={7} rows={4} />
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+            {/* Skeleton for Table 2 */}
+            <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
+              <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
+                <div className="h-4 w-32 bg-muted/60 rounded" />
+                <div className="h-4 w-20 bg-muted/60 rounded" />
+              </div>
+              <div className="border border-(--surface-border-color) rounded-lg overflow-hidden h-[360px]">
+                <Table className="w-full">
+                  <TableBody>
+                    <TableLoadingRows colSpan={7} rows={4} />
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        ) : workflowTasks.length === 0 && currentAudits.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-8 bg-card/25 rounded-xl border border-border/40 min-h-[300px]">
             <FileText className="text-muted-foreground/50 w-12 h-12 mb-3" />
             <p className="text-sm font-semibold text-foreground/80">{tTable("no_tasks")}</p>
@@ -469,7 +500,7 @@ export default function MyTasksTable() {
         ) : (
           <>
             {/* Table 1: Workflow Tasks */}
-            {(isWorkflowPending || workflowTasks.length > 0) && (
+            {workflowTasks.length > 0 && (
               <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
                 <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
                   <h3 className="text-xs sm:text-sm font-bold text-foreground/90 uppercase tracking-wider flex items-center gap-2">
@@ -625,7 +656,7 @@ export default function MyTasksTable() {
             )}
 
             {/* Table 2: Audits */}
-            {(isAuditPending || currentAudits.length > 0) && (
+            {currentAudits.length > 0 && (
               <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
                 <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
                   <h3 className="text-xs sm:text-sm font-bold text-foreground/90 uppercase tracking-wider flex items-center gap-2">

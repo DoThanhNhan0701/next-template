@@ -2,6 +2,7 @@
   "layout_user": {
     "dashboard": "Overview",
     "my_tasks": "My tasks",
+    "all_tasks": "All tasks",
     "assets": "Assets",
     "rentals": "Asset rentals",
     "inventory": "Inventory",
@@ -811,6 +812,7 @@
       "approval": "Approval",
       "workflow_tasks": "Workflow Tasks",
       "my_audits": "My Audits",
+      "all_audits": "Audits",
       "audits_pending_approval": "Audits Pending Approval"
     },
     "filters": {
