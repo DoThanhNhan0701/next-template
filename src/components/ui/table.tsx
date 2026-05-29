@@ -4,11 +4,35 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function Table({
+  className,
+  stickyHeader,
+  maxHeight,
+  height,
+  ...props
+}: React.ComponentProps<"table"> & {
+  stickyHeader?: boolean;
+  maxHeight?: string;
+  height?: string;
+}) {
+  const containerStyle = React.useMemo(() => {
+    if (!stickyHeader) return undefined;
+    const style: React.CSSProperties = {};
+    if (height) style.height = height;
+    if (maxHeight) style.maxHeight = maxHeight;
+    // Default to height 320px if neither is provided but stickyHeader is active
+    if (!height && !maxHeight) style.height = "320px";
+    return style;
+  }, [stickyHeader, height, maxHeight]);
+
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={cn(
+        "relative w-full overflow-x-auto",
+        stickyHeader && "overflow-y-auto",
+      )}
+      style={containerStyle}
     >
       <table
         data-slot="table"

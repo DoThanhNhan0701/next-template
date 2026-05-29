@@ -825,7 +825,7 @@
       "record_number": "Số phiếu",
       "process_type": "Loại quy trình",
       "current_step": "Bước hiện tại",
-      "requester": "Người yêu cầu",
+      "requester": "Người lập phiếu",
       "created_date": "Ngày tạo",
       "status": "Trạng thái",
       "actions": "Thao tác",
@@ -1861,6 +1861,7 @@
       "status": "Trạng thái",
       "current_state": "Trạng thái hiện tại",
       "audit_result": "Kết quả kiểm kê",
+      "proposed_action": "Đề xuất",
       "action_target": "Xử lý & Đối tượng",
       "user_request": "Người xử lý",
       "notes": "Ghi chú",
@@ -1968,7 +1969,14 @@
       "not_assignee_notice": "Bạn không phải là người được giao thực hiện đợt kiểm kê này, do đó bạn chỉ có quyền xem chi tiết.",
       "view_mode_notice": "Bạn đang xem chi tiết kết quả kiểm kê. Mọi thay đổi (nếu có) phải được thực hiện thông qua phiếu kiểm kê tương ứng.",
       "locked_mode_notice": "Đợt kiểm kê này đã hoàn thành hoặc đang đợi duyêt. Bạn chỉ có quyền xem chi tiết kết quả.",
-      "edit_mode": "Chế độ chỉnh sửa"
+      "edit_mode": "Chế độ chỉnh sửa",
+      "edit_allowed": "Cho phép chỉnh sửa",
+      "edit_not_allowed": "Không cho phép chỉnh sửa",
+      "select_result_first": "Vui lòng chọn kết quả kiểm kê trước.",
+      "warehouse_required": "Vui lòng chọn kho nhận",
+      "unit_required": "Vui lòng chọn đơn vị nhận",
+      "staff_required": "Vui lòng chọn nhân viên nhận",
+      "result_required": "Vui lòng chọn kết quả kiểm kê"
     },
     "detail": {
       "inventory_verification": "Xác minh kho",

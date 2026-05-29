@@ -56,7 +56,9 @@ export default function MyTasksTable() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { myAudits, loading: taskLoading } = useSelector((state: RootState) => state.task);
+  const { myAudits, loading: taskLoading } = useSelector(
+    (state: RootState) => state.task,
+  );
 
   // Active Status Tab specific states
   const [activeStatusTab, setActiveStatusTab] = useState<SubTab>(
@@ -114,7 +116,10 @@ export default function MyTasksTable() {
   }, [workflowSkip, workflowLimit, appliedQ, selectedProcessType]);
 
   // APIs
-  const { response: workflowProcessingResponse, pending: workflowProcessingPending } = useGet<{
+  const {
+    response: workflowProcessingResponse,
+    pending: workflowProcessingPending,
+  } = useGet<{
     items: ITask[];
     total?: number;
   }>(
@@ -122,13 +127,14 @@ export default function MyTasksTable() {
     { disabled: activeStatusTab !== "processing" },
   );
 
-  const { response: workflowHistoryResponse, pending: workflowHistoryPending } = useGet<{
-    items: ITask[];
-    total?: number;
-  }>(
-    { url: `${endpoints.WORKFLOW_TASKS}me?${workflowHistoryQueryParams}` },
-    { disabled: activeStatusTab !== "history" },
-  );
+  const { response: workflowHistoryResponse, pending: workflowHistoryPending } =
+    useGet<{
+      items: ITask[];
+      total?: number;
+    }>(
+      { url: `${endpoints.WORKFLOW_TASKS}me?${workflowHistoryQueryParams}` },
+      { disabled: activeStatusTab !== "history" },
+    );
 
   // Derived Tasks Data
   const workflowTasks = useMemo(() => {
@@ -147,7 +153,12 @@ export default function MyTasksTable() {
         : workflowHistoryResponse.items || [];
     }
     return [];
-  }, [activeStatusTab, auditType, workflowProcessingResponse, workflowHistoryResponse]);
+  }, [
+    activeStatusTab,
+    auditType,
+    workflowProcessingResponse,
+    workflowHistoryResponse,
+  ]);
 
   const workflowTotal = useMemo(() => {
     if (auditType !== "all") return 0;
@@ -156,16 +167,25 @@ export default function MyTasksTable() {
       if (!workflowProcessingResponse) return 0;
       return Array.isArray(workflowProcessingResponse)
         ? workflowProcessingResponse.length
-        : workflowProcessingResponse.total ?? workflowProcessingResponse.items?.length ?? 0;
+        : (workflowProcessingResponse.total ??
+            workflowProcessingResponse.items?.length ??
+            0);
     }
     if (activeStatusTab === "history") {
       if (!workflowHistoryResponse) return 0;
       return Array.isArray(workflowHistoryResponse)
         ? workflowHistoryResponse.length
-        : workflowHistoryResponse.total ?? workflowHistoryResponse.items?.length ?? 0;
+        : (workflowHistoryResponse.total ??
+            workflowHistoryResponse.items?.length ??
+            0);
     }
     return 0;
-  }, [activeStatusTab, auditType, workflowProcessingResponse, workflowHistoryResponse]);
+  }, [
+    activeStatusTab,
+    auditType,
+    workflowProcessingResponse,
+    workflowHistoryResponse,
+  ]);
 
   // Derived Audits Data
   const rawAudits = myAudits;
@@ -187,7 +207,7 @@ export default function MyTasksTable() {
       filtered = filtered.filter(
         (audit) =>
           audit.title.toLowerCase().includes(qLower) ||
-          audit.assignee?.full_name?.toLowerCase().includes(qLower)
+          audit.assignee?.full_name?.toLowerCase().includes(qLower),
       );
     }
 
@@ -207,7 +227,8 @@ export default function MyTasksTable() {
     });
 
     const sorted = filtered.sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
 
     return sorted.map((audit) => ({
@@ -223,9 +244,17 @@ export default function MyTasksTable() {
       requester_name: audit?.assignee?.full_name || "",
       step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
       reason: "",
-      waiting_for_approval: getAuditDerivedStatus(audit, user) === "PENDING_APPROVAL",
+      waiting_for_approval:
+        getAuditDerivedStatus(audit, user) === "PENDING_APPROVAL",
     }));
-  }, [rawAudits, selectedProcessType, activeStatusTab, user, auditType, appliedQ]);
+  }, [
+    rawAudits,
+    selectedProcessType,
+    activeStatusTab,
+    user,
+    auditType,
+    appliedQ,
+  ]);
 
   const auditTotal = useMemo(() => {
     return mappedAudits.length;
@@ -382,9 +411,7 @@ export default function MyTasksTable() {
                 </div>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">
-                  {tFilters("all_processes")}
-                </SelectItem>
+                <SelectItem value="all">{tFilters("all_processes")}</SelectItem>
                 <SelectItem value="allocation">
                   {tDocTypes("allocation")}
                 </SelectItem>
@@ -457,9 +484,8 @@ export default function MyTasksTable() {
         </div>
       </div>
 
-      {/* Main content scroll container containing both tables */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-6 pr-1">
-        
+      {/* Main content - tables stacked */}
+      <div className="flex flex-col gap-6 pb-2">
         {isWorkflowPending || isAuditPending ? (
           <div className="flex flex-col gap-6 animate-pulse">
             {/* Skeleton for Table 1 */}
@@ -494,8 +520,12 @@ export default function MyTasksTable() {
         ) : workflowTasks.length === 0 && currentAudits.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-8 bg-card/25 rounded-xl border border-border/40 min-h-[300px]">
             <FileText className="text-muted-foreground/50 w-12 h-12 mb-3" />
-            <p className="text-sm font-semibold text-foreground/80">{tTable("no_tasks")}</p>
-            <p className="text-xs text-muted-foreground mt-1">{tTable("everything_caught_up")}</p>
+            <p className="text-sm font-semibold text-foreground/80">
+              {tTable("no_tasks")}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {tTable("everything_caught_up")}
+            </p>
           </div>
         ) : (
           <>
@@ -503,18 +533,21 @@ export default function MyTasksTable() {
             {workflowTasks.length > 0 && (
               <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
                 <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
-                  <h3 className="text-xs sm:text-sm font-bold text-foreground/90 uppercase tracking-wider flex items-center gap-2">
+                  <h3 className="text-xs sm:text-sm font-bold text-foreground/90  tracking-wider flex items-center gap-2">
                     <Check className="text-emerald-500" size={16} />
                     {tTabs("approval")}
                   </h3>
-                  <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[10px] font-bold">
+                  <Badge
+                    variant="outline"
+                    className="bg-primary/5 text-primary border-primary/20 text-[10px] font-bold"
+                  >
                     {workflowTotal} {tTable("tasks_count").toLowerCase()}
                   </Badge>
                 </div>
 
-                <div className="border border-(--surface-border-color) rounded-lg overflow-hidden h-[360px] [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-                  <Table className="w-full">
-                    <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color)">
+                <div className="border border-(--surface-border-color) rounded-lg overflow-hidden">
+                  <Table className="w-full" stickyHeader height="320px">
+                    <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10">
                       <TableRow>
                         <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                           {tTable("no")}
@@ -556,7 +589,9 @@ export default function MyTasksTable() {
                             key={task.id}
                             onClick={() => {
                               if (task.document_type === "audit") {
-                                router.push(`/audits/sessions/${task.document_id}`);
+                                router.push(
+                                  `/audits/sessions/${task.document_id}`,
+                                );
                               } else {
                                 router.push(
                                   `/my-tasks/${task.document_id}?status=${task.status}&document_type=${task.document_type}`,
@@ -583,7 +618,9 @@ export default function MyTasksTable() {
                                 </div>
                                 <span className="font-bold text-foreground/80 truncate block">
                                   {tDocTypes(
-                                    task.document_type as Parameters<typeof tDocTypes>[0],
+                                    task.document_type as Parameters<
+                                      typeof tDocTypes
+                                    >[0],
                                   )}
                                 </span>
                               </div>
@@ -611,7 +648,10 @@ export default function MyTasksTable() {
                             <TableCell className="px-4 py-2 text-center hidden md:table-cell">
                               <div className="flex flex-col gap-0.5 text-xs overflow-hidden items-center">
                                 <div className="flex items-center justify-center gap-1.5 text-muted-foreground overflow-hidden">
-                                  <Clock size={12} className="opacity-60 shrink-0" />
+                                  <Clock
+                                    size={12}
+                                    className="opacity-60 shrink-0"
+                                  />
                                   <span className="truncate">
                                     {formatDate(task.created_at, "HH:mm")}
                                   </span>
@@ -659,18 +699,21 @@ export default function MyTasksTable() {
             {currentAudits.length > 0 && (
               <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
                 <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
-                  <h3 className="text-xs sm:text-sm font-bold text-foreground/90 uppercase tracking-wider flex items-center gap-2">
+                  <h3 className="text-xs sm:text-sm font-bold text-foreground/90  tracking-wider flex items-center gap-2">
                     <FileText className="text-blue-500" size={16} />
                     {tTabs("my_audits")}
                   </h3>
-                  <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[10px] font-bold">
+                  <Badge
+                    variant="outline"
+                    className="bg-primary/5 text-primary border-primary/20 text-[10px] font-bold"
+                  >
                     {auditTotal} {tTable("tasks_count").toLowerCase()}
                   </Badge>
                 </div>
 
-                <div className="border border-(--surface-border-color) rounded-lg overflow-hidden h-[360px] [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-                  <Table className="w-full">
-                    <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color)">
+                <div className="border border-(--surface-border-color) rounded-lg overflow-hidden">
+                  <Table className="w-full" stickyHeader height="320px">
+                    <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10">
                       <TableRow>
                         <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                           {tTable("no")}
@@ -711,7 +754,9 @@ export default function MyTasksTable() {
                           <TableRow
                             key={task.id}
                             onClick={() => {
-                              router.push(`/audits/sessions/${task.document_id}`);
+                              router.push(
+                                `/audits/sessions/${task.document_id}`,
+                              );
                             }}
                             className="group hover:bg-primary/3 transition-colors relative cursor-pointer"
                           >
@@ -743,7 +788,9 @@ export default function MyTasksTable() {
                                 </div>
                                 <span className="font-bold text-foreground/80 truncate block">
                                   {tDocTypes(
-                                    task.document_type as Parameters<typeof tDocTypes>[0],
+                                    task.document_type as Parameters<
+                                      typeof tDocTypes
+                                    >[0],
                                   )}
                                 </span>
                               </div>
@@ -771,7 +818,10 @@ export default function MyTasksTable() {
                             <TableCell className="px-4 py-2 text-center hidden md:table-cell">
                               <div className="flex flex-col gap-0.5 text-xs overflow-hidden items-center">
                                 <div className="flex items-center justify-center gap-1.5 text-muted-foreground overflow-hidden">
-                                  <Clock size={12} className="opacity-60 shrink-0" />
+                                  <Clock
+                                    size={12}
+                                    className="opacity-60 shrink-0"
+                                  />
                                   <span className="truncate">
                                     {formatDate(task.created_at, "HH:mm")}
                                   </span>
@@ -816,7 +866,6 @@ export default function MyTasksTable() {
             )}
           </>
         )}
-
       </div>
     </div>
   );

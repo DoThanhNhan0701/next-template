@@ -548,6 +548,9 @@ export default function AuditDetail({ id }: Props) {
                 <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
                   {t("table.audit_result")}
                 </TableHead>
+                <TableHead className="px-3 h-8 text-[10px] font-bold text-center">
+                  {t("table.proposed_action")}
+                </TableHead>
 
                 <TableHead className="px-3 h-8 text-[10px] font-bold">
                   {t("table.notes")}
@@ -564,7 +567,7 @@ export default function AuditDetail({ id }: Props) {
               {itemsPending ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell colSpan={9} className="p-3">
+                    <TableCell colSpan={10} className="p-3">
                       <Skeleton className="h-10 w-full" />
                     </TableCell>
                   </TableRow>
@@ -572,7 +575,7 @@ export default function AuditDetail({ id }: Props) {
               ) : !itemsDetail || itemsDetail.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={9}
+                    colSpan={10}
                     className="h-32 text-center text-muted-foreground italic text-xs"
                   >
                     {t("table.no_items_found")}
@@ -650,6 +653,49 @@ export default function AuditDetail({ id }: Props) {
                         )}
                         {item.status_obj?.name}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="px-3 py-1.5 text-center">
+                      <div className="flex flex-col items-center gap-0.5">
+                        {item.proposed_action && item.proposed_action.toUpperCase() !== "NONE" ? (
+                          <>
+                            <Badge
+                              variant="outline"
+                              className={`px-2 py-0.5 text-[9px] font-bold rounded-full border-0 ${
+                                item.proposed_action.toUpperCase() === "TRANSFER" || item.proposed_action.toUpperCase() === "TRANSFER_ASSET"
+                                  ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                                  : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                              }`}
+                            >
+                              {item.proposed_action.toUpperCase() === "TRANSFER" || item.proposed_action.toUpperCase() === "TRANSFER_ASSET"
+                                ? t("actions.transfer")
+                                : t("actions.recall")}
+                            </Badge>
+
+                            {/* Proposed action target details */}
+                            {(item.target_holder_name || item.target_staff?.full_name) && (
+                              <div
+                                className="text-[10px] text-muted-foreground max-w-[160px] truncate leading-normal font-medium mt-0.5"
+                                title={
+                                  session?.audit_type === "location"
+                                    ? item.target_holder_name || undefined
+                                    : [item.target_holder_name, item.target_staff?.full_name].filter(Boolean).join(" - ") || undefined
+                                }
+                              >
+                                {session?.audit_type === "location" ? (
+                                  <span>{item.target_holder_name}</span>
+                                ) : (
+                                  <span>
+                                    {item.target_holder_name}
+                                    {item.target_staff?.full_name && ` - ${item.target_staff.full_name}`}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-[11px] text-muted-foreground">—</span>
+                        )}
+                      </div>
                     </TableCell>
 
                     <TableCell className="px-3 py-1.5">
@@ -757,6 +803,7 @@ export default function AuditDetail({ id }: Props) {
         creatorUsername={session?.creator?.username}
         itemAssigneeUsername={selectedItem?.assignee?.username}
         onRefresh={itemsReFetch}
+        auditType={session?.audit_type}
         isLocked={
           session.status_obj?.code !== "PENDING" &&
           session.status_obj?.code !== "IN_PROGRESS"

@@ -145,19 +145,19 @@ export default function AllTasksTable({
   const workflowTasks = useMemo(() => {
     if (auditType !== "all") return []; // Filter out workflow tasks if an audit type is selected
 
+    let tasks: ITask[] = [];
     if (activeStatusTab === "processing") {
       if (!workflowProcessingResponse) return [];
-      return Array.isArray(workflowProcessingResponse)
+      tasks = Array.isArray(workflowProcessingResponse)
         ? workflowProcessingResponse
         : workflowProcessingResponse.items || [];
-    }
-    if (activeStatusTab === "history") {
+    } else if (activeStatusTab === "history") {
       if (!workflowHistoryResponse) return [];
-      return Array.isArray(workflowHistoryResponse)
+      tasks = Array.isArray(workflowHistoryResponse)
         ? workflowHistoryResponse
         : workflowHistoryResponse.items || [];
     }
-    return [];
+    return tasks.filter((task) => task.document_type !== "audit");
   }, [
     activeStatusTab,
     auditType,
@@ -168,28 +168,42 @@ export default function AllTasksTable({
   const workflowTotal = useMemo(() => {
     if (auditType !== "all") return 0;
 
+    let total = 0;
+    let itemsCount = 0;
+    const filteredCount = workflowTasks.length;
+
     if (activeStatusTab === "processing") {
       if (!workflowProcessingResponse) return 0;
-      return Array.isArray(workflowProcessingResponse)
-        ? workflowProcessingResponse.length
-        : (workflowProcessingResponse.total ??
-            workflowProcessingResponse.items?.length ??
-            0);
-    }
-    if (activeStatusTab === "history") {
+      if (Array.isArray(workflowProcessingResponse)) {
+        total = workflowProcessingResponse.length;
+        itemsCount = total;
+      } else {
+        total = workflowProcessingResponse.total ?? 
+                workflowProcessingResponse.items?.length ?? 
+                0;
+        itemsCount = workflowProcessingResponse.items?.length ?? 0;
+      }
+    } else if (activeStatusTab === "history") {
       if (!workflowHistoryResponse) return 0;
-      return Array.isArray(workflowHistoryResponse)
-        ? workflowHistoryResponse.length
-        : (workflowHistoryResponse.total ??
-            workflowHistoryResponse.items?.length ??
-            0);
+      if (Array.isArray(workflowHistoryResponse)) {
+        total = workflowHistoryResponse.length;
+        itemsCount = total;
+      } else {
+        total = workflowHistoryResponse.total ?? 
+                workflowHistoryResponse.items?.length ?? 
+                0;
+        itemsCount = workflowHistoryResponse.items?.length ?? 0;
+      }
     }
-    return 0;
+
+    const auditCountInFetched = itemsCount - filteredCount;
+    return Math.max(0, total - auditCountInFetched);
   }, [
     activeStatusTab,
     auditType,
     workflowProcessingResponse,
     workflowHistoryResponse,
+    workflowTasks,
   ]);
 
   // Mapped Audits to Workflow Tasks format
@@ -544,7 +558,7 @@ export default function AllTasksTable({
           {workflowTasks.length > 0 && (
             <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
               <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
-                <h3 className="text-xs sm:text-sm font-bold text-foreground/90 uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-bold text-foreground/90  tracking-wider flex items-center gap-2">
                   <Layers className="text-primary" size={16} />
                   {tTabs("approval")}
                 </h3>
@@ -556,9 +570,9 @@ export default function AllTasksTable({
                 </Badge>
               </div>
 
-              <div className="border border-(--surface-border-color) rounded-lg overflow-hidden h-[360px] [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-                <Table className="w-full">
-                  <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color)">
+              <div className="border border-(--surface-border-color) rounded-lg overflow-hidden">
+                <Table className="w-full" stickyHeader height="320px">
+                  <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10">
                     <TableRow>
                       <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                         {tTable("no")}
@@ -657,7 +671,7 @@ export default function AllTasksTable({
           {currentAudits.length > 0 && (
             <div className="flex flex-col gap-2 bg-card/25 rounded-xl border border-border/40 p-4">
               <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
-                <h3 className="text-xs sm:text-sm font-bold text-foreground/90 uppercase tracking-wider flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-bold text-foreground/90  tracking-wider flex items-center gap-2">
                   <FileText className="text-blue-500" size={16} />
                   {tTabs("all_audits")}
                 </h3>
@@ -669,9 +683,9 @@ export default function AllTasksTable({
                 </Badge>
               </div>
 
-              <div className="border border-(--surface-border-color) rounded-lg overflow-hidden h-[360px] [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
-                <Table className="w-full">
-                  <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color)">
+              <div className="border border-(--surface-border-color) rounded-lg overflow-hidden">
+                <Table className="w-full" stickyHeader height="320px">
+                  <TableHeader className="bg-sidebar-accent text-foreground border-b border-(--surface-border-color) sticky top-0 z-10">
                     <TableRow>
                       <TableHead className="font-semibold h-10 px-4 w-12.5 text-center">
                         {tTable("no")}
