@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch, RootState } from "@/redux";
@@ -9,7 +9,7 @@ import { actionFetchTaskCounts } from "@/redux/slices/task";
 import MyTasksTable from "./components/MyTasksTable";
 import { SummarySection } from "./components/SummarySection";
 
-export default function MyTasksPage() {
+function MyTasksContent() {
   const dispatch = useDispatch<AppDispatch>();
   const { counts } = useSelector((state: RootState) => state.task);
 
@@ -20,12 +20,19 @@ export default function MyTasksPage() {
   return (
     <div className="h-full flex flex-col gap-3">
       <SummarySection
-        pendingCount={counts.PENDING}
-        approvedCount={counts.APPROVED}
-        rejectedCount={counts.REJECTED}
+        processingCount={counts.PENDING}
         pendingApprovalCount={counts.PENDING_APPROVAL}
+        historyCount={counts.APPROVED + counts.REJECTED}
       />
       <MyTasksTable />
     </div>
+  );
+}
+
+export default function MyTasksPage() {
+  return (
+    <Suspense fallback={null}>
+      <MyTasksContent />
+    </Suspense>
   );
 }

@@ -796,14 +796,22 @@
       "rejected": "Đã từ chối",
       "rejected_desc": "Xem lý do",
       "pending_approval": "Chờ phê duyệt",
-      "pending_approval_desc": "Cần phê duyệt"
+      "pending_approval_desc": "Cần phê duyệt",
+      "history_desc": "Lịch sử công việc"
     },
     "tabs": {
       "pending": "Chờ xử lý",
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối",
       "completed": "Hoàn tất",
-      "pending_approval": "Chờ phê duyệt"
+      "pending_approval": "Chờ phê duyệt",
+      "processing": "Đang xử lý",
+      "history": "Lịch sử",
+      "cancelled": "Đã hủy",
+      "approval": "Phê duyệt",
+      "workflow_tasks": "Công việc quy trình",
+      "my_audits": "Kiểm kê của tôi",
+      "audits_pending_approval": "Kiểm kê chờ phê duyệt"
     },
     "filters": {
       "search_placeholder": "e.g. REC2024, Nguyễn Văn A",
@@ -821,7 +829,8 @@
       "actions": "Thao tác",
       "no_tasks": "Không tìm thấy công việc",
       "everything_caught_up": "Mọi thứ đã hoàn tất! Không có công việc nào khớp với bộ lọc.",
-      "pending_approval": "Chờ phê duyệt"
+      "pending_approval": "Chờ phê duyệt",
+      "tasks_count": "công việc"
     },
     "detail": {
       "vouchers_documents": "Chứng từ & tài liệu",

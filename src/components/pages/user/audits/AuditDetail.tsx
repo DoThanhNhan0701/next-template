@@ -124,16 +124,17 @@ export default function AuditDetail({ id }: Props) {
     return [auditTaskHistory, ...(historyList || [])];
   }, [historyList, session]);
 
-  const { response: myTasksResponse, reFetch: myTasksReFetch } = useGet<
-    ITask[]
-  >({
+  const { response: myTasksResponse, reFetch: myTasksReFetch } = useGet<{
+    items: ITask[];
+    total: number;
+  }>({
     url: `${endpoints.WORKFLOW_TASKS}me`,
   });
 
   const { response: usersRes } = useGet<IUser[]>({
     url: endpoints.USERS,
   });
-  const activeTask = (myTasksResponse || []).find(
+  const activeTask = (myTasksResponse?.items || []).find(
     (t) => t.document_id === Number(id) && t.document_type === "audit",
   );
 

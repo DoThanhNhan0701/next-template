@@ -5,9 +5,11 @@ import { AxiosResponse } from 'axios';
 import { IAuditSession } from '@/types/audit';
 import { getAuditDerivedStatus } from '@/utils/audit';
 import { IUser } from '@/types/auth';
+import { ITask } from '@/types/task';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const inFlightRequests: Record<string, Promise<AxiosResponse<any>>> = {};
+type AuditListResponse = IAuditSession[] | { items: IAuditSession[]; total: number };
+
+const inFlightRequests: Record<string, Promise<AxiosResponse<unknown>>> = {};
 
 const fetchWithInFlight = <T>(url: string): Promise<AxiosResponse<T>> => {
   if (!inFlightRequests[url]) {
@@ -17,37 +19,32 @@ const fetchWithInFlight = <T>(url: string): Promise<AxiosResponse<T>> => {
     }).catch(err => {
       delete inFlightRequests[url];
       throw err;
-    });
+    }) as Promise<AxiosResponse<unknown>>;
   }
   return inFlightRequests[url] as Promise<AxiosResponse<T>>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getTaskCountByStatus = (status: string): Promise<AxiosResponse<any>> => {
-  return fetchWithInFlight(`${endpoints.WORKFLOW_TASKS}me?status=${status}`);
+const getTaskCountByStatus = (status: string): Promise<AxiosResponse<{ items: ITask[]; total: number }>> => {
+  return fetchWithInFlight<{ items: ITask[]; total: number }>(`${endpoints.WORKFLOW_TASKS}me?status=${status}`);
+};
+
+const getAuditCounts = (audits: IAuditSession[], user: IUser | null) => {
+  const counts = { PENDING: 0, PENDING_APPROVAL: 0, APPROVED: 0, REJECTED: 0 };
+  audits.forEach(audit => {
+    const status = getAuditDerivedStatus(audit, user);
+    if (status in counts) {
+      counts[status as keyof typeof counts]++;
+    }
+  });
+  return counts;
 };
 
 const getAuditCountByStatus = async (status: string, user?: IUser | null): Promise<number> => {
-  const [myAuditsRes, pendingAuditsRes] = await Promise.all([
-    fetchWithInFlight<IAuditSession[]>(endpoints.AUDIT_MY_AUDITS),
-    status === 'PENDING_APPROVAL'
-      ? fetchWithInFlight<IAuditSession[]>(endpoints.AUDIT_PENDING_APPROVAL)
-      : Promise.resolve({ data: [] } as unknown as AxiosResponse<IAuditSession[]>),
-  ]);
-
-  const combined = [
-    ...(myAuditsRes.data || []).map(a => ({ ...a, _isPendingApproval: false })),
-    ...(pendingAuditsRes.data || []).map(a => ({ ...a, _isPendingApproval: true })),
-  ];
-
-  const uniqueMap = new Map<number, IAuditSession & { _isPendingApproval: boolean }>();
-  combined.forEach((a) => {
-    if (!uniqueMap.has(a.id) || a._isPendingApproval) {
-      uniqueMap.set(a.id, a);
-    }
-  });
-
-  return Array.from(uniqueMap.values()).filter((a) => {
+  const myAuditsRes = await fetchWithInFlight<AuditListResponse>(endpoints.AUDIT_MY_AUDITS);
+  const myAuditsData: IAuditSession[] = Array.isArray(myAuditsRes.data)
+    ? myAuditsRes.data
+    : myAuditsRes.data?.items || [];
+  return myAuditsData.filter((a) => {
     return getAuditDerivedStatus(a, user) === status;
   }).length;
 };
@@ -62,7 +59,8 @@ export const actionFetchPendingCount = createAsyncThunk(
         getTaskCountByStatus('PENDING'),
         getAuditCountByStatus('PENDING', user),
       ]);
-      return (workflowRes.data.length || 0) + auditCount;
+      const workflowCount = workflowRes.data?.items?.length ?? 0;
+      return workflowCount + auditCount;
     } catch (error) {
       return thunkApi.rejectWithValue({
         message: (error as Error).message,
@@ -79,22 +77,51 @@ export const actionFetchTaskCounts = createAsyncThunk(
       const user = auth.user;
       const [
         pending, approved, rejected,
-        pendingAudit, approvedAudit, rejectedAudit, pendingApprovalAudit
+        myAuditsRes
       ] = await Promise.all([
         getTaskCountByStatus('PENDING'),
         getTaskCountByStatus('APPROVED'),
         getTaskCountByStatus('REJECTED'),
-        getAuditCountByStatus('PENDING', user),
-        getAuditCountByStatus('APPROVED', user),
-        getAuditCountByStatus('REJECTED', user),
-        getAuditCountByStatus('PENDING_APPROVAL', user),
+        fetchWithInFlight<AuditListResponse>(endpoints.AUDIT_MY_AUDITS),
       ]);
 
+      const pendingCount = pending.data?.items?.length ?? 0;
+      const approvedCount = approved.data?.items?.length ?? 0;
+      const rejectedCount = rejected.data?.items?.length ?? 0;
+
+      const myAuditsData: IAuditSession[] = Array.isArray(myAuditsRes.data)
+        ? myAuditsRes.data
+        : myAuditsRes.data?.items || [];
+
+      const myAuditsCounts = getAuditCounts(myAuditsData, user);
+
+      const workflow_tasks = {
+        PENDING: pendingCount,
+        PENDING_APPROVAL: 0,
+        APPROVED: approvedCount,
+        REJECTED: rejectedCount,
+      };
+
+      const my_audits = myAuditsCounts;
+
+      const PENDING = pendingCount + myAuditsCounts.PENDING;
+      const APPROVED = approvedCount + myAuditsCounts.APPROVED;
+      const REJECTED = rejectedCount + myAuditsCounts.REJECTED;
+      const PENDING_APPROVAL = myAuditsCounts.PENDING_APPROVAL;
+
       return {
-        PENDING: (pending.data.length || 0) + pendingAudit,
-        APPROVED: (approved.data.length || 0) + approvedAudit,
-        REJECTED: (rejected.data.length || 0) + rejectedAudit,
-        PENDING_APPROVAL: pendingApprovalAudit,
+        counts: {
+          PENDING,
+          APPROVED,
+          REJECTED,
+          PENDING_APPROVAL,
+        },
+        countsByTab: {
+          workflow_tasks,
+          my_audits,
+          audits_pending_approval: { PENDING: 0, PENDING_APPROVAL: 0, APPROVED: 0, REJECTED: 0 },
+        },
+        myAudits: myAuditsData,
       };
     } catch (error) {
       return thunkApi.rejectWithValue({
@@ -120,6 +147,27 @@ interface TaskState {
     APPROVED: number;
     REJECTED: number;
   };
+  countsByTab: {
+    workflow_tasks: {
+      PENDING: number;
+      PENDING_APPROVAL: number;
+      APPROVED: number;
+      REJECTED: number;
+    };
+    my_audits: {
+      PENDING: number;
+      PENDING_APPROVAL: number;
+      APPROVED: number;
+      REJECTED: number;
+    };
+    audits_pending_approval: {
+      PENDING: number;
+      PENDING_APPROVAL: number;
+      APPROVED: number;
+      REJECTED: number;
+    };
+  };
+  myAudits: IAuditSession[];
   loading: boolean;
   fetched: boolean;
 }
@@ -131,6 +179,12 @@ const initialState: TaskState = {
     APPROVED: 0,
     REJECTED: 0,
   },
+  countsByTab: {
+    workflow_tasks: { PENDING: 0, PENDING_APPROVAL: 0, APPROVED: 0, REJECTED: 0 },
+    my_audits: { PENDING: 0, PENDING_APPROVAL: 0, APPROVED: 0, REJECTED: 0 },
+    audits_pending_approval: { PENDING: 0, PENDING_APPROVAL: 0, APPROVED: 0, REJECTED: 0 },
+  },
+  myAudits: [],
   loading: false,
   fetched: false,
 };
@@ -154,7 +208,9 @@ const taskSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(actionFetchTaskCounts.fulfilled, (state, action) => {
-        state.counts = action.payload;
+        state.counts = action.payload.counts;
+        state.countsByTab = action.payload.countsByTab;
+        state.myAudits = action.payload.myAudits || [];
         state.loading = false;
         state.fetched = true;
       })

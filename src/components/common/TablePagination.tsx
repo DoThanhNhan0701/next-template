@@ -40,7 +40,7 @@ export function TablePagination({
   onPageChange,
   onLimitChange,
 }: TablePaginationProps) {
-  const hasMore = total !== undefined ? skip + count < total : count === limit;
+  const hasMore = total !== undefined ? skip + limit < total : count === limit;
   const currentPage = Math.floor(skip / limit) + 1;
   const from = skip + 1;
   const to = skip + count;

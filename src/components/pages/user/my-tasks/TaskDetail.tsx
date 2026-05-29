@@ -58,16 +58,17 @@ export default function TaskDetail({ id }: TaskDetailProps) {
     url: dynamicEndpoints.WORKFLOW_HISTORY(documentType, Number(id)),
   });
 
-  const { response: myTasksResponse, reFetch: reFetchMyTasks } = useGet<
-    ITask[]
-  >({
+  const { response: myTasksResponse, reFetch: reFetchMyTasks } = useGet<{
+    items: ITask[];
+    total: number;
+  }>({
     url: `${endpoints.WORKFLOW_TASKS}me`,
     config: {
       params: { status: status },
     },
   });
 
-  const activeTask = (myTasksResponse || []).find(
+  const activeTask = (myTasksResponse?.items || []).find(
     (t) => t.document_id === Number(id) && t.document_type === documentType,
   );
 

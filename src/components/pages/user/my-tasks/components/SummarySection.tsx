@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { CheckCircle2, Clock, XCircle } from "lucide-react";
+import { CheckCircle2, Clock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -103,19 +103,17 @@ function SummaryCard({
 }
 
 interface SummarySectionProps {
-  pendingCount?: number;
-  approvedCount?: number;
-  rejectedCount?: number;
+  processingCount?: number;
   pendingApprovalCount?: number;
+  historyCount?: number;
 }
 
 const emptySubscribe = () => () => {};
 
 export function SummarySection({
-  pendingCount = 0,
-  approvedCount = 0,
-  rejectedCount = 0,
+  processingCount = 0,
   pendingApprovalCount = 0,
+  historyCount = 0,
 }: SummarySectionProps) {
   const isClient = useSyncExternalStore(
     emptySubscribe,
@@ -123,43 +121,36 @@ export function SummarySection({
     () => false,
   );
 
-  const displayPending = isClient ? pendingCount : 0;
-  const displayApproved = isClient ? approvedCount : 0;
-  const displayRejected = isClient ? rejectedCount : 0;
+  const displayProcessing = isClient ? processingCount : 0;
   const displayPendingApproval = isClient ? pendingApprovalCount : 0;
+  const displayHistory = isClient ? historyCount : 0;
 
-  const t = useTranslations("page_my_tasks.summary");
+  const tSummary = useTranslations("page_my_tasks.summary");
+  const tTabs = useTranslations("page_my_tasks.tabs");
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-4 gap-2 md:gap-3">
+      <div className="grid grid-cols-3 gap-2 md:gap-3">
         <SummaryCard
-          label={t("pending")}
-          value={displayPending}
-          description={t("pending_desc")}
+          label={tTabs("processing")}
+          value={displayProcessing}
+          description={tSummary("pending_desc")}
           icon={Clock}
           color="orange"
         />
         <SummaryCard
-          label={t("pending_approval")}
+          label={tTabs("pending_approval")}
           value={displayPendingApproval}
-          description={t("pending_approval_desc")}
-          icon={XCircle}
+          description={tSummary("pending_approval_desc")}
+          icon={Clock}
           color="yellow"
         />
         <SummaryCard
-          label={t("completed")}
-          value={displayApproved}
-          description={t("completed_desc")}
+          label={tTabs("history")}
+          value={displayHistory}
+          description={tSummary("history_desc")}
           icon={CheckCircle2}
           color="green"
-        />
-        <SummaryCard
-          label={t("rejected")}
-          value={displayRejected}
-          description={t("rejected_desc")}
-          icon={XCircle}
-          color="red"
         />
       </div>
     </div>
