@@ -453,7 +453,7 @@ export default function AuditDetail({ id }: Props) {
               label={t("detail.type")}
               value={
                 <Badge variant="secondary" className="font-bold">
-                  {session.audit_type.toUpperCase()}
+                  {session.audit_type === "unit" ? t("unit_audit") : t("location_audit")}
                 </Badge>
               }
             />
@@ -656,29 +656,42 @@ export default function AuditDetail({ id }: Props) {
                     </TableCell>
                     <TableCell className="px-3 py-1.5 text-center">
                       <div className="flex flex-col items-center gap-0.5">
-                        {item.proposed_action && item.proposed_action.toUpperCase() !== "NONE" ? (
+                        {item.proposed_action &&
+                        item.proposed_action.toUpperCase() !== "NONE" ? (
                           <>
                             <Badge
                               variant="outline"
                               className={`px-2 py-0.5 text-[9px] font-bold rounded-full border-0 ${
-                                item.proposed_action.toUpperCase() === "TRANSFER" || item.proposed_action.toUpperCase() === "TRANSFER_ASSET"
+                                item.proposed_action.toUpperCase() ===
+                                  "TRANSFER" ||
+                                item.proposed_action.toUpperCase() ===
+                                  "TRANSFER_ASSET"
                                   ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                                   : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
                               }`}
                             >
-                              {item.proposed_action.toUpperCase() === "TRANSFER" || item.proposed_action.toUpperCase() === "TRANSFER_ASSET"
+                              {item.proposed_action.toUpperCase() ===
+                                "TRANSFER" ||
+                              item.proposed_action.toUpperCase() ===
+                                "TRANSFER_ASSET"
                                 ? t("actions.transfer")
                                 : t("actions.recall")}
                             </Badge>
 
                             {/* Proposed action target details */}
-                            {(item.target_holder_name || item.target_staff?.full_name) && (
+                            {(item.target_holder_name ||
+                              item.target_staff?.full_name) && (
                               <div
                                 className="text-[10px] text-muted-foreground max-w-[160px] truncate leading-normal font-medium mt-0.5"
                                 title={
                                   session?.audit_type === "location"
                                     ? item.target_holder_name || undefined
-                                    : [item.target_holder_name, item.target_staff?.full_name].filter(Boolean).join(" - ") || undefined
+                                    : [
+                                        item.target_holder_name,
+                                        item.target_staff?.full_name,
+                                      ]
+                                        .filter(Boolean)
+                                        .join(" - ") || undefined
                                 }
                               >
                                 {session?.audit_type === "location" ? (
@@ -686,14 +699,17 @@ export default function AuditDetail({ id }: Props) {
                                 ) : (
                                   <span>
                                     {item.target_holder_name}
-                                    {item.target_staff?.full_name && ` - ${item.target_staff.full_name}`}
+                                    {item.target_staff?.full_name &&
+                                      ` - ${item.target_staff.full_name}`}
                                   </span>
                                 )}
                               </div>
                             )}
                           </>
                         ) : (
-                          <span className="text-[11px] text-muted-foreground">—</span>
+                          <span className="text-[11px] text-muted-foreground">
+                            —
+                          </span>
                         )}
                       </div>
                     </TableCell>

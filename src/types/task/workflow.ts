@@ -13,6 +13,7 @@ export interface ITask {
     document_record_number: string;
     document_type: string;
     requester_name: string;
+    assignee_name?: string;
     step_name: string;
     reason: string;
     action_date?: string;

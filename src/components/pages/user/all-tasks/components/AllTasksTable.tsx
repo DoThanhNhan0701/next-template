@@ -258,7 +258,8 @@ export default function AllTasksTable({
       document_record_number: audit.title,
       document_type: "audit",
       requester_name: audit?.assignee?.full_name || "",
-      step_name: audit.audit_type === "unit" ? "Unit Audit" : "Location Audit",
+      assignee_name: audit?.assignee?.full_name || "",
+      step_name: audit.audit_type === "unit" ? tAudit("unit_audit") : tAudit("location_audit"),
       reason: "",
       waiting_for_approval:
         getAllAuditDerivedStatus(audit, user) === "PENDING_APPROVAL",
@@ -270,6 +271,7 @@ export default function AllTasksTable({
     user,
     auditType,
     appliedQ,
+    tAudit,
   ]);
 
   const auditTotal = useMemo(() => {
@@ -589,6 +591,9 @@ export default function AllTasksTable({
                       <TableHead className="font-semibold h-10 px-4 w-50 hidden lg:table-cell">
                         {tTable("requester")}
                       </TableHead>
+                      <TableHead className="font-semibold h-10 px-4 w-50 hidden lg:table-cell">
+                        {tTable("assignee")}
+                      </TableHead>
                       <TableHead className="font-semibold h-10 px-4 w-35 text-center hidden md:table-cell">
                         {tTable("created_date")}
                       </TableHead>
@@ -600,10 +605,10 @@ export default function AllTasksTable({
 
                   <TableBody className="divide-y divide-(--surface-border-color)">
                     {isWorkflowPending ? (
-                      <TableLoadingRows colSpan={7} rows={4} />
+                      <TableLoadingRows colSpan={8} rows={4} />
                     ) : workflowTasks.length === 0 ? (
                       <TableEmptyRow
-                        colSpan={7}
+                        colSpan={8}
                         icon={FileText}
                         message={tTable("no_tasks")}
                         description={tTable("everything_caught_up")}
@@ -641,6 +646,9 @@ export default function AllTasksTable({
                           </TableCell>
                           <TableCell className="px-4 py-2 text-sm text-foreground/80 hidden lg:table-cell">
                             {task.requester_name}
+                          </TableCell>
+                          <TableCell className="px-4 py-2 text-sm text-foreground/80 hidden lg:table-cell">
+                            {task.assignee_name || "—"}
                           </TableCell>
                           <TableCell className="px-4 py-2 text-center text-xs text-muted-foreground hidden md:table-cell">
                             {formatDate(task.created_at)}
@@ -702,6 +710,9 @@ export default function AllTasksTable({
                       <TableHead className="font-semibold h-10 px-4 w-50 hidden lg:table-cell">
                         {tTable("requester")}
                       </TableHead>
+                      <TableHead className="font-semibold h-10 px-4 w-50 hidden lg:table-cell">
+                        {tTable("assignee")}
+                      </TableHead>
                       <TableHead className="font-semibold h-10 px-4 w-35 text-center hidden md:table-cell">
                         {tTable("created_date")}
                       </TableHead>
@@ -713,10 +724,10 @@ export default function AllTasksTable({
 
                   <TableBody className="divide-y divide-(--surface-border-color)">
                     {isAuditPending ? (
-                      <TableLoadingRows colSpan={7} rows={4} />
+                      <TableLoadingRows colSpan={8} rows={4} />
                     ) : currentAudits.length === 0 ? (
                       <TableEmptyRow
-                        colSpan={7}
+                        colSpan={8}
                         icon={FileText}
                         message={tTable("no_tasks")}
                         description={tTable("everything_caught_up")}
@@ -746,6 +757,9 @@ export default function AllTasksTable({
                           </TableCell>
                           <TableCell className="px-4 py-2 text-sm text-foreground/80 hidden lg:table-cell">
                             {task.requester_name}
+                          </TableCell>
+                          <TableCell className="px-4 py-2 text-sm text-foreground/80 hidden lg:table-cell">
+                            {task.assignee_name || "—"}
                           </TableCell>
                           <TableCell className="px-4 py-2 text-center text-xs text-muted-foreground hidden md:table-cell">
                             {formatDate(task.created_at)}

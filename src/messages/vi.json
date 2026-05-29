@@ -826,6 +826,7 @@
       "process_type": "Loại quy trình",
       "current_step": "Bước hiện tại",
       "requester": "Người lập phiếu",
+      "assignee": "Người đang chờ xử lý",
       "created_date": "Ngày tạo",
       "status": "Trạng thái",
       "actions": "Thao tác",
@@ -1847,6 +1848,8 @@
     }
   },
   "page_audits": {
+    "unit_audit": "Đơn vị",
+    "location_audit": "Kho",
     "tabs": {
       "my_tasks": "Nhiệm vụ của tôi",
       "manage_all": "Quản lý tất cả"

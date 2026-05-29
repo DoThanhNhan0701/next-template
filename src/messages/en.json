@@ -826,6 +826,7 @@
       "process_type": "Process type",
       "current_step": "Current step",
       "requester": "Requester",
+      "assignee": "Current Assignee",
       "created_date": "Created date",
       "status": "Status",
       "actions": "Actions",
@@ -1846,6 +1847,8 @@
     }
   },
   "page_audits": {
+    "unit_audit": "Unit",
+    "location_audit": "Location",
     "tabs": {
       "my_tasks": "My tasks",
       "manage_all": "Manage all"
