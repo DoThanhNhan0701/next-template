@@ -1238,6 +1238,7 @@
         "usage_mode": "Usage mode",
         "old_code": "Old asset code",
         "unit": "Managing unit",
+        "office": "Office",
         "holder": "Current holder",
         "location": "Current location"
       },
@@ -1316,6 +1317,8 @@
         "placeholder_model": "e.g. MacBook Pro A2779",
         "unit": "Organization (Code)",
         "placeholder_unit": "e.g. Head Office",
+        "office": "Office",
+        "placeholder_office": "Choose office",
         "usage_mode": "Usage mode",
         "placeholder_usage_mode": "e.g. Individual use",
         "importance": "Importance",

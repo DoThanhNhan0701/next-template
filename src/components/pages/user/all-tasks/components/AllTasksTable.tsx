@@ -178,10 +178,11 @@ export default function AllTasksTable({
         total = workflowProcessingResponse.length;
         itemsCount = total;
       } else {
-        total = workflowProcessingResponse.total ?? 
-                workflowProcessingResponse.items?.length ?? 
-                0;
+        const fetchedTotal = workflowProcessingResponse.total ?? 
+                             workflowProcessingResponse.items?.length ?? 
+                             0;
         itemsCount = workflowProcessingResponse.items?.length ?? 0;
+        total = itemsCount < workflowLimit ? itemsCount : fetchedTotal;
       }
     } else if (activeStatusTab === "history") {
       if (!workflowHistoryResponse) return 0;
@@ -189,10 +190,11 @@ export default function AllTasksTable({
         total = workflowHistoryResponse.length;
         itemsCount = total;
       } else {
-        total = workflowHistoryResponse.total ?? 
-                workflowHistoryResponse.items?.length ?? 
-                0;
+        const fetchedTotal = workflowHistoryResponse.total ?? 
+                             workflowHistoryResponse.items?.length ?? 
+                             0;
         itemsCount = workflowHistoryResponse.items?.length ?? 0;
+        total = itemsCount < workflowLimit ? itemsCount : fetchedTotal;
       }
     }
 
@@ -204,6 +206,7 @@ export default function AllTasksTable({
     workflowProcessingResponse,
     workflowHistoryResponse,
     workflowTasks,
+    workflowLimit,
   ]);
 
   // Mapped Audits to Workflow Tasks format

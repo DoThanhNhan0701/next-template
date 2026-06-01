@@ -29,6 +29,7 @@ export interface IPhysicalAsset {
   status_id: number;
   usage_mode_id: number | null;
   location_id: number | null;
+  office_id?: number | null;
   asset_system_id: number | null;
   org_id: number | null;
   location: string | null;
@@ -46,6 +47,7 @@ export interface IPhysicalAsset {
   category?: { name: string; } | null;
   unit?: { name: string; } | null;
   supplier?: { name: string; } | null;
+  office?: { name: string; } | null;
 }
 
 export interface IPhysicalAssetCreate {
@@ -77,6 +79,7 @@ export interface IPhysicalAssetCreate {
   status_id: number;
   usage_mode_id?: number | null;
   location_id?: number | null;
+  office_id?: number | null;
   asset_system_id?: number | null;
   org_id?: number | null;
   location?: string | null;
@@ -117,6 +120,7 @@ export interface IPhysicalAssetDetail {
   status_id: number | null;
   usage_mode_id: number | null;
   location_id: number | null;
+  office_id?: number | null;
   asset_system_id: number | null;
   location: string | null;
   specifications: string;
@@ -129,8 +133,9 @@ export interface IPhysicalAssetDetail {
   importance_obj: { code: string; name: string; color: string; } | null;
   usage_mode: { name: string; color: string; } | null;
   category: { name: string; } | null;
-  unit: { name: string; } | null;
+  unit: { name: string; code?: string; } | null;
   location_obj: { name: string; } | null;
+  office?: { name: string; code?: string; } | null;
   total_quantity: number;
   allocated_quantity: number;
   rented_quantity: number;

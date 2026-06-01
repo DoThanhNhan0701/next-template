@@ -99,7 +99,24 @@ export default function OverviewTab({
                 <InfoRow
                   icon="🏢"
                   label={t("fields.unit")}
-                  value={asset.unit?.name || "-"}
+                  value={
+                    asset.unit
+                      ? asset.unit.code
+                        ? `${asset.unit.name} (${asset.unit.code})`
+                        : asset.unit.name
+                      : "-"
+                  }
+                />
+                <InfoRow
+                  icon="🏢"
+                  label={t("fields.office")}
+                  value={
+                    asset.office
+                      ? asset.office.code
+                        ? `${asset.office.name} (${asset.office.code})`
+                        : asset.office.name
+                      : "-"
+                  }
                 />
                 <InfoRow
                   icon="🏢"

@@ -37,6 +37,7 @@ import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ICatalogType } from "@/types/catalog-type";
 import { ILocation } from "@/types/location";
+import { IOffice } from "@/types/office";
 import { IOrgUnit } from "@/types/org";
 import { IPhysicalAsset } from "@/types/physical-asset";
 import { IStaff } from "@/types/staff";
@@ -98,6 +99,10 @@ export default function AssetFormModal({
     { url: endpoints.ORG_UNITS },
     { disabled: !isOpen },
   );
+  const { response: officeRes } = useGet<IOffice[]>(
+    { url: endpoints.OFFICES },
+    { disabled: !isOpen },
+  );
   const { response: staffRes } = useGet<{ items: IStaff[] }>(
     { url: endpoints.STAFFS },
     { disabled: !isOpen },
@@ -108,6 +113,7 @@ export default function AssetFormModal({
   const categories = catalogRes || [];
   const usageModes = usageModeRes || [];
   const orgUnits = orgRes || [];
+  const offices = officeRes || [];
   const staffs = staffRes?.items || [];
   const importances = importanceRes || [];
 
@@ -135,6 +141,7 @@ export default function AssetFormModal({
       category_id: null,
       supplier_id: null,
       location_id: null,
+      office_id: null,
       usage_mode_id: null,
       manager_id: null,
       staff_id: null,
@@ -178,6 +185,7 @@ export default function AssetFormModal({
           category_id: assetToEdit.category_id,
           unit_id: assetToEdit.unit_id,
           staff_id: assetToEdit.staff_id,
+          office_id: assetToEdit.office_id || null,
           management_type: assetToEdit.management_type || "unique",
           attachments: assetToEdit.attachments || [],
         } as unknown as z.infer<typeof PhysicalAssetSchema>);
@@ -202,6 +210,7 @@ export default function AssetFormModal({
           supplier_id: null,
           category_id: null,
           location_id: null,
+          office_id: null,
           usage_mode_id: null,
           holder_id: null,
           holder_name: "",
@@ -537,6 +546,31 @@ export default function AssetFormModal({
                           value={field.value as number}
                           onChange={(val) => field.onChange(Number(val))}
                           placeholder={t("modals.fields.placeholder_unit")}
+                        />
+
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="office_id"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field className="gap-1 col-span-full">
+                        <FieldLabel>{t("modals.fields.office")}</FieldLabel>
+
+                        <SelectField
+                          options={(offices ?? [])
+                            .filter((c) => c.is_active)
+                            .map((c) => ({
+                              label: `${c.name} (${c.code})`,
+                              value: c.id,
+                            }))}
+                          value={field.value as number}
+                          onChange={(val) => field.onChange(val ? Number(val) : null)}
+                          placeholder={t("modals.fields.placeholder_office")}
                         />
 
                         {fieldState.invalid && (

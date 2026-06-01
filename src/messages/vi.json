@@ -1240,6 +1240,7 @@
         "usage_mode": "Chế độ sử dụng",
         "old_code": "Mã tài sản cũ",
         "unit": "Đơn vị quản lý",
+        "office": "Văn phòng",
         "holder": "Người giữ hiện tại",
         "location": "Kho hiện tại"
       },
@@ -1318,6 +1319,8 @@
         "placeholder_model": "e.g. MacBook Pro A2779",
         "unit": "Đơn vị (Mã)",
         "placeholder_unit": "e.g. Hội sở chính",
+        "office": "Văn phòng",
+        "placeholder_office": "Chọn văn phòng",
         "usage_mode": "Chế độ sử dụng",
         "placeholder_usage_mode": "e.g. Sử dụng cá nhân",
         "importance": "Mức độ quan trọng",

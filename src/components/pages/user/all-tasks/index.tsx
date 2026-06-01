@@ -40,9 +40,15 @@ function AllTasksContent() {
   }, [auditsRes]);
 
   const counts = useMemo(() => {
-    const pendingCount = pendingWorkflows?.items?.length ?? 0;
-    const approvedCount = approvedWorkflows?.items?.length ?? 0;
-    const rejectedCount = rejectedWorkflows?.items?.length ?? 0;
+    const pendingCount = (pendingWorkflows?.items || []).filter(
+      (task) => task.document_type !== "audit"
+    ).length;
+    const approvedCount = (approvedWorkflows?.items || []).filter(
+      (task) => task.document_type !== "audit"
+    ).length;
+    const rejectedCount = (rejectedWorkflows?.items || []).filter(
+      (task) => task.document_type !== "audit"
+    ).length;
 
     const auditCounts = { PENDING: 0, PENDING_APPROVAL: 0, APPROVED: 0, REJECTED: 0 };
     rawAudits.forEach((audit) => {

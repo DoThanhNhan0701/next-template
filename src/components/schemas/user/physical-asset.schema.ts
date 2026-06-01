@@ -29,6 +29,7 @@ export const PhysicalAssetSchema = z.object({
   status_id: z.coerce.number().int().min(1, "Field is required!"),
   usage_mode_id: z.coerce.number().int().min(1, "Field is required!"),
   location_id: z.coerce.number().int().nullable().optional(),
+  office_id: z.coerce.number().int().nullable().optional(),
   asset_system_id: z.coerce.number().int().nullable().optional(),
   unit_id: z.coerce.number().int().min(1, "Field is required!"),
   location: z.string().nullable().optional(),
