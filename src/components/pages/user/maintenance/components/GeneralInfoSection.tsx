@@ -24,24 +24,7 @@ export function GeneralInfoSection({ form }: GeneralInfoSectionProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Controller
-          control={form.control}
-          name="record_number"
-          render={({ field, fieldState }) => (
-            <Field className="gap-1">
-              <FieldLabel>{t("record_number")}</FieldLabel>
-              <Input
-                {...field}
-                value={field.value ?? ""}
-                className="bg-white"
-                placeholder={t("placeholder_record")}
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
+      <FieldGroup className="grid grid-cols-1 gap-3">
         <Controller
           control={form.control}
           name="external_link"

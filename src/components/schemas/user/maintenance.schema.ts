@@ -7,7 +7,7 @@ type TFunction = ReturnType<typeof useTranslations>;
 export const GetMaintenanceSchema = (t: TFunction) =>
   z
     .object({
-      record_number: z.string().min(1, t("validation.field_required")),
+      record_number: z.string().optional().default(""),
       reason: z.string().min(1, t("validation.field_required")),
       handover_person: z.string().min(1, t("validation.field_required")),
       taker_person_name: z.string().min(1, t("validation.field_required")),

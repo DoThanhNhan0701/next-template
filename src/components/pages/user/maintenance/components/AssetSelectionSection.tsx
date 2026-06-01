@@ -123,11 +123,8 @@ export function AssetSelectionSection({
   const t = useTranslations("page_maintenance.form");
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between border-b border-dashed pb-3">
-        <label className="text-xs font-semibold text-primary">
-          {t("asset_selection_title")}
-        </label>
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-2">
           <Button
             type="button"

@@ -565,6 +565,8 @@
   "page_suppliers": {
     "title": "Nhà cung cấp",
     "add_supplier": "Tạo mới",
+    "import_excel": "Nhập excel",
+    "export_excel": "Xuất excel",
     "all_statuses": "Tất cả trạng thái",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động",
@@ -619,6 +621,8 @@
   "page_customers": {
     "title": "Khách hàng",
     "add_customer": "Tạo mới",
+    "import_excel": "Nhập excel",
+    "export_excel": "Xuất excel",
     "all_statuses": "Tất cả trạng thái",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động",
@@ -810,7 +814,7 @@
       "history": "Lịch sử",
       "cancelled": "Đã hủy",
       "approval": "Phê duyệt",
-      "workflow_tasks": "Công việc quy trình",
+      "workflow_tasks": "Phê duyệt",
       "my_audits": "Kiểm kê của tôi",
       "all_audits": "Kiểm kê",
       "audits_pending_approval": "Kiểm kê chờ phê duyệt"
@@ -1054,7 +1058,7 @@
         "description": "Bạn có chắc chắn muốn đánh dấu cuộc kiểm kê này là hoàn tất không?",
         "audit_title": "Tiêu đề kiểm kê",
         "process_type": "Loại quy trình",
-        "alert": "Khi đã hoàn tất, cuộc kiểm kê này sẽ được chuyển sang trạng thái <status /> và không còn có thể chỉnh sửa được nữa.",
+        "alert": "Khi đã hoàn tất, cuộc kiểm kê này sẽ được chuyển sang trạng thái khác và không còn có thể chỉnh sửa được nữa.",
         "status_complete": "HOÀN TẤT",
         "cancel": "Hủy",
         "submitting": "Đang hoàn tất...",

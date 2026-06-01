@@ -24,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
@@ -247,30 +246,9 @@ export default function MaintenanceFormModal({
     );
   };
 
-  const errors = form.formState.errors;
-
-  const hasAssetsErrors = !!errors.items;
-  const hasGeneralErrors = !!(
-    errors.record_number ||
-    errors.reason ||
-    errors.outing_date ||
-    errors.handover_person ||
-    errors.notes ||
-    errors.external_link
-  );
-  const hasServiceErrors = !!(
-    errors.taker_person_name ||
-    errors.taker_phone ||
-    errors.service_provider_name ||
-    errors.service_provider_address ||
-    errors.expected_cost ||
-    errors.actual_cost
-  );
-  const hasApprovalErrors = !!(errors.workflow_assignments || errors.approvals);
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+      <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl gap-0">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing ? t("edit_title") : t("create_title")}
@@ -284,103 +262,62 @@ export default function MaintenanceFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <Tabs
-            defaultValue="assets"
-            className="flex-1 flex flex-col overflow-hidden"
-          >
-            <div className="px-4 pb-4">
-              <TabsList className="grid w-full grid-cols-4 h-14 sm:h-16 p-1 bg-muted/30 z-10">
-                <TabsTrigger
-                  value="assets"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
-                >
-                  <Package size={16} />
-                  <span className="hidden sm:block">{t("tab_assets")}</span>
-                  {hasAssetsErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="general"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
-                >
-                  <ClipboardList size={16} />
-                  <span className="hidden sm:block">{t("tab_general")}</span>
-                  {hasGeneralErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="service"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
-                >
-                  <Wrench size={16} />
-                  <span className="hidden sm:block">{t("tab_service")}</span>
-                  {hasServiceErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="approval"
-                  className="flex flex-col items-center justify-center gap-1 h-full data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all text-xs font-medium relative"
-                >
-                  <UserCheck size={16} />
-                  <span className="hidden sm:block">{t("tab_approval")}</span>
-                  {hasApprovalErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-              </TabsList>
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6 custom-scrollbar">
+            {/* General Info & Attachments */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <ClipboardList size={16} className="text-primary" />
+                {t("tab_general")}
+              </h3>
+              <GeneralInfoSection form={form} />
+              <FormAttachmentsSection
+                control={form.control}
+                title={t("attachments")}
+              />
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
-              <TabsContent
-                value="general"
-                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300 space-y-4"
-              >
-                <GeneralInfoSection form={form} />
-                <FormAttachmentsSection
-                  control={form.control}
-                  title={t("attachments")}
-                />
-              </TabsContent>
-              <TabsContent
-                value="service"
-                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
-              >
-                <ServiceInfoSection form={form} />
-              </TabsContent>
-              <TabsContent
-                value="assets"
-                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
-              >
-                <div className="space-y-4">
-                  <AssetSelectionSection
-                    form={form}
-                    fields={fields}
-                    append={append}
-                    remove={remove}
-                    assets={assets}
-                    assetsPending={assetsPending}
-                    reFetchAssets={reFetchAssets}
-                    locations={locations}
-                  />
-                </div>
-              </TabsContent>
-              <TabsContent
-                value="approval"
-                className="mt-0 outline-none animate-in fade-in slide-in-from-left-2 duration-300"
-              >
-                <ApprovalProcessSection
-                  control={form.control}
-                  steps={activeTemplate?.steps || []}
-                  users={users}
-                  title={null}
-                  showStepNumber={true}
-                />
-              </TabsContent>
+            {/* Asset Selection */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <Package size={16} className="text-primary" />
+                {t("tab_assets")}
+              </h3>
+              <AssetSelectionSection
+                form={form}
+                fields={fields}
+                append={append}
+                remove={remove}
+                assets={assets}
+                assetsPending={assetsPending}
+                reFetchAssets={reFetchAssets}
+                locations={locations}
+              />
             </div>
-          </Tabs>
+
+            {/* Service Info */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <Wrench size={16} className="text-primary" />
+                {t("tab_service")}
+              </h3>
+              <ServiceInfoSection form={form} />
+            </div>
+
+            {/* Approval Process */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <UserCheck size={16} className="text-primary" />
+                {t("tab_approval")}
+              </h3>
+              <ApprovalProcessSection
+                control={form.control}
+                steps={activeTemplate?.steps || []}
+                users={users}
+                title={null}
+                showStepNumber={true}
+              />
+            </div>
+          </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>

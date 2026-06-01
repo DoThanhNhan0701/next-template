@@ -42,23 +42,7 @@ export function GeneralLiquidationSection({
 
   return (
     <div className="flex flex-col gap-2">
-      <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <Controller
-          control={form.control}
-          name="record_number"
-          render={({ field, fieldState }) => (
-            <Field className="gap-1">
-              <FieldLabel>{t("record_number")}</FieldLabel>
-              <Input
-                {...field}
-                value={field.value ?? ""}
-                className="bg-white"
-                placeholder="e.g. TL20240001"
-              />
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
+      <FieldGroup className="grid grid-cols-1 gap-2">
         <Controller
           control={form.control}
           name="liquidation_date"

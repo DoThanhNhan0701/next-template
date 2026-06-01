@@ -2,17 +2,18 @@
 
 import { useEffect } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClipboardList, Package, UserCheck } from "lucide-react";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslations } from "next-intl";
 
 import { ApprovalProcessSection } from "@/components/common/ApprovalProcessSection";
 import { FormAttachmentsSection } from "@/components/common/FormAttachmentsSection";
 import {
-  LiquidationFormValues,
   GetLiquidationSchema,
+  LiquidationFormValues,
 } from "@/components/schemas/user/liquidation.schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
@@ -62,9 +62,9 @@ export default function LiquidationFormModal({
   const { counts } = useSelector((state: RootState) => state.task);
 
   const form = useForm<LiquidationFormValues>({
-    resolver: zodResolver(GetLiquidationSchema(t)) as Resolver<
-      LiquidationFormValues
-    >,
+    resolver: zodResolver(
+      GetLiquidationSchema(t),
+    ) as Resolver<LiquidationFormValues>,
     defaultValues: {
       record_number: "",
       reason: "",
@@ -246,24 +246,9 @@ export default function LiquidationFormModal({
     );
   };
 
-  const errors = form.formState.errors;
-  const hasGeneralErrors = !!(
-    errors.record_number ||
-    errors.reason ||
-    errors.liquidation_date ||
-    errors.liquidation_type ||
-    errors.committee ||
-    errors.total_value ||
-    errors.buyer_name ||
-    errors.external_link ||
-    errors.notes
-  );
-  const hasAssetsErrors = !!errors.items;
-  const hasApprovalErrors = !!(errors.workflow_assignments || errors.approvals);
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+      <DialogContent className="sm:max-w-212.5 h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl gap-0">
         <DialogHeader className="p-3 shrink-0 border-b">
           <DialogTitle>
             {isEditing ? t("edit_title") : t("create_title")}
@@ -277,79 +262,49 @@ export default function LiquidationFormModal({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex-1 flex flex-col overflow-hidden"
         >
-          <Tabs
-            defaultValue="assets"
-            className="flex-1 flex flex-col overflow-hidden"
-          >
-            <div className="px-4 pb-4">
-              <TabsList className="grid w-full grid-cols-3 h-14 sm:h-16 p-1 bg-muted/30 z-10">
-                <TabsTrigger
-                  value="assets"
-                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
-                >
-                  <Package size={16} />
-                  <span className="hidden sm:block">{t("tab_assets")}</span>
-                  {hasAssetsErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-
-                <TabsTrigger
-                  value="general"
-                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
-                >
-                  <ClipboardList size={16} />
-                  <span className="hidden sm:block">{t("tab_general")}</span>
-                  {hasGeneralErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-
-                <TabsTrigger
-                  value="approval"
-                  className="flex flex-col items-center justify-center gap-1 h-full font-medium text-xs relative"
-                >
-                  <UserCheck size={16} />
-                  <span className="hidden sm:block">{t("tab_approval")}</span>
-                  {hasApprovalErrors && (
-                    <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
-                  )}
-                </TabsTrigger>
-              </TabsList>
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6 custom-scrollbar">
+            {/* General Info & Attachments */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <ClipboardList size={16} className="text-primary" />
+                {t("tab_general")}
+              </h3>
+              <GeneralLiquidationSection form={form} users={staffs} />
+              <FormAttachmentsSection
+                control={form.control}
+                title={t("attachments")}
+              />
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
-              <TabsContent
-                value="general"
-                className="focus-visible:outline-none flex flex-col gap-3"
-              >
-                <GeneralLiquidationSection
-                  form={form}
-                  users={staffs}
-                />
-                <FormAttachmentsSection
-                  control={form.control}
-                  title={t("attachments")}
-                />
-              </TabsContent>
-              <TabsContent value="assets" className="mt-0 outline-none">
-                <LiquidationAssetSelectionSection
-                  form={form}
-                  fields={fields}
-                  append={append}
-                  remove={remove}
-                  locations={locations}
-                />
-              </TabsContent>
-              <TabsContent value="approval" className="mt-0 outline-none">
-                <ApprovalProcessSection
-                  control={form.control}
-                  steps={activeTemplate?.steps || []}
-                  users={users}
-                />
-              </TabsContent>
+            {/* Asset Selection */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <Package size={16} className="text-primary" />
+                {t("tab_assets")}
+              </h3>
+              <LiquidationAssetSelectionSection
+                form={form}
+                fields={fields}
+                append={append}
+                remove={remove}
+                locations={locations}
+              />
             </div>
-          </Tabs>
+
+            {/* Approval Process */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 border-b pb-2">
+                <UserCheck size={16} className="text-primary" />
+                {t("tab_approval")}
+              </h3>
+              <ApprovalProcessSection
+                title={null}
+                control={form.control}
+                steps={activeTemplate?.steps || []}
+                users={users}
+              />
+            </div>
+          </div>
 
           <DialogFooter className="p-3 shrink-0 border-t">
             <Button type="button" variant="outline" onClick={onClose}>

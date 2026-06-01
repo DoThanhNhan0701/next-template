@@ -565,6 +565,8 @@
   "page_suppliers": {
     "title": "Suppliers",
     "add_supplier": "Create",
+    "import_excel": "Import excel",
+    "export_excel": "Export excel",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -619,6 +621,8 @@
   "page_customers": {
     "title": "Customers",
     "add_customer": "Create",
+    "import_excel": "Import excel",
+    "export_excel": "Export excel",
     "all_statuses": "All statuses",
     "active": "Active",
     "inactive": "Inactive",
@@ -1054,7 +1058,7 @@
         "description": "Are you sure you want to mark this audit as complete?",
         "audit_title": "Audit title",
         "process_type": "Process type",
-        "alert": "Once completed, this audit will be moved to the <status /> status and can no longer be edited.",
+        "alert": "Once completed, this audit will be moved to the other status and can no longer be edited.",
         "status_complete": "COMPLETE",
         "cancel": "Cancel",
         "submitting": "Completing...",

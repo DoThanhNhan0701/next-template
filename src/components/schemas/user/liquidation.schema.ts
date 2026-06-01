@@ -6,7 +6,7 @@ type TFunction = ReturnType<typeof useTranslations>;
 export const GetLiquidationSchema = (t: TFunction) =>
   z
     .object({
-      record_number: z.string().min(1, t("validation.field_required")),
+      record_number: z.string().optional().default(""),
       reason: z.string().min(1, t("validation.field_required")),
       notes: z.string().nullable().optional(),
       liquidation_date: z.string().min(1, t("validation.field_required")),
