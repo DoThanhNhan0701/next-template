@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { CircleDot, EditIcon, Trash2Icon } from "lucide-react";
+import { CircleDot, EditIcon, Search, Trash2Icon } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import { TablePagination } from "@/components/common/TablePagination";
@@ -13,6 +13,7 @@ import {
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -22,6 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { useGet } from "@/hooks/useGet";
 import { IStatus } from "@/types/status";
 
@@ -31,14 +33,25 @@ export default function StatusTable() {
   const t = useTranslations("page_asset_statuses");
   const tt = useTranslations("page_asset_statuses.table");
   const td = useTranslations("page_asset_statuses.delete");
+  const tc = useTranslations("Common");
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(100);
+
+  const { search, searchVal, setSearchVal } = useDebouncedSearch();
+
+  useEffect(() => {
+    setSkip(0);
+  }, [search]);
 
   const queryParams = new URLSearchParams({
     category: "asset",
     skip: skip.toString(),
     limit: limit.toString(),
   });
+
+  if (search) {
+    queryParams.append("search", search);
+  }
 
   const { response, pending, reFetch, setResponse } = useGet<IStatus[]>({
     url: `${endpoints.STATUSES}?${queryParams.toString()}`,
@@ -64,7 +77,19 @@ export default function StatusTable() {
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
-      <div className="flex items-center justify-end w-full">
+      <div className="flex items-center justify-between w-full gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap flex-1 max-w-md">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="search"
+              placeholder={tc("search_placeholder") || "Tìm kiếm..."}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="pl-9 h-9 text-sm w-full"
+            />
+          </div>
+        </div>
         <Button onClick={() => setIsCreating(true)}>{t("add_status")}</Button>
       </div>
 
@@ -80,8 +105,10 @@ export default function StatusTable() {
               <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions")}</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? <TableLoadingRows colSpan={6} rows={6} /> : statuses.length === 0 ? (
+          <TableBody className={`divide-y divide-(--surface-border-color) transition-opacity duration-200 ${pending ? "opacity-60" : ""}`}>
+            {pending && statuses.length === 0 ? (
+              <TableLoadingRows colSpan={6} rows={6} />
+            ) : statuses.length === 0 ? (
               <TableEmptyRow colSpan={6} icon={CircleDot} message={tt("no_statuses_found")} description={tt("add_first_status")} />
             ) : statuses.map((item, index) => (
               <TableRow key={item.id} className="hover:bg-primary/5 transition-colors">

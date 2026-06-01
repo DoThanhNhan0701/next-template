@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Mail, Phone, Truck, User } from "lucide-react";
+import { EditIcon, Mail, Phone, Search, Truck, User } from "lucide-react";
 import { toast } from "sonner";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
@@ -14,6 +14,7 @@ import {
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ISupplier } from "@/types/supplier";
@@ -42,9 +44,17 @@ export default function SupplierTable() {
   const t = useTranslations("page_suppliers");
   const tt = useTranslations("page_suppliers.table");
   const td = useTranslations("page_suppliers.delete");
+  const tc = useTranslations("Common");
+
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(100);
   const [isActive, setIsActive] = useState<string>("all");
+
+  const { search, searchVal, setSearchVal } = useDebouncedSearch();
+
+  useEffect(() => {
+    setSkip(0);
+  }, [search]);
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
@@ -52,6 +62,9 @@ export default function SupplierTable() {
   });
   if (isActive !== "all") {
     queryParams.append("is_active", isActive);
+  }
+  if (search) {
+    queryParams.append("search", search);
   }
 
   const { response, pending, reFetch, setResponse } = useGet<ISupplier[]>({
@@ -155,22 +168,34 @@ export default function SupplierTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full gap-2 flex-wrap">
-        <Select
-          value={isActive}
-          onValueChange={(val) => {
-            setIsActive(val);
-            setSkip(0);
-          }}
-        >
-          <SelectTrigger className="w-40 h-9">
-            <SelectValue placeholder={t("all_statuses")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("all_statuses")}</SelectItem>
-            <SelectItem value="true">{t("active")}</SelectItem>
-            <SelectItem value="false">{t("inactive")}</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 flex-wrap flex-1 max-w-md">
+          <Select
+            value={isActive}
+            onValueChange={(val) => {
+              setIsActive(val);
+              setSkip(0);
+            }}
+          >
+            <SelectTrigger className="w-40 h-9">
+              <SelectValue placeholder={t("all_statuses")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("all_statuses")}</SelectItem>
+              <SelectItem value="true">{t("active")}</SelectItem>
+              <SelectItem value="false">{t("inactive")}</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="search"
+              placeholder={tc("search_placeholder") || "Tìm kiếm..."}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="pl-9 h-9 text-sm w-full"
+            />
+          </div>
+        </div>
         <div className="flex items-center gap-2 flex-wrap">
           <input
             type="file"
@@ -228,8 +253,8 @@ export default function SupplierTable() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
+          <TableBody className={`divide-y divide-(--surface-border-color) transition-opacity duration-200 ${pending ? "opacity-60" : ""}`}>
+            {pending && suppliers.length === 0 ? (
               <TableLoadingRows colSpan={7} rows={6} />
             ) : suppliers.length === 0 ? (
               <TableEmptyRow

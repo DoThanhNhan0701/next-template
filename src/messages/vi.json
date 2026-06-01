@@ -22,7 +22,9 @@
     "approval_process": "Quy trình phê duyệt",
     "attachment": "Tệp đính kèm",
     "feature_under_development": "Tính năng đang phát triển",
-    "feature_under_development_description": "Chúng tôi đang nỗ lực hoàn thiện tính năng này. Vui lòng quay lại sau."
+    "feature_under_development_description": "Chúng tôi đang nỗ lực hoàn thiện tính năng này. Vui lòng quay lại sau.",
+    "search": "Tìm kiếm",
+    "search_placeholder": "Tìm kiếm..."
   },
   "layout_admin": {
     "dashboard": "Bảng điều khiển",
@@ -39,7 +41,8 @@
     "customers": "Khách hàng",
     "offices": "Văn phòng",
     "approval_workflows": "Quy trình phê duyệt",
-    "activity_logs": "Nhật ký hoạt động"
+    "activity_logs": "Nhật ký hoạt động",
+    "search_placeholder": "Tìm kiếm nhanh..."
   },
   "page_activity_logs": {
     "title": "Nhật ký hoạt động",

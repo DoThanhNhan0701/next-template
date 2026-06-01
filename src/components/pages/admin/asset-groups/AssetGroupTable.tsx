@@ -142,8 +142,8 @@ export default function AssetGroupTable() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? (
+          <TableBody className={`divide-y divide-(--surface-border-color) transition-opacity duration-200 ${pending ? "opacity-60" : ""}`}>
+            {pending && assetGroups.length === 0 ? (
               <TableLoadingRows colSpan={7} rows={6} />
             ) : assetGroups.length === 0 ? (
               <TableEmptyRow

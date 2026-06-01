@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Activity, EditIcon } from "lucide-react";
+import { Activity, EditIcon, Search } from "lucide-react";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 import { TablePagination } from "@/components/common/TablePagination";
@@ -13,6 +13,7 @@ import {
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -29,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { useGet } from "@/hooks/useGet";
 import { IUsageMode } from "@/types/usage-mode";
 
@@ -38,9 +40,16 @@ export default function UsageModeTable() {
   const t = useTranslations("page_usage_modes");
   const tt = useTranslations("page_usage_modes.table");
   const td = useTranslations("page_usage_modes.delete");
+  const tc = useTranslations("Common");
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(100);
   const [isActive, setIsActive] = useState<string>("all");
+
+  const { search, searchVal, setSearchVal } = useDebouncedSearch();
+
+  useEffect(() => {
+    setSkip(0);
+  }, [search]);
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
@@ -48,6 +57,9 @@ export default function UsageModeTable() {
   });
   if (isActive !== "all") {
     queryParams.append("is_active", isActive);
+  }
+  if (search) {
+    queryParams.append("search", search);
   }
 
   const { response, pending, reFetch, setResponse } = useGet<IUsageMode[]>({
@@ -81,14 +93,26 @@ export default function UsageModeTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full gap-2 flex-wrap">
-        <Select value={isActive} onValueChange={(val) => { setIsActive(val); setSkip(0); }}>
-          <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("all_statuses")}</SelectItem>
-            <SelectItem value="true">{t("active")}</SelectItem>
-            <SelectItem value="false">{t("inactive")}</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 flex-wrap flex-1 max-w-md">
+          <Select value={isActive} onValueChange={(val) => { setIsActive(val); setSkip(0); }}>
+            <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("all_statuses")}</SelectItem>
+              <SelectItem value="true">{t("active")}</SelectItem>
+              <SelectItem value="false">{t("inactive")}</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="search"
+              placeholder={tc("search_placeholder") || "Tìm kiếm..."}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="pl-9 h-9 text-sm w-full"
+            />
+          </div>
+        </div>
         <Button onClick={() => setIsCreating(true)}>{t("add_mode")}</Button>
       </div>
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
@@ -104,8 +128,10 @@ export default function UsageModeTable() {
               <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions")}</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? <TableLoadingRows colSpan={7} rows={6} /> : usageModes.length === 0 ? (
+          <TableBody className={`divide-y divide-(--surface-border-color) transition-opacity duration-200 ${pending ? "opacity-60" : ""}`}>
+            {pending && usageModes.length === 0 ? (
+              <TableLoadingRows colSpan={7} rows={6} />
+            ) : usageModes.length === 0 ? (
               <TableEmptyRow colSpan={7} icon={Activity} message={tt("no_modes_found")} description={tt("add_first_mode")} />
             ) : usageModes.map((item, index) => (
               <TableRow key={item.id} className="hover:bg-primary/5 transition-colors">

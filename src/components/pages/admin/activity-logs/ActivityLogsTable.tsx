@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Eye, ScrollText } from "lucide-react";
+import { Eye, ScrollText, Search } from "lucide-react";
 
 import { TablePagination } from "@/components/common/TablePagination";
 import {
@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { endpoints } from "@/config/endpoints";
+import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { useGet } from "@/hooks/useGet";
 import { IActivityLog } from "@/types/activity-log";
 import { formatDate } from "@/utils/date";
@@ -51,10 +53,18 @@ export default function ActivityLogsTable() {
   const t = useTranslations("page_activity_logs");
   const tt = useTranslations("page_activity_logs.table");
   const dm = useTranslations("page_activity_logs.details_modal");
+  const tc = useTranslations("Common");
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(100);
   const [targetModel, setTargetModel] = useState<string>("all");
   const [selectedLog, setSelectedLog] = useState<IActivityLog | null>(null);
+
+  const { search, searchVal, setSearchVal } = useDebouncedSearch();
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSkip(0);
+  }, [search]);
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
@@ -62,6 +72,9 @@ export default function ActivityLogsTable() {
   });
   if (targetModel !== "all") {
     queryParams.append("target_model", targetModel);
+  }
+  if (search) {
+    queryParams.append("search", search);
   }
 
   const { response, pending } = useGet<{
@@ -121,14 +134,26 @@ export default function ActivityLogsTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full gap-2 flex-wrap">
-        <Select value={targetModel} onValueChange={(val) => { setTargetModel(val); setSkip(0); }}>
-          <SelectTrigger className="w-44 h-9"><SelectValue placeholder={t("all_models")} /></SelectTrigger>
-          <SelectContent>
-            {TARGET_MODELS.map((model) => (
-              <SelectItem key={model.value} value={model.value}>{t(model.labelKey)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 flex-wrap flex-1 max-w-md">
+          <Select value={targetModel} onValueChange={(val) => { setTargetModel(val); setSkip(0); }}>
+            <SelectTrigger className="w-44 h-9"><SelectValue placeholder={t("all_models")} /></SelectTrigger>
+            <SelectContent>
+              {TARGET_MODELS.map((model) => (
+                <SelectItem key={model.value} value={model.value}>{t(model.labelKey)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="search"
+              placeholder={tc("search_placeholder") || "Tìm kiếm..."}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="pl-9 h-9 text-sm w-full"
+            />
+          </div>
+        </div>
       </div>
       <div className="border border-(--surface-border-color) flex-1 min-h-0 w-full overflow-hidden [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
         <Table className="w-full">
@@ -143,8 +168,10 @@ export default function ActivityLogsTable() {
               <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions") || "Actions"}</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? <TableLoadingRows colSpan={7} rows={6} /> : logs.length === 0 ? (
+          <TableBody className={`divide-y divide-(--surface-border-color) transition-opacity duration-200 ${pending ? "opacity-60" : ""}`}>
+            {pending && logs.length === 0 ? (
+              <TableLoadingRows colSpan={7} rows={6} />
+            ) : logs.length === 0 ? (
               <TableEmptyRow colSpan={7} icon={ScrollText} message={t("no_logs_found")} description={t("no_logs_description")} />
             ) : logs.map((log, index) => (
               <TableRow key={log.id} className="hover:bg-primary/5 transition-colors">

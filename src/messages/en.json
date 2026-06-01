@@ -22,7 +22,9 @@
     "approval_process": "Approval process",
     "attachment": "Attachment",
     "feature_under_development": "Feature under development",
-    "feature_under_development_description": "We are working hard to complete this feature. Please check back later."
+    "feature_under_development_description": "We are working hard to complete this feature. Please check back later.",
+    "search": "Search",
+    "search_placeholder": "Search..."
   },
   "layout_admin": {
     "dashboard": "Dashboard",
@@ -39,7 +41,8 @@
     "customers": "Customers",
     "offices": "Offices",
     "approval_workflows": "Approval workflows",
-    "activity_logs": "Activity logs"
+    "activity_logs": "Activity logs",
+    "search_placeholder": "Quick search..."
   },
   "page_activity_logs": {
     "title": "Activity logs",

@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { EditIcon, Tag } from "lucide-react";
+import { EditIcon, Search, Tag } from "lucide-react";
 import { toast } from "sonner";
 
 import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
@@ -14,6 +14,7 @@ import {
   TableLoadingRows,
 } from "@/components/common/TableStateDisplay";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dynamicEndpoints, endpoints } from "@/config/endpoints";
+import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
 import { useGet } from "@/hooks/useGet";
 import { useMutation } from "@/hooks/useMutation";
 import { ICatalogType } from "@/types/catalog-type";
@@ -42,9 +44,16 @@ export default function CatalogTypeTable() {
   const t = useTranslations("page_catalog_types");
   const tt = useTranslations("page_catalog_types.table");
   const td = useTranslations("page_catalog_types.delete");
+  const tc = useTranslations("Common");
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(100);
   const [isActive, setIsActive] = useState<string>("all");
+
+  const { search, searchVal, setSearchVal } = useDebouncedSearch();
+
+  useEffect(() => {
+    setSkip(0);
+  }, [search]);
 
   const queryParams = new URLSearchParams({
     skip: skip.toString(),
@@ -52,6 +61,9 @@ export default function CatalogTypeTable() {
   });
   if (isActive !== "all") {
     queryParams.append("is_active", isActive);
+  }
+  if (search) {
+    queryParams.append("search", search);
   }
 
   const { response, pending, reFetch, setResponse } = useGet<ICatalogType[]>({
@@ -174,14 +186,26 @@ export default function CatalogTypeTable() {
   return (
     <div className="w-full h-full flex flex-col min-h-0 gap-2">
       <div className="flex items-center justify-between w-full gap-2 flex-wrap">
-        <Select value={isActive} onValueChange={(val) => { setIsActive(val); setSkip(0); }}>
-          <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("all_statuses")}</SelectItem>
-            <SelectItem value="true">{t("active")}</SelectItem>
-            <SelectItem value="false">{t("inactive")}</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 flex-wrap flex-1 max-w-md">
+          <Select value={isActive} onValueChange={(val) => { setIsActive(val); setSkip(0); }}>
+            <SelectTrigger className="w-40 h-9"><SelectValue placeholder={t("all_statuses")} /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("all_statuses")}</SelectItem>
+              <SelectItem value="true">{t("active")}</SelectItem>
+              <SelectItem value="false">{t("inactive")}</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              type="search"
+              placeholder={tc("search_placeholder") || "Tìm kiếm..."}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="pl-9 h-9 text-sm w-full"
+            />
+          </div>
+        </div>
         <div className="flex items-center gap-2 flex-wrap">
           <input type="file" ref={fileInputRef} onChange={handleImport} accept=".xls,.xlsx" className="hidden" />
           <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={importPending} className="gap-2">{t("import_excel")}</Button>
@@ -201,8 +225,10 @@ export default function CatalogTypeTable() {
               <TableHead className="font-semibold h-10 px-4 text-right">{tt("actions")}</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="divide-y divide-(--surface-border-color)">
-            {pending ? <TableLoadingRows colSpan={6} rows={6} /> : catalogTypes.length === 0 ? (
+          <TableBody className={`divide-y divide-(--surface-border-color) transition-opacity duration-200 ${pending ? "opacity-60" : ""}`}>
+            {pending && catalogTypes.length === 0 ? (
+              <TableLoadingRows colSpan={6} rows={6} />
+            ) : catalogTypes.length === 0 ? (
               <TableEmptyRow colSpan={6} icon={Tag} message={tt("no_types_found")} description={tt("add_first_type")} />
             ) : catalogTypes.map((type, index) => (
               <TableRow key={type.id} className="hover:bg-primary/5 transition-colors">
